@@ -28,7 +28,7 @@
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem @click="navigateTo('/')">
+        <DropdownMenuItem @click="navigateTo('/dashboard')">
           <HugeiconsIcon :icon="Home01Icon" :size="16" class="mr-2" />
           Dashboard
         </DropdownMenuItem>
@@ -81,7 +81,7 @@ const colorMode = useColorMode()
 
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
-    '/': 'Dashboard',
+    '/dashboard': 'Dashboard',
     '/transactions': 'Transaksi',
     '/transactions/new': 'Tambah Transaksi',
     '/categories': 'Kategori',

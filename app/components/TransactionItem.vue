@@ -2,19 +2,19 @@
   <div
     class="flex items-center justify-between rounded-lg border border-border p-3"
   >
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 min-w-0">
       <div
-        class="flex size-10 items-center justify-center rounded-full"
+        class="flex size-9 shrink-0 items-center justify-center rounded-full sm:size-10"
         :style="{ backgroundColor: (categoryColor ?? '#6b7280') + '20' }"
       >
-        <div class="size-3 rounded-full" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
+        <div class="size-2.5 rounded-full sm:size-3" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
       </div>
-      <div class="min-w-0">
+      <div class="min-w-0 flex-1">
         <p class="truncate text-sm font-medium">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</p>
         <p class="text-xs text-muted-foreground">{{ formattedDate }}</p>
       </div>
     </div>
-    <div class="text-right">
+    <div class="shrink-0 text-right">
       <p
         class="text-sm font-semibold"
         :class="transaction.type === 'income' ? 'text-green-500' : 'text-red-500'"

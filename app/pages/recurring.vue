@@ -15,13 +15,13 @@
       <Card class="bg-red-50 dark:bg-red-950/30">
         <CardContent class="p-3 text-center">
           <p class="text-[11px] text-muted-foreground">Pengeluaran Rutin/Bulan</p>
-          <p class="text-sm font-bold text-red-600">Rp {{ monthlyExpense.toLocaleString('id-ID') }}</p>
+          <p class="text-sm font-bold text-red-600">{{ formatCurrency(monthlyExpense) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-green-50 dark:bg-green-950/30">
         <CardContent class="p-3 text-center">
           <p class="text-[11px] text-muted-foreground">Pemasukan Rutin/Bulan</p>
-          <p class="text-sm font-bold text-green-600">Rp {{ monthlyIncome.toLocaleString('id-ID') }}</p>
+          <p class="text-sm font-bold text-green-600">{{ formatCurrency(monthlyIncome) }}</p>
         </CardContent>
       </Card>
     </div>

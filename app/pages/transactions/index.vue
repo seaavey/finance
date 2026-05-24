@@ -29,7 +29,7 @@
         </div>
 
         <div v-if="showFilters" class="mt-3 space-y-2 border-t border-border pt-3">
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Select v-model="filters.type" @update:model-value="applyFilters">
               <SelectTrigger>
                 <SelectValue placeholder="Semua tipe" />
@@ -57,7 +57,7 @@
             <PopoverContent class="w-auto p-0" align="start">
               <RangeCalendar
                 v-model="dateRange"
-                :number-of-months="2"
+                :number-of-months="1"
                 locale="id-ID"
                 @update:model-value="onDateRangeChange"
               />
@@ -67,23 +67,23 @@
       </CardContent>
     </Card>
 
-    <div v-if="!loading && transactions.length > 0" class="grid grid-cols-3 gap-2">
+    <div v-if="!loading && transactions.length > 0" class="grid grid-cols-3 gap-1.5 sm:gap-2">
       <Card class="bg-green-50 dark:bg-green-950/30">
-        <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pemasukan</p>
-          <p class="text-sm font-bold text-green-600">{{ formatCurrency(monthIncome) }}</p>
+        <CardContent class="p-2 text-center sm:p-3">
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Pemasukan</p>
+          <p class="truncate text-xs font-bold text-green-600 sm:text-sm">{{ formatCurrency(monthIncome) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-red-50 dark:bg-red-950/30">
-        <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pengeluaran</p>
-          <p class="text-sm font-bold text-red-600">{{ formatCurrency(monthExpense) }}</p>
+        <CardContent class="p-2 text-center sm:p-3">
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Pengeluaran</p>
+          <p class="truncate text-xs font-bold text-red-600 sm:text-sm">{{ formatCurrency(monthExpense) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-blue-50 dark:bg-blue-950/30">
-        <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Selisih</p>
-          <p class="text-sm font-bold" :class="monthIncome - monthExpense >= 0 ? 'text-blue-600' : 'text-orange-600'">{{ formatCurrency(monthIncome - monthExpense) }}</p>
+        <CardContent class="p-2 text-center sm:p-3">
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Selisih</p>
+          <p class="truncate text-xs font-bold sm:text-sm" :class="monthIncome - monthExpense >= 0 ? 'text-blue-600' : 'text-orange-600'">{{ formatCurrency(monthIncome - monthExpense) }}</p>
         </CardContent>
       </Card>
     </div>
@@ -134,7 +134,7 @@ import type { TransactionFilters } from '~/composables/useTransactions'
 const { transactions, loading, fetchTransactions } = useTransactions()
 const { fetchCategories } = useCategories()
 
-const formatCurrency = (amount: number) => `Rp ${amount.toLocaleString('id-ID')}`
+const { formatCurrency } = useCurrency()
 
 const monthIncome = computed(() =>
   transactions.value.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)

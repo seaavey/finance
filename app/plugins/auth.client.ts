@@ -11,7 +11,7 @@ export default defineNuxtPlugin(async () => {
   supabase.auth.onAuthStateChange((_event, session) => {
     user.value = session?.user ?? null
     if (session && window.location.pathname === '/login') {
-      navigateTo('/')
+      navigateTo('/dashboard')
     }
   })
 })
