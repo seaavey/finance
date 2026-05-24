@@ -31,13 +31,7 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: [
-    'shadcn-nuxt',
-    '@nuxtjs/color-mode',
-    '@nuxtjs/i18n',
-    '@nuxtjs/seo',
-    '@nuxt/fonts',
-  ],
+  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/i18n', '@nuxtjs/seo'],
   colorMode: {
     classSuffix: '',
     preference: 'system',
@@ -53,7 +47,6 @@ export default defineNuxtConfig({
       { code: 'en', language: 'en', name: 'English', file: 'en.json' },
     ],
     defaultLocale: 'id',
-    lazy: true,
     langDir: 'locales/',
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
@@ -64,13 +57,12 @@ export default defineNuxtConfig({
   },
   ogImage: {
     zeroRuntime: true,
-    component: 'Default',
   },
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
   },
   site: {
-    url: 'https://aemy.finance',
-    name: 'Finance',
+    url: 'https://seaavey.site',
+    name: 'Aemy - Personal Financial Management Application',
   },
 });

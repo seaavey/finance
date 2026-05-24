@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "generate:og-image": "bunx nuxt-og-image generate-secret",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "biome check .",
