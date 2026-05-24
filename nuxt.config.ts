@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
+    '@nuxt/fonts',
   ],
   colorMode: {
     classSuffix: '',
