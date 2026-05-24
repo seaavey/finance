@@ -1,4 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to) => {
+  if (import.meta.server) return
+
   if (to.hash?.includes('access_token')) return
 
   const { getSession } = useAuth()

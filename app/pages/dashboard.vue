@@ -1,7 +1,12 @@
 <template>
   <div class="space-y-6">
     <div>
-      <h2 class="text-xl font-bold">Halo, {{ displayName }} 👋</h2>
+      <ClientOnly>
+        <h2 class="text-xl font-bold">Halo, {{ displayName }} 👋</h2>
+        <template #fallback>
+          <h2 class="text-xl font-bold">Halo...</h2>
+        </template>
+      </ClientOnly>
       <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
     </div>
 

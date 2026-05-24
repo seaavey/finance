@@ -52,15 +52,15 @@
         v-else
         :list="filteredCategories"
         item-key="id"
-        :options="{ ghostClass: 'opacity-30', animation: 200 }"
+        :options="{ handle: '.drag-handle', ghostClass: 'opacity-30', animation: 200 }"
         class="grid grid-cols-1 gap-2 md:grid-cols-2"
         @end="onReorder"
       >
         <template #item="{ element: cat }">
-          <Card class="group cursor-grab transition-colors hover:bg-accent/50 active:cursor-grabbing">
+          <Card class="group transition-colors hover:bg-accent/50">
             <CardContent class="flex items-center justify-between p-3">
               <div class="flex items-center gap-3">
-                <div class="drag-handle flex size-10 items-center justify-center rounded-xl" :style="{ backgroundColor: cat.color + '15' }">
+                <div class="drag-handle flex size-10 cursor-grab items-center justify-center rounded-xl active:cursor-grabbing" :style="{ backgroundColor: cat.color + '15' }">
                   <div class="size-4 rounded-full" :style="{ backgroundColor: cat.color }" />
                 </div>
                 <div>
@@ -140,7 +140,7 @@ const filteredCategories = computed(() =>
   activeTab.value === 'income' ? incomeCategories.value : expenseCategories.value
 )
 
-const onReorder = (evt: any) => {
+const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
   const list = [...filteredCategories.value]
   const [moved] = list.splice(evt.oldIndex, 1)
   list.splice(evt.newIndex, 0, moved)

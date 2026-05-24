@@ -35,8 +35,8 @@ const chartOptions = {
     legend: { display: false },
     tooltip: {
       callbacks: {
-        label: (ctx: any) => {
-          const val = ctx.raw as number
+        label: (ctx: { raw: number; dataset: { label: string } }) => {
+          const val = ctx.raw
           return ` ${ctx.dataset.label}: Rp ${val.toLocaleString('id-ID')}`
         },
       },
@@ -51,7 +51,10 @@ const chartOptions = {
       grid: { color: '#f1f5f9' },
       ticks: {
         font: { size: 11 },
-        callback: (val: any) => val >= 1000000 ? `${val / 1000000}jt` : val >= 1000 ? `${val / 1000}rb` : val,
+        callback: (val: number | string) => {
+          const v = Number(val)
+          return v >= 1000000 ? `${v / 1000000}jt` : v >= 1000 ? `${v / 1000}rb` : val
+        },
       },
     },
   },

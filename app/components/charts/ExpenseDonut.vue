@@ -26,8 +26,8 @@ const chartOptions = {
     legend: { display: false },
     tooltip: {
       callbacks: {
-        label: (ctx: any) => {
-          const val = ctx.raw as number
+        label: (ctx: { raw: number }) => {
+          const val = ctx.raw
           return ` Rp ${val.toLocaleString('id-ID')}`
         },
       },
