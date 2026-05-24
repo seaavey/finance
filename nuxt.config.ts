@@ -62,6 +62,10 @@ export default defineNuxtConfig({
       redirectOn: 'root',
     },
   },
+  ogImage: {
+    zeroRuntime: true,
+    component: 'Default',
+  },
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
   },
