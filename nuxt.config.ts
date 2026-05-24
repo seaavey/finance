@@ -31,7 +31,13 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/i18n', '@nuxtjs/sitemap'],
+  modules: [
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
+    '@nuxtjs/i18n',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
+  ],
   colorMode: {
     classSuffix: '',
     preference: 'system',
