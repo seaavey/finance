@@ -15,8 +15,8 @@
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
-        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-all duration-200 hover:bg-primary/10 hover:text-primary"
-        :class="{ 'bg-primary/10 text-primary font-semibold': isActive(item.to) }"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive(item.to) }"
         @click="$emit('close')"
       >
         <HugeiconsIcon :icon="item.icon" :size="20" />
@@ -27,8 +27,8 @@
     <div class="border-t border-border p-3">
       <NuxtLink
         to="/settings"
-        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-all duration-200 hover:bg-primary/10 hover:text-primary"
-        :class="{ 'bg-primary/10 text-primary font-semibold': isActive('/settings') }"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive('/settings') }"
         @click="$emit('close')"
       >
         <HugeiconsIcon :icon="Settings01Icon" :size="20" />
@@ -60,14 +60,14 @@ defineEmits<{
 const route = useRoute()
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: Home03Icon },
+  { to: '/', label: 'Dashboard', icon: Home03Icon },
   { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
   { to: '/categories', label: 'Kategori', icon: GridViewIcon },
   { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
 ]
 
 const isActive = (path: string) => {
-  if (path === '/dashboard') return route.path === '/dashboard'
+  if (path === '/') return route.path === '/'
   return route.path.startsWith(path)
 }
 </script>

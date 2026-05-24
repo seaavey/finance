@@ -18,5 +18,5 @@
 </template>
 
 <script setup lang="ts">
-const sidebarOpen = ref(false)
+const sidebarOpen = ref(false);
 </script>

@@ -68,6 +68,19 @@
       }
     }
   },
+
+  "overrides": [
+    {
+      "includes": ["**/*.vue"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    }
+  ],
   "css": {
     "formatter": {
       "quoteStyle": "single"
