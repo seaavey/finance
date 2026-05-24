@@ -31,11 +31,7 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: [
-    'shadcn-nuxt',
-    '@nuxtjs/color-mode',
-    '@nuxtjs/i18n',
-  ],
+  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/i18n', '@nuxtjs/sitemap'],
   colorMode: {
     classSuffix: '',
     preference: 'system',
@@ -59,5 +55,8 @@ export default defineNuxtConfig({
       cookieKey: 'i18n_lang',
       redirectOn: 'root',
     },
+  },
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
   },
 });
