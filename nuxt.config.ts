@@ -35,9 +35,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
-    '@nuxtjs/sitemap',
-    '@nuxtjs/robots',
-    'nuxt-og-image',
+    '@nuxtjs/seo',
   ],
   colorMode: {
     classSuffix: '',
@@ -65,5 +63,9 @@ export default defineNuxtConfig({
   },
   sitemap: {
     sources: ['/api/__sitemap__/urls'],
+  },
+  site: {
+    url: 'https://aemy.finance',
+    name: 'Finance',
   },
 });
