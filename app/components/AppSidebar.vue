@@ -46,6 +46,7 @@ import {
   RepeatIcon,
   Settings01Icon,
   Money01Icon,
+  CheckmarkCircle02Icon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/vue'
 
@@ -64,10 +65,11 @@ const navItems = [
   { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
   { to: '/categories', label: 'Kategori', icon: GridViewIcon },
   { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
+  { to: '/todos', label: 'Todo', icon: CheckmarkCircle02Icon },
 ]
 
 const isActive = (path: string) => {
-  if (path === '/') return route.path === '/'
+  if (path === '/') { return route.path === '/' }
   return route.path.startsWith(path)
 }
 </script>
