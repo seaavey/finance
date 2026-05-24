@@ -1,10 +1,11 @@
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
-    <div class="mx-auto w-full max-w-sm space-y-6">
-      <div class="space-y-1">
-        <h1 class="text-2xl font-bold tracking-tight">Finance</h1>
+  <div class="flex min-h-screen flex-col items-center justify-center p-8">
+    <div class="mx-auto w-full max-w-sm space-y-8">
+      <div class="space-y-2 text-center">
+        <NuxtLink to="/" class="text-lg font-bold tracking-tight hover:text-primary transition-colors">Finance</NuxtLink>
+        <h1 class="font-heading text-xl font-bold tracking-tight">Masuk</h1>
         <p class="text-sm text-muted-foreground">
-          Kelola keuangan kamu dan pasangan
+          Catat keuangan sendiri atau bareng
         </p>
       </div>
 
@@ -16,6 +17,10 @@
         <HugeiconsIcon :icon="GoogleIcon" :size="20" />
         Login dengan Google
       </Button>
+
+      <p class="text-center text-xs text-muted-foreground">
+        <NuxtLink to="/" class="hover:text-foreground transition-colors">&larr; Kembali</NuxtLink>
+      </p>
     </div>
   </div>
 </template>

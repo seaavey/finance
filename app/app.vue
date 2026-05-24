@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div id="noise-overlay" />
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />

@@ -17,7 +17,7 @@
 
     <template v-else>
       <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Card class="bg-green-50 dark:bg-green-950/30">
+        <Card class="bg-green-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-green-950/30">
           <CardContent class="flex items-center gap-3 p-4">
             <div class="flex size-10 items-center justify-center rounded-full bg-green-100">
               <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-600" />
@@ -29,7 +29,7 @@
           </CardContent>
         </Card>
 
-        <Card class="bg-red-50 dark:bg-red-950/30">
+        <Card class="bg-red-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-red-950/30">
           <CardContent class="flex items-center gap-3 p-4">
             <div class="flex size-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
               <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-600" />
@@ -41,7 +41,7 @@
           </CardContent>
         </Card>
 
-        <Card class="bg-blue-50 dark:bg-blue-950/30">
+        <Card class="bg-blue-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-blue-950/30">
           <CardContent class="flex items-center gap-3 p-4">
             <div class="flex size-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40">
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-blue-600" />
@@ -55,7 +55,7 @@
       </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
+        <Card class="transition-all duration-200 hover:shadow-md">
           <CardHeader class="pb-2">
             <CardTitle class="text-sm font-medium">Pengeluaran per Kategori</CardTitle>
           </CardHeader>
@@ -73,7 +73,7 @@
           </CardContent>
         </Card>
 
-        <Card>
+        <Card class="transition-all duration-200 hover:shadow-md">
           <CardHeader class="pb-2">
             <CardTitle class="text-sm font-medium">Tren 6 Bulan Terakhir</CardTitle>
           </CardHeader>
@@ -83,7 +83,7 @@
         </Card>
       </div>
 
-      <Card>
+      <Card class="transition-all duration-200 hover:shadow-md">
         <CardHeader class="flex flex-row items-center justify-between pb-2">
           <CardTitle class="text-sm font-medium">Transaksi Terakhir</CardTitle>
           <NuxtLink to="/transactions" class="text-xs text-primary hover:underline">Lihat semua</NuxtLink>
@@ -122,18 +122,18 @@
       </Card>
 
       <div class="grid grid-cols-2 gap-3">
-        <Card class="cursor-pointer transition-colors hover:bg-accent/50" @click="navigateTo('/transactions/new')">
+        <Card class="cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" @click="navigateTo('/transactions/new')">
           <CardContent class="flex flex-col items-center gap-2 p-4">
-            <div class="flex size-10 items-center justify-center rounded-full bg-green-100">
-              <HugeiconsIcon :icon="Add01Icon" :size="20" class="text-green-600" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <HugeiconsIcon :icon="Add01Icon" :size="20" class="text-primary" />
             </div>
             <p class="text-xs font-medium">Tambah Transaksi</p>
           </CardContent>
         </Card>
-        <Card class="cursor-pointer transition-colors hover:bg-accent/50" @click="navigateTo('/categories')">
+        <Card class="cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" @click="navigateTo('/categories')">
           <CardContent class="flex flex-col items-center gap-2 p-4">
-            <div class="flex size-10 items-center justify-center rounded-full bg-purple-100">
-              <HugeiconsIcon :icon="GridViewIcon" :size="20" class="text-purple-600" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <HugeiconsIcon :icon="GridViewIcon" :size="20" class="text-primary" />
             </div>
             <p class="text-xs font-medium">Kelola Kategori</p>
           </CardContent>
