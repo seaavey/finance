@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
+    'nuxt-og-image',
   ],
   colorMode: {
     classSuffix: '',
