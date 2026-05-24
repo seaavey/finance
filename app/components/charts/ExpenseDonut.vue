@@ -4,6 +4,9 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
+const { t, locale } = useI18n()
+const { formatCurrency } = useCurrency()
+
 const props = defineProps<{
   categories: { name: string; color: string; total: number }[]
 }>()
@@ -28,7 +31,7 @@ const chartOptions = {
       callbacks: {
         label: (ctx: { raw: number }) => {
           const val = ctx.raw
-          return ` Rp ${val.toLocaleString('id-ID')}`
+          return ` ${formatCurrency(val)}`
         },
       },
     },
@@ -40,7 +43,7 @@ const chartOptions = {
   <div class="relative size-full min-h-[180px]">
     <Doughnut v-if="categories.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
-      <p class="text-xs text-muted-foreground">Belum ada data</p>
+      <p class="text-xs text-muted-foreground">{{ $t('charts.no_data') }}</p>
     </div>
   </div>
 </template>

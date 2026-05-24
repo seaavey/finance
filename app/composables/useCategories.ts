@@ -11,25 +11,8 @@ export interface Category {
   created_at: string
 }
 
-const DEFAULT_CATEGORIES = {
-  income: [
-    { name: 'Gaji', icon: 'wallet', color: '#22c55e' },
-    { name: 'Freelance', icon: 'laptop', color: '#3b82f6' },
-    { name: 'Investasi', icon: 'chart', color: '#8b5cf6' },
-    { name: 'Lainnya', icon: 'more', color: '#6b7280' },
-  ],
-  expense: [
-    { name: 'Makanan', icon: 'food', color: '#f97316' },
-    { name: 'Transport', icon: 'car', color: '#06b6d4' },
-    { name: 'Belanja', icon: 'bag', color: '#ec4899' },
-    { name: 'Tagihan', icon: 'receipt', color: '#ef4444' },
-    { name: 'Hiburan', icon: 'game', color: '#a855f7' },
-    { name: 'Kesehatan', icon: 'health', color: '#14b8a6' },
-    { name: 'Lainnya', icon: 'more', color: '#6b7280' },
-  ],
-}
-
 export const useCategories = () => {
+  const { t } = useI18n()
   const { toast } = useToast()
   const supabase = useSupabase()
   const categories = useState<Category[]>('categories', () => [])
@@ -49,9 +32,24 @@ export const useCategories = () => {
   }
 
   const seedDefaults = async (userId: string) => {
+    const incomeCategories = [
+      { name: t('categories.default_income_salary'), icon: 'wallet', color: '#22c55e' },
+      { name: t('categories.default_income_freelance'), icon: 'laptop', color: '#3b82f6' },
+      { name: t('categories.default_income_investment'), icon: 'chart', color: '#8b5cf6' },
+      { name: t('categories.default_income_other'), icon: 'more', color: '#6b7280' },
+    ]
+    const expenseCategories = [
+      { name: t('categories.default_expense_food'), icon: 'food', color: '#f97316' },
+      { name: t('categories.default_expense_transport'), icon: 'car', color: '#06b6d4' },
+      { name: t('categories.default_expense_shopping'), icon: 'bag', color: '#ec4899' },
+      { name: t('categories.default_expense_bills'), icon: 'receipt', color: '#ef4444' },
+      { name: t('categories.default_expense_entertainment'), icon: 'game', color: '#a855f7' },
+      { name: t('categories.default_expense_health'), icon: 'health', color: '#14b8a6' },
+      { name: t('categories.default_expense_other'), icon: 'more', color: '#6b7280' },
+    ]
     const entries = [
-      ...DEFAULT_CATEGORIES.income.map((c) => ({ ...c, type: 'income' as const, user_id: userId })),
-      ...DEFAULT_CATEGORIES.expense.map((c) => ({ ...c, type: 'expense' as const, user_id: userId })),
+      ...incomeCategories.map((c) => ({ ...c, type: 'income' as const, user_id: userId })),
+      ...expenseCategories.map((c) => ({ ...c, type: 'expense' as const, user_id: userId })),
     ]
     const { error } = await supabase.from('categories').insert(entries)
     if (!error) await fetchCategories()
@@ -67,9 +65,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories()
-      toast.success('Kategori berhasil ditambahkan')
+      toast.success(t('toast.category_added'))
     } else {
-      toast.error('Gagal menambahkan kategori')
+      toast.error(t('toast.category_add_failed'))
     }
     return { error }
   }
@@ -82,9 +80,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories()
-      toast.success('Kategori berhasil diperbarui')
+      toast.success(t('toast.category_updated'))
     } else {
-      toast.error('Gagal memperbarui kategori')
+      toast.error(t('toast.category_update_failed'))
     }
     return { error }
   }
@@ -97,9 +95,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories()
-      toast.success('Kategori berhasil dihapus')
+      toast.success(t('toast.category_deleted'))
     } else {
-      toast.error('Gagal menghapus kategori')
+      toast.error(t('toast.category_delete_failed'))
     }
     return { error }
   }

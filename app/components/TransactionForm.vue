@@ -12,7 +12,7 @@
         @click="form.type = 'income'"
       >
         <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="mr-1 inline-block" />
-        Pemasukan
+        {{ $t('transactions.income') }}
       </button>
       <button
         type="button"
@@ -23,13 +23,13 @@
         @click="form.type = 'expense'"
       >
         <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="mr-1 inline-block" />
-        Pengeluaran
+        {{ $t('transactions.expense') }}
       </button>
     </div>
 
     <Card class="overflow-hidden">
       <CardContent class="flex flex-col items-center gap-2 py-8">
-        <span class="text-xs font-medium text-muted-foreground">Jumlah</span>
+        <span class="text-xs font-medium text-muted-foreground">{{ $t('common.amount') }}</span>
         <div class="flex items-baseline gap-1">
           <span class="text-lg font-medium text-muted-foreground">{{ form.currency }}</span>
           <input
@@ -49,7 +49,7 @@
         <div class="flex items-center gap-3 px-4 py-3">
           <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
           <div class="flex-1">
-            <CategoryPicker v-model="form.category_id" :type="form.type" placeholder="Pilih kategori" />
+            <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('transactions.category_placeholder')" />
           </div>
         </div>
 
@@ -81,7 +81,7 @@
           <div class="flex-1">
             <Textarea
               v-model="form.description"
-              placeholder="Catatan (opsional)"
+              :placeholder="$t('transactions.note_placeholder')"
               rows="2"
               class="resize-none border-none shadow-none"
             />
@@ -91,8 +91,8 @@
     </Card>
 
     <div class="flex gap-3">
-      <Button variant="outline" class="flex-1" @click="$emit('cancel')">Batal</Button>
-      <Button class="flex-1" :disabled="!form.amount || !form.date" @click="onSubmit">Simpan</Button>
+      <Button variant="outline" class="flex-1" @click="$emit('cancel')">{{ $t('common.cancel') }}</Button>
+      <Button class="flex-1" :disabled="!form.amount || !form.date" @click="onSubmit">{{ $t('common.save') }}</Button>
     </div>
   </div>
 </template>
@@ -118,6 +118,7 @@ const emit = defineEmits<{
   saved: []
 }>()
 
+const { t, locale } = useI18n()
 const { currencies } = useCurrency()
 const { addTransaction, updateTransaction } = useTransactions()
 
@@ -134,7 +135,7 @@ const form = reactive({
 
 const formatNumber = (num: number) => {
   if (!num) return ''
-  return num.toLocaleString('id-ID')
+  return num.toLocaleString(locale.value)
 }
 
 const displayAmount = computed(() => formatNumber(form.amount))

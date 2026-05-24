@@ -2,15 +2,15 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-bold">Todo</h2>
+        <h2 class="text-xl font-bold">{{ $t('todos.title') }}</h2>
         <p class="text-sm text-muted-foreground">
-          {{ todos.length }} tugas
-          <span v-if="completedCount > 0"> · {{ completedCount }} selesai</span>
+          {{ $t('todos.tasks', { count: todos.length }) }}
+          <span v-if="completedCount > 0"> · {{ $t('todos.completed', { count: completedCount }) }}</span>
         </p>
       </div>
       <Button @click="openAdd">
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        Tambah
+        {{ $t('common.add') }}
       </Button>
     </div>
 
@@ -23,7 +23,7 @@
         />
         <input
           v-model="searchQuery"
-          placeholder="Cari tugas..."
+          :placeholder="$t('todos.search')"
           class="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent pl-8 pr-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] file:h-7 file:text-sm file:font-medium focus-visible:ring-3 md:text-sm min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground"
         />
       </div>
@@ -35,7 +35,7 @@
         @click="showCompleted = !showCompleted"
       >
         <HugeiconsIcon :icon="Tick01Icon" :size="16" />
-        {{ showCompleted ? 'Sembunyikan' : 'Tampilkan' }} selesai
+        {{ showCompleted ? $t('todos.hide_completed') : $t('todos.show_completed') }}
       </button>
     </div>
 
@@ -63,7 +63,7 @@
           <HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="24" class="text-muted-foreground" />
         </div>
         <p class="text-sm text-muted-foreground">
-          {{ searchQuery ? 'Tidak ada tugas yang cocok' : activeFilter === 'all' ? 'Belum ada tugas' : `Tidak ada tugas prioritas ${activeFilterLabel}` }}
+          {{ searchQuery ? $t('todos.no_match') : activeFilter === 'all' ? $t('todos.no_tasks') : $t('todos.no_priority_tasks', { priority: activeFilterLabel }) }}
         </p>
       </div>
 
@@ -100,7 +100,7 @@
                 >
                   <HugeiconsIcon :icon="Calendar01Icon" :size="12" />
                   {{ formatDate(todo.due_date) }}
-                  <span v-if="isOverdue(todo)" class="ml-0.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-semibold text-red-500">Terlambat</span>
+                  <span v-if="isOverdue(todo)" class="ml-0.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-semibold text-red-500">{{ $t('todos.overdue') }}</span>
                 </span>
                 <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium" :class="priorityBadgeClass(todo.priority)">
                   {{ priorityLabel(todo.priority) }}
@@ -125,7 +125,7 @@
         <div v-if="completedTodos.length > 0 && showCompleted" class="space-y-1">
           <div class="flex items-center gap-2 pt-4 pb-1">
             <div class="h-px flex-1 bg-border" />
-            <span class="text-xs text-muted-foreground">Selesai</span>
+            <span class="text-xs text-muted-foreground">{{ $t('todos.section_completed') }}</span>
             <div class="h-px flex-1 bg-border" />
           </div>
           <div
@@ -163,16 +163,16 @@
     <Dialog :open="showForm" @update:open="showForm = false; editingTodo = undefined">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{{ editingTodo ? 'Edit Tugas' : 'Tambah Tugas' }}</DialogTitle>
+          <DialogTitle>{{ editingTodo ? $t('todos.edit_title') : $t('todos.add_title') }}</DialogTitle>
         </DialogHeader>
 
         <form class="space-y-4" @submit.prevent="onSubmit">
           <div class="space-y-2">
-            <Label for="title">Nama Tugas</Label>
+            <Label for="title">{{ $t('todos.task_name') }}</Label>
             <input
               id="title"
               v-model="formTitle"
-              placeholder="Nama tugas"
+              :placeholder="$t('todos.task_name_placeholder')"
               required
               class="dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] file:h-7 file:text-sm file:font-medium focus-visible:ring-3 md:text-sm min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground"
               @keydown.enter="onSubmit"
@@ -180,21 +180,21 @@
           </div>
 
           <div class="space-y-2">
-            <Label for="priority">Prioritas</Label>
+            <Label for="priority">{{ $t('todos.priority') }}</Label>
             <Select v-model="formPriority">
               <SelectTrigger id="priority">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="high">Tinggi</SelectItem>
-                <SelectItem value="medium">Sedang</SelectItem>
-                <SelectItem value="low">Rendah</SelectItem>
+                <SelectItem value="high">{{ $t('todos.priority_high') }}</SelectItem>
+                <SelectItem value="medium">{{ $t('todos.priority_medium') }}</SelectItem>
+                <SelectItem value="low">{{ $t('todos.priority_low') }}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div class="space-y-2">
-            <Label for="due_date">Deadline</Label>
+            <Label for="due_date">{{ $t('todos.deadline') }}</Label>
             <input
               id="due_date"
               type="date"
@@ -204,8 +204,8 @@
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" @click="showForm = false; editingTodo = undefined">Batal</Button>
-            <Button type="submit" :disabled="!formTitle.trim()">{{ editingTodo ? 'Simpan' : 'Tambah' }}</Button>
+            <Button type="button" variant="outline" @click="showForm = false; editingTodo = undefined">{{ $t('common.cancel') }}</Button>
+            <Button type="submit" :disabled="!formTitle.trim()">{{ editingTodo ? $t('common.save') : $t('common.add') }}</Button>
           </div>
         </form>
       </DialogContent>
@@ -228,6 +228,7 @@ import { HugeiconsIcon } from '@hugeicons/vue'
 import { Sortable } from 'sortablejs-vue3'
 import type { Todo, TodoPriority } from '~/composables/useTodos'
 
+const { t, locale } = useI18n()
 const { todos, loading, fetchTodos, addTodo, updateTodo, deleteTodo } = useTodos()
 
 const showForm = ref(false)
@@ -241,14 +242,14 @@ const activeFilter = ref<'all' | TodoPriority>('all')
 const showCompleted = ref(true)
 
 const filterTabs = computed(() => [
-  { value: 'all' as const, label: 'Semua', count: todos.value.length },
-  { value: 'high' as const, label: 'Tinggi', count: todos.value.filter(t => t.priority === 'high' && !t.is_complete).length },
-  { value: 'medium' as const, label: 'Sedang', count: todos.value.filter(t => t.priority === 'medium' && !t.is_complete).length },
-  { value: 'low' as const, label: 'Rendah', count: todos.value.filter(t => t.priority === 'low' && !t.is_complete).length },
+  { value: 'all' as const, label: t('todos.all'), count: todos.value.length },
+  { value: 'high' as const, label: t('todos.priority_high'), count: todos.value.filter(t => t.priority === 'high' && !t.is_complete).length },
+  { value: 'medium' as const, label: t('todos.priority_medium'), count: todos.value.filter(t => t.priority === 'medium' && !t.is_complete).length },
+  { value: 'low' as const, label: t('todos.priority_low'), count: todos.value.filter(t => t.priority === 'low' && !t.is_complete).length },
 ])
 
 const activeFilterLabel = computed(() => {
-  const map: Record<string, string> = { all: '', high: 'tinggi', medium: 'sedang', low: 'rendah' }
+  const map: Record<string, string> = { all: '', high: t('todos.priority_high'), medium: t('todos.priority_medium'), low: t('todos.priority_low') }
   return map[activeFilter.value]
 })
 
@@ -283,11 +284,11 @@ const isOverdue = (todo: Todo) => {
 
 const formatDate = (d: string) => {
   const date = new Date(`${d}T00:00:00`)
-  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+  return date.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
 }
 
 const priorityLabel = (p: TodoPriority) => {
-  const map: Record<TodoPriority, string> = { high: 'Tinggi', medium: 'Sedang', low: 'Rendah' }
+  const map: Record<TodoPriority, string> = { high: t('todos.priority_high'), medium: t('todos.priority_medium'), low: t('todos.priority_low') }
   return map[p]
 }
 

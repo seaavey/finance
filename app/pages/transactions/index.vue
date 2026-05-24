@@ -2,12 +2,12 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-bold">Transaksi</h2>
-        <p class="text-sm text-muted-foreground">{{ transactions.length }} transaksi</p>
+        <h2 class="text-xl font-bold">{{ $t('transactions.title') }}</h2>
+        <p class="text-sm text-muted-foreground">{{ transactions.length }} {{ $t('transactions.count_suffix') }}</p>
       </div>
       <Button @click="navigateTo('/transactions/new')">
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        Tambah
+        {{ $t('common.add') }}
       </Button>
     </div>
 
@@ -18,7 +18,7 @@
             <HugeiconsIcon :icon="Search01Icon" :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
               v-model="filters.search"
-              placeholder="Cari transaksi..."
+              :placeholder="$t('transactions.search')"
               class="pl-9"
               @input="debouncedFetch"
             />
@@ -32,16 +32,16 @@
           <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Select v-model="filters.type" @update:model-value="applyFilters">
               <SelectTrigger>
-                <SelectValue placeholder="Semua tipe" />
+                <SelectValue :placeholder="$t('transactions.all_types')" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua tipe</SelectItem>
-                <SelectItem value="income">Pemasukan</SelectItem>
-                <SelectItem value="expense">Pengeluaran</SelectItem>
+                <SelectItem value="all">{{ $t('transactions.all_types') }}</SelectItem>
+                <SelectItem value="income">{{ $t('transactions.income') }}</SelectItem>
+                <SelectItem value="expense">{{ $t('transactions.expense') }}</SelectItem>
               </SelectContent>
             </Select>
 
-            <CategoryPicker v-model="filters.category_id" placeholder="Semua kategori" @update:model-value="applyFilters" />
+            <CategoryPicker v-model="filters.category_id" :placeholder="$t('transactions.all_categories')" @update:model-value="applyFilters" />
           </div>
 
           <Popover>
@@ -51,14 +51,14 @@
                 <span v-if="dateRange.start && dateRange.end">
                   {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
                 </span>
-                <span v-else>Pilih rentang tanggal</span>
+                <span v-else>{{ $t('transactions.select_date_range') }}</span>
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-auto p-0" align="start">
               <RangeCalendar
                 v-model="dateRange"
                 :number-of-months="1"
-                locale="id-ID"
+                :locale="locale"
                 @update:model-value="onDateRangeChange"
               />
             </PopoverContent>
@@ -70,19 +70,19 @@
     <div v-if="!loading && transactions.length > 0" class="grid grid-cols-3 gap-1.5 sm:gap-2">
       <Card class="bg-green-50 dark:bg-green-950/30">
         <CardContent class="p-2 text-center sm:p-3">
-          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Pemasukan</p>
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">{{ $t('transactions.income') }}</p>
           <p class="truncate text-xs font-bold text-green-600 sm:text-sm">{{ formatCurrency(monthIncome) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-red-50 dark:bg-red-950/30">
         <CardContent class="p-2 text-center sm:p-3">
-          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Pengeluaran</p>
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">{{ $t('transactions.expense') }}</p>
           <p class="truncate text-xs font-bold text-red-600 sm:text-sm">{{ formatCurrency(monthExpense) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-blue-50 dark:bg-blue-950/30">
         <CardContent class="p-2 text-center sm:p-3">
-          <p class="text-[10px] text-muted-foreground sm:text-[11px]">Selisih</p>
+          <p class="text-[10px] text-muted-foreground sm:text-[11px]">{{ $t('transactions.difference') }}</p>
           <p class="truncate text-xs font-bold sm:text-sm" :class="monthIncome - monthExpense >= 0 ? 'text-blue-600' : 'text-orange-600'">{{ formatCurrency(monthIncome - monthExpense) }}</p>
         </CardContent>
       </Card>
@@ -100,8 +100,8 @@
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon :icon="InboxIcon" :size="24" class="text-muted-foreground" />
       </div>
-      <p class="text-sm text-muted-foreground">Belum ada transaksi</p>
-      <Button size="sm" @click="navigateTo('/transactions/new')">Tambah Sekarang</Button>
+      <p class="text-sm text-muted-foreground">{{ $t('transactions.empty') }}</p>
+      <Button size="sm" @click="navigateTo('/transactions/new')">{{ $t('common.add_now') }}</Button>
     </div>
 
     <div v-else class="space-y-2">
@@ -131,6 +131,7 @@ import { CalendarDate, type DateValue } from '@internationalized/date'
 import type { DateRange } from 'reka-ui'
 import type { TransactionFilters } from '~/composables/useTransactions'
 
+const { t, locale } = useI18n()
 const { transactions, loading, fetchTransactions } = useTransactions()
 const { fetchCategories } = useCategories()
 
@@ -169,7 +170,7 @@ const onDateRangeChange = () => {
 }
 
 const formatDate = (date: DateValue) => {
-  return new Date(date.year, date.month - 1, date.day).toLocaleDateString('id-ID', {
+  return new Date(date.year, date.month - 1, date.day).toLocaleDateString(locale.value, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -209,8 +210,8 @@ const formatGroupDate = (date: string) => {
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
 
-  if (d.toDateString() === today.toDateString()) return 'Hari ini'
-  if (d.toDateString() === yesterday.toDateString()) return 'Kemarin'
-  return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  if (d.toDateString() === today.toDateString()) return t('common.today')
+  if (d.toDateString() === yesterday.toDateString()) return t('common.yesterday')
+  return d.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 </script>

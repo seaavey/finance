@@ -12,7 +12,10 @@
 const toastRef = ref();
 const { register } = useToast();
 
+const { detect: detectGeoLocale } = useGeoLocale()
+
 onMounted(() => {
+  detectGeoLocale()
   register((msg: string, type?: 'success' | 'error' | 'info') => {
     toastRef.value?.addToast(msg, type || 'info');
   });

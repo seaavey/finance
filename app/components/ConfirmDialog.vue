@@ -7,10 +7,10 @@ const props = withDefaults(defineProps<{
   cancelText?: string
   variant?: 'default' | 'destructive'
 }>(), {
-  title: 'Konfirmasi',
-  description: 'Apakah kamu yakin?',
-  confirmText: 'Hapus',
-  cancelText: 'Batal',
+  title: '',
+  description: '',
+  confirmText: '',
+  cancelText: '',
   variant: 'destructive',
 })
 
@@ -24,16 +24,16 @@ const emit = defineEmits<{
   <AlertDialog :open="open" @update:open="emit('update:open', $event)">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ title }}</AlertDialogTitle>
-        <AlertDialogDescription>{{ description }}</AlertDialogDescription>
+        <AlertDialogTitle>{{ title || $t('common.are_you_sure') }}</AlertDialogTitle>
+        <AlertDialogDescription>{{ description || $t('common.cannot_be_undone') }}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel @click="emit('update:open', false)">{{ cancelText }}</AlertDialogCancel>
+        <AlertDialogCancel @click="emit('update:open', false)">{{ cancelText || $t('common.cancel') }}</AlertDialogCancel>
         <AlertDialogAction
           :class="variant === 'destructive' ? 'bg-destructive text-white hover:bg-destructive/90' : ''"
           @click="emit('confirm')"
         >
-          {{ confirmText }}
+          {{ confirmText || $t('common.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

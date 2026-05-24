@@ -2,12 +2,12 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-bold">Kategori</h2>
-        <p class="text-sm text-muted-foreground">{{ categories.length }} kategori</p>
+        <h2 class="text-xl font-bold">{{ $t('categories.title') }}</h2>
+        <p class="text-sm text-muted-foreground">{{ $t('categories.count_suffix', { count: categories.length }) }}</p>
       </div>
       <Button @click="showForm = true">
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        Tambah
+        {{ $t('common.add') }}
       </Button>
     </div>
 
@@ -45,7 +45,7 @@
         <div class="flex size-12 items-center justify-center rounded-full bg-muted">
           <HugeiconsIcon :icon="GridViewIcon" :size="24" class="text-muted-foreground" />
         </div>
-        <p class="text-sm text-muted-foreground">Belum ada kategori {{ activeTab === 'income' ? 'pemasukan' : 'pengeluaran' }}</p>
+        <p class="text-sm text-muted-foreground">{{ activeTab === 'income' ? $t('categories.no_income') : $t('categories.no_expense') }}</p>
       </div>
 
       <Sortable
@@ -66,7 +66,7 @@
                 <div>
                   <p class="text-sm font-medium">{{ cat.name }}</p>
                   <p class="text-[11px] text-muted-foreground">
-                    {{ getCategoryStats(cat.id).count }} transaksi · Rp {{ getCategoryStats(cat.id).total.toLocaleString('id-ID') }}
+                    {{ getCategoryStats(cat.id).count }} {{ $t('categories.transaction_suffix') }} · {{ formatCurrency(getCategoryStats(cat.id).total) }}
                   </p>
                 </div>
               </div>
@@ -99,9 +99,9 @@
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
-      title="Hapus Kategori"
-      :description="`Yakin hapus kategori &quot;${deletingCategory?.name}&quot;? Tindakan ini tidak bisa dibatalkan.`"
-      confirm-text="Hapus"
+      :title="$t('categories.delete_title')"
+      :description="$t('categories.delete_confirm', { name: deletingCategory?.name })"
+      :confirm-text="$t('common.delete')"
       @confirm="onDelete"
     />
   </div>
@@ -113,9 +113,13 @@ import { HugeiconsIcon } from '@hugeicons/vue'
 import { Sortable } from 'sortablejs-vue3'
 import type { Category } from '~/composables/useCategories'
 
+const { t, locale } = useI18n()
 const { categories, loading, incomeCategories, expenseCategories, fetchCategories, seedDefaults, deleteCategory } = useCategories()
 const { transactions, fetchTransactions } = useTransactions()
 const { user } = useAuth()
+const { formatCurrency } = useCurrency()
+
+const formatNumber = (n: number) => n.toLocaleString(locale.value)
 
 const getCategoryStats = (catId: string) => {
   const txs = transactions.value.filter(t => t.category_id === catId)
@@ -132,8 +136,8 @@ const showDeleteDialog = ref(false)
 const deletingCategory = ref<Category | undefined>()
 
 const tabs = computed(() => [
-  { value: 'expense' as const, label: 'Pengeluaran', count: expenseCategories.value.length },
-  { value: 'income' as const, label: 'Pemasukan', count: incomeCategories.value.length },
+  { value: 'expense' as const, label: t('categories.expense'), count: expenseCategories.value.length },
+  { value: 'income' as const, label: t('categories.income'), count: incomeCategories.value.length },
 ])
 
 const filteredCategories = computed(() =>
@@ -144,7 +148,6 @@ const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
   const list = [...filteredCategories.value]
   const [moved] = list.splice(evt.oldIndex, 1)
   list.splice(evt.newIndex, 0, moved)
-  // Update local state
   const otherType = activeTab.value === 'income' ? expenseCategories.value : incomeCategories.value
   categories.value = activeTab.value === 'income' ? [...list, ...otherType] : [...otherType, ...list]
 }

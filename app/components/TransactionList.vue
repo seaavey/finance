@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <div v-if="transactions.length === 0" class="py-8 text-center text-sm text-muted-foreground">
-      Belum ada transaksi
+      {{ $t('transactions.empty') }}
     </div>
     <NuxtLink
       v-for="tx in transactions"

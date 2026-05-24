@@ -31,37 +31,37 @@
           <DropdownMenuSeparator />
           <DropdownMenuItem @click="navigateTo('/')">
             <HugeiconsIcon :icon="Home01Icon" :size="16" class="mr-2" />
-            Dashboard
+            {{ $t('nav.dashboard') }}
           </DropdownMenuItem>
           <DropdownMenuItem @click="navigateTo('/transactions')">
             <HugeiconsIcon :icon="ArrowDataTransferHorizontalIcon" :size="16" class="mr-2" />
-            Transaksi
+            {{ $t('nav.transactions') }}
           </DropdownMenuItem>
           <DropdownMenuItem @click="navigateTo('/settings')">
             <HugeiconsIcon :icon="Settings01Icon" :size="16" class="mr-2" />
-            Setelan
+            {{ $t('nav.settings') }}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuLabel class="text-xs font-normal text-muted-foreground">Tema</DropdownMenuLabel>
+          <DropdownMenuLabel class="text-xs font-normal text-muted-foreground">{{ $t('theme.title') }}</DropdownMenuLabel>
           <DropdownMenuItem @click="setColorMode('light')">
             <HugeiconsIcon :icon="Sun01Icon" :size="16" class="mr-2" />
-            Terang
+            {{ $t('theme.light') }}
             <span v-if="colorMode.preference === 'light'" class="ml-auto text-xs text-primary">✓</span>
           </DropdownMenuItem>
           <DropdownMenuItem @click="setColorMode('dark')">
             <HugeiconsIcon :icon="Moon01Icon" :size="16" class="mr-2" />
-            Gelap
+            {{ $t('theme.dark') }}
             <span v-if="colorMode.preference === 'dark'" class="ml-auto text-xs text-primary">✓</span>
           </DropdownMenuItem>
           <DropdownMenuItem @click="setColorMode('system')">
             <HugeiconsIcon :icon="ComputerCheckIcon" :size="16" class="mr-2" />
-            Sistem
+            {{ $t('theme.system') }}
             <span v-if="colorMode.preference === 'system'" class="ml-auto text-xs text-primary">✓</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem class="text-destructive focus:text-destructive" @click="onSignOut">
             <HugeiconsIcon :icon="Logout01Icon" :size="16" class="mr-2" />
-            Logout
+            {{ $t('settings.logout') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -80,18 +80,19 @@ defineEmits<{
 const { user, signOut } = useAuth()
 const route = useRoute()
 const colorMode = useColorMode()
+const { t } = useI18n()
 
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
-    '/': 'Dashboard',
-    '/transactions': 'Transaksi',
-    '/transactions/new': 'Tambah Transaksi',
-    '/categories': 'Kategori',
-    '/todos': 'Todo',
-    '/recurring': 'Transaksi Rutin',
-    '/settings': 'Setelan',
+    '/': 'page_titles.dashboard',
+    '/transactions': 'page_titles.transactions',
+    '/transactions/new': 'page_titles.add_transaction',
+    '/categories': 'page_titles.categories',
+    '/todos': 'page_titles.todos',
+    '/recurring': 'page_titles.recurring',
+    '/settings': 'page_titles.settings',
   }
-  return titles[route.path] ?? 'Finance'
+  return t(titles[route.path] ?? 'page_titles.default')
 })
 
 const onSignOut = async () => {

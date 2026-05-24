@@ -2,9 +2,9 @@
   <div class="space-y-6">
     <div>
       <ClientOnly>
-        <h2 class="text-xl font-bold">Halo, {{ displayName }} 👋</h2>
+        <h2 class="text-xl font-bold">{{ $t('dashboard.greeting', { name: displayName }) }}</h2>
         <template #fallback>
-          <h2 class="text-xl font-bold">Halo...</h2>
+          <h2 class="text-xl font-bold">{{ $t('dashboard.greeting_fallback') }}</h2>
         </template>
       </ClientOnly>
       <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
@@ -28,7 +28,7 @@
               <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-600" />
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">Pemasukan</p>
+              <p class="text-xs text-muted-foreground">{{ $t('dashboard.income') }}</p>
               <p class="text-lg font-bold text-green-600">{{ formatCurrency(totalIncome) }}</p>
             </div>
           </CardContent>
@@ -40,7 +40,7 @@
               <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-600" />
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">Pengeluaran</p>
+              <p class="text-xs text-muted-foreground">{{ $t('dashboard.expense') }}</p>
               <p class="text-lg font-bold text-red-600">{{ formatCurrency(totalExpense) }}</p>
             </div>
           </CardContent>
@@ -52,7 +52,7 @@
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-blue-600" />
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">Saldo</p>
+              <p class="text-xs text-muted-foreground">{{ $t('dashboard.balance') }}</p>
               <p class="text-lg font-bold" :class="balance >= 0 ? 'text-blue-600' : 'text-orange-600'">{{ formatCurrency(balance) }}</p>
             </div>
           </CardContent>
@@ -62,7 +62,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card class="transition-all duration-200 hover:shadow-md">
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium">Pengeluaran per Kategori</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t('dashboard.expense_by_category') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <ChartsExpenseDonut :categories="expenseByCategory" />
@@ -80,7 +80,7 @@
 
         <Card class="transition-all duration-200 hover:shadow-md">
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium">Tren 6 Bulan Terakhir</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t('dashboard.trend_6_months') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <ChartsMonthlyBar :data="monthlyData" />
@@ -90,12 +90,12 @@
 
       <Card class="transition-all duration-200 hover:shadow-md">
         <CardHeader class="flex flex-row items-center justify-between pb-2">
-          <CardTitle class="text-sm font-medium">Transaksi Terakhir</CardTitle>
-          <NuxtLink to="/transactions" class="text-xs text-primary hover:underline">Lihat semua</NuxtLink>
+          <CardTitle class="text-sm font-medium">{{ $t('dashboard.recent_transactions') }}</CardTitle>
+          <NuxtLink to="/transactions" class="text-xs text-primary hover:underline">{{ $t('common.view_all') }}</NuxtLink>
         </CardHeader>
         <CardContent>
           <div v-if="recentTransactions.length === 0" class="py-6 text-center text-sm text-muted-foreground">
-            Belum ada transaksi
+            {{ $t('dashboard.no_transactions') }}
           </div>
           <div v-else class="space-y-3">
             <div v-for="tx in recentTransactions" :key="tx.id" class="flex items-center justify-between">
@@ -111,7 +111,7 @@
                   />
                 </div>
                 <div>
-                  <p class="text-sm font-medium">{{ tx.description || getCategoryName(tx.category_id) || 'Transaksi' }}</p>
+                  <p class="text-sm font-medium">{{ tx.description || getCategoryName(tx.category_id) || $t('transactions.title') }}</p>
                   <p class="text-[11px] text-muted-foreground">{{ formatDate(tx.date) }}</p>
                 </div>
               </div>
@@ -132,7 +132,7 @@
             <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
               <HugeiconsIcon :icon="Add01Icon" :size="20" class="text-primary" />
             </div>
-            <p class="text-xs font-medium">Tambah Transaksi</p>
+            <p class="text-xs font-medium">{{ $t('dashboard.add_transaction') }}</p>
           </CardContent>
         </Card>
         <Card class="cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" @click="navigateTo('/categories')">
@@ -140,7 +140,7 @@
             <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
               <HugeiconsIcon :icon="GridViewIcon" :size="20" class="text-primary" />
             </div>
-            <p class="text-xs font-medium">Kelola Kategori</p>
+            <p class="text-xs font-medium">{{ $t('dashboard.manage_categories') }}</p>
           </CardContent>
         </Card>
       </div>
@@ -162,6 +162,7 @@ const { user } = useAuth()
 const { transactions, fetchTransactions } = useTransactions()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
+const { t } = useI18n()
 
 const loading = ref(true)
 
@@ -224,7 +225,7 @@ const expenseByCategory = computed(() => {
       if (existing) {
         existing.total += t.amount
       } else {
-        map.set(key, { name: cat?.name || 'Lainnya', color: cat?.color || '#6b7280', total: t.amount })
+        map.set(key, { name: cat?.name || t('dashboard.others'), color: cat?.color || '#6b7280', total: t.amount })
       }
     })
   return [...map.values()].sort((a, b) => b.total - a.total)

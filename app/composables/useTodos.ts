@@ -17,6 +17,7 @@ export interface Todo {
 const PRIORITY_ORDER: Record<TodoPriority, number> = { high: 0, medium: 1, low: 2 }
 
 export const useTodos = () => {
+  const { t } = useI18n()
   const { toast } = useToast()
   const supabase = useSupabase()
   const { user } = useAuth()
@@ -53,9 +54,9 @@ export const useTodos = () => {
 
     if (!error) {
       await fetchTodos()
-      toast.success('Todo berhasil ditambahkan')
+      toast.success(t('toast.todo_added'))
     } else {
-      toast.error('Gagal menambahkan todo')
+      toast.error(t('toast.todo_add_failed'))
     }
     return { error }
   }
@@ -69,7 +70,7 @@ export const useTodos = () => {
     if (!error) {
       await fetchTodos()
     } else {
-      toast.error('Gagal memperbarui todo')
+      toast.error(t('toast.todo_update_failed'))
     }
     return { error }
   }
@@ -82,9 +83,9 @@ export const useTodos = () => {
 
     if (!error) {
       await fetchTodos()
-      toast.success('Todo berhasil dihapus')
+      toast.success(t('toast.todo_deleted'))
     } else {
-      toast.error('Gagal menghapus todo')
+      toast.error(t('toast.todo_delete_failed'))
     }
     return { error }
   }

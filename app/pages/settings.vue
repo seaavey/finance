@@ -22,15 +22,15 @@
 
       <Card>
         <CardContent class="divide-y divide-border p-0">
-          <SettingsItem icon="user" label="Nama Tampilan" :value="profile.display_name || 'Belum diatur'" @click="editName = true" />
-          <SettingsItem icon="currency" label="Mata Uang" :value="selectedCurrencyLabel" @click="editCurrency = true" />
-          <SettingsItem icon="palette" label="Tema" :value="themeLabel" @click="cycleTheme" />
+          <SettingsItem icon="user" :label="$t('settings.display_name')" :value="profile.display_name || $t('settings.not_set')" @click="editName = true" />
+          <SettingsItem icon="currency" :label="$t('settings.currency')" :value="selectedCurrencyLabel" @click="editCurrency = true" />
+          <SettingsItem icon="palette" :label="$t('settings.theme')" :value="themeLabel" @click="cycleTheme" />
         </CardContent>
       </Card>
 
       <Card>
         <CardContent class="divide-y divide-border p-0">
-          <SettingsItem icon="download" label="Export Data" value="CSV" @click="exportData" />
+          <SettingsItem icon="download" :label="$t('settings.export_data')" value="CSV" @click="exportData" />
         </CardContent>
       </Card>
 
@@ -40,26 +40,26 @@
             <div class="flex size-8 items-center justify-center rounded-lg bg-destructive/10">
               <HugeiconsIcon :icon="Logout01Icon" :size="18" class="text-destructive" />
             </div>
-            <span class="text-sm font-medium">Logout</span>
+            <span class="text-sm font-medium">{{ $t('settings.logout') }}</span>
           </button>
         </CardContent>
       </Card>
 
-      <p class="text-center text-[11px] text-muted-foreground">v1.0.0 · Made with ♥ in Indonesia</p>
+      <p class="text-center text-[11px] text-muted-foreground">{{ $t('settings.footer') }}</p>
     </div>
 
     <Dialog v-model:open="editName">
       <DialogContent class="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Nama Tampilan</DialogTitle>
+          <DialogTitle>{{ $t('settings.display_name') }}</DialogTitle>
         </DialogHeader>
         <div class="space-y-3 py-2">
-          <Input v-model="profile.display_name" placeholder="Nama kamu" autofocus />
+          <Input v-model="profile.display_name" :placeholder="$t('settings.name_placeholder')" autofocus />
         </div>
         <div class="flex justify-end gap-2">
-          <Button variant="outline" size="sm" @click="editName = false">Batal</Button>
+          <Button variant="outline" size="sm" @click="editName = false">{{ $t('common.cancel') }}</Button>
           <Button size="sm" :disabled="saving" @click="saveProfile">
-            {{ saving ? 'Menyimpan...' : 'Simpan' }}
+            {{ saving ? $t('common.save_loading') : $t('common.save') }}
           </Button>
         </div>
       </DialogContent>
@@ -68,11 +68,11 @@
     <Dialog v-model:open="editCurrency">
       <DialogContent class="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Mata Uang Default</DialogTitle>
+          <DialogTitle>{{ $t('settings.default_currency') }}</DialogTitle>
         </DialogHeader>
         <div class="max-h-64 overflow-y-auto py-2">
           <div v-for="group in currencyGroups" :key="group.label" class="mb-3 last:mb-0">
-            <p class="sticky top-0 bg-background px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{{ group.label }}</p>
+            <p class="sticky top-0 bg-background px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{{ getGroupLabel(group) }}</p>
             <button
               v-for="c in group.currencies"
               :key="c.value"
@@ -80,7 +80,7 @@
               :class="profile.currency === c.value && 'bg-accent font-medium'"
               @click="selectCurrency(c.value)"
             >
-              <span>{{ c.label }}</span>
+              <span>{{ $t('currencies.' + c.value) }}</span>
               <HugeiconsIcon v-if="profile.currency === c.value" :icon="Tick01Icon" :size="16" class="text-primary" />
             </button>
           </div>
@@ -95,6 +95,7 @@ import { Logout01Icon, Tick01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/vue'
 import { useSupabase } from '~/lib/supabase'
 
+const { t } = useI18n()
 const { toast } = useToast()
 const supabase = useSupabase()
 const { user, signOut } = useAuth()
@@ -117,9 +118,18 @@ const selectedCurrencyLabel = computed(() => {
 })
 
 const themeLabel = computed(() => {
-  const map: Record<string, string> = { light: 'Terang', dark: 'Gelap', system: 'Sistem' }
-  return map[colorMode.preference] ?? 'Sistem'
+  const map: Record<string, string> = { light: 'theme.light', dark: 'theme.dark', system: 'theme.system' }
+  return t(map[colorMode.preference] ?? 'theme.system')
 })
+
+const getGroupLabel = (group: { label: string }) => {
+  const map: Record<string, string> = {
+    'Asia Tenggara': 'settings.group_southeast_asia',
+    'Asia Timur': 'settings.group_east_asia',
+    'Asia Selatan': 'settings.group_south_asia',
+  }
+  return t(map[group.label] ?? group.label)
+}
 
 const cycleTheme = () => {
   const modes = ['system', 'light', 'dark']
@@ -156,9 +166,9 @@ const saveProfile = async () => {
     .eq('id', user.value.id)
 
   if (!error) {
-    toast.success('Profil berhasil disimpan')
+    toast.success(t('settings.saved'))
   } else {
-    toast.error('Gagal menyimpan profil')
+    toast.error(t('settings.save_failed'))
   }
   saving.value = false
   editName.value = false
@@ -175,14 +185,14 @@ const selectCurrency = async (value: string) => {
     .eq('id', user.value.id)
 
   if (!error) {
-    toast.success('Mata uang diperbarui')
+    toast.success(t('settings.currency_updated'))
   } else {
-    toast.error('Gagal memperbarui mata uang')
+    toast.error(t('settings.currency_update_failed'))
   }
 }
 
 const exportData = () => {
-  toast.success('Fitur export segera hadir')
+  toast.success(t('settings.export_coming_soon'))
 }
 
 const onSignOut = async () => {

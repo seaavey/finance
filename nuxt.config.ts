@@ -31,7 +31,11 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: ['shadcn-nuxt', '@nuxtjs/color-mode'],
+  modules: [
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
+    '@nuxtjs/i18n',
+  ],
   colorMode: {
     classSuffix: '',
     preference: 'system',
@@ -39,5 +43,21 @@ export default defineNuxtConfig({
   },
   shadcn: {
     prefix: '',
+  },
+  i18n: {
+    locales: [
+      { code: 'id', language: 'id', name: 'Bahasa Indonesia', file: 'id.json' },
+      { code: 'ms', language: 'ms', name: 'Bahasa Melayu', file: 'ms.json' },
+      { code: 'en', language: 'en', name: 'English', file: 'en.json' },
+    ],
+    defaultLocale: 'id',
+    lazy: true,
+    langDir: 'locales/',
+    strategy: 'prefix_except_default',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_lang',
+      redirectOn: 'root',
+    },
   },
 });

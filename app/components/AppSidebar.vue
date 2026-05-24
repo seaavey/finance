@@ -32,7 +32,7 @@
         @click="$emit('close')"
       >
         <HugeiconsIcon :icon="Settings01Icon" :size="20" />
-        Setelan
+        {{ $t('nav.settings') }}
       </NuxtLink>
     </div>
   </aside>
@@ -59,14 +59,15 @@ defineEmits<{
 }>()
 
 const route = useRoute()
+const { t } = useI18n()
 
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: Home03Icon },
-  { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
-  { to: '/categories', label: 'Kategori', icon: GridViewIcon },
-  { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
-  { to: '/todos', label: 'Todo', icon: CheckmarkCircle02Icon },
-]
+const navItems = computed(() => [
+  { to: '/', label: t('nav.dashboard'), icon: Home03Icon },
+  { to: '/transactions', label: t('nav.transactions'), icon: ArrowLeftRightIcon },
+  { to: '/categories', label: t('nav.categories'), icon: GridViewIcon },
+  { to: '/recurring', label: t('nav.recurring'), icon: RepeatIcon },
+  { to: '/todos', label: t('nav.todo'), icon: CheckmarkCircle02Icon },
+])
 
 const isActive = (path: string) => {
   if (path === '/') { return route.path === '/' }

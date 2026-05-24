@@ -3,7 +3,7 @@
     <div class="flex gap-2">
       <Input
         v-model="filters.search"
-        placeholder="Cari deskripsi..."
+        :placeholder="$t('common.search')"
         class="flex-1"
         @input="debouncedEmit"
       />
@@ -15,35 +15,35 @@
     <div v-if="showMore" class="space-y-3 rounded-lg border border-border p-3">
       <div class="grid grid-cols-2 gap-2">
         <div class="space-y-1">
-          <Label class="text-xs">Dari</Label>
+          <Label class="text-xs">{{ $t('common.from') }}</Label>
           <Input v-model="filters.dateFrom" type="date" @change="emitFilters" />
         </div>
         <div class="space-y-1">
-          <Label class="text-xs">Sampai</Label>
+          <Label class="text-xs">{{ $t('common.to') }}</Label>
           <Input v-model="filters.dateTo" type="date" @change="emitFilters" />
         </div>
       </div>
 
       <div class="space-y-1">
-        <Label class="text-xs">Tipe</Label>
+        <Label class="text-xs">{{ $t('common.type') }}</Label>
         <Select v-model="filters.type" @update:model-value="emitFilters">
           <SelectTrigger>
-            <SelectValue placeholder="Semua" />
+            <SelectValue :placeholder="$t('transactions.all_types')" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Semua</SelectItem>
-            <SelectItem value="income">Pemasukan</SelectItem>
-            <SelectItem value="expense">Pengeluaran</SelectItem>
+            <SelectItem value="all">{{ $t('transactions.all_types') }}</SelectItem>
+            <SelectItem value="income">{{ $t('transactions.income') }}</SelectItem>
+            <SelectItem value="expense">{{ $t('transactions.expense') }}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div class="space-y-1">
         <Label class="text-xs">Kategori</Label>
-        <CategoryPicker v-model="filters.category_id" placeholder="Semua" @update:model-value="emitFilters" />
+        <CategoryPicker v-model="filters.category_id" :placeholder="$t('transactions.all_categories')" @update:model-value="emitFilters" />
       </div>
 
-      <Button variant="ghost" size="sm" class="w-full" @click="resetFilters">Reset Filter</Button>
+      <Button variant="ghost" size="sm" class="w-full" @click="resetFilters">{{ $t('common.reset_filter') }}</Button>
     </div>
   </div>
 </template>

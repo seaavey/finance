@@ -10,7 +10,7 @@
         <div class="size-2.5 rounded-full sm:size-3" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-medium">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</p>
+        <p class="truncate text-sm font-medium">{{ transaction.description || categoryName || $t('common.no_description') }}</p>
         <p class="text-xs text-muted-foreground">{{ formattedDate }}</p>
       </div>
     </div>
@@ -33,6 +33,7 @@ const props = defineProps<{
   transaction: Transaction
 }>()
 
+const { t, locale } = useI18n()
 const { formatCurrency } = useCurrency()
 const { categories } = useCategories()
 
@@ -42,6 +43,6 @@ const categoryColor = computed(() => category.value?.color)
 const formatted = computed(() => formatCurrency(Number(props.transaction.amount), props.transaction.currency))
 const formattedDate = computed(() => {
   const d = new Date(props.transaction.date)
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short', year: 'numeric' })
 })
 </script>

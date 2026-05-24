@@ -2,25 +2,25 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-bold">Transaksi Rutin</h2>
-        <p class="text-sm text-muted-foreground">{{ recurring.length }} jadwal aktif</p>
+        <h2 class="text-xl font-bold">{{ $t('recurring.title') }}</h2>
+        <p class="text-sm text-muted-foreground">{{ $t('recurring.active_schedules', { count: recurring.length }) }}</p>
       </div>
       <Button @click="showForm = true">
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        Tambah
+        {{ $t('common.add') }}
       </Button>
     </div>
 
     <div v-if="!loading && recurring.length > 0" class="grid grid-cols-2 gap-3">
       <Card class="bg-red-50 dark:bg-red-950/30">
         <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pengeluaran Rutin/Bulan</p>
+          <p class="text-[11px] text-muted-foreground">{{ $t('recurring.monthly_expense') }}</p>
           <p class="text-sm font-bold text-red-600">{{ formatCurrency(monthlyExpense) }}</p>
         </CardContent>
       </Card>
       <Card class="bg-green-50 dark:bg-green-950/30">
         <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pemasukan Rutin/Bulan</p>
+          <p class="text-[11px] text-muted-foreground">{{ $t('recurring.monthly_income') }}</p>
           <p class="text-sm font-bold text-green-600">{{ formatCurrency(monthlyIncome) }}</p>
         </CardContent>
       </Card>
@@ -36,8 +36,8 @@
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon :icon="RepeatIcon" :size="24" class="text-muted-foreground" />
       </div>
-      <p class="text-sm text-muted-foreground">Belum ada transaksi rutin</p>
-      <Button size="sm" @click="showForm = true">Tambah Sekarang</Button>
+      <p class="text-sm text-muted-foreground">{{ $t('recurring.empty') }}</p>
+      <Button size="sm" @click="showForm = true">{{ $t('common.add_now') }}</Button>
     </div>
 
     <div v-else class="space-y-2">
@@ -60,7 +60,7 @@
               />
             </div>
             <div class="min-w-0">
-              <p class="truncate text-sm font-medium">{{ item.description || categoryName(item.category_id) || 'Tanpa deskripsi' }}</p>
+              <p class="truncate text-sm font-medium">{{ item.description || categoryName(item.category_id) || $t('common.no_description') }}</p>
               <div class="flex items-center gap-2 text-xs text-muted-foreground">
                 <span class="inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5">
                   <HugeiconsIcon :icon="RepeatIcon" :size="12" />
@@ -108,9 +108,9 @@
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
-      title="Hapus Transaksi Rutin"
-      :description="`Yakin hapus &quot;${deletingItem?.name || 'transaksi rutin'}&quot;? Tindakan ini tidak bisa dibatalkan.`"
-      confirm-text="Hapus"
+      :title="$t('recurring.delete_title')"
+      :description="$t('recurring.delete_confirm', { name: deletingItem?.name || $t('recurring.title') })"
+      :confirm-text="$t('common.delete')"
       @confirm="confirmDelete"
     />
   </div>
@@ -128,6 +128,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/vue'
 import type { RecurringTransaction } from '~/composables/useRecurring'
 
+const { t, locale } = useI18n()
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
@@ -164,7 +165,7 @@ const categoryName = (id: string | null) => {
 }
 
 const frequencyLabel = (f: string) => {
-  const map: Record<string, string> = { daily: 'Harian', weekly: 'Mingguan', monthly: 'Bulanan', yearly: 'Tahunan' }
+  const map: Record<string, string> = { daily: t('recurring.frequency_daily'), weekly: t('recurring.frequency_weekly'), monthly: t('recurring.frequency_monthly'), yearly: t('recurring.frequency_yearly') }
   return map[f] ?? f
 }
 
@@ -173,10 +174,10 @@ const formatNextDate = (date: string) => {
   const today = new Date()
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-  if (diff === 0) return 'Hari ini'
-  if (diff === 1) return 'Besok'
-  if (diff < 7) return `${diff} hari lagi`
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+  if (diff === 0) return t('common.today')
+  if (diff === 1) return t('common.tomorrow')
+  if (diff < 7) return t('common.days_left', { days: diff })
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
 }
 
 const showDeleteDialog = ref(false)

@@ -1,6 +1,7 @@
 import { useSupabase } from '~/lib/supabase'
 
 export const useCurrency = () => {
+  const { t } = useI18n()
   const supabase = useSupabase()
   const { user } = useAuth()
 
@@ -30,8 +31,9 @@ export const useCurrency = () => {
   }
 
   const getLocale = (currency: string) => {
+    const { locale } = useI18n()
     const localeMap: Record<string, string> = {
-      IDR: 'id-ID',
+      IDR: locale.value,
       MYR: 'ms-MY',
       SGD: 'en-SG',
       THB: 'th-TH',
@@ -57,38 +59,38 @@ export const useCurrency = () => {
 
   const currencyGroups = [
     {
-      label: 'Asia Tenggara',
+      label: t('currencies.group_southeast_asia'),
       currencies: [
-        { value: 'IDR', label: 'IDR - Rupiah Indonesia' },
-        { value: 'MYR', label: 'MYR - Ringgit Malaysia' },
-        { value: 'SGD', label: 'SGD - Dollar Singapura' },
-        { value: 'THB', label: 'THB - Baht Thailand' },
-        { value: 'PHP', label: 'PHP - Peso Filipina' },
-        { value: 'VND', label: 'VND - Dong Vietnam' },
-        { value: 'MMK', label: 'MMK - Kyat Myanmar' },
-        { value: 'KHR', label: 'KHR - Riel Kamboja' },
-        { value: 'LAK', label: 'LAK - Kip Laos' },
-        { value: 'BND', label: 'BND - Dollar Brunei' },
+        { value: 'IDR', label: t('currencies.IDR') },
+        { value: 'MYR', label: t('currencies.MYR') },
+        { value: 'SGD', label: t('currencies.SGD') },
+        { value: 'THB', label: t('currencies.THB') },
+        { value: 'PHP', label: t('currencies.PHP') },
+        { value: 'VND', label: t('currencies.VND') },
+        { value: 'MMK', label: t('currencies.MMK') },
+        { value: 'KHR', label: t('currencies.KHR') },
+        { value: 'LAK', label: t('currencies.LAK') },
+        { value: 'BND', label: t('currencies.BND') },
       ],
     },
     {
-      label: 'Asia Timur',
+      label: t('currencies.group_east_asia'),
       currencies: [
-        { value: 'JPY', label: 'JPY - Yen Jepang' },
-        { value: 'KRW', label: 'KRW - Won Korea' },
-        { value: 'CNY', label: 'CNY - Yuan Tiongkok' },
-        { value: 'TWD', label: 'TWD - Dollar Taiwan' },
-        { value: 'HKD', label: 'HKD - Dollar Hong Kong' },
+        { value: 'JPY', label: t('currencies.JPY') },
+        { value: 'KRW', label: t('currencies.KRW') },
+        { value: 'CNY', label: t('currencies.CNY') },
+        { value: 'TWD', label: t('currencies.TWD') },
+        { value: 'HKD', label: t('currencies.HKD') },
       ],
     },
     {
-      label: 'Asia Selatan',
+      label: t('currencies.group_south_asia'),
       currencies: [
-        { value: 'INR', label: 'INR - Rupee India' },
-        { value: 'BDT', label: 'BDT - Taka Bangladesh' },
-        { value: 'PKR', label: 'PKR - Rupee Pakistan' },
-        { value: 'LKR', label: 'LKR - Rupee Sri Lanka' },
-        { value: 'NPR', label: 'NPR - Rupee Nepal' },
+        { value: 'INR', label: t('currencies.INR') },
+        { value: 'BDT', label: t('currencies.BDT') },
+        { value: 'PKR', label: t('currencies.PKR') },
+        { value: 'LKR', label: t('currencies.LKR') },
+        { value: 'NPR', label: t('currencies.NPR') },
       ],
     },
   ]

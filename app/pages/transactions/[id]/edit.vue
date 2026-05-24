@@ -12,21 +12,21 @@
       <div class="pt-2">
         <Button variant="destructive" class="w-full" @click="showDeleteDialog = true">
           <HugeiconsIcon :icon="Delete01Icon" :size="18" />
-          Hapus Transaksi
+          {{ $t('transactions.delete_title') }}
         </Button>
       </div>
     </template>
 
     <div v-else class="flex flex-col items-center gap-3 py-12">
-      <p class="text-sm text-muted-foreground">Transaksi tidak ditemukan</p>
-      <Button variant="outline" @click="navigateTo('/transactions')">Kembali</Button>
+      <p class="text-sm text-muted-foreground">{{ $t('transactions.not_found') }}</p>
+      <Button variant="outline" @click="navigateTo('/transactions')">{{ $t('common.back') }}</Button>
     </div>
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
-      title="Hapus Transaksi"
-      description="Yakin hapus transaksi ini? Tindakan ini tidak bisa dibatalkan."
-      confirm-text="Hapus"
+      :title="$t('transactions.delete_title')"
+      :description="$t('transactions.delete_confirm')"
+      :confirm-text="$t('common.delete')"
       @confirm="onDelete"
     />
   </div>
@@ -37,6 +37,7 @@ import { Delete01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/vue'
 import type { Transaction } from '~/composables/useTransactions'
 
+const { t } = useI18n()
 const route = useRoute()
 const { getTransaction, deleteTransaction } = useTransactions()
 const { fetchCategories } = useCategories()
