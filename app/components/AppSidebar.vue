@@ -14,7 +14,7 @@
       <p class="text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/40">Menu</p>
     </div>
 
-    <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 min-h-0">
+    <nav class="space-y-0.5 overflow-y-auto px-3 min-h-0">
       <NuxtLink
         v-for="item in navItems"
         :key="item.to"
