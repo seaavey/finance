@@ -1,85 +1,75 @@
 <template>
-  <header class="flex h-14 items-center justify-between border-b border-border bg-background px-4">
+  <header
+    class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm"
+  >
     <div class="flex items-center gap-3">
       <button
         class="rounded-lg p-1.5 text-muted-foreground hover:bg-accent md:hidden"
         @click="$emit('toggleSidebar')"
       >
-        <HugeiconsIcon :icon="Menu02Icon" :size="22" />
+        <HugeiconsIcon :icon="Menu02Icon" :size="20" />
       </button>
       <h1 class="text-sm font-semibold text-foreground">{{ pageTitle }}</h1>
     </div>
 
-    <ClientOnly>
-      <DropdownMenu v-if="user">
-        <DropdownMenuTrigger as-child>
-          <button class="flex items-center gap-2 rounded-lg p-1 hover:bg-accent">
-            <Avatar class="size-8">
-              <AvatarImage v-if="user.user_metadata?.avatar_url" :src="user.user_metadata.avatar_url" :alt="user.user_metadata?.full_name" />
-              <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
-            </Avatar>
-            <span class="hidden text-sm font-medium md:block">{{ user.user_metadata?.full_name }}</span>
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-56">
-          <DropdownMenuLabel class="font-normal">
-            <div class="flex flex-col space-y-1">
-              <p class="text-sm font-medium">{{ user.user_metadata?.full_name }}</p>
-              <p class="text-xs text-muted-foreground">{{ user.email }}</p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem @click="navigateTo('/')">
-            <HugeiconsIcon :icon="Home01Icon" :size="16" class="mr-2" />
-            Dashboard
-          </DropdownMenuItem>
-          <DropdownMenuItem @click="navigateTo('/transactions')">
-            <HugeiconsIcon :icon="ArrowDataTransferHorizontalIcon" :size="16" class="mr-2" />
-            Transaksi
-          </DropdownMenuItem>
-          <DropdownMenuItem @click="navigateTo('/settings')">
-            <HugeiconsIcon :icon="Settings01Icon" :size="16" class="mr-2" />
-            Setelan
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel class="text-xs font-normal text-muted-foreground">Tema</DropdownMenuLabel>
-          <DropdownMenuItem @click="setColorMode('light')">
-            <HugeiconsIcon :icon="Sun01Icon" :size="16" class="mr-2" />
-            Terang
-            <span v-if="colorMode.preference === 'light'" class="ml-auto text-xs text-primary">✓</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem @click="setColorMode('dark')">
-            <HugeiconsIcon :icon="Moon01Icon" :size="16" class="mr-2" />
-            Gelap
-            <span v-if="colorMode.preference === 'dark'" class="ml-auto text-xs text-primary">✓</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem @click="setColorMode('system')">
-            <HugeiconsIcon :icon="ComputerCheckIcon" :size="16" class="mr-2" />
-            Sistem
-            <span v-if="colorMode.preference === 'system'" class="ml-auto text-xs text-primary">✓</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem class="text-destructive focus:text-destructive" @click="onSignOut">
-            <HugeiconsIcon :icon="Logout01Icon" :size="16" class="mr-2" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </ClientOnly>
+    <div class="flex items-center gap-2">
+      <button
+        class="flex w-44 items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent"
+      >
+        <HugeiconsIcon :icon="Search01Icon" :size="16" />
+        <span>Cari...</span>
+        <kbd class="ml-auto rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘K</kbd>
+      </button>
+
+      <button class="relative rounded-lg border border-border bg-card p-2 text-muted-foreground transition-colors hover:bg-accent">
+        <HugeiconsIcon :icon="Notification03Icon" :size="18" />
+        <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-destructive" />
+      </button>
+
+      <ClientOnly>
+        <button
+          class="rounded-lg border border-border bg-card p-2 text-muted-foreground transition-colors hover:bg-accent"
+          @click="cycleColorMode"
+        >
+          <HugeiconsIcon v-if="colorMode.preference === 'dark'" :icon="Sun01Icon" :size="18" />
+          <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
+        </button>
+      </ClientOnly>
+
+      <button
+        class="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
+        @click="navigateTo('/transactions/new')"
+      >
+        <HugeiconsIcon :icon="Add01Icon" :size="16" />
+        <span class="hidden sm:inline">Tambah</span>
+      </button>
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { Menu02Icon, Home01Icon, ArrowDataTransferHorizontalIcon, Settings01Icon, Logout01Icon, Sun01Icon, Moon01Icon, ComputerCheckIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
+import {
+  Menu02Icon,
+  Search01Icon,
+  Notification03Icon,
+  Sun01Icon,
+  Moon01Icon,
+  Add01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
 
 defineEmits<{
-  toggleSidebar: []
-}>()
+  toggleSidebar: [];
+}>();
 
-const { user, signOut } = useAuth()
-const route = useRoute()
-const colorMode = useColorMode()
+const route = useRoute();
+const colorMode = useColorMode();
+
+const cycleColorMode = () => {
+  const modes = ['dark', 'light', 'system'];
+  const current = modes.indexOf(colorMode.preference);
+  colorMode.preference = modes[(current + 1) % modes.length];
+};
 
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
@@ -90,15 +80,7 @@ const pageTitle = computed(() => {
     '/todos': 'Todo',
     '/recurring': 'Transaksi Rutin',
     '/settings': 'Setelan',
-  }
-  return titles[route.path] ?? 'Finance'
-})
-
-const onSignOut = async () => {
-  await signOut()
-}
-
-const setColorMode = (mode: string) => {
-  colorMode.preference = mode
-}
+  };
+  return titles[route.path] ?? 'Finance';
+});
 </script>
