@@ -51,10 +51,10 @@
             <span v-else>Pilih rentang tanggal</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-auto p-0" align="start">
+        <PopoverContent class="w-[calc(100vw-32px)] p-0 sm:w-auto" align="start">
           <RangeCalendar
             v-model="dateRange"
-            :number-of-months="1"
+            :number-of-months="1" 
             locale="id-ID"
             @update:model-value="onDateRangeChange"
           />
@@ -62,18 +62,18 @@
       </Popover>
     </div>
 
-    <div v-if="!loading" class="grid grid-cols-3 gap-4">
-      <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
+    <div v-if="!loading" class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+      <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-emerald-400/70">Pemasukan</p>
-        <h3 class="mt-2 text-2xl font-bold text-emerald-400">{{ formatCurrency(monthIncome) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-emerald-400 md:text-2xl">{{ formatCurrency(monthIncome) }}</h3>
       </div>
-      <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-5">
+      <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-red-400/70">Pengeluaran</p>
-        <h3 class="mt-2 text-2xl font-bold text-red-400">{{ formatCurrency(monthExpense) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-red-400 md:text-2xl">{{ formatCurrency(monthExpense) }}</h3>
       </div>
-      <div class="rounded-3xl border border-blue-500/10 bg-blue-500/[0.07] p-5">
+      <div class="rounded-3xl border border-blue-500/10 bg-blue-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-blue-400/70">Selisih</p>
-        <h3 class="mt-2 text-2xl font-bold text-blue-400">{{ formatCurrency(monthIncome - monthExpense) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-blue-400 md:text-2xl">{{ formatCurrency(monthIncome - monthExpense) }}</h3>
       </div>
     </div>
 
@@ -84,7 +84,7 @@
       <Skeleton class="h-20 rounded-3xl" />
     </div>
 
-    <div v-else-if="transactions.length === 0" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-20">
+    <div v-else-if="transactions.length === 0" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20">
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon :icon="InboxIcon" :size="24" class="text-muted-foreground" />
       </div>
@@ -112,92 +112,118 @@
 </template>
 
 <script setup lang="ts">
-import { Search01Icon, FilterIcon, InboxIcon, Calendar01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import { CalendarDate, type DateValue } from '@internationalized/date'
-import type { DateRange } from 'reka-ui'
-import type { TransactionFilters } from '~/composables/useTransactions'
+import { Search01Icon, FilterIcon, InboxIcon, Calendar01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import type { DateRange } from 'reka-ui';
+import type { TransactionFilters } from '~/composables/useTransactions';
 
-const { transactions, loading, fetchTransactions } = useTransactions()
-const { fetchCategories } = useCategories()
+interface CalendarDateLike {
+  year: number;
+  month: number;
+  day: number;
+}
 
-const { formatCurrency } = useCurrency()
+const { transactions, loading, fetchTransactions } = useTransactions();
+const { fetchCategories } = useCategories();
+
+const { formatCurrency } = useCurrency();
 
 const monthIncome = computed(() =>
-  transactions.value.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
-)
+  transactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+);
 const monthExpense = computed(() =>
-  transactions.value.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
-)
+  transactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+);
 
-const showFilters = ref(false)
+const showFilters = ref(false);
 const filters = reactive({
   search: '',
   type: '',
   category_id: '',
-})
+});
 
-const dateRange = ref<DateRange>({ start: undefined, end: undefined })
+const dateRange = ref<DateRange>({ start: undefined, end: undefined });
 
-let debounceTimer: ReturnType<typeof setTimeout>
+let debounceTimer: ReturnType<typeof setTimeout>;
 
 onMounted(async () => {
-  await fetchCategories()
-  await fetchTransactions()
-})
+  await fetchCategories();
+  await fetchTransactions();
+});
 
 const debouncedFetch = () => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => applyFilters(), 300)
-}
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => applyFilters(), 300);
+};
 
 const onDateRangeChange = () => {
-  applyFilters()
-}
+  applyFilters();
+};
 
-const formatDate = (date: DateValue) => {
+const formatDate = (date: CalendarDateLike) => {
   return new Date(date.year, date.month - 1, date.day).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-  })
-}
+  });
+};
 
-const dateValueToString = (date: DateValue) => {
-  const y = date.year
-  const m = String(date.month).padStart(2, '0')
-  const d = String(date.day).padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
+const dateValueToString = (date: CalendarDateLike) => {
+  const y = date.year;
+  const m = String(date.month).padStart(2, '0');
+  const d = String(date.day).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
 
 const applyFilters = () => {
-  const f: TransactionFilters = {}
-  if (filters.search) { f.search = filters.search }
-  if (filters.type && filters.type !== 'all') { f.type = filters.type as 'income' | 'expense' }
-  if (filters.category_id) { f.category_id = filters.category_id }
-  if (dateRange.value.start) { f.dateFrom = dateValueToString(dateRange.value.start) }
-  if (dateRange.value.end) { f.dateTo = dateValueToString(dateRange.value.end) }
-  fetchTransactions(f)
-}
+  const f: TransactionFilters = {};
+  if (filters.search) {
+    f.search = filters.search;
+  }
+  if (filters.type && filters.type !== 'all') {
+    f.type = filters.type as 'income' | 'expense';
+  }
+  if (filters.category_id) {
+    f.category_id = filters.category_id;
+  }
+  if (dateRange.value.start) {
+    f.dateFrom = dateValueToString(dateRange.value.start);
+  }
+  if (dateRange.value.end) {
+    f.dateTo = dateValueToString(dateRange.value.end);
+  }
+  fetchTransactions(f);
+};
 
 const groupedTransactions = computed(() => {
-  const groups: Record<string, typeof transactions.value> = {}
+  const groups: Record<string, typeof transactions.value> = {};
   for (const tx of transactions.value) {
-    const date = tx.date
-    if (!groups[date]) { groups[date] = [] }
-    groups[date].push(tx)
+    const date = tx.date;
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(tx);
   }
-  return groups
-})
+  return groups;
+});
 
 const formatGroupDate = (date: string) => {
-  const d = new Date(date)
-  const today = new Date()
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
+  const d = new Date(date);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
 
-  if (d.toDateString() === today.toDateString()) { return 'Hari ini' }
-  if (d.toDateString() === yesterday.toDateString()) { return 'Kemarin' }
-  return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-}
+  if (d.toDateString() === today.toDateString()) {
+    return 'Hari ini';
+  }
+  if (d.toDateString() === yesterday.toDateString()) {
+    return 'Kemarin';
+  }
+  return d.toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+};
 </script>
