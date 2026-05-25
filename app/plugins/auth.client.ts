@@ -14,7 +14,7 @@ export default defineNuxtPlugin(async () => {
     user.value = session?.user ?? null;
     if (session) {
       const path = window.location.pathname;
-      if (path === '/' || path === '/login') {
+      if (path === '/login') {
         navigateTo('/dashboard');
       }
     }
