@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { Doughnut } from 'vue-chartjs'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, type TooltipItem } from 'chart.js';
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const props = defineProps<{
-  categories: { name: string; color: string; total: number }[]
-}>()
+  categories: { name: string; color: string; total: number }[];
+}>();
 
 const chartData = computed(() => ({
-  labels: props.categories.map(c => c.name),
-  datasets: [{
-    data: props.categories.map(c => c.total),
-    backgroundColor: props.categories.map(c => c.color),
-    borderWidth: 0,
-    hoverOffset: 4,
-  }],
-}))
+  labels: props.categories.map((c) => c.name),
+  datasets: [
+    {
+      data: props.categories.map((c) => c.total),
+      backgroundColor: props.categories.map((c) => c.color),
+      borderWidth: 0,
+      hoverOffset: 4,
+    },
+  ],
+}));
 
 const chartOptions = {
   responsive: true,
@@ -26,18 +27,18 @@ const chartOptions = {
     legend: { display: false },
     tooltip: {
       callbacks: {
-        label: (ctx: { raw: number }) => {
-          const val = ctx.raw
-          return ` Rp ${val.toLocaleString('id-ID')}`
+        label: (ctx: TooltipItem<'doughnut'>) => {
+          const val = ctx.raw as number;
+          return ` Rp ${val.toLocaleString('id-ID')}`;
         },
       },
     },
   },
-}
+};
 </script>
 
 <template>
-  <div class="relative size-full min-h-[180px]">
+  <div class="relative size-full min-h-45">
     <Doughnut v-if="categories.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
       <p class="text-xs text-muted-foreground">Belum ada data</p>

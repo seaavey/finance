@@ -5,7 +5,7 @@
   >
     <div class="flex h-14 items-center gap-2 border-b border-border px-4">
       <div class="flex size-8 items-center justify-center rounded-lg bg-primary">
-        <HugeiconsIcon :icon="Money01Icon" :size="18" class="text-primary-foreground" />
+        <HugeiconsIcon :icon="MoneyAdd01Icon" :size="18" class="text-primary-foreground" />
       </div>
       <span class="text-lg font-bold">Finance</span>
     </div>
@@ -39,35 +39,37 @@
 </template>
 
 <script setup lang="ts">
+import { HugeiconsIcon } from '@hugeicons/vue';
 import {
   Home03Icon,
   ArrowLeftRightIcon,
   GridViewIcon,
   RepeatIcon,
   Settings01Icon,
-  Money01Icon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
+  MoneyAdd01Icon,
+} from '@hugeicons/core-free-icons';
 
 defineProps<{
-  open: boolean
-}>()
+  open: boolean;
+}>();
 
 defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
-const route = useRoute()
+const route = useRoute();
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: Home03Icon },
   { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
   { to: '/categories', label: 'Kategori', icon: GridViewIcon },
   { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
-]
+];
 
 const isActive = (path: string) => {
-  if (path === '/') return route.path === '/'
-  return route.path.startsWith(path)
-}
+  if (path === '/') {
+    return route.path === '/';
+  }
+  return route.path.startsWith(path);
+};
 </script>

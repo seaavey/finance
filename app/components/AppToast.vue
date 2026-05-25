@@ -1,44 +1,48 @@
 <script setup lang="ts">
-import { CheckmarkCircle02Icon, CancelCircleIcon, InformationCircleIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
+import {
+  CheckmarkCircle02Icon,
+  CancelCircleIcon,
+  InformationCircleIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
 
-type ToastType = 'success' | 'error' | 'info'
+type ToastType = 'success' | 'error' | 'info';
 
 interface Toast {
-  id: number
-  message: string
-  type: ToastType
+  id: number;
+  message: string;
+  type: ToastType;
 }
 
-const toasts = ref<Toast[]>([])
-let counter = 0
+const toasts = ref<Toast[]>([]);
+let counter = 0;
 
 const addToast = (message: string, type: ToastType = 'info') => {
-  const id = ++counter
-  toasts.value.push({ id, message, type })
+  const id = ++counter;
+  toasts.value.push({ id, message, type });
   setTimeout(() => {
-    toasts.value = toasts.value.filter(t => t.id !== id)
-  }, 3000)
-}
+    toasts.value = toasts.value.filter((t) => t.id !== id);
+  }, 3000);
+};
 
 const iconMap = {
   success: CheckmarkCircle02Icon,
   error: CancelCircleIcon,
   info: InformationCircleIcon,
-}
+};
 
 const colorMap = {
   success: 'bg-green-50 border-green-200 text-green-800',
   error: 'bg-red-50 border-red-200 text-red-800',
   info: 'bg-blue-50 border-blue-200 text-blue-800',
-}
+};
 
-defineExpose({ addToast })
+defineExpose({ addToast });
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="fixed top-4 right-4 z-[9999] flex flex-col gap-2">
+    <div class="fixed top-4 right-4 z-9999 flex flex-col gap-2">
       <TransitionGroup
         enter-active-class="transition-all duration-300 ease-out"
         leave-active-class="transition-all duration-200 ease-in"
