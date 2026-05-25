@@ -1,20 +1,20 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (import.meta.server) return
+  if (import.meta.server) return;
 
-  if (to.hash?.includes('access_token')) return
+  if (to.hash?.includes('access_token') || to.query?.code) return;
 
-  const { getSession } = useAuth()
-  const session = await getSession()
+  const { getSession } = useAuth();
+  const session = await getSession();
 
   if (!session) {
-    if (to.path === '/login' || to.path === '/') return
-    return navigateTo('/login')
+    if (to.path === '/login' || to.path === '/') return;
+    return navigateTo('/login');
   }
 
   if (to.path === '/login' || to.path === '/') {
-    return navigateTo('/dashboard')
+    return navigateTo('/dashboard');
   }
 
-  const { loadCurrency } = useCurrency()
-  await loadCurrency()
-})
+  const { loadCurrency } = useCurrency();
+  await loadCurrency();
+});
