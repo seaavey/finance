@@ -10,59 +10,51 @@
       <span class="text-base font-bold text-sidebar-foreground">Finance</span>
     </div>
 
-    <div class="px-4 pb-1 pt-5">
-      <p class="text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/40">Menu</p>
-    </div>
-
-    <nav class="space-y-0.5 px-3 pb-3">
+    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
       <NuxtLink
-        v-for="item in navItems"
+        v-for="item in mainNavItems"
         :key="item.to"
         :to="item.to"
-        class="relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/60 transition-all duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-        :class="{ 'bg-sidebar-accent text-sidebar-foreground border-l-2 border-sidebar-primary': isActive(item.to) }"
+        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/60 transition-all duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive(item.to) }"
         @click="$emit('close')"
       >
         <HugeiconsIcon :icon="item.icon" :size="18" />
         {{ item.label }}
       </NuxtLink>
+
+      <div class="mt-auto border-t border-sidebar-border pt-3">
+        <NuxtLink
+          v-for="item in bottomNavItems"
+          :key="item.to"
+          :to="item.to"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/60 transition-all duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive(item.to) }"
+          @click="$emit('close')"
+        >
+          <HugeiconsIcon :icon="item.icon" :size="18" />
+          {{ item.label }}
+        </NuxtLink>
+      </div>
     </nav>
 
-    <div v-if="user" class="mt-auto shrink-0 border-t border-sidebar-border px-3 py-2 relative">
-      <button
-        class="flex h-12 w-full items-center gap-3 rounded-2xl bg-sidebar-accent/50 px-3 transition-colors hover:bg-sidebar-accent"
-        @click="profileOpen = !profileOpen"
-      >
-        <Avatar class="size-7">
-          <AvatarImage v-if="user.user_metadata?.avatar_url" :src="user.user_metadata.avatar_url" :alt="user.user_metadata?.full_name" />
-          <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
-        </Avatar>
-        <span class="flex-1 truncate text-left text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
-        <ChevronUpIcon
-          :size="14"
-          class="text-sidebar-foreground/40 transition-transform duration-200"
-          :class="profileOpen ? 'rotate-180' : ''"
+    <div v-if="user" class="flex shrink-0 items-center gap-2 border-t border-sidebar-border px-3 py-3">
+      <Avatar class="size-8 shrink-0">
+        <AvatarImage
+          v-if="user.user_metadata?.avatar_url"
+          :src="user.user_metadata.avatar_url"
+          :alt="user.user_metadata?.full_name"
         />
-      </button>
-
-      <Transition
-        enter-active-class="transition-all duration-200 ease-out"
-        enter-from-class="opacity-0 -translate-x-2"
-        enter-to-class="opacity-100 translate-x-0"
-        leave-active-class="transition-all duration-150 ease-in"
-        leave-from-class="opacity-100 translate-x-0"
-        leave-to-class="opacity-0 -translate-x-2"
+        <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
+      </Avatar>
+      <span class="flex-1 truncate text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
+      <button
+        class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        @click="onSignOut"
+        title="Logout"
       >
-        <div v-if="profileOpen" class="absolute left-full top-0 ml-2 rounded-xl border border-border bg-popover p-1 shadow-lg">
-          <button
-            class="flex h-11 w-full items-center gap-2 rounded-xl px-3 text-sm text-destructive/70 transition-colors hover:bg-accent hover:text-destructive"
-            @click="onSignOut"
-          >
-            <HugeiconsIcon :icon="Logout01Icon" :size="16" />
-            Logout
-          </button>
-        </div>
-      </Transition>
+        <HugeiconsIcon :icon="Logout01Icon" :size="16" />
+      </button>
     </div>
   </aside>
 </template>
@@ -77,7 +69,6 @@ import {
   Settings01Icon,
   MoneyAdd01Icon,
   Logout01Icon,
-  ArrowUp01Icon as ChevronUpIcon,
 } from '@hugeicons/core-free-icons';
 
 defineProps<{
@@ -91,23 +82,23 @@ defineEmits<{
 const { user, signOut } = useAuth();
 const route = useRoute();
 
-const profileOpen = ref(false);
-
-const onSignOut = async () => {
-  await signOut();
-};
-
-const navItems = [
+const mainNavItems = [
   { to: '/', label: 'Dashboard', icon: Home03Icon },
   { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
   { to: '/categories', label: 'Kategori', icon: GridViewIcon },
   { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
 ];
 
+const bottomNavItems = [{ to: '/settings', label: 'Setelan', icon: Settings01Icon }];
+
 const isActive = (path: string) => {
   if (path === '/') {
     return route.path === '/';
   }
   return route.path.startsWith(path);
+};
+
+const onSignOut = async () => {
+  await signOut();
 };
 </script>
