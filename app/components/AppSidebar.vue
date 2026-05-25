@@ -1,20 +1,20 @@
 <template>
   <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 md:relative md:translate-x-0"
+    class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 md:sticky md:top-0 md:self-start md:max-h-dvh md:translate-x-0 md:overflow-y-auto"
     :class="open ? 'translate-x-0' : '-translate-x-full'"
   >
-    <div class="flex h-14 shrink-0 items-center gap-3 border-b border-sidebar-border px-4">
+    <div class="flex shrink-0 items-center gap-3 border-b border-sidebar-border px-4 h-14">
       <div class="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary">
         <HugeiconsIcon :icon="MoneyAdd01Icon" :size="18" class="text-sidebar-primary-foreground" />
       </div>
       <span class="text-base font-bold text-sidebar-foreground">Finance</span>
     </div>
 
-    <div class="px-4 pb-1 pt-4">
+    <div class="px-4 pb-1 pt-5">
       <p class="text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/40">Menu</p>
     </div>
 
-    <nav class="space-y-0.5 overflow-y-auto px-3 min-h-0">
+    <nav class="space-y-0.5 px-3 pb-3">
       <NuxtLink
         v-for="item in navItems"
         :key="item.to"
@@ -28,7 +28,7 @@
       </NuxtLink>
     </nav>
 
-    <div v-if="user" class="shrink-0 border-t border-sidebar-border p-3">
+    <div v-if="user" class="mt-auto shrink-0 border-t border-sidebar-border px-3 py-3">
       <button
         class="flex w-full items-center gap-3 rounded-lg bg-sidebar-accent/50 p-2.5 transition-colors hover:bg-sidebar-accent"
         @click="profileOpen = !profileOpen"
