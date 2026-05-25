@@ -17,6 +17,8 @@
     "@hugeicons/vue": "^1.0.5",
     "@internationalized/date": "^3.12.1",
     "@nuxtjs/color-mode": "^4.0.0",
+    "@nuxtjs/seo": "^5.1.3",
+    "@nuxtjs/sitemap": ">=7.0.0",
     "@supabase/supabase-js": "^2.106.1",
     "@tailwindcss/vite": "^4.3.0",
     "@vueuse/core": "^14.3.0",
@@ -24,6 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "nuxt": "^4.4.6",
+    "nuxt-ai-ready": "1.3.7",
     "reka-ui": "^2.9.8",
     "shadcn-nuxt": "2.7.3",
     "shadcn-vue": "^2.7.3",
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
+    "nuxt-site-config-kit": "^4.0.8",
     "typescript": "^6.0.3"
   }
 }

@@ -33,6 +33,15 @@ import LandingFooter from '@/components/landing/Footer.vue';
 
 definePageMeta({ layout: 'blank' });
 
+useSeoMeta({
+  title: 'Finance — Catat keuangan sendiri atau bareng',
+  description: 'Pantau pengeluaran, transaksi rutin, dan saldo bersama pasangan dalam satu dashboard modern. Gratis selamanya.',
+  ogTitle: 'Finance — Catat keuangan sendiri atau bareng',
+  ogDescription: 'Pantau pengeluaran, transaksi rutin, dan saldo bersama pasangan dalam satu dashboard modern. Gratis selamanya.',
+  ogSiteName: 'Finance',
+  twitterCard: 'summary_large_image',
+});
+
 const router = useRouter();
 const goToLogin = () => router.push('/login');
 </script>
