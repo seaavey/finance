@@ -244,20 +244,30 @@ const formatRelativeDate = (date: string) => {
   const d = new Date(date);
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) { return 'Hari ini'; }
-  if (diffDays === 1) { return 'Kemarin'; }
-  if (diffDays < 7) { return `${diffDays} hari lalu`; }
+  if (diffDays === 0) {
+    return 'Hari ini';
+  }
+  if (diffDays === 1) {
+    return 'Kemarin';
+  }
+  if (diffDays < 7) {
+    return `${diffDays} hari lalu`;
+  }
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 };
 
 const getCategoryName = (id: string | null) => {
-  if (!id) { return ''; }
-  return categories.value.find(c => c.id === id)?.name || '';
+  if (!id) {
+    return '';
+  }
+  return categories.value.find((c) => c.id === id)?.name || '';
 };
 
 const getCategoryColor = (id: string | null) => {
-  if (!id) { return '#6b7280'; }
-  return categories.value.find(c => c.id === id)?.color || '#6b7280';
+  if (!id) {
+    return '#6b7280';
+  }
+  return categories.value.find((c) => c.id === id)?.color || '#6b7280';
 };
 
 const now = new Date();
@@ -265,18 +275,18 @@ const currentMonth = now.getMonth();
 const currentYear = now.getFullYear();
 
 const thisMonthTransactions = computed(() =>
-  transactions.value.filter(tx => {
+  transactions.value.filter((tx) => {
     const d = new Date(tx.date);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-  })
+  }),
 );
 
 const totalIncome = computed(() =>
-  thisMonthTransactions.value.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
+  thisMonthTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
 );
 
 const totalExpense = computed(() =>
-  thisMonthTransactions.value.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+  thisMonthTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
 );
 
 const balance = computed(() => totalIncome.value - totalExpense.value);
@@ -284,45 +294,77 @@ const balance = computed(() => totalIncome.value - totalExpense.value);
 const trendIncome = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = transactions.value.filter(tx => {
-    const d = new Date(tx.date);
-    return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
-  }).reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) { return 0; }
+  const prev = transactions.value
+    .filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
+    })
+    .reduce((s, t) => s + t.amount, 0);
+  if (prev === 0) {
+    return 0;
+  }
   return Math.round(((totalIncome.value - prev) / prev) * 100);
 });
 
 const trendExpense = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = transactions.value.filter(tx => {
-    const d = new Date(tx.date);
-    return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
-  }).reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) { return 0; }
+  const prev = transactions.value
+    .filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
+    })
+    .reduce((s, t) => s + t.amount, 0);
+  if (prev === 0) {
+    return 0;
+  }
   return Math.round(((totalExpense.value - prev) / prev) * 100);
 });
 
 const trendBalance = computed(() => {
-  return Math.round(((totalIncome.value - totalExpense.value) / (totalIncome.value || 1)) * 100);
+  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  const prevIncome = transactions.value
+    .filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
+    })
+    .reduce((s, t) => s + t.amount, 0);
+  const prevExpense = transactions.value
+    .filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
+    })
+    .reduce((s, t) => s + t.amount, 0);
+  const prevBalance = prevIncome - prevExpense;
+  if (prevBalance === 0) {
+    return 0;
+  }
+  return Math.round(((balance.value - prevBalance) / prevBalance) * 100);
 });
 
 const recentTransactions = computed(() =>
-  [...transactions.value].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5)
+  [...transactions.value]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5),
 );
 
 const expenseByCategory = computed(() => {
   const map = new Map<string, { name: string; color: string; total: number }>();
   thisMonthTransactions.value
-    .filter(t => t.type === 'expense')
-    .forEach(t => {
-      const cat = categories.value.find(c => c.id === t.category_id);
+    .filter((t) => t.type === 'expense')
+    .forEach((t) => {
+      const cat = categories.value.find((c) => c.id === t.category_id);
       const key = cat?.id || 'uncategorized';
       const existing = map.get(key);
       if (existing) {
         existing.total += t.amount;
       } else {
-        map.set(key, { name: cat?.name || 'Lainnya', color: cat?.color || '#6b7280', total: t.amount });
+        map.set(key, {
+          name: cat?.name || 'Lainnya',
+          color: cat?.color || '#6b7280',
+          total: t.amount,
+        });
       }
     });
   return [...map.values()].sort((a, b) => b.total - a.total);
@@ -335,14 +377,14 @@ const monthlyData = computed(() => {
     const label = d.toLocaleDateString('id-ID', { month: 'short' });
     const m = d.getMonth();
     const y = d.getFullYear();
-    const monthTx = transactions.value.filter(tx => {
+    const monthTx = transactions.value.filter((tx) => {
       const td = new Date(tx.date);
       return td.getMonth() === m && td.getFullYear() === y;
     });
     months.push({
       label,
-      income: monthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0),
-      expense: monthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+      income: monthTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+      expense: monthTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
     });
   }
   return months;
