@@ -15,9 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '~/composables/useTransactions'
+import type { Transaction } from '~/composables/useTransactions';
 
 defineProps<{
-  transactions: Transaction[]
-}>()
+  transactions: Transaction[];
+}>();
 </script>

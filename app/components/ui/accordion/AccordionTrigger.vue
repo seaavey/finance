@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import type { AccordionTriggerProps } from 'reka-ui'
+import type { AccordionTriggerProps } from 'reka-ui';
 
-import type { HTMLAttributes } from 'vue'
-import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import { reactiveOmit } from '@vueuse/core'
-import {
-  AccordionHeader,
-  AccordionTrigger,
-} from 'reka-ui'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue';
+import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { reactiveOmit } from '@vueuse/core';
+import { AccordionHeader, AccordionTrigger } from 'reka-ui';
+import { cn } from '@/lib/utils';
 
-const props = defineProps<AccordionTriggerProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<AccordionTriggerProps & { class?: HTMLAttributes['class'] }>();
 
-const delegatedProps = reactiveOmit(props, 'class')
+const delegatedProps = reactiveOmit(props, 'class');
 </script>
 
 <template>

@@ -6,13 +6,13 @@
 </template>
 
 <script setup lang="ts">
-const { fetchCategories } = useCategories()
+const { fetchCategories } = useCategories();
 
 onMounted(async () => {
-  await fetchCategories()
-})
+  await fetchCategories();
+});
 
 const onSaved = () => {
-  navigateTo('/transactions')
-}
+  navigateTo('/transactions');
+};
 </script>

@@ -1,23 +1,26 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  open: boolean
-  title?: string
-  description?: string
-  confirmText?: string
-  cancelText?: string
-  variant?: 'default' | 'destructive'
-}>(), {
-  title: 'Konfirmasi',
-  description: 'Apakah kamu yakin?',
-  confirmText: 'Hapus',
-  cancelText: 'Batal',
-  variant: 'destructive',
-})
+const props = withDefaults(
+  defineProps<{
+    open: boolean;
+    title?: string;
+    description?: string;
+    confirmText?: string;
+    cancelText?: string;
+    variant?: 'default' | 'destructive';
+  }>(),
+  {
+    title: 'Konfirmasi',
+    description: 'Apakah kamu yakin?',
+    confirmText: 'Hapus',
+    cancelText: 'Batal',
+    variant: 'destructive',
+  },
+);
 
 const emit = defineEmits<{
-  'update:open': [value: boolean]
-  confirm: []
-}>()
+  'update:open': [value: boolean];
+  confirm: [];
+}>();
 </script>
 
 <template>

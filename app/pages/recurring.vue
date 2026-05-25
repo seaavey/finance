@@ -125,84 +125,113 @@ import {
   ArrowUp01Icon,
   PencilEdit01Icon,
   Delete01Icon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import type { RecurringTransaction } from '~/composables/useRecurring'
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import type { RecurringTransaction } from '~/composables/useRecurring';
 
-const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring()
-const { categories, fetchCategories } = useCategories()
-const { formatCurrency } = useCurrency()
+const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();
+const { categories, fetchCategories } = useCategories();
+const { formatCurrency } = useCurrency();
 
-const showForm = ref(false)
-const editingItem = ref<RecurringTransaction | undefined>()
+const showForm = ref(false);
+const editingItem = ref<RecurringTransaction | undefined>();
 
 const monthlyExpense = computed(() =>
-  recurring.value.filter(r => r.type === 'expense' && r.active).reduce((s, r) => {
-    if (r.frequency === 'daily') { return s + r.amount * 30 }
-    if (r.frequency === 'weekly') { return s + r.amount * 4 }
-    if (r.frequency === 'yearly') { return s + r.amount / 12 }
-    return s + r.amount
-  }, 0)
-)
+  recurring.value
+    .filter((r) => r.type === 'expense' && r.active)
+    .reduce((s, r) => {
+      if (r.frequency === 'daily') {
+        return s + r.amount * 30;
+      }
+      if (r.frequency === 'weekly') {
+        return s + r.amount * 4;
+      }
+      if (r.frequency === 'yearly') {
+        return s + r.amount / 12;
+      }
+      return s + r.amount;
+    }, 0),
+);
 
 const monthlyIncome = computed(() =>
-  recurring.value.filter(r => r.type === 'income' && r.active).reduce((s, r) => {
-    if (r.frequency === 'daily') { return s + r.amount * 30 }
-    if (r.frequency === 'weekly') { return s + r.amount * 4 }
-    if (r.frequency === 'yearly') { return s + r.amount / 12 }
-    return s + r.amount
-  }, 0)
-)
+  recurring.value
+    .filter((r) => r.type === 'income' && r.active)
+    .reduce((s, r) => {
+      if (r.frequency === 'daily') {
+        return s + r.amount * 30;
+      }
+      if (r.frequency === 'weekly') {
+        return s + r.amount * 4;
+      }
+      if (r.frequency === 'yearly') {
+        return s + r.amount / 12;
+      }
+      return s + r.amount;
+    }, 0),
+);
 
 onMounted(async () => {
-  await fetchCategories()
-  await fetchRecurring()
-})
+  await fetchCategories();
+  await fetchRecurring();
+});
 
 const categoryName = (id: string | null) => {
-  if (!id) { return '' }
-  return categories.value.find((c) => c.id === id)?.name ?? ''
-}
+  if (!id) {
+    return '';
+  }
+  return categories.value.find((c) => c.id === id)?.name ?? '';
+};
 
 const frequencyLabel = (f: string) => {
-  const map: Record<string, string> = { daily: 'Harian', weekly: 'Mingguan', monthly: 'Bulanan', yearly: 'Tahunan' }
-  return map[f] ?? f
-}
+  const map: Record<string, string> = {
+    daily: 'Harian',
+    weekly: 'Mingguan',
+    monthly: 'Bulanan',
+    yearly: 'Tahunan',
+  };
+  return map[f] ?? f;
+};
 
 const formatNextDate = (date: string) => {
-  const d = new Date(date)
-  const today = new Date()
-  const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  const d = new Date(date);
+  const today = new Date();
+  const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diff === 0) { return 'Hari ini' }
-  if (diff === 1) { return 'Besok' }
-  if (diff < 7) { return `${diff} hari lagi` }
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-}
+  if (diff === 0) {
+    return 'Hari ini';
+  }
+  if (diff === 1) {
+    return 'Besok';
+  }
+  if (diff < 7) {
+    return `${diff} hari lagi`;
+  }
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+};
 
-const showDeleteDialog = ref(false)
-const deletingItem = ref<RecurringTransaction | undefined>()
+const showDeleteDialog = ref(false);
+const deletingItem = ref<RecurringTransaction | undefined>();
 
 const editItem = (item: RecurringTransaction) => {
-  editingItem.value = item
-  showForm.value = true
-}
+  editingItem.value = item;
+  showForm.value = true;
+};
 
 const onDelete = (item: RecurringTransaction) => {
-  deletingItem.value = item
-  showDeleteDialog.value = true
-}
+  deletingItem.value = item;
+  showDeleteDialog.value = true;
+};
 
 const confirmDelete = async () => {
   if (deletingItem.value) {
-    await deleteRecurring(deletingItem.value.id)
+    await deleteRecurring(deletingItem.value.id);
   }
-  showDeleteDialog.value = false
-  deletingItem.value = undefined
-}
+  showDeleteDialog.value = false;
+  deletingItem.value = undefined;
+};
 
 const onSaved = () => {
-  showForm.value = false
-  editingItem.value = undefined
-}
+  showForm.value = false;
+  editingItem.value = undefined;
+};
 </script>

@@ -27,32 +27,34 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '~/composables/useTransactions'
+import type { Transaction } from '~/composables/useTransactions';
 
-const route = useRoute()
-const { getTransaction, deleteTransaction } = useTransactions()
-const { fetchCategories } = useCategories()
+const route = useRoute();
+const { getTransaction, deleteTransaction } = useTransactions();
+const { fetchCategories } = useCategories();
 
-const transaction = ref<Transaction | null>(null)
-const loading = ref(true)
-const showDeleteDialog = ref(false)
+const transaction = ref<Transaction | null>(null);
+const loading = ref(true);
+const showDeleteDialog = ref(false);
 
 onMounted(async () => {
-  await fetchCategories()
-  const id = route.params.id as string
-  const { data } = await getTransaction(id)
-  transaction.value = data
-  loading.value = false
-})
+  await fetchCategories();
+  const id = route.params.id as string;
+  const { data } = await getTransaction(id);
+  transaction.value = data;
+  loading.value = false;
+});
 
 const onSaved = () => {
-  navigateTo('/transactions')
-}
+  navigateTo('/transactions');
+};
 
 const onDelete = async () => {
-  if (!transaction.value) { return }
-  await deleteTransaction(transaction.value.id)
-  showDeleteDialog.value = false
-  navigateTo('/transactions')
-}
+  if (!transaction.value) {
+    return;
+  }
+  await deleteTransaction(transaction.value.id);
+  showDeleteDialog.value = false;
+  navigateTo('/transactions');
+};
 </script>

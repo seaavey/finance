@@ -20,20 +20,20 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue?: string
-  type?: 'income' | 'expense'
-  placeholder?: string
-}>()
+  modelValue?: string;
+  type?: 'income' | 'expense';
+  placeholder?: string;
+}>();
 
 defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+  'update:modelValue': [value: string];
+}>();
 
-const { categories, incomeCategories, expenseCategories } = useCategories()
+const { categories, incomeCategories, expenseCategories } = useCategories();
 
 const filteredCategories = computed(() => {
-  if (props.type === 'income') return incomeCategories.value
-  if (props.type === 'expense') return expenseCategories.value
-  return categories.value
-})
+  if (props.type === 'income') return incomeCategories.value;
+  if (props.type === 'expense') return expenseCategories.value;
+  return categories.value;
+});
 </script>

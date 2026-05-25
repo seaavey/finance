@@ -116,61 +116,65 @@
 </template>
 
 <script setup lang="ts">
-import { Logout01Icon, Tick01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import { useSupabase } from '~/lib/supabase'
+import { Logout01Icon, Tick01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { useSupabase } from '~/lib/supabase';
 
-const { toast } = useToast()
-const supabase = useSupabase()
-const { user, signOut } = useAuth()
-const { currencies, currencyGroups } = useCurrency()
-const colorMode = useColorMode()
+const { toast } = useToast();
+const supabase = useSupabase();
+const { user, signOut } = useAuth();
+const { currencies, currencyGroups } = useCurrency();
+const colorMode = useColorMode();
 
-const loading = ref(true)
-const saving = ref(false)
-const editName = ref(false)
-const editCurrency = ref(false)
+const loading = ref(true);
+const saving = ref(false);
+const editName = ref(false);
+const editCurrency = ref(false);
 
 const profile = reactive({
   display_name: '',
   currency: 'IDR',
-})
+});
 
 const selectedCurrencyLabel = computed(() => {
-  const c = currencies.find(c => c.value === profile.currency)
-  return c ? c.value : 'IDR'
-})
+  const c = currencies.find((c) => c.value === profile.currency);
+  return c ? c.value : 'IDR';
+});
 
 const themeLabel = computed(() => {
-  const map: Record<string, string> = { light: 'Terang', dark: 'Gelap', system: 'Sistem' }
-  return map[colorMode.preference] ?? 'Sistem'
-})
+  const map: Record<string, string> = { light: 'Terang', dark: 'Gelap', system: 'Sistem' };
+  return map[colorMode.preference] ?? 'Sistem';
+});
 
 const cycleTheme = () => {
-  const modes = ['system', 'light', 'dark']
-  const idx = modes.indexOf(colorMode.preference)
-  colorMode.preference = modes[(idx + 1) % modes.length] || 'system'
-}
+  const modes = ['system', 'light', 'dark'];
+  const idx = modes.indexOf(colorMode.preference);
+  colorMode.preference = modes[(idx + 1) % modes.length] || 'system';
+};
 
 onMounted(async () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return;
+  }
 
   const { data } = await supabase
     .from('profiles')
     .select('display_name, currency')
     .eq('id', user.value.id)
-    .single()
+    .single();
 
   if (data) {
-    profile.display_name = data.display_name ?? ''
-    profile.currency = data.currency ?? 'IDR'
+    profile.display_name = data.display_name ?? '';
+    profile.currency = data.currency ?? 'IDR';
   }
-  loading.value = false
-})
+  loading.value = false;
+});
 
 const saveProfile = async () => {
-  if (!user.value) { return }
-  saving.value = true
+  if (!user.value) {
+    return;
+  }
+  saving.value = true;
 
   const { error } = await supabase
     .from('profiles')
@@ -178,39 +182,41 @@ const saveProfile = async () => {
       display_name: profile.display_name,
       currency: profile.currency,
     })
-    .eq('id', user.value.id)
+    .eq('id', user.value.id);
 
   if (!error) {
-    toast.success('Profil berhasil disimpan')
+    toast.success('Profil berhasil disimpan');
   } else {
-    toast.error('Gagal menyimpan profil')
+    toast.error('Gagal menyimpan profil');
   }
-  saving.value = false
-  editName.value = false
-}
+  saving.value = false;
+  editName.value = false;
+};
 
 const selectCurrency = async (value: string) => {
-  profile.currency = value
-  editCurrency.value = false
-  if (!user.value) { return }
+  profile.currency = value;
+  editCurrency.value = false;
+  if (!user.value) {
+    return;
+  }
 
   const { error } = await supabase
     .from('profiles')
     .update({ currency: value })
-    .eq('id', user.value.id)
+    .eq('id', user.value.id);
 
   if (!error) {
-    toast.success('Mata uang diperbarui')
+    toast.success('Mata uang diperbarui');
   } else {
-    toast.error('Gagal memperbarui mata uang')
+    toast.error('Gagal memperbarui mata uang');
   }
-}
+};
 
 const exportData = () => {
-  toast.success('Fitur export segera hadir')
-}
+  toast.success('Fitur export segera hadir');
+};
 
 const onSignOut = async () => {
-  await signOut()
-}
+  await signOut();
+};
 </script>

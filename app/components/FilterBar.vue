@@ -49,15 +49,15 @@
 </template>
 
 <script setup lang="ts">
-import { FilterIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon as HugeIcon } from '@hugeicons/vue'
-import type { TransactionFilters } from '~/composables/useTransactions'
+import { FilterIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon as HugeIcon } from '@hugeicons/vue';
+import type { TransactionFilters } from '~/composables/useTransactions';
 
 const emit = defineEmits<{
-  filter: [filters: TransactionFilters]
-}>()
+  filter: [filters: TransactionFilters];
+}>();
 
-const showMore = ref(false)
+const showMore = ref(false);
 
 const filters = reactive({
   search: '',
@@ -65,31 +65,31 @@ const filters = reactive({
   category_id: '',
   dateFrom: '',
   dateTo: '',
-})
+});
 
-let debounceTimer: ReturnType<typeof setTimeout>
+let debounceTimer: ReturnType<typeof setTimeout>;
 
 const debouncedEmit = () => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => emitFilters(), 300)
-}
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => emitFilters(), 300);
+};
 
 const emitFilters = () => {
-  const f: TransactionFilters = {}
-  if (filters.search) f.search = filters.search
-  if (filters.type && filters.type !== 'all') f.type = filters.type as 'income' | 'expense'
-  if (filters.category_id) f.category_id = filters.category_id
-  if (filters.dateFrom) f.dateFrom = filters.dateFrom
-  if (filters.dateTo) f.dateTo = filters.dateTo
-  emit('filter', f)
-}
+  const f: TransactionFilters = {};
+  if (filters.search) f.search = filters.search;
+  if (filters.type && filters.type !== 'all') f.type = filters.type as 'income' | 'expense';
+  if (filters.category_id) f.category_id = filters.category_id;
+  if (filters.dateFrom) f.dateFrom = filters.dateFrom;
+  if (filters.dateTo) f.dateTo = filters.dateTo;
+  emit('filter', f);
+};
 
 const resetFilters = () => {
-  filters.search = ''
-  filters.type = ''
-  filters.category_id = ''
-  filters.dateFrom = ''
-  filters.dateTo = ''
-  emit('filter', {})
-}
+  filters.search = '';
+  filters.type = '';
+  filters.category_id = '';
+  filters.dateFrom = '';
+  filters.dateTo = '';
+  emit('filter', {});
+};
 </script>

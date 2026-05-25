@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '~/composables/useTransactions'
+import type { Transaction } from '~/composables/useTransactions';
 
 defineProps<{
-  recent: Transaction[]
-}>()
+  recent: Transaction[];
+}>();
 </script>

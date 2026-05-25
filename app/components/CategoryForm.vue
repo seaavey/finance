@@ -49,46 +49,55 @@
 </template>
 
 <script setup lang="ts">
-import type { Category } from '~/composables/useCategories'
+import type { Category } from '~/composables/useCategories';
 
 const props = defineProps<{
-  category?: Category
-}>()
+  category?: Category;
+}>();
 
 const emit = defineEmits<{
-  close: []
-  saved: []
-}>()
+  close: [];
+  saved: [];
+}>();
 
-const { addCategory, updateCategory } = useCategories()
+const { addCategory, updateCategory } = useCategories();
 
 const colorOptions = [
-  '#22c55e', '#3b82f6', '#8b5cf6', '#f97316',
-  '#06b6d4', '#ec4899', '#ef4444', '#a855f7',
-  '#14b8a6', '#6b7280', '#eab308', '#f43f5e',
-]
+  '#22c55e',
+  '#3b82f6',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#ec4899',
+  '#ef4444',
+  '#a855f7',
+  '#14b8a6',
+  '#6b7280',
+  '#eab308',
+  '#f43f5e',
+];
 
 const form = reactive({
   name: props.category?.name ?? '',
   type: props.category?.type ?? 'expense',
   icon: props.category?.icon ?? 'wallet',
   color: props.category?.color ?? '#3b82f6',
-})
+});
 
 const onSubmit = async () => {
   if (props.category) {
     await updateCategory(props.category.id, {
       name: form.name,
       color: form.color,
-    })
+    });
   } else {
     await addCategory({
       name: form.name,
       type: form.type,
       icon: form.icon,
       color: form.color,
-    })
+    });
   }
-  emit('saved')
-}
+  emit('saved');
+};
 </script>

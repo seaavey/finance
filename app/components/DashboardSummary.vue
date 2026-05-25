@@ -25,8 +25,8 @@
 
 <script setup lang="ts">
 defineProps<{
-  summary: { income: number; expense: number; balance: number }
-}>()
+  summary: { income: number; expense: number; balance: number };
+}>();
 
-const { formatCurrency } = useCurrency()
+const { formatCurrency } = useCurrency();
 </script>

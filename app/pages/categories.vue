@@ -107,74 +107,85 @@
 </template>
 
 <script setup lang="ts">
-import { PencilEdit01Icon, Delete01Icon, GridViewIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import { Sortable } from 'sortablejs-vue3'
-import type { Category } from '~/composables/useCategories'
+import { PencilEdit01Icon, Delete01Icon, GridViewIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { Sortable } from 'sortablejs-vue3';
+import type { Category } from '~/composables/useCategories';
 
-const { categories, loading, incomeCategories, expenseCategories, fetchCategories, seedDefaults, deleteCategory } = useCategories()
-const { transactions, fetchTransactions } = useTransactions()
-const { user } = useAuth()
+const {
+  categories,
+  loading,
+  incomeCategories,
+  expenseCategories,
+  fetchCategories,
+  seedDefaults,
+  deleteCategory,
+} = useCategories();
+const { transactions, fetchTransactions } = useTransactions();
+const { user } = useAuth();
 
 const getCategoryStats = (catId: string) => {
-  const txs = transactions.value.filter(t => t.category_id === catId)
+  const txs = transactions.value.filter((t) => t.category_id === catId);
   return {
     count: txs.length,
     total: txs.reduce((s, t) => s + t.amount, 0),
-  }
-}
+  };
+};
 
-const showForm = ref(false)
-const editingCategory = ref<Category | undefined>()
-const activeTab = ref<'income' | 'expense'>('expense')
-const showDeleteDialog = ref(false)
-const deletingCategory = ref<Category | undefined>()
+const showForm = ref(false);
+const editingCategory = ref<Category | undefined>();
+const activeTab = ref<'income' | 'expense'>('expense');
+const showDeleteDialog = ref(false);
+const deletingCategory = ref<Category | undefined>();
 
 const tabs = computed(() => [
   { value: 'expense' as const, label: 'Pengeluaran', count: expenseCategories.value.length },
   { value: 'income' as const, label: 'Pemasukan', count: incomeCategories.value.length },
-])
+]);
 
 const filteredCategories = computed(() =>
-  activeTab.value === 'income' ? incomeCategories.value : expenseCategories.value
-)
+  activeTab.value === 'income' ? incomeCategories.value : expenseCategories.value,
+);
 
 const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
-  const list = [...filteredCategories.value]
-  const [moved] = list.splice(evt.oldIndex, 1)
-  if (!moved) { return }
-  list.splice(evt.newIndex, 0, moved)
-  const otherType = activeTab.value === 'income' ? expenseCategories.value : incomeCategories.value
-  categories.value = activeTab.value === 'income' ? [...list, ...otherType] : [...otherType, ...list]
-}
+  const list = [...filteredCategories.value];
+  const [moved] = list.splice(evt.oldIndex, 1);
+  if (!moved) {
+    return;
+  }
+  list.splice(evt.newIndex, 0, moved);
+  const otherType = activeTab.value === 'income' ? expenseCategories.value : incomeCategories.value;
+  categories.value =
+    activeTab.value === 'income' ? [...list, ...otherType] : [...otherType, ...list];
+};
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchTransactions()])
+  await Promise.all([fetchCategories(), fetchTransactions()]);
   if (categories.value.length === 0 && user.value) {
-    await seedDefaults(user.value.id)
+    await seedDefaults(user.value.id);
   }
-})
+});
 
 const editCategory = (cat: Category) => {
-  editingCategory.value = cat
-  showForm.value = true
-}
+  editingCategory.value = cat;
+  showForm.value = true;
+};
 
 const confirmDelete = (cat: Category) => {
-  deletingCategory.value = cat
-  showDeleteDialog.value = true
-}
+  deletingCategory.value = cat;
+  showDeleteDialog.value = true;
+};
 
 const onDelete = async () => {
   if (deletingCategory.value) {
-    await deleteCategory(deletingCategory.value.id)
+    await deleteCategory(deletingCategory.value.id);
   }
-  showDeleteDialog.value = false
-  deletingCategory.value = undefined
-}
+  showDeleteDialog.value = false;
+  deletingCategory.value = undefined;
+};
 
 const onSaved = () => {
-  showForm.value = false
-  editingCategory.value = undefined
-}
+  showForm.value = false;
+  editingCategory.value = undefined;
+};
 </script>

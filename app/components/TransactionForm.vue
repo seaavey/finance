@@ -139,26 +139,26 @@ import {
   CoinsSwapIcon,
   Calendar01Icon,
   Note01Icon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import type { Transaction } from '~/composables/useTransactions'
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import type { Transaction } from '~/composables/useTransactions';
 
 const props = defineProps<{
-  transaction?: Transaction
-}>()
+  transaction?: Transaction;
+}>();
 
 const emit = defineEmits<{
-  cancel: []
-  saved: []
-  delete: []
-}>()
+  cancel: [];
+  saved: [];
+  delete: [];
+}>();
 
-const { currencies, currencyGroups } = useCurrency()
+const { currencies, currencyGroups } = useCurrency();
 
-const selectedCurrency = computed(() => currencies.find(c => c.value === form.currency))
-const { addTransaction, updateTransaction } = useTransactions()
+const selectedCurrency = computed(() => currencies.find((c) => c.value === form.currency));
+const { addTransaction, updateTransaction } = useTransactions();
 
-const today = new Date().toISOString().split('T')[0]
+const today = new Date().toISOString().split('T')[0];
 
 const form = reactive({
   type: props.transaction?.type ?? ('expense' as 'income' | 'expense'),
@@ -167,15 +167,33 @@ const form = reactive({
   category_id: props.transaction?.category_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? today,
-})
+});
 
 const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
-  if (allowed.includes(e.key)) { return }
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) { return }
-  if (/^[0-9]$/.test(e.key)) { return }
-  e.preventDefault()
-}
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  e.preventDefault();
+};
 
 const onSubmit = async () => {
   const payload = {
@@ -185,13 +203,13 @@ const onSubmit = async () => {
     category_id: form.category_id || null,
     description: form.description || null,
     date: form.date,
-  }
+  };
 
   if (props.transaction) {
-    await updateTransaction(props.transaction.id, payload)
+    await updateTransaction(props.transaction.id, payload);
   } else {
-    await addTransaction(payload)
+    await addTransaction(payload);
   }
-  emit('saved')
-}
+  emit('saved');
+};
 </script>

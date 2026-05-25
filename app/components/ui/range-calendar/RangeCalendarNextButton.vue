@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { RangeCalendarNextProps } from 'reka-ui'
+import type { RangeCalendarNextProps } from 'reka-ui';
 
-import type { HTMLAttributes } from 'vue'
-import { ArrowRight01Icon as ChevronRightIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
-import { reactiveOmit } from '@vueuse/core'
-import { RangeCalendarNext, useForwardProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
+import type { HTMLAttributes } from 'vue';
+import { ArrowRight01Icon as ChevronRightIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { reactiveOmit } from '@vueuse/core';
+import { RangeCalendarNext, useForwardProps } from 'reka-ui';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 
-const props = defineProps<RangeCalendarNextProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<RangeCalendarNextProps & { class?: HTMLAttributes['class'] }>();
 
-const delegatedProps = reactiveOmit(props, 'class')
+const delegatedProps = reactiveOmit(props, 'class');
 
-const forwardedProps = useForwardProps(delegatedProps)
+const forwardedProps = useForwardProps(delegatedProps);
 </script>
 
 <template>

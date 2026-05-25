@@ -1,33 +1,33 @@
-import { useSupabase } from '~/lib/supabase'
+import { useSupabase } from '~/lib/supabase';
 
 export const useCurrency = () => {
-  const supabase = useSupabase()
-  const { user } = useAuth()
+  const supabase = useSupabase();
+  const { user } = useAuth();
 
-  const defaultCurrency = useState<string>('default-currency', () => 'IDR')
+  const defaultCurrency = useState<string>('default-currency', () => 'IDR');
 
   const loadCurrency = async () => {
-    if (!user.value) return
+    if (!user.value) return;
     const { data } = await supabase
       .from('profiles')
       .select('currency')
       .eq('id', user.value.id)
-      .single()
+      .single();
     if (data?.currency) {
-      defaultCurrency.value = data.currency
+      defaultCurrency.value = data.currency;
     }
-  }
+  };
 
   const formatCurrency = (amount: number, currency?: string) => {
-    const cur = currency || defaultCurrency.value
-    const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK']
+    const cur = currency || defaultCurrency.value;
+    const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK'];
     return new Intl.NumberFormat(getLocale(cur), {
       style: 'currency',
       currency: cur,
       minimumFractionDigits: 0,
       maximumFractionDigits: noDecimalCurrencies.includes(cur) ? 0 : 2,
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
   const getLocale = (currency: string) => {
     const localeMap: Record<string, string> = {
@@ -51,9 +51,9 @@ export const useCurrency = () => {
       PKR: 'en-PK',
       LKR: 'si-LK',
       NPR: 'ne-NP',
-    }
-    return localeMap[currency] ?? 'en-US'
-  }
+    };
+    return localeMap[currency] ?? 'en-US';
+  };
 
   const currencyGroups = [
     {
@@ -91,9 +91,9 @@ export const useCurrency = () => {
         { value: 'NPR', label: 'NPR - Rupee Nepal' },
       ],
     },
-  ]
+  ];
 
-  const currencies = currencyGroups.flatMap(g => g.currencies)
+  const currencies = currencyGroups.flatMap((g) => g.currencies);
 
-  return { formatCurrency, currencies, currencyGroups, loadCurrency, defaultCurrency }
-}
+  return { formatCurrency, currencies, currencyGroups, loadCurrency, defaultCurrency };
+};

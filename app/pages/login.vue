@@ -26,10 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import { GoogleIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
+import { GoogleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
 
-definePageMeta({ layout: 'blank' })
+definePageMeta({ layout: 'blank' });
 
-const { signInWithGoogle } = useAuth()
+const { signInWithGoogle } = useAuth();
 </script>

@@ -75,21 +75,21 @@
 </template>
 
 <script setup lang="ts">
-import type { RecurringTransaction } from '~/composables/useRecurring'
+import type { RecurringTransaction } from '~/composables/useRecurring';
 
 const props = defineProps<{
-  item?: RecurringTransaction
-}>()
+  item?: RecurringTransaction;
+}>();
 
 const emit = defineEmits<{
-  close: []
-  saved: []
-}>()
+  close: [];
+  saved: [];
+}>();
 
-const { currencies } = useCurrency()
-const { addRecurring, updateRecurring } = useRecurring()
+const { currencies } = useCurrency();
+const { addRecurring, updateRecurring } = useRecurring();
 
-const today = new Date().toISOString().split('T')[0]
+const today = new Date().toISOString().split('T')[0];
 
 const form = reactive({
   type: props.item?.type ?? ('expense' as 'income' | 'expense'),
@@ -99,7 +99,7 @@ const form = reactive({
   description: props.item?.description ?? '',
   frequency: props.item?.frequency ?? ('monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly'),
   next_date: props.item?.next_date ?? today,
-})
+});
 
 const onSubmit = async () => {
   const payload = {
@@ -111,13 +111,13 @@ const onSubmit = async () => {
     frequency: form.frequency,
     next_date: form.next_date,
     active: true,
-  }
+  };
 
   if (props.item) {
-    await updateRecurring(props.item.id, payload)
+    await updateRecurring(props.item.id, payload);
   } else {
-    await addRecurring(payload)
+    await addRecurring(payload);
   }
-  emit('saved')
-}
+  emit('saved');
+};
 </script>
