@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { RouteLocationRaw } from 'vue-router';
-
 defineProps<{
-  to: RouteLocationRaw;
+  to: string | { name: string; params?: Record<string, string | number>; query?: Record<string, string> };
 }>();
 </script>
 

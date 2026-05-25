@@ -83,7 +83,7 @@ const { user, signOut } = useAuth();
 const route = useRoute();
 
 const mainNavItems = [
-  { to: '/', label: 'Dashboard', icon: Home03Icon },
+  { to: '/dashboard', label: 'Dashboard', icon: Home03Icon },
   { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
   { to: '/categories', label: 'Kategori', icon: GridViewIcon },
   { to: '/recurring', label: 'Rutin', icon: RepeatIcon },

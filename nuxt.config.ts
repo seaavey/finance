@@ -31,17 +31,15 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: [
-    'shadcn-nuxt',
-    '@nuxtjs/color-mode',
-    '@nuxtjs/seo',
-    'nuxt-ai-ready',
-  ],
+  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo'],
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://seaavey.site',
     name: 'Finance',
     description: 'Catat keuangan sendiri atau bareng pasangan. Simpel, cepat, tanpa ribet.',
     defaultLocale: 'id',
+  },
+  sitemap: {
+    zeroRuntime: true,
   },
   colorMode: {
     classSuffix: '',
