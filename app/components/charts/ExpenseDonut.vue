@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, type TooltipItem } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -38,7 +39,7 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="relative size-full min-h-45">
+  <div class="relative h-[180px]">
     <Doughnut v-if="categories.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
       <p class="text-xs text-muted-foreground">Belum ada data</p>

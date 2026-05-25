@@ -28,7 +28,7 @@
               <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-500" />
             </div>
             <div class="rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-semibold text-green-500">
-              +{{ trendIncome }}%
+              {{ trendIncome === null ? 'Baru' : `+${trendIncome}%` }}
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">Pemasukan</p>
@@ -41,7 +41,7 @@
               <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-500" />
             </div>
             <div class="rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
-              +{{ trendExpense }}%
+              {{ trendExpense === null ? 'Baru' : `+${trendExpense}%` }}
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">Pengeluaran</p>
@@ -55,7 +55,7 @@
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-indigo-400" />
             </div>
             <div class="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-400">
-              {{ balance >= 0 ? '+' : '' }}{{ trendBalance }}%
+              {{ trendBalance === null ? 'Baru' : `${balance >= 0 ? '+' : ''}${trendBalance}%` }}
             </div>
           </div>
           <p class="relative mt-3 text-xs text-muted-foreground">Saldo</p>
@@ -301,7 +301,7 @@ const trendIncome = computed(() => {
     })
     .reduce((s, t) => s + t.amount, 0);
   if (prev === 0) {
-    return 0;
+    return totalIncome.value > 0 ? null : 0;
   }
   return Math.round(((totalIncome.value - prev) / prev) * 100);
 });
@@ -316,7 +316,7 @@ const trendExpense = computed(() => {
     })
     .reduce((s, t) => s + t.amount, 0);
   if (prev === 0) {
-    return 0;
+    return totalExpense.value > 0 ? null : 0;
   }
   return Math.round(((totalExpense.value - prev) / prev) * 100);
 });
@@ -338,7 +338,7 @@ const trendBalance = computed(() => {
     .reduce((s, t) => s + t.amount, 0);
   const prevBalance = prevIncome - prevExpense;
   if (prevBalance === 0) {
-    return 0;
+    return balance.value !== 0 ? null : 0;
   }
   return Math.round(((balance.value - prevBalance) / prevBalance) * 100);
 });

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -68,7 +69,7 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="relative size-full min-h-50">
+  <div class="relative h-[220px]">
     <Bar v-if="data.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
       <p class="text-xs text-muted-foreground">Belum ada data</p>
