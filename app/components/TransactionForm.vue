@@ -1,98 +1,132 @@
 <template>
-  <div class="mx-auto max-w-lg space-y-6">
+  <div class="mx-auto w-full max-w-3xl space-y-8">
+    <!-- HEADER -->
+    <div>
+      <h1 class="text-3xl font-bold">Tambah Transaksi</h1>
+      <p class="mt-1.5 text-sm text-muted-foreground">Catat pemasukan atau pengeluaran baru</p>
+    </div>
 
-
-    <div class="flex gap-2">
+    <!-- TYPE SELECTOR -->
+    <div class="grid grid-cols-2 gap-3">
       <button
         type="button"
-        class="flex-1 rounded-xl py-3 text-center text-sm font-semibold transition-all"
+        class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
         :class="form.type === 'income'
-          ? 'bg-green-500/10 text-green-600 ring-2 ring-green-500/30'
-          : 'bg-muted text-muted-foreground hover:bg-accent'"
+          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-[0_0_20px_-4px] shadow-emerald-500/20'
+          : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'"
         @click="form.type = 'income'"
       >
-        <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="mr-1 inline-block" />
+        <HugeiconsIcon :icon="ArrowDown01Icon" :size="20" class="mr-2 inline-block" />
         Pemasukan
       </button>
       <button
         type="button"
-        class="flex-1 rounded-xl py-3 text-center text-sm font-semibold transition-all"
+        class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
         :class="form.type === 'expense'
-          ? 'bg-red-500/10 text-red-600 ring-2 ring-red-500/30'
-          : 'bg-muted text-muted-foreground hover:bg-accent'"
+          ? 'border-red-500/30 bg-red-500/10 text-red-500 shadow-[0_0_20px_-4px] shadow-red-500/20'
+          : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'"
         @click="form.type = 'expense'"
       >
-        <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="mr-1 inline-block" />
+        <HugeiconsIcon :icon="ArrowUp01Icon" :size="20" class="mr-2 inline-block" />
         Pengeluaran
       </button>
     </div>
 
-    <Card class="overflow-hidden">
-      <CardContent class="flex flex-col items-center gap-2 py-8">
-        <span class="text-xs font-medium text-muted-foreground">Jumlah</span>
-        <div class="flex items-baseline gap-1">
-          <span class="text-lg font-medium text-muted-foreground">{{ form.currency }}</span>
-          <input
-            :value="displayAmount"
-            type="text"
-            inputmode="numeric"
-            placeholder="0"
-            class="w-48 border-none bg-transparent text-center text-4xl font-bold outline-none placeholder:text-muted-foreground/40"
-            @input="onAmountInput"
+    <!-- AMOUNT CARD -->
+    <div class="rounded-3xl border border-border/50 bg-card/40 p-8">
+      <p class="text-sm font-medium text-muted-foreground">Nominal</p>
+      <div class="mt-4 flex items-start gap-2">
+        <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{ form.currency }}</span>
+        <input
+          v-model.number="form.amount"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="0"
+          class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          @keydown="onNumberKeydown"
+        />
+      </div>
+    </div>
+
+    <!-- DETAIL FORM -->
+    <div class="space-y-px overflow-hidden rounded-3xl border border-border/50 bg-card/20">
+      <div class="flex items-center gap-3 px-5 py-4">
+        <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
+        <div class="flex-1">
+          <CategoryPicker v-model="form.category_id" :type="form.type" placeholder="Pilih kategori" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 px-5 py-4">
+        <HugeiconsIcon :icon="CoinsSwapIcon" :size="18" class="text-muted-foreground" />
+        <div class="flex-1">
+          <Select v-model="form.currency">
+            <SelectTrigger class="border-none shadow-none">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="bg-[#111114] border border-white/10 shadow-2xl shadow-black/40 rounded-2xl p-2">
+              <SelectGroup v-for="group in currencyGroups" :key="group.label">
+                <SelectLabel class="sticky top-0 bg-[#111114] z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">{{ group.label }}</SelectLabel>
+                <SelectItem
+                  v-for="c in group.currencies"
+                  :key="c.value"
+                  :value="c.value"
+                  class="rounded-xl px-3 py-2.5 text-sm text-zinc-300 hover:bg-white/[0.05] cursor-pointer"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium">{{ c.value }}</span>
+                    <span class="text-zinc-500">{{ c.label.split(' - ')[1] }}</span>
+                  </div>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 px-5 py-4">
+        <HugeiconsIcon :icon="Calendar01Icon" :size="18" class="text-muted-foreground" />
+        <div class="flex-1">
+          <Input v-model="form.date" type="date" class="border-none shadow-none" />
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 px-5 py-4">
+        <HugeiconsIcon :icon="Note01Icon" :size="18" class="mt-0.5 text-muted-foreground" />
+        <div class="flex-1">
+          <Textarea
+            v-model="form.description"
+            placeholder="Catatan (opsional)"
+            rows="2"
+            class="resize-none border-none shadow-none"
           />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
-    <Card>
-      <CardContent class="divide-y divide-border p-0">
-        <div class="flex items-center gap-3 px-4 py-3">
-          <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
-          <div class="flex-1">
-            <CategoryPicker v-model="form.category_id" :type="form.type" placeholder="Pilih kategori" />
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3 px-4 py-3">
-          <HugeiconsIcon :icon="CoinsSwapIcon" :size="18" class="text-muted-foreground" />
-          <div class="flex-1">
-            <Select v-model="form.currency">
-              <SelectTrigger class="border-none shadow-none">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">
-                  {{ c.label }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3 px-4 py-3">
-          <HugeiconsIcon :icon="Calendar01Icon" :size="18" class="text-muted-foreground" />
-          <div class="flex-1">
-            <Input v-model="form.date" type="date" class="border-none shadow-none" />
-          </div>
-        </div>
-
-        <div class="flex items-start gap-3 px-4 py-3">
-          <HugeiconsIcon :icon="Note01Icon" :size="18" class="mt-0.5 text-muted-foreground" />
-          <div class="flex-1">
-            <Textarea
-              v-model="form.description"
-              placeholder="Catatan (opsional)"
-              rows="2"
-              class="resize-none border-none shadow-none"
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-
-    <div class="flex gap-3">
-      <Button variant="outline" class="flex-1" @click="$emit('cancel')">Batal</Button>
-      <Button class="flex-1" :disabled="!form.amount || !form.date" @click="onSubmit">Simpan</Button>
+    <!-- ACTION BUTTONS -->
+    <div class="flex items-center justify-end gap-3">
+      <button
+        v-if="transaction"
+        class="rounded-2xl border border-red-500/10 bg-red-500/[0.03] px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/[0.08]"
+        @click="$emit('delete')"
+      >
+        Hapus
+      </button>
+      <button
+        class="rounded-2xl border border-border/50 px-5 py-3 text-sm text-muted-foreground transition hover:bg-card/50"
+        @click="$emit('cancel')"
+      >
+        Batal
+      </button>
+      <button
+        class="rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
+        :disabled="!form.amount || !form.date"
+        @click="onSubmit"
+      >
+        Simpan Transaksi
+      </button>
     </div>
   </div>
 </template>
@@ -116,9 +150,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   cancel: []
   saved: []
+  delete: []
 }>()
 
-const { currencies } = useCurrency()
+const { currencies, currencyGroups } = useCurrency()
+
+const selectedCurrency = computed(() => currencies.find(c => c.value === form.currency))
 const { addTransaction, updateTransaction } = useTransactions()
 
 const today = new Date().toISOString().split('T')[0]
@@ -132,16 +169,12 @@ const form = reactive({
   date: props.transaction?.date ?? today,
 })
 
-const formatNumber = (num: number) => {
-  if (!num) return ''
-  return num.toLocaleString('id-ID')
-}
-
-const displayAmount = computed(() => formatNumber(form.amount))
-
-const onAmountInput = (e: Event) => {
-  const raw = (e.target as HTMLInputElement).value.replace(/[^0-9]/g, '')
-  form.amount = raw ? parseInt(raw, 10) : 0
+const onNumberKeydown = (e: KeyboardEvent) => {
+  const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
+  if (allowed.includes(e.key)) { return }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) { return }
+  if (/^[0-9]$/.test(e.key)) { return }
+  e.preventDefault()
 }
 
 const onSubmit = async () => {

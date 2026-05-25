@@ -1,9 +1,9 @@
 <template>
   <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 md:sticky md:top-0 md:self-start md:max-h-dvh md:translate-x-0 md:overflow-y-auto"
+    class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 md:sticky md:top-0 md:self-start md:max-h-dvh md:translate-x-0 h-screen"
     :class="open ? 'translate-x-0' : '-translate-x-full'"
   >
-    <div class="flex shrink-0 items-center gap-3 border-b border-sidebar-border px-4 h-14">
+    <div class="flex shrink-0 items-center gap-3 border-b border-sidebar-border px-4 h-16">
       <div class="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary">
         <HugeiconsIcon :icon="MoneyAdd01Icon" :size="18" class="text-sidebar-primary-foreground" />
       </div>
@@ -28,21 +28,18 @@
       </NuxtLink>
     </nav>
 
-    <div v-if="user" class="mt-auto shrink-0 border-t border-sidebar-border px-3 py-3">
+    <div v-if="user" class="mt-auto shrink-0 border-t border-sidebar-border px-3 py-2 relative">
       <button
-        class="flex w-full items-center gap-3 rounded-lg bg-sidebar-accent/50 p-2.5 transition-colors hover:bg-sidebar-accent"
+        class="flex h-12 w-full items-center gap-3 rounded-2xl bg-sidebar-accent/50 px-3 transition-colors hover:bg-sidebar-accent"
         @click="profileOpen = !profileOpen"
       >
-        <Avatar class="size-8">
+        <Avatar class="size-7">
           <AvatarImage v-if="user.user_metadata?.avatar_url" :src="user.user_metadata.avatar_url" :alt="user.user_metadata?.full_name" />
           <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
         </Avatar>
-        <div class="min-w-0 flex-1 text-left">
-          <p class="truncate text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</p>
-          <p class="truncate text-xs text-sidebar-foreground/50">{{ user.email }}</p>
-        </div>
+        <span class="flex-1 truncate text-left text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
         <ChevronUpIcon
-          :size="16"
+          :size="14"
           class="text-sidebar-foreground/40 transition-transform duration-200"
           :class="profileOpen ? 'rotate-180' : ''"
         />
@@ -50,23 +47,15 @@
 
       <Transition
         enter-active-class="transition-all duration-200 ease-out"
-        enter-from-class="opacity-0 -translate-y-2"
-        enter-to-class="opacity-100 translate-y-0"
+        enter-from-class="opacity-0 -translate-x-2"
+        enter-to-class="opacity-100 translate-x-0"
         leave-active-class="transition-all duration-150 ease-in"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-2"
+        leave-from-class="opacity-100 translate-x-0"
+        leave-to-class="opacity-0 -translate-x-2"
       >
-        <div v-if="profileOpen" class="mt-1 rounded-lg border border-border bg-popover p-1 shadow-lg">
-          <NuxtLink
-            to="/settings"
-            class="flex items-center gap-2 rounded-md px-2.5 py-2 text-sm text-popover-foreground/70 transition-colors hover:bg-accent hover:text-popover-foreground"
-            @click="$emit('close')"
-          >
-            <HugeiconsIcon :icon="Settings01Icon" :size="16" />
-            Setelan
-          </NuxtLink>
+        <div v-if="profileOpen" class="absolute left-full top-0 ml-2 rounded-xl border border-border bg-popover p-1 shadow-lg">
           <button
-            class="mt-0.5 flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm text-destructive/70 transition-colors hover:bg-accent hover:text-destructive"
+            class="flex h-11 w-full items-center gap-2 rounded-xl px-3 text-sm text-destructive/70 transition-colors hover:bg-accent hover:text-destructive"
             @click="onSignOut"
           >
             <HugeiconsIcon :icon="Logout01Icon" :size="16" />
@@ -88,7 +77,7 @@ import {
   Settings01Icon,
   MoneyAdd01Icon,
   Logout01Icon,
-  ChevronUpIcon,
+  ArrowUp01Icon as ChevronUpIcon,
 } from '@hugeicons/core-free-icons';
 
 defineProps<{

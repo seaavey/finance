@@ -8,13 +8,7 @@
     </div>
 
     <template v-else-if="transaction">
-      <TransactionForm :transaction="transaction" @saved="onSaved" @cancel="navigateTo('/transactions')" />
-      <div class="pt-2">
-        <Button variant="destructive" class="w-full" @click="showDeleteDialog = true">
-          <HugeiconsIcon :icon="Delete01Icon" :size="18" />
-          Hapus Transaksi
-        </Button>
-      </div>
+      <TransactionForm :transaction="transaction" @saved="onSaved" @cancel="navigateTo('/transactions')" @delete="showDeleteDialog = true" />
     </template>
 
     <div v-else class="flex flex-col items-center gap-3 py-12">
@@ -33,8 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { Delete01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/vue'
 import type { Transaction } from '~/composables/useTransactions'
 
 const route = useRoute()
@@ -58,7 +50,7 @@ const onSaved = () => {
 }
 
 const onDelete = async () => {
-  if (!transaction.value) return
+  if (!transaction.value) { return }
   await deleteTransaction(transaction.value.id)
   showDeleteDialog.value = false
   navigateTo('/transactions')

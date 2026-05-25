@@ -1,46 +1,56 @@
 <template>
   <header
-    class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm"
+    class="sticky top-0 z-40 flex h-16 items-center border-b border-border/50 bg-background/80 px-6 backdrop-blur-xl"
   >
-    <div class="flex items-center gap-3">
+    <!-- LEFT -->
+    <div class="flex items-center gap-4">
       <button
-        class="rounded-lg p-1.5 text-muted-foreground hover:bg-accent md:hidden"
+        class="flex size-10 items-center justify-center rounded-xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground lg:hidden"
         @click="$emit('toggleSidebar')"
       >
-        <HugeiconsIcon :icon="Menu02Icon" :size="20" />
+        <HugeiconsIcon :icon="Menu02Icon" :size="18" />
       </button>
-      <h1 class="text-sm font-semibold text-foreground">{{ pageTitle }}</h1>
+
+      <p class="text-sm text-muted-foreground/80">
+        {{ sectionLabel }}
+      </p>
     </div>
 
-    <div class="flex items-center gap-2">
-      <button
-        class="flex w-44 items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent"
-      >
-        <HugeiconsIcon :icon="Search01Icon" :size="16" />
-        <span>Cari...</span>
-        <kbd class="ml-auto rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘K</kbd>
-      </button>
-
-      <button class="relative rounded-lg border border-border bg-card p-2 text-muted-foreground transition-colors hover:bg-accent">
-        <HugeiconsIcon :icon="Notification03Icon" :size="18" />
-        <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-destructive" />
-      </button>
-
-      <ClientOnly>
-        <button
-          class="rounded-lg border border-border bg-card p-2 text-muted-foreground transition-colors hover:bg-accent"
-          @click="cycleColorMode"
+    <!-- RIGHT -->
+    <div class="ml-auto flex items-center gap-3">
+      <!-- SEARCH -->
+      <div class="relative hidden md:block">
+        <HugeiconsIcon :icon="Search01Icon" :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
+        <div
+          class="flex h-11 w-65 cursor-pointer items-center rounded-2xl border border-border/50 bg-card/30 pl-10 pr-14 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground"
         >
-          <HugeiconsIcon v-if="colorMode.preference === 'dark'" :icon="Sun01Icon" :size="18" />
-          <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
-        </button>
-      </ClientOnly>
+          <span>Cari transaksi...</span>
+          <kbd class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50">⌘K</kbd>
+        </div>
+      </div>
 
+      <!-- NOTIFICATION -->
+      <button class="relative flex size-11 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground">
+        <HugeiconsIcon :icon="Notification03Icon" :size="18" />
+        <span class="absolute right-2.5 top-2.5 size-2 rounded-full bg-destructive ring-2 ring-background" />
+      </button>
+
+      <!-- THEME -->
       <button
-        class="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
+        class="flex size-11 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground"
+        @click="cycleColorMode"
+      >
+        <HugeiconsIcon v-if="colorMode.value === 'dark'" :icon="Sun01Icon" :size="18" />
+        <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
+      </button>
+
+      <!-- CTA -->
+      <button
+        v-if="route.path !== '/settings'"
+        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-5 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="navigateTo('/transactions/new')"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="16" />
+        <HugeiconsIcon :icon="Add01Icon" :size="18" />
         <span class="hidden sm:inline">Tambah</span>
       </button>
     </div>
@@ -66,21 +76,18 @@ const route = useRoute();
 const colorMode = useColorMode();
 
 const cycleColorMode = () => {
-  const modes = ['dark', 'light', 'system'];
-  const current = modes.indexOf(colorMode.preference);
-  colorMode.preference = modes[(current + 1) % modes.length];
+  colorMode.preference = colorMode.value === 'light' ? 'dark' : 'light';
 };
 
-const pageTitle = computed(() => {
-  const titles: Record<string, string> = {
+const sectionLabel = computed(() => {
+  const labels: Record<string, string> = {
     '/': 'Dashboard',
     '/transactions': 'Transaksi',
-    '/transactions/new': 'Tambah Transaksi',
+    '/transactions/new': 'Transaksi / Tambah',
     '/categories': 'Kategori',
-    '/todos': 'Todo',
     '/recurring': 'Transaksi Rutin',
     '/settings': 'Setelan',
   };
-  return titles[route.path] ?? 'Finance';
+  return labels[route.path] ?? 'Finance';
 });
 </script>

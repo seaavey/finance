@@ -1,27 +1,27 @@
 <template>
   <div
-    class="flex items-center justify-between rounded-lg border border-border p-3"
+    class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-5 transition-all hover:border-border hover:bg-card/50"
   >
-    <div class="flex items-center gap-3 min-w-0">
+    <div class="flex items-center gap-4">
       <div
-        class="flex size-9 shrink-0 items-center justify-center rounded-full sm:size-10"
+        class="flex size-12 items-center justify-center rounded-2xl"
         :style="{ backgroundColor: (categoryColor ?? '#6b7280') + '20' }"
       >
-        <div class="size-2.5 rounded-full sm:size-3" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
+        <div class="size-3 rounded-full" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
       </div>
-      <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-medium">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</p>
-        <p class="text-xs text-muted-foreground">{{ formattedDate }}</p>
+      <div>
+        <h3 class="font-medium text-foreground">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</h3>
+        <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
       </div>
     </div>
-    <div class="shrink-0 text-right">
+    <div class="text-right">
       <p
-        class="text-sm font-semibold"
-        :class="transaction.type === 'income' ? 'text-green-500' : 'text-red-500'"
+        class="text-lg font-semibold"
+        :class="transaction.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
       >
         {{ transaction.type === 'income' ? '+' : '-' }}{{ formatted }}
       </p>
-      <p class="text-[10px] text-muted-foreground">{{ categoryName }}</p>
+      <p class="mt-1 text-sm text-muted-foreground">{{ transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}</p>
     </div>
   </div>
 </template>

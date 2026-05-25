@@ -1,11 +1,11 @@
 <template>
-  <button class="flex w-full items-center gap-3 p-3.5 active:bg-accent/50" @click="$emit('click')">
-    <div class="flex size-8 items-center justify-center rounded-lg" :class="iconBg">
+  <button class="group flex w-full items-center gap-3 px-4 py-3.5 transition-all duration-200 hover:bg-card/40" @click="$emit('click')">
+    <div class="flex size-8 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-105" :class="iconBg">
       <HugeiconsIcon :icon="iconComponent" :size="18" :class="iconColor" />
     </div>
     <div class="flex flex-1 items-center justify-between min-w-0">
-      <span class="text-sm font-medium">{{ label }}</span>
-      <div class="flex items-center gap-1.5 text-muted-foreground">
+      <span class="text-sm font-medium transition-colors duration-200 group-hover:text-foreground">{{ label }}</span>
+      <div class="flex items-center gap-1.5 text-muted-foreground transition-colors duration-200 group-hover:text-foreground/80">
         <span class="text-xs">{{ value }}</span>
         <HugeiconsIcon :icon="ArrowRight01Icon" :size="14" />
       </div>

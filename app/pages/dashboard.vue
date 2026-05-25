@@ -244,19 +244,19 @@ const formatRelativeDate = (date: string) => {
   const d = new Date(date);
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'Hari ini';
-  if (diffDays === 1) return 'Kemarin';
-  if (diffDays < 7) return `${diffDays} hari lalu`;
+  if (diffDays === 0) { return 'Hari ini'; }
+  if (diffDays === 1) { return 'Kemarin'; }
+  if (diffDays < 7) { return `${diffDays} hari lalu`; }
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 };
 
 const getCategoryName = (id: string | null) => {
-  if (!id) return '';
+  if (!id) { return ''; }
   return categories.value.find(c => c.id === id)?.name || '';
 };
 
 const getCategoryColor = (id: string | null) => {
-  if (!id) return '#6b7280';
+  if (!id) { return '#6b7280'; }
   return categories.value.find(c => c.id === id)?.color || '#6b7280';
 };
 
@@ -288,7 +288,7 @@ const trendIncome = computed(() => {
     const d = new Date(tx.date);
     return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
   }).reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) return 0;
+  if (prev === 0) { return 0; }
   return Math.round(((totalIncome.value - prev) / prev) * 100);
 });
 
@@ -299,7 +299,7 @@ const trendExpense = computed(() => {
     const d = new Date(tx.date);
     return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
   }).reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) return 0;
+  if (prev === 0) { return 0; }
   return Math.round(((totalExpense.value - prev) / prev) * 100);
 });
 

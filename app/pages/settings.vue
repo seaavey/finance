@@ -1,51 +1,76 @@
 <template>
-  <div class="mx-auto max-w-md space-y-6">
-    <div v-if="loading" class="space-y-4">
-      <div class="flex flex-col items-center gap-2 py-6">
-        <Skeleton class="size-16 rounded-full" />
-        <Skeleton class="h-4 w-32" />
-        <Skeleton class="h-3 w-44" />
+  <div class="mx-auto max-w-4xl space-y-10">
+    <div v-if="loading" class="space-y-8">
+      <div class="flex items-center gap-5">
+        <Skeleton class="size-20 rounded-full" />
+        <div class="space-y-2">
+          <Skeleton class="h-5 w-48" />
+          <Skeleton class="h-4 w-36" />
+        </div>
       </div>
-      <Skeleton class="h-48 rounded-xl" />
-      <Skeleton class="h-24 rounded-xl" />
+      <div class="space-y-4">
+        <Skeleton class="h-14 w-full rounded-3xl" />
+        <Skeleton class="h-14 w-full rounded-3xl" />
+        <Skeleton class="h-14 w-full rounded-3xl" />
+      </div>
     </div>
 
-    <div v-else class="space-y-5">
-      <div class="flex flex-col items-center gap-1.5 py-4">
-        <Avatar class="size-16">
+    <div v-else class="space-y-10">
+      <!-- PROFILE HEADER -->
+      <div class="flex items-center gap-5">
+        <Avatar class="size-20">
           <AvatarImage v-if="user?.user_metadata?.avatar_url" :src="user.user_metadata.avatar_url" :alt="user?.user_metadata?.full_name" />
-          <AvatarFallback class="text-xl font-bold">{{ user?.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
+          <AvatarFallback class="text-2xl font-bold">{{ user?.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
         </Avatar>
-        <p class="text-base font-semibold">{{ profile.display_name || user?.user_metadata?.full_name }}</p>
-        <p class="text-xs text-muted-foreground">{{ user?.email }}</p>
+        <div>
+          <h1 class="text-2xl font-bold">{{ profile.display_name || user?.user_metadata?.full_name }}</h1>
+          <p class="mt-0.5 text-muted-foreground">{{ user?.email }}</p>
+        </div>
       </div>
 
-      <Card>
-        <CardContent class="divide-y divide-border p-0">
+      <!-- PREFERENCES -->
+      <section>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Preferensi</p>
+        <div class="rounded-3xl border border-border/50 bg-card/20">
           <SettingsItem icon="user" label="Nama Tampilan" :value="profile.display_name || 'Belum diatur'" @click="editName = true" />
+          <div class="mx-4 border-t border-border/50" />
           <SettingsItem icon="currency" label="Mata Uang" :value="selectedCurrencyLabel" @click="editCurrency = true" />
+          <div class="mx-4 border-t border-border/50" />
           <SettingsItem icon="palette" label="Tema" :value="themeLabel" @click="cycleTheme" />
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Card>
-        <CardContent class="divide-y divide-border p-0">
+      <!-- DATA -->
+      <section>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Data</p>
+        <div class="rounded-3xl border border-border/50 bg-card/20">
           <SettingsItem icon="download" label="Export Data" value="CSV" @click="exportData" />
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Card class="border-destructive/20">
-        <CardContent class="p-0">
-          <button class="flex w-full items-center gap-3 p-3.5 text-destructive active:bg-destructive/5" @click="onSignOut">
-            <div class="flex size-8 items-center justify-center rounded-lg bg-destructive/10">
-              <HugeiconsIcon :icon="Logout01Icon" :size="18" class="text-destructive" />
+      <!-- DANGER ZONE -->
+      <section>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Akun</p>
+        <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.03] p-2">
+          <button
+            class="flex w-full items-center justify-between rounded-2xl px-4 py-4 transition hover:bg-red-500/[0.05]"
+            @click="onSignOut"
+          >
+            <div class="flex items-center gap-4">
+              <div class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10">
+                <HugeiconsIcon :icon="Logout01Icon" :size="20" class="text-red-400" />
+              </div>
+              <div class="text-left">
+                <p class="font-medium text-red-400">Logout</p>
+                <p class="text-sm text-muted-foreground">Keluar dari akun saat ini</p>
+              </div>
             </div>
-            <span class="text-sm font-medium">Logout</span>
+            <HugeiconsIcon :icon="ArrowRight01Icon" :size="18" class="text-muted-foreground/40" />
           </button>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <p class="text-center text-[11px] text-muted-foreground">v1.0.0 · Made with ♥ in Indonesia</p>
+      <p class="text-center text-xs text-muted-foreground/30">v1.0.0</p>
     </div>
 
     <Dialog v-model:open="editName">
@@ -91,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { Logout01Icon, Tick01Icon } from '@hugeicons/core-free-icons'
+import { Logout01Icon, Tick01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/vue'
 import { useSupabase } from '~/lib/supabase'
 
@@ -124,11 +149,11 @@ const themeLabel = computed(() => {
 const cycleTheme = () => {
   const modes = ['system', 'light', 'dark']
   const idx = modes.indexOf(colorMode.preference)
-  colorMode.preference = modes[(idx + 1) % modes.length]
+  colorMode.preference = modes[(idx + 1) % modes.length] || 'system'
 }
 
 onMounted(async () => {
-  if (!user.value) return
+  if (!user.value) { return }
 
   const { data } = await supabase
     .from('profiles')
@@ -144,7 +169,7 @@ onMounted(async () => {
 })
 
 const saveProfile = async () => {
-  if (!user.value) return
+  if (!user.value) { return }
   saving.value = true
 
   const { error } = await supabase
@@ -167,7 +192,7 @@ const saveProfile = async () => {
 const selectCurrency = async (value: string) => {
   profile.currency = value
   editCurrency.value = false
-  if (!user.value) return
+  if (!user.value) { return }
 
   const { error } = await supabase
     .from('profiles')

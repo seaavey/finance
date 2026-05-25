@@ -10,8 +10,8 @@
 
     <main class="flex-1">
       <section class="relative flex flex-col items-center overflow-hidden px-6 py-20 text-center md:py-32">
-        <div class="pointer-events-none absolute -top-40 left-1/2 size-[500px] -translate-x-1/2 rounded-full bg-primary opacity-[0.07] blur-3xl md:size-[700px]" />
-        <div class="pointer-events-none absolute -bottom-32 left-1/2 size-[300px] -translate-x-1/2 rounded-full bg-primary opacity-[0.04] blur-3xl" />
+        <div class="pointer-events-none absolute -top-40 left-1/2 size-125 -translate-x-1/2 rounded-full bg-primary opacity-[0.07] blur-3xl md:size-175" />
+        <div class="pointer-events-none absolute -bottom-32 left-1/2 size-75 -translate-x-1/2 rounded-full bg-primary opacity-[0.04] blur-3xl" />
 
         <div class="relative z-10 mx-auto max-w-3xl">
           <div class="animate-[fade-up_0.6s_ease-out]">
@@ -117,8 +117,8 @@
       </section>
 
       <section class="relative overflow-hidden border-t border-border px-6 py-20 text-center md:py-28">
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent" />
-        <div class="pointer-events-none absolute left-1/2 top-0 size-[400px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
+        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/3 to-transparent" />
+        <div class="pointer-events-none absolute left-1/2 top-0 size-100 -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         <div class="relative z-10 mx-auto max-w-lg">
           <div class="animate-[fade-up_0.6s_ease-out_both]">
             <h2 class="font-heading text-2xl font-bold">Siap mulai?</h2>

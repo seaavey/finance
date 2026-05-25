@@ -1,102 +1,104 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-xl font-bold">Transaksi Rutin</h2>
-        <p class="text-sm text-muted-foreground">{{ recurring.length }} jadwal aktif</p>
+  <div class="mx-auto max-w-6xl space-y-8">
+    <!-- HEADER -->
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Transaksi Rutin</h1>
+      <p class="mt-1 text-sm text-muted-foreground">{{ recurring.length }} jadwal aktif</p>
+    </div>
+
+    <!-- STATS -->
+    <div v-if="!loading && recurring.length > 0" class="grid grid-cols-2 gap-4">
+      <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-5">
+        <p class="text-sm text-red-400/70">Pengeluaran Rutin</p>
+        <h3 class="mt-2 text-2xl font-bold text-red-400">{{ formatCurrency(monthlyExpense) }}</h3>
       </div>
-      <Button @click="showForm = true">
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        Tambah
-      </Button>
-    </div>
-
-    <div v-if="!loading && recurring.length > 0" class="grid grid-cols-2 gap-3">
-      <Card class="bg-red-50 dark:bg-red-950/30">
-        <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pengeluaran Rutin/Bulan</p>
-          <p class="text-sm font-bold text-red-600">{{ formatCurrency(monthlyExpense) }}</p>
-        </CardContent>
-      </Card>
-      <Card class="bg-green-50 dark:bg-green-950/30">
-        <CardContent class="p-3 text-center">
-          <p class="text-[11px] text-muted-foreground">Pemasukan Rutin/Bulan</p>
-          <p class="text-sm font-bold text-green-600">{{ formatCurrency(monthlyIncome) }}</p>
-        </CardContent>
-      </Card>
-    </div>
-
-    <div v-if="loading" class="space-y-2">
-      <Skeleton class="h-[72px] rounded-xl" />
-      <Skeleton class="h-[72px] rounded-xl" />
-      <Skeleton class="h-[72px] rounded-xl" />
-    </div>
-
-    <div v-else-if="recurring.length === 0" class="flex flex-col items-center gap-3 py-12">
-      <div class="flex size-12 items-center justify-center rounded-full bg-muted">
-        <HugeiconsIcon :icon="RepeatIcon" :size="24" class="text-muted-foreground" />
+      <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
+        <p class="text-sm text-emerald-400/70">Pemasukan Rutin</p>
+        <h3 class="mt-2 text-2xl font-bold text-emerald-400">{{ formatCurrency(monthlyIncome) }}</h3>
       </div>
-      <p class="text-sm text-muted-foreground">Belum ada transaksi rutin</p>
-      <Button size="sm" @click="showForm = true">Tambah Sekarang</Button>
     </div>
 
-    <div v-else class="space-y-2">
-      <Card
+    <!-- LOADING -->
+    <div v-if="loading" class="space-y-3">
+      <Skeleton class="h-[104px] rounded-3xl" />
+      <Skeleton class="h-[104px] rounded-3xl" />
+      <Skeleton class="h-[104px] rounded-3xl" />
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div v-else-if="recurring.length === 0" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 px-6 py-16">
+      <div class="flex size-16 items-center justify-center rounded-full bg-card/30">
+        <HugeiconsIcon :icon="RepeatIcon" :size="28" class="text-muted-foreground/60" />
+      </div>
+      <h3 class="mt-5 text-lg font-medium">Belum ada transaksi rutin</h3>
+      <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">Buat transaksi otomatis untuk pengeluaran atau pemasukan rutin bulanan.</p>
+      <button
+        class="mt-6 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-5 py-2.5 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        @click="showForm = true"
+      >
+        Tambah Transaksi Rutin
+      </button>
+    </div>
+
+    <!-- LIST -->
+    <div v-else class="space-y-3">
+      <div
         v-for="item in recurring"
         :key="item.id"
-        class="group transition-colors"
-        :class="item.active ? 'hover:bg-accent/50' : 'opacity-50'"
+        class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-5 transition-all duration-200"
+        :class="item.active ? 'hover:border-border/80 hover:bg-card/60' : 'opacity-50'"
       >
-        <CardContent class="flex items-center justify-between p-4">
-          <div class="flex items-center gap-3">
-            <div
-              class="flex size-10 items-center justify-center rounded-xl"
-              :class="item.type === 'income' ? 'bg-green-500/10' : 'bg-red-500/10'"
-            >
-              <HugeiconsIcon
-                :icon="item.type === 'income' ? ArrowDown01Icon : ArrowUp01Icon"
-                :size="20"
-                :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'"
-              />
-            </div>
-            <div class="min-w-0">
-              <p class="truncate text-sm font-medium">{{ item.description || categoryName(item.category_id) || 'Tanpa deskripsi' }}</p>
-              <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                <span class="inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5">
-                  <HugeiconsIcon :icon="RepeatIcon" :size="12" />
-                  {{ frequencyLabel(item.frequency) }}
-                </span>
-                <span>{{ formatNextDate(item.next_date) }}</span>
-              </div>
+        <div class="flex items-center gap-4">
+          <div
+            class="flex size-14 items-center justify-center rounded-2xl"
+            :class="item.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
+          >
+            <HugeiconsIcon
+              :icon="item.type === 'income' ? ArrowDown01Icon : ArrowUp01Icon"
+              :size="24"
+              :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
+            />
+          </div>
+          <div>
+            <h3 class="font-medium">{{ item.description || categoryName(item.category_id) || 'Tanpa deskripsi' }}</h3>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span class="rounded-lg bg-card/50 px-2 py-0.5 text-xs text-muted-foreground">
+                {{ frequencyLabel(item.frequency) }}
+              </span>
+              <span class="text-xs text-muted-foreground/60">
+                {{ formatNextDate(item.next_date) }}
+              </span>
             </div>
           </div>
+        </div>
 
-          <div class="flex items-center gap-3">
+        <div class="flex items-center gap-6">
+          <div class="text-right">
+            <p class="text-xs text-muted-foreground/60">Nominal</p>
             <p
-              class="text-sm font-semibold"
-              :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'"
+              class="text-lg font-semibold"
+              :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
             >
               {{ item.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(item.amount), item.currency) }}
             </p>
-
-            <div class="flex items-center gap-1">
-              <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
-              <button
-                class="rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:bg-accent group-hover:opacity-100"
-                @click="editItem(item)"
-              >
-                <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
-              </button>
-              <button
-                class="rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                @click="onDelete(item)"
-              >
-                <HugeiconsIcon :icon="Delete01Icon" :size="16" />
-              </button>
-            </div>
           </div>
-        </CardContent>
-      </Card>
+          <div class="flex items-center gap-2">
+            <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
+            <button
+              class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-card hover:text-foreground group-hover:opacity-100"
+              @click="editItem(item)"
+            >
+              <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
+            </button>
+            <button
+              class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+              @click="onDelete(item)"
+            >
+              <HugeiconsIcon :icon="Delete01Icon" :size="16" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <RecurringForm
@@ -109,7 +111,7 @@
     <ConfirmDialog
       v-model:open="showDeleteDialog"
       title="Hapus Transaksi Rutin"
-      :description="`Yakin hapus &quot;${deletingItem?.name || 'transaksi rutin'}&quot;? Tindakan ini tidak bisa dibatalkan.`"
+      :description="`Yakin hapus &quot;${deletingItem?.description || 'transaksi rutin'}&quot;? Tindakan ini tidak bisa dibatalkan.`"
       confirm-text="Hapus"
       @confirm="confirmDelete"
     />
@@ -118,7 +120,6 @@
 
 <script setup lang="ts">
 import {
-  Add01Icon,
   RepeatIcon,
   ArrowDown01Icon,
   ArrowUp01Icon,
@@ -137,18 +138,18 @@ const editingItem = ref<RecurringTransaction | undefined>()
 
 const monthlyExpense = computed(() =>
   recurring.value.filter(r => r.type === 'expense' && r.active).reduce((s, r) => {
-    if (r.frequency === 'daily') return s + r.amount * 30
-    if (r.frequency === 'weekly') return s + r.amount * 4
-    if (r.frequency === 'yearly') return s + r.amount / 12
+    if (r.frequency === 'daily') { return s + r.amount * 30 }
+    if (r.frequency === 'weekly') { return s + r.amount * 4 }
+    if (r.frequency === 'yearly') { return s + r.amount / 12 }
     return s + r.amount
   }, 0)
 )
 
 const monthlyIncome = computed(() =>
   recurring.value.filter(r => r.type === 'income' && r.active).reduce((s, r) => {
-    if (r.frequency === 'daily') return s + r.amount * 30
-    if (r.frequency === 'weekly') return s + r.amount * 4
-    if (r.frequency === 'yearly') return s + r.amount / 12
+    if (r.frequency === 'daily') { return s + r.amount * 30 }
+    if (r.frequency === 'weekly') { return s + r.amount * 4 }
+    if (r.frequency === 'yearly') { return s + r.amount / 12 }
     return s + r.amount
   }, 0)
 )
@@ -159,7 +160,7 @@ onMounted(async () => {
 })
 
 const categoryName = (id: string | null) => {
-  if (!id) return ''
+  if (!id) { return '' }
   return categories.value.find((c) => c.id === id)?.name ?? ''
 }
 
@@ -173,9 +174,9 @@ const formatNextDate = (date: string) => {
   const today = new Date()
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-  if (diff === 0) return 'Hari ini'
-  if (diff === 1) return 'Besok'
-  if (diff < 7) return `${diff} hari lagi`
+  if (diff === 0) { return 'Hari ini' }
+  if (diff === 1) { return 'Besok' }
+  if (diff < 7) { return `${diff} hari lagi` }
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
 }
 
