@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: '',
       supabaseAnonKey: '',
+      siteUrl: '',
     },
   },
   vite: {
@@ -32,9 +33,8 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo', '@nuxtjs/i18n'],
+  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo', '@nuxtjs/i18n', '@nuxt/fonts'],
   i18n: {
-    lazy: true,
     langDir: 'locales',
     defaultLocale: 'id',
     locales: [
@@ -55,9 +55,6 @@ export default defineNuxtConfig({
     classSuffix: '',
     preference: 'system',
     fallback: 'light',
-  },
-  ogImage: {
-    fonts: ['Inter:400,600,700,800'],
   },
   shadcn: {
     prefix: '',

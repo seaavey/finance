@@ -46,7 +46,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 });
 
-defineOgImageComponent('Default', {
+defineOgImage('Default', {
   title: 'Finance',
   description: `${t('landing.hero_desc')} ${t('landing.hero_free')}.`,
 });
