@@ -16,7 +16,7 @@ export default defineEventHandler((event) => {
   setResponseHeader(
     event,
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; form-action 'self';",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; form-action 'self';",
   );
   setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
   setResponseHeader(event, 'X-Frame-Options', 'DENY');
@@ -51,20 +51,33 @@ export default defineEventHandler((event) => {
     if (query[param]) {
       const targets = Array.isArray(query[param]) ? query[param] : [query[param]];
       for (const t of targets) {
-        if (typeof t === 'string' && (t.startsWith('http://') || t.startsWith('https://') || t.startsWith('//'))) {
-          throw createError({
-            statusCode: 400,
-            statusMessage: 'Bad Request: External redirects are prohibited.',
-          });
+        if (typeof t === 'string') {
+          const target = t.trim();
+          // Block absolute URLs (http://, https://, //, and even \/\/ for some parsers)
+          if (/^([a-z0-9]+:)?\/\//i.test(target) || target.startsWith('\\\\')) {
+            throw createError({
+              statusCode: 400,
+              statusMessage: 'Bad Request: External redirects are prohibited.',
+            });
+          }
         }
       }
     }
   }
 
   // 4. Mitigate SQLi and generic injection probing
-  // Specifically intercepting /sessions and /api/Users/ as identified in the pentest report
   const url = getRequestURL(event);
   const path = url.pathname.toLowerCase();
+  const searchParams = url.search.toLowerCase();
+
+  // Generic XSS and injection protection for query strings
+  if (searchParams.includes('<script') || searchParams.includes('javascript:') || searchParams.includes('onerror=')) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Bad Request: Potential injection detected.',
+    });
+  }
+
   if (path.includes('/sessions') || path.includes('/api/users')) {
     const searchParams = url.search.toLowerCase();
     // Simple heuristic to block SQLi payloads like "' OR '1'='1"
