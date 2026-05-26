@@ -38,12 +38,11 @@
       <div class="mt-4 flex items-start gap-2">
         <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{ form.currency }}</span>
         <input
-          v-model.number="form.amount"
-          type="number"
-          min="0"
-          step="1"
+          v-model="amountDisplay"
+          type="text"
+          inputmode="numeric"
           placeholder="0"
-          class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
         />
       </div>
@@ -65,18 +64,18 @@
             <SelectTrigger class="border-none shadow-none">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent class="bg-[#111114] border border-white/10 shadow-2xl shadow-black/40 rounded-2xl p-2">
+            <SelectContent class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel class="sticky top-0 bg-[#111114] z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">{{ group.label }}</SelectLabel>
+                <SelectLabel class="sticky top-0 bg-popover z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{{ group.label }}</SelectLabel>
                 <SelectItem
                   v-for="c in group.currencies"
                   :key="c.value"
                   :value="c.value"
-                  class="rounded-xl px-3 py-2.5 text-sm text-zinc-300 hover:bg-white/5 cursor-pointer"
+                  class="rounded-xl px-3 py-2.5 text-sm text-foreground hover:bg-accent cursor-pointer"
                 >
                   <div class="flex items-center gap-2">
                     <span class="font-medium">{{ c.value }}</span>
-                    <span class="text-zinc-500">{{ c.label.split(' - ')[1] }}</span>
+                    <span class="text-muted-foreground">{{ c.label.split(' - ')[1] }}</span>
                   </div>
                 </SelectItem>
               </SelectGroup>
@@ -153,17 +152,28 @@ const emit = defineEmits<{
   delete: [];
 }>();
 
-const { currencies, currencyGroups } = useCurrency();
+const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
 
-const selectedCurrency = computed(() => currencies.find((c) => c.value === form.currency));
 const { addTransaction, updateTransaction } = useTransactions();
+
+const amountDisplay = computed({
+  get: () => {
+    if (!form.amount) {
+      return '';
+    }
+    return formatNumberOnly(form.amount, form.currency);
+  },
+  set: (val: string) => {
+    form.amount = parseLocalizedNumber(val, form.currency);
+  },
+});
 
 const today = new Date().toISOString().split('T')[0];
 
 const form = reactive({
   type: props.transaction?.type ?? ('expense' as 'income' | 'expense'),
   amount: props.transaction?.amount ?? 0,
-  currency: props.transaction?.currency ?? 'IDR',
+  currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? today,
@@ -190,6 +200,9 @@ const onNumberKeydown = (e: KeyboardEvent) => {
     return;
   }
   if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  if (e.key === ',' || e.key === '.') {
     return;
   }
   e.preventDefault();

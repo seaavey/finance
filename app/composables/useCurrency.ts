@@ -7,7 +7,9 @@ export const useCurrency = () => {
   const defaultCurrency = useState<string>('default-currency', () => 'IDR');
 
   const loadCurrency = async () => {
-    if (!user.value) return;
+    if (!user.value) {
+      return;
+    }
     const { data } = await supabase
       .from('profiles')
       .select('currency')
@@ -95,5 +97,39 @@ export const useCurrency = () => {
 
   const currencies = currencyGroups.flatMap((g) => g.currencies);
 
-  return { formatCurrency, currencies, currencyGroups, loadCurrency, defaultCurrency };
+  const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK'];
+
+  const formatNumberOnly = (amount: number, currency?: string) => {
+    const cur = currency || defaultCurrency.value;
+    return new Intl.NumberFormat(getLocale(cur), {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: noDecimalCurrencies.includes(cur) ? 0 : 2,
+    }).format(amount);
+  };
+
+  const parseLocalizedNumber = (str: string, currency?: string): number => {
+    const cur = currency || defaultCurrency.value;
+    const locale = getLocale(cur);
+    const parts = new Intl.NumberFormat(locale).formatToParts(1111.1);
+    const decimalSep = parts.find((p) => p.type === 'decimal')?.value || '.';
+    const groupSep = parts.find((p) => p.type === 'group')?.value || '';
+
+    let cleaned = str;
+    if (groupSep) {
+      cleaned = cleaned.replace(new RegExp(`\\${groupSep}`, 'g'), '');
+    }
+    cleaned = cleaned.replace(decimalSep, '.');
+    const num = Number(cleaned);
+    return Number.isNaN(num) ? 0 : Math.round(num * 100) / 100;
+  };
+
+  return {
+    formatCurrency,
+    formatNumberOnly,
+    parseLocalizedNumber,
+    currencies,
+    currencyGroups,
+    loadCurrency,
+    defaultCurrency,
+  };
 };

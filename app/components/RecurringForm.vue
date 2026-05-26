@@ -86,7 +86,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-const { currencies } = useCurrency();
+const { currencies, defaultCurrency } = useCurrency();
 const { addRecurring, updateRecurring } = useRecurring();
 
 const today = new Date().toISOString().split('T')[0];
@@ -94,7 +94,7 @@ const today = new Date().toISOString().split('T')[0];
 const form = reactive({
   type: props.item?.type ?? ('expense' as 'income' | 'expense'),
   amount: props.item?.amount ?? ('' as unknown as number),
-  currency: props.item?.currency ?? 'IDR',
+  currency: props.item?.currency ?? defaultCurrency.value,
   category_id: props.item?.category_id ?? '',
   description: props.item?.description ?? '',
   frequency: props.item?.frequency ?? ('monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly'),
