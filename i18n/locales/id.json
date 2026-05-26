@@ -163,7 +163,7 @@
     "dialog_currency_title": "Mata Uang Default",
     "invite_partner_title": "Undang Pasangan",
     "invite_partner_desc": "Catat keuangan bersama pasanganmu",
-    "invite_email_placeholder": "email.pasangan@example.com",
+    "invite_email_placeholder": "email.pasangan{'@'}example.com",
     "invite_button": "Kirim Undangan",
     "inviting": "Mengirim...",
     "sent_invitations_title": "Undangan Terkirim",

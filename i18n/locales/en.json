@@ -163,7 +163,7 @@
     "dialog_currency_title": "Default Currency",
     "invite_partner_title": "Invite Partner",
     "invite_partner_desc": "Track finances together with your partner",
-    "invite_email_placeholder": "partner.email@example.com",
+    "invite_email_placeholder": "partner.email{'@'}example.com",
     "invite_button": "Send Invite",
     "inviting": "Sending...",
     "sent_invitations_title": "Sent Invitations",
