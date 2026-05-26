@@ -40,6 +40,7 @@ import {
   File02Icon,
   ArrangeIcon,
 } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
 import type { Component } from 'vue';
 
 interface Feature {

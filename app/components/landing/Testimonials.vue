@@ -19,9 +19,10 @@
         >
           <!-- Stars -->
           <div class="flex gap-0.5">
-            <StarIcon
+            <HugeiconsIcon
               v-for="n in 5"
               :key="n"
+              :icon="StarIcon"
               :size="14"
               :class="n <= t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'"
             />
@@ -51,6 +52,7 @@
 
 <script setup lang="ts">
 import { StarIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
 
 const testimonials = [
   {
