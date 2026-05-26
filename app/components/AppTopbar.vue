@@ -11,7 +11,7 @@
         <HugeiconsIcon :icon="Menu02Icon" :size="18" />
       </button>
 
-      <Breadcrumb>
+      <Breadcrumb class="hidden md:block">
         <BreadcrumbList>
           <template v-for="(item, i) in breadcrumbItems" :key="i">
             <template v-if="i === breadcrumbItems.length - 1">
