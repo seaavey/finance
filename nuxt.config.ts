@@ -56,6 +56,9 @@ export default defineNuxtConfig({
     preference: 'system',
     fallback: 'light',
   },
+  ogImage: {
+    fonts: ['Inter:400,600,700,800'],
+  },
   shadcn: {
     prefix: '',
   },

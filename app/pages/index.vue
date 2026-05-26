@@ -45,4 +45,9 @@ useSeoMeta({
   ogSiteName: 'Finance',
   twitterCard: 'summary_large_image',
 });
+
+defineOgImageComponent('Default', {
+  title: 'Finance',
+  description: `${t('landing.hero_desc')} ${t('landing.hero_free')}.`,
+});
 </script>

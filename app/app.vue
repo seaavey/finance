@@ -17,4 +17,6 @@ onMounted(() => {
     toastRef.value?.addToast(msg, type || 'info');
   });
 });
+
+defineOgImageComponent('Default');
 </script>
