@@ -6,9 +6,9 @@ A personal finance tracker designed for individuals and couples, built with Nuxt
 
 - **Frontend:** [Nuxt 4](https://nuxt.com/) (Vue 3, TypeScript, `app/` directory structure).
 - **Backend:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Row Level Security).
-- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/) with [Shadcn UI](https://www.shadcn-vue.com/).
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/) with [shadcn-vue](https://www.shadcn-vue.com/).
 - **Icons:** [HugeIcons](https://hugeicons.com/).
-- **Localization:** [Nuxt i18n](https://i18n.nuxtjs.org/) supporting Indonesian (`id`) and English (`en`).
+- **UI Integration:** [shadcn-nuxt](https://www.shadcn-vue.com/docs/installation/nuxt.html) for seamless component auto-import.
 - **Data Visualization:** [Chart.js](https://www.chartjs.org/) with `vue-chartjs`.
 - **Linting & Formatting:** [Biome](https://biomejs.dev/).
 
@@ -16,7 +16,7 @@ A personal finance tracker designed for individuals and couples, built with Nuxt
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) (recommended package manager)
+- **Bun:** Mandatory package manager and runtime. **All commands MUST be executed using `bun`** (e.g., `bun install`, `bun run <script>`, `bun x <package>`).
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (for local database management)
 
 ### Development Setup
@@ -58,14 +58,27 @@ bun run build
 
 ### Coding Standards
 
+- **Command Execution:** **Always use `bun`** for package management, running scripts, and executing binaries.
+- **TypeScript:** Strict type checking is mandatory. **Never use the `any` type.** Always define explicit interfaces or types for all data and function signatures.
+- **Operational Constraints:** **Do not execute `bun run dev` or `bun run build`** unless specifically requested by the user. These commands are heavy and should be avoided during standard development/refactoring tasks.
 - **Linting:** Use Biome for linting and formatting.
   - `bun run lint`: Run checks.
   - `bun run lint:fix`: Format and fix issues.
-- **TypeScript:** Strict type checking is encouraged. Define interfaces for data models (e.g., `Transaction` in `useTransactions.ts`).
+- **UI Components:** **Use `shadcn-vue` components** for UI elements. Primitive UI components are located in `app/components/ui/`. When adding new UI components, use the `bun x shadcn-vue@latest add <component>` command.
 - **Tailwind 4:** Use the latest Tailwind CSS 4 features and the `@tailwindcss/vite` plugin.
 - **State Management:** Use `useState` for shared state within composables to ensure SSR compatibility.
 
+## External Tools & MCP
+
+### pentest-ai
+An offensive-security MCP server providing 200+ wrapped security tools and specialist agents.
+- **Status:** Registered globally in Gemini CLI.
+- **Usage:** Tools are automatically available. You can ask for security scans, vulnerability assessments, or authenticated pentesting.
+- **Key Tools:** `list_tools`, `run_tool`, `test_web_app`, `test_api_security`, etc.
+- **Configuration:** Managed via `gemini mcp` commands.
+
 ## Key Features
+...
 
 - **Transaction Management:** Create, read, update, and delete income and expense transactions.
 - **Category Management:** Custom categories with icons and colors.
