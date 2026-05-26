@@ -2,8 +2,8 @@
   <section class="relative overflow-hidden px-6 pt-16 pb-20 md:pt-24 md:pb-28">
     <!-- Background effects -->
     <div class="pointer-events-none absolute inset-0">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 size-[600px] rounded-full bg-primary/8 blur-[120px]" />
-      <div class="absolute bottom-0 right-0 size-[400px] rounded-full bg-primary/5 blur-[100px]" />
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 size-150 rounded-full bg-primary/8 blur-[120px]" />
+      <div class="absolute bottom-0 right-0 size-100 rounded-full bg-primary/5 blur-[100px]" />
     </div>
 
     <div class="relative z-10 mx-auto max-w-6xl">
@@ -50,7 +50,7 @@
       <!-- Dashboard Preview -->
       <div class="relative mt-14 md:mt-20 animate-[fade-up_0.7s_ease-out_0.4s_both]">
         <!-- Glow behind -->
-        <div class="absolute inset-0 -m-4 rounded-2xl bg-gradient-to-b from-primary/10 via-transparent to-transparent blur-2xl" />
+        <div class="absolute inset-0 -m-4 rounded-2xl bg-linear-to-b from-primary/10 via-transparent to-transparent blur-2xl" />
 
         <!-- Main dashboard card -->
         <div class="relative rounded-2xl border border-border/50 bg-background/80 shadow-2xl shadow-primary/5 backdrop-blur-sm overflow-hidden">

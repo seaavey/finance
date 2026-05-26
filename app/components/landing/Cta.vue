@@ -2,7 +2,7 @@
   <section class="relative overflow-hidden px-6 py-16 md:py-24">
     <!-- Background glow -->
     <div class="pointer-events-none absolute inset-0">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[500px] rounded-full bg-primary/10 blur-[120px]" />
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-125 rounded-full bg-primary/10 blur-[120px]" />
     </div>
 
     <div class="relative z-10 mx-auto max-w-3xl text-center">

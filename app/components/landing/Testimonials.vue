@@ -51,7 +51,6 @@
 
 <script setup lang="ts">
 import { StarIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 const testimonials = [
   {
