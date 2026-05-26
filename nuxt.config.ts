@@ -26,6 +26,7 @@ export default defineNuxtConfig({
         'sortablejs-vue3',
         'sortablejs',
         'chart.js',
+        'exceljs',
         'vue-chartjs',
       ],
     },

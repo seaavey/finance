@@ -25,6 +25,7 @@
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "exceljs": "^4.4.0",
     "nuxt": "^4.4.6",
     "reka-ui": "^2.9.8",
     "satori": "^0.26.0",

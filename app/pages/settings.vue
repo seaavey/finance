@@ -44,7 +44,7 @@
       <section>
         <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Data</p>
         <div class="rounded-3xl border border-border/50 bg-card/20">
-          <SettingsItem icon="download" label="Export Data" value="CSV" @click="exportData" />
+          <SettingsItem icon="download" label="Export Data" :value="exportLabel" @click="exportData" />
         </div>
       </section>
 
@@ -212,8 +212,10 @@ const selectCurrency = async (value: string) => {
   }
 };
 
+const { exportAllData, exporting } = useExport();
+const exportLabel = computed(() => (exporting.value ? 'Mengexport...' : 'Excel'));
 const exportData = () => {
-  toast.success('Fitur export segera hadir');
+  exportAllData();
 };
 
 const onSignOut = async () => {
