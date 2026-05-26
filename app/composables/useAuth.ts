@@ -9,7 +9,7 @@ export const useAuth = () => {
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${process.env.NUXT_PUBLIC_SITE_URL}/dashboard` },
     });
     if (error) {
       throw error;

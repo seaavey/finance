@@ -42,6 +42,9 @@ export default defineNuxtConfig({
       { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
     ],
   },
+  ogImage: {
+    zeroRuntime: true,
+  },
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://seaavey.site',
     name: 'Finance',
