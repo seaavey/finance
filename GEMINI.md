@@ -67,6 +67,7 @@ bun run build
 - **UI Components:** **Use `shadcn-vue` components** for UI elements. Primitive UI components are located in `app/components/ui/`. When adding new UI components, use the `bun x shadcn-vue@latest add <component>` command.
 - **Tailwind 4:** Use the latest Tailwind CSS 4 features and the `@tailwindcss/vite` plugin.
 - **State Management:** Use `useState` for shared state within composables to ensure SSR compatibility.
+- **Localization:** All user-facing text must be localized using the `@i18n/**` locale files (located in `i18n/locales/`). Hardcoded strings in templates or scripts are prohibited.
 
 ## External Tools & MCP
 

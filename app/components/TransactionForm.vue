@@ -41,7 +41,7 @@
           v-model="amountDisplay"
           type="text"
           inputmode="numeric"
-          placeholder="0"
+          :placeholder="$t('transaction_form.amount_placeholder')"
           class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
         />

@@ -13,12 +13,12 @@
       <div
         v-if="isPartnered && isPartnerOwned"
         class="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-background bg-sidebar-accent -ml-2 self-end"
-        :title="'Milik ' + partnerDisplayName"
+        :title="$t('transactions.owned_by', { name: partnerDisplayName })"
       >
         <span class="text-[8px] font-bold text-sidebar-foreground">{{ partnerInitial }}</span>
       </div>
       <div class="min-w-0">
-        <h3 class="truncate font-medium text-foreground">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</h3>
+        <h3 class="truncate font-medium text-foreground">{{ transaction.description || categoryName || $t('transactions.no_description') }}</h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
       </div>
     </div>
@@ -29,7 +29,7 @@
       >
         {{ transaction.type === 'income' ? '+' : '-' }}{{ formatted }}
       </p>
-      <p class="mt-1 text-xs text-muted-foreground md:text-sm">{{ transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}</p>
+      <p class="mt-1 text-xs text-muted-foreground md:text-sm">{{ transaction.type === 'income' ? $t('transactions.income') : $t('transactions.expense') }}</p>
     </div>
   </div>
 </template>

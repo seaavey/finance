@@ -15,18 +15,20 @@ const props = defineProps<{
   data: { label: string; income: number; expense: number }[];
 }>();
 
+const { t } = useI18n();
+
 const chartData = computed(() => ({
   labels: props.data.map((d) => d.label),
   datasets: [
     {
-      label: 'Pemasukan',
+      label: t('dashboard.income'),
       data: props.data.map((d) => d.income),
       backgroundColor: '#22c55e',
       borderRadius: 6,
       barPercentage: 0.6,
     },
     {
-      label: 'Pengeluaran',
+      label: t('dashboard.expense'),
       data: props.data.map((d) => d.expense),
       backgroundColor: '#ef4444',
       borderRadius: 6,
@@ -72,7 +74,7 @@ const chartOptions = {
   <div class="relative h-[220px]">
     <Bar v-if="data.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
-      <p class="text-xs text-muted-foreground">Belum ada data</p>
+      <p class="text-xs text-muted-foreground">{{ $t('chart.no_data') }}</p>
     </div>
   </div>
 </template>

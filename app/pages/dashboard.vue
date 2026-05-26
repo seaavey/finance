@@ -104,7 +104,7 @@
 
         <div class="rounded-2xl border border-border bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-foreground">Tren 6 Bulan</h3>
+            <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.trends_title') }}</h3>
             <span class="text-xs text-muted-foreground/60">{{ $t('dashboard.income_vs_expense') }}</span>
           </div>
           <ChartsMonthlyBar :data="monthlyData" />
@@ -163,7 +163,7 @@
                 />
               </div>
               <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium text-foreground">{{ tx.description || getCategoryName(tx.category_id) || 'Transaksi' }}</p>
+                <p class="truncate text-sm font-medium text-foreground">{{ tx.description || getCategoryName(tx.category_id) || $t('sidebar.transactions') }}</p>
                 <div class="mt-0.5 flex items-center gap-2">
                   <span class="text-xs text-muted-foreground/60">{{ formatRelativeDate(tx.date) }}</span>
                   <span v-if="tx.category_id" class="size-1 rounded-full bg-muted-foreground/30" />
@@ -193,26 +193,26 @@
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          @click="navigateTo('/transactions/new')"
+          @click="navigateToLocale('/transactions/new')"
         >
           <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10">
             <HugeiconsIcon :icon="Add01Icon" :size="22" class="text-indigo-400" />
           </div>
           <div>
-            <p class="text-sm font-semibold text-foreground">Tambah Transaksi</p>
-            <p class="text-xs text-muted-foreground">Catat pemasukan atau pengeluaran</p>
+            <p class="text-sm font-semibold text-foreground">{{ $t('dashboard.actions_add_transaction') }}</p>
+            <p class="text-xs text-muted-foreground">{{ $t('dashboard.actions_add_transaction_desc') }}</p>
           </div>
         </div>
         <div
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          @click="navigateTo('/categories')"
+          @click="navigateToLocale('/categories')"
         >
           <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/10">
             <HugeiconsIcon :icon="GridViewIcon" :size="22" class="text-orange-400" />
           </div>
           <div>
-            <p class="text-sm font-semibold text-foreground">Kelola Kategori</p>
-            <p class="text-xs text-muted-foreground">Atur kategori transaksi kamu</p>
+            <p class="text-sm font-semibold text-foreground">{{ $t('dashboard.actions_manage_categories') }}</p>
+            <p class="text-xs text-muted-foreground">{{ $t('dashboard.actions_manage_categories_desc') }}</p>
           </div>
         </div>
       </div>
@@ -245,9 +245,9 @@ const viewMode = ref<'all' | 'mine' | 'partner'>('all');
 const chartPeriods = ['7d', '30d', '90d'];
 
 const viewModes = computed(() => [
-  { value: 'all' as const, label: 'Gabungan' },
-  { value: 'mine' as const, label: 'Saya' },
-  { value: 'partner' as const, label: partner.value?.display_name?.split(' ')[0] || 'Pasangan' },
+  { value: 'all' as const, label: t('transactions.all') },
+  { value: 'mine' as const, label: t('dashboard.greeting') },
+  { value: 'partner' as const, label: partner.value?.display_name?.split(' ')[0] || t('sidebar.partner') },
 ]);
 
 const filteredTransactions = computed(() => {

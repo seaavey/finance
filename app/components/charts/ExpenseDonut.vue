@@ -39,10 +39,10 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="relative h-[180px]">
-    <Doughnut v-if="categories.length > 0" :data="chartData" :options="chartOptions" />
+  <div class="relative h-[220px]">
+    <Doughnut v-if="data.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="flex size-full items-center justify-center">
-      <p class="text-xs text-muted-foreground">Belum ada data</p>
+      <p class="text-xs text-muted-foreground">{{ $t('chart.no_data') }}</p>
     </div>
   </div>
 </template>

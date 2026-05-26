@@ -98,27 +98,27 @@
                 <HugeiconsIcon :icon="MailSend01Icon" :size="20" />
               </div>
               <div>
-                <p class="text-sm font-bold text-foreground">Undang Pasangan</p>
-                <p class="text-xs text-muted-foreground">Catat keuangan bersama pasanganmu</p>
+                <p class="text-sm font-bold text-foreground">{{ $t('settings.invite_partner_title') }}</p>
+                <p class="text-xs text-muted-foreground">{{ $t('settings.invite_partner_desc') }}</p>
               </div>
             </div>
             <div class="flex flex-col gap-2 sm:flex-row">
               <Input
                 v-model="inviteEmail"
                 type="email"
-                placeholder="email.pasangan@example.com"
+                :placeholder="$t('settings.invite_email_placeholder')"
                 class="h-11 flex-1 rounded-xl bg-background/50"
                 @keyup.enter="onSendInvite"
               />
               <Button size="lg" :disabled="partnerSending || !inviteEmail" class="h-11 rounded-xl shadow-lg shadow-primary/20" @click="onSendInvite">
-                {{ partnerSending ? 'Mengirim...' : 'Kirim Undangan' }}
+                {{ partnerSending ? $t('settings.inviting') : $t('settings.invite_button') }}
               </Button>
             </div>
           </div>
 
           <!-- Undangan Terkirim -->
           <div v-if="sentInvitations.length > 0" class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25">
-            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Undangan Terkirim</p>
+            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{{ $t('settings.sent_invitations_title') }}</p>
             <div class="space-y-3">
               <div
                 v-for="inv in sentInvitations"
@@ -147,7 +147,7 @@
 
           <!-- Undangan Masuk -->
           <div v-if="receivedInvitations.length > 0" class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25">
-            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">Undangan Masuk</p>
+            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">{{ $t('settings.received_invitations_title') }}</p>
             <div class="space-y-3">
               <div
                 v-for="inv in receivedInvitations"
@@ -163,7 +163,7 @@
                   </Avatar>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-foreground">{{ inv.sender?.display_name || 'Seseorang' }}</p>
-                    <p class="text-[10px] font-medium text-muted-foreground">Ingin terhubung denganmu</p>
+                    <p class="text-[10px] font-medium text-muted-foreground">{{ $t('settings.invite_wants_to_connect') }}</p>
                   </div>
                 </div>
                 <div class="flex gap-2">
@@ -194,7 +194,7 @@
                 <p class="truncate text-lg font-black text-emerald-600 md:text-xl">{{ partnerDisplayName }}</p>
                 <div class="mt-0.5 flex items-center gap-1.5">
                   <div class="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-                  <p class="text-xs font-bold uppercase tracking-wider text-emerald-600/70">Terhubung</p>
+                  <p class="text-xs font-bold uppercase tracking-wider text-emerald-600/70">{{ $t('settings.connected_status') }}</p>
                 </div>
               </div>
             </div>
@@ -210,8 +210,8 @@
                 <HugeiconsIcon :icon="UnlinkIcon" :size="20" />
               </div>
               <div class="min-w-0 text-left">
-                <p class="text-sm font-bold text-red-500 md:text-base">Putuskan Hubungan</p>
-                <p class="text-xs font-medium text-red-500/60 md:text-sm">Hapus koneksi dengan pasangan</p>
+                <p class="text-sm font-bold text-red-500 md:text-base">{{ $t('settings.disconnect_title') }}</p>
+                <p class="text-xs font-medium text-red-500/60 md:text-sm">{{ $t('settings.disconnect_desc') }}</p>
               </div>
             </div>
             <HugeiconsIcon :icon="ArrowRight01Icon" :size="18" class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60" />
@@ -245,7 +245,7 @@
 
       <div class="flex flex-col items-center gap-2 pb-8 opacity-40 md:pb-0">
         <p class="text-[10px] font-black uppercase tracking-[0.3em]">{{ $t('settings.version') }}</p>
-        <p class="text-[9px] font-medium tracking-tighter italic text-primary/80">Made with ❤️ for smart finance</p>
+        <p class="text-[9px] font-medium tracking-tighter italic text-primary/80">{{ $t('dashboard.made_with') }}</p>
       </div>
     </div>
 

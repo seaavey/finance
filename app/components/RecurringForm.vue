@@ -20,7 +20,7 @@
 
         <div class="space-y-2">
           <Label for="r-amount">{{ $t('recurring_form.amount') }}</Label>
-          <Input id="r-amount" v-model.number="form.amount" type="number" min="1" step="any" placeholder="0" required />
+          <Input id="r-amount" v-model.number="form.amount" type="number" min="1" step="any" :placeholder="$t('transaction_form.amount_placeholder')" required />
         </div>
 
         <div class="space-y-2">

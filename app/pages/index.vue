@@ -2,7 +2,7 @@
   <div class="flex min-h-screen flex-col">
     <!-- Header -->
     <header class="relative z-20 flex items-center justify-between px-6 py-4">
-      <span class="text-lg font-bold tracking-tight">Finance</span>
+      <span class="text-lg font-bold tracking-tight">{{ $t('sidebar.finance') }}</span>
       <div class="flex items-center gap-2">
         <Button variant="ghost" size="sm" @click="goToLogin">{{ $t('auth.login_title') }}</Button>
         <Button size="sm" @click="goToLogin">{{ $t('auth.register') }}</Button>

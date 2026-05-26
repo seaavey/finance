@@ -66,7 +66,7 @@
       >
         <HugeiconsIcon :icon="UserIcon" :size="14" />
         <span>{{ partnerDisplayName }}</span>
-        <span class="ml-auto text-[10px] text-sidebar-foreground/30">Pasangan</span>
+        <span class="ml-auto text-[10px] text-sidebar-foreground/30">{{ $t('sidebar.partner') }}</span>
       </NuxtLinkLocale>
     </ClientOnly>
   </aside>
