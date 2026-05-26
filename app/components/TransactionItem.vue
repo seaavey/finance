@@ -9,6 +9,14 @@
       >
         <div class="size-3 rounded-full" :style="{ backgroundColor: categoryColor ?? '#6b7280' }" />
       </div>
+      <!-- Owner badge -->
+      <div
+        v-if="isPartnered && isPartnerOwned"
+        class="flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-background bg-sidebar-accent -ml-2 self-end"
+        :title="'Milik ' + partnerDisplayName"
+      >
+        <span class="text-[8px] font-bold text-sidebar-foreground">{{ partnerInitial }}</span>
+      </div>
       <div class="min-w-0">
         <h3 class="truncate font-medium text-foreground">{{ transaction.description || categoryName || 'Tanpa deskripsi' }}</h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
@@ -35,6 +43,11 @@ const props = defineProps<{
 
 const { formatCurrency } = useCurrency();
 const { categories } = useCategories();
+const { partner, isPartnered, partnerDisplayName } = usePartner();
+const { user } = useAuth();
+
+const isPartnerOwned = computed(() => partner.value?.id === props.transaction.user_id);
+const partnerInitial = computed(() => partnerDisplayName.value?.charAt(0)?.toUpperCase() || 'P');
 
 const category = computed(() =>
   categories.value.find((c) => c.id === props.transaction.category_id),

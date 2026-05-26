@@ -7,9 +7,10 @@ export const useAuth = () => {
   const loading = useState('auth-loading', () => true);
 
   const signInWithGoogle = async () => {
+    const redirectTo = `${window.location.origin}/login`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${process.env.NUXT_PUBLIC_SITE_URL}/dashboard` },
+      options: { redirectTo },
     });
     if (error) {
       throw error;

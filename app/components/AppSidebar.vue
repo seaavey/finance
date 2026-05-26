@@ -38,24 +38,37 @@
       </div>
     </nav>
 
-    <div v-if="user" class="flex shrink-0 items-center gap-2 border-t border-sidebar-border px-3 py-3">
-      <Avatar class="size-8 shrink-0">
-        <AvatarImage
-          v-if="user.user_metadata?.avatar_url"
-          :src="user.user_metadata.avatar_url"
-          :alt="user.user_metadata?.full_name"
-        />
-        <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
-      </Avatar>
-      <span class="flex-1 truncate text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
-      <button
-        class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
-        @click="onSignOut"
-        :title="$t('sidebar.logout')"
+    <ClientOnly>
+      <div v-if="user" class="flex shrink-0 items-center gap-2 border-t border-sidebar-border px-3 py-3">
+        <Avatar class="size-8 shrink-0">
+          <AvatarImage
+            v-if="user.user_metadata?.avatar_url"
+            :src="user.user_metadata.avatar_url"
+            :alt="user.user_metadata?.full_name"
+          />
+          <AvatarFallback class="text-xs font-medium">{{ user.user_metadata?.full_name?.charAt(0) ?? '?' }}</AvatarFallback>
+        </Avatar>
+        <span class="flex-1 truncate text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
+        <button
+          class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          @click="onSignOut"
+          :title="$t('sidebar.logout')"
+        >
+          <HugeiconsIcon :icon="Logout01Icon" :size="16" />
+        </button>
+      </div>
+
+      <!-- PARTNER BADGE -->
+      <NuxtLinkLocale
+        v-if="isPartnered"
+        to="/settings"
+        class="flex items-center gap-2 border-t border-sidebar-border/50 px-3 py-2 text-xs text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
       >
-        <HugeiconsIcon :icon="Logout01Icon" :size="16" />
-      </button>
-    </div>
+        <HugeiconsIcon :icon="UserIcon" :size="14" />
+        <span>{{ partnerDisplayName }}</span>
+        <span class="ml-auto text-[10px] text-sidebar-foreground/30">Pasangan</span>
+      </NuxtLinkLocale>
+    </ClientOnly>
   </aside>
 </template>
 
@@ -69,6 +82,7 @@ import {
   Settings01Icon,
   MoneyAdd01Icon,
   Logout01Icon,
+  UserIcon,
 } from '@hugeicons/core-free-icons';
 
 defineProps<{
@@ -80,6 +94,7 @@ defineEmits<{
 }>();
 
 const { user, signOut } = useAuth();
+const { partner, isPartnered, partnerDisplayName, fetchPartner } = usePartner();
 const route = useRoute();
 const { t } = useI18n();
 
@@ -104,4 +119,10 @@ const isActive = (path: string) => {
 const onSignOut = async () => {
   await signOut();
 };
+
+onMounted(() => {
+  if (user.value) {
+    fetchPartner();
+  }
+});
 </script>

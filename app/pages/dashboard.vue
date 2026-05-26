@@ -10,6 +10,17 @@
         </ClientOnly>
         <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
       </div>
+      <div v-if="isPartnered" class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1">
+        <button
+          v-for="mode in viewModes"
+          :key="mode.value"
+          class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
+          :class="viewMode === mode.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+          @click="viewMode = mode.value"
+        >
+          {{ mode.label }}
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="space-y-5">
@@ -225,11 +236,27 @@ const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
 const { t } = useI18n();
+const { partner, isPartnered, fetchPartner } = usePartner();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');
+const viewMode = ref<'all' | 'mine' | 'partner'>('all');
 
 const chartPeriods = ['7d', '30d', '90d'];
+
+const viewModes = computed(() => [
+  { value: 'all' as const, label: 'Gabungan' },
+  { value: 'mine' as const, label: 'Saya' },
+  { value: 'partner' as const, label: partner.value?.display_name?.split(' ')[0] || 'Pasangan' },
+]);
+
+const filteredTransactions = computed(() => {
+  const all = transactions.value;
+  if (!isPartnered.value || viewMode.value === 'all') return all;
+  const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
+  if (!targetUserId) return all;
+  return all.filter((tx) => tx.user_id === targetUserId);
+});
 
 const displayName = computed(() => {
   const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || '';
@@ -276,7 +303,7 @@ const currentMonth = now.getMonth();
 const currentYear = now.getFullYear();
 
 const thisMonthTransactions = computed(() =>
-  transactions.value.filter((tx) => {
+  filteredTransactions.value.filter((tx) => {
     const d = new Date(tx.date);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
   }),
@@ -295,7 +322,7 @@ const balance = computed(() => totalIncome.value - totalExpense.value);
 const trendIncome = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = transactions.value
+  const prev = filteredTransactions.value
     .filter((tx) => {
       const d = new Date(tx.date);
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
@@ -310,7 +337,7 @@ const trendIncome = computed(() => {
 const trendExpense = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = transactions.value
+  const prev = filteredTransactions.value
     .filter((tx) => {
       const d = new Date(tx.date);
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
@@ -325,13 +352,13 @@ const trendExpense = computed(() => {
 const trendBalance = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prevIncome = transactions.value
+  const prevIncome = filteredTransactions.value
     .filter((tx) => {
       const d = new Date(tx.date);
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
     })
     .reduce((s, t) => s + t.amount, 0);
-  const prevExpense = transactions.value
+  const prevExpense = filteredTransactions.value
     .filter((tx) => {
       const d = new Date(tx.date);
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
@@ -345,7 +372,7 @@ const trendBalance = computed(() => {
 });
 
 const recentTransactions = computed(() =>
-  [...transactions.value]
+  [...filteredTransactions.value]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5),
 );
@@ -378,7 +405,7 @@ const monthlyData = computed(() => {
     const label = d.toLocaleDateString('id-ID', { month: 'short' });
     const m = d.getMonth();
     const y = d.getFullYear();
-    const monthTx = transactions.value.filter((tx) => {
+    const monthTx = filteredTransactions.value.filter((tx) => {
       const td = new Date(tx.date);
       return td.getMonth() === m && td.getFullYear() === y;
     });
@@ -392,7 +419,7 @@ const monthlyData = computed(() => {
 });
 
 onMounted(async () => {
-  await Promise.all([fetchTransactions(), fetchCategories()]);
+  await Promise.all([fetchTransactions(), fetchCategories(), fetchPartner()]);
   loading.value = false;
 });
 </script>

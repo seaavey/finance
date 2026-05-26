@@ -6,9 +6,9 @@ export default defineNuxtConfig({
   css: ['~/styles/global.css'],
   runtimeConfig: {
     public: {
-      supabaseUrl: '',
-      supabaseAnonKey: '',
-      siteUrl: '',
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL || '',
+      supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY || '',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     },
   },
   vite: {
@@ -46,7 +46,7 @@ export default defineNuxtConfig({
     zeroRuntime: true,
   },
   site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://seaavey.site',
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     name: 'Finance',
     description: 'Catat keuangan sendiri atau bareng pasangan. Simpel, cepat, tanpa ribet.',
     defaultLocale: 'id',

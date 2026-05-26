@@ -1,26 +1,26 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (import.meta.server) {
-    return;
-  }
+  if (import.meta.server) return;
 
+  // Let Supabase handle hash fragments (tokens) on the client side
   if (to.hash?.includes('access_token') || to.query?.code) {
     return;
   }
 
-  const { getSession } = useAuth();
+  const { getSession, user } = useAuth();
   const session = await getSession();
 
   if (!session) {
-    if (to.path === '/login' || to.path === '/') {
-      return;
+    if (to.path !== '/login' && to.path !== '/') {
+      return navigateTo('/login');
     }
-    return navigateTo('/login');
+    return;
   }
 
   if (to.path === '/login') {
     return navigateTo('/dashboard');
   }
 
+  // Pre-load essential user settings if they are not already loaded
   const { loadCurrency } = useCurrency();
-  await loadCurrency();
+  loadCurrency(); // Run in background to not block navigation
 });

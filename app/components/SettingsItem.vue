@@ -1,13 +1,29 @@
 <template>
-  <button class="group flex w-full items-center gap-3 px-4 py-3.5 transition-all duration-200 hover:bg-card/40" @click="$emit('click')">
-    <div class="flex size-8 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-105" :class="iconBg">
-      <HugeiconsIcon :icon="iconComponent" :size="18" :class="iconColor" />
+  <button
+    class="group flex w-full items-center gap-4 overflow-hidden px-4 py-3.5 transition-all duration-200 hover:bg-card/40 active:bg-card/60"
+    @click="$emit('click')"
+  >
+    <div
+      class="flex size-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95"
+      :class="iconBg"
+    >
+      <HugeiconsIcon :icon="iconComponent" :size="20" :class="iconColor" />
     </div>
-    <div class="flex flex-1 items-center justify-between min-w-0">
-      <span class="text-sm font-medium transition-colors duration-200 group-hover:text-foreground">{{ label }}</span>
-      <div class="flex items-center gap-1.5 text-muted-foreground transition-colors duration-200 group-hover:text-foreground/80">
-        <span class="text-xs">{{ value }}</span>
-        <HugeiconsIcon :icon="ArrowRight01Icon" :size="14" />
+
+    <div class="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <span class="truncate text-sm font-semibold text-foreground/90 transition-colors duration-200 group-hover:text-foreground">
+        {{ label }}
+      </span>
+
+      <div class="flex min-w-0 items-center gap-1.5 transition-colors duration-200 group-hover:text-foreground/80">
+        <span class="truncate text-left text-xs text-muted-foreground transition-colors sm:text-right group-hover:text-muted-foreground/80">
+          {{ value }}
+        </span>
+        <HugeiconsIcon
+          :icon="ArrowRight01Icon"
+          :size="14"
+          class="shrink-0 text-muted-foreground/30 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-muted-foreground/60"
+        />
       </div>
     </div>
   </button>

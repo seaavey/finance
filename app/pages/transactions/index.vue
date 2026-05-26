@@ -60,6 +60,18 @@
           />
         </PopoverContent>
       </Popover>
+
+      <div v-if="isPartnered" class="flex items-center gap-2 rounded-2xl bg-card/30 p-1">
+        <button
+          v-for="opt in ownerOptions"
+          :key="opt.value"
+          class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
+          :class="ownerFilter === opt.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+          @click="ownerFilter = opt.value; applyFilters()"
+        >
+          {{ opt.label }}
+        </button>
+      </div>
     </div>
 
     <div v-if="!loading" class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
@@ -124,15 +136,33 @@ interface CalendarDateLike {
 
 const { transactions, loading, fetchTransactions } = useTransactions();
 const { fetchCategories } = useCategories();
+const { partner, isPartnered, fetchPartner } = usePartner();
 
 const { t } = useI18n();
 const { formatCurrency } = useCurrency();
+const { user } = useAuth();
+
+const ownerFilter = ref<'all' | 'mine' | 'partner'>('all');
+
+const ownerOptions = computed(() => [
+  { value: 'all' as const, label: 'Semua' },
+  { value: 'mine' as const, label: 'Saya' },
+  { value: 'partner' as const, label: partner.value?.display_name?.split(' ')[0] || 'Pasangan' },
+]);
+
+const filteredTransactions = computed(() => {
+  const all = transactions.value;
+  if (!isPartnered.value || ownerFilter.value === 'all') return all;
+  if (ownerFilter.value === 'mine') return all.filter((tx) => tx.user_id === user.value?.id);
+  // ownerFilter is 'partner'
+  return all.filter((tx) => tx.user_id === partner.value?.id);
+});
 
 const monthIncome = computed(() =>
-  transactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
 );
 const monthExpense = computed(() =>
-  transactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
 );
 
 const showFilters = ref(false);
@@ -148,6 +178,7 @@ let debounceTimer: ReturnType<typeof setTimeout>;
 
 onMounted(async () => {
   await fetchCategories();
+  await fetchPartner();
   await fetchTransactions();
 });
 
@@ -196,8 +227,8 @@ const applyFilters = () => {
 };
 
 const groupedTransactions = computed(() => {
-  const groups: Record<string, typeof transactions.value> = {};
-  for (const tx of transactions.value) {
+  const groups: Record<string, typeof filteredTransactions.value> = {};
+  for (const tx of filteredTransactions.value) {
     const date = tx.date;
     if (!groups[date]) {
       groups[date] = [];

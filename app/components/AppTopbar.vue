@@ -58,8 +58,13 @@
         class="flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground"
         @click="cycleColorMode"
       >
-        <HugeiconsIcon v-if="colorMode.value === 'dark'" :icon="Sun01Icon" :size="18" />
-        <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
+        <ClientOnly>
+          <HugeiconsIcon v-if="colorMode.value === 'dark'" :icon="Sun01Icon" :size="18" />
+          <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
+          <template #fallback>
+            <div class="size-[18px]" />
+          </template>
+        </ClientOnly>
       </button>
 
       <!-- CTA -->

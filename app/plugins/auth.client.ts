@@ -1,14 +1,12 @@
 import { useSupabase } from '~/lib/supabase';
 
-export default defineNuxtPlugin(async () => {
-  if (import.meta.server) return;
-
+export default defineNuxtPlugin(async (nuxtApp) => {
   const supabase = useSupabase();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { getSession, user } = useAuth();
 
-  const user = useState('user', () => session?.user ?? null);
+  // Load session immediately on client-side
+  const session = await getSession();
+  user.value = session?.user ?? null;
 
   supabase.auth.onAuthStateChange((_event, session) => {
     user.value = session?.user ?? null;
