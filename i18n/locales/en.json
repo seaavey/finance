@@ -70,6 +70,7 @@
     "subtitle": "Manage income and expense categories",
     "income": "Income",
     "expense": "Expense",
+    "add": "Add",
     "empty": "No categories yet",
     "empty_desc": "Click Add to create a new category",
     "delete_title": "Delete Category",

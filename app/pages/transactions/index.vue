@@ -5,6 +5,13 @@
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('transactions.title') }}</h2>
         <p class="text-sm text-muted-foreground">{{ transactions.length }} {{ $t('transactions.title').toLowerCase() }}</p>
       </div>
+      <Button
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        @click="navigateToLocale('/transactions/new')"
+      >
+        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
+      </Button>
     </div>
 
     <div class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/30 p-3">
@@ -124,7 +131,13 @@
 </template>
 
 <script setup lang="ts">
-import { Search01Icon, FilterIcon, InboxIcon, Calendar01Icon } from '@hugeicons/core-free-icons';
+import {
+  Search01Icon,
+  FilterIcon,
+  InboxIcon,
+  Calendar01Icon,
+  Add01Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import type { TransactionFilters } from '~/composables/useTransactions';
 

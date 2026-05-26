@@ -71,7 +71,11 @@ export default defineEventHandler((event) => {
   const searchParams = url.search.toLowerCase();
 
   // Generic XSS and injection protection for query strings
-  if (searchParams.includes('<script') || searchParams.includes('javascript:') || searchParams.includes('onerror=')) {
+  if (
+    searchParams.includes('<script') ||
+    searchParams.includes('javascript:') ||
+    searchParams.includes('onerror=')
+  ) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Bad Request: Potential injection detected.',

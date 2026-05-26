@@ -1,9 +1,18 @@
 <template>
   <div class="mx-auto max-w-6xl space-y-8">
     <!-- HEADER -->
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight">{{ $t('recurring.title') }}</h1>
-      <p class="mt-1 text-sm text-muted-foreground">{{ recurring.length }} {{ $t('recurring.schedule_active') }}</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">{{ $t('recurring.title') }}</h1>
+        <p class="mt-1 text-sm text-muted-foreground">{{ recurring.length }} {{ $t('recurring.schedule_active') }}</p>
+      </div>
+      <Button
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        @click="showForm = true"
+      >
+        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
+      </Button>
     </div>
 
     <!-- STATS -->
@@ -125,6 +134,7 @@ import {
   ArrowUp01Icon,
   PencilEdit01Icon,
   Delete01Icon,
+  Add01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import type { RecurringTransaction } from '~/composables/useRecurring';

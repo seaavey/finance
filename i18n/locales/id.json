@@ -70,6 +70,7 @@
     "subtitle": "Kelola kategori pemasukan dan pengeluaran",
     "income": "Pemasukan",
     "expense": "Pengeluaran",
+    "add": "Tambah",
     "empty": "Belum ada kategori",
     "empty_desc": "Klik Tambah untuk membuat kategori baru",
     "delete_title": "Hapus Kategori",

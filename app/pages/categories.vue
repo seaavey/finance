@@ -1,9 +1,18 @@
 <template>
   <div class="mx-auto max-w-6xl space-y-8">
     <!-- HEADER -->
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight">{{ $t('categories.title') }}</h1>
-      <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">{{ $t('categories.title') }}</h1>
+        <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
+      </div>
+      <Button
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        @click="showForm = true"
+      >
+        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <span class="hidden sm:inline">{{ $t('categories.add') }}</span>
+      </Button>
     </div>
 
     <div v-if="loading" class="space-y-6">
@@ -107,7 +116,12 @@
 </template>
 
 <script setup lang="ts">
-import { PencilEdit01Icon, Delete01Icon, GridViewIcon } from '@hugeicons/core-free-icons';
+import {
+  PencilEdit01Icon,
+  Delete01Icon,
+  GridViewIcon,
+  Add01Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
