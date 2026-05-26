@@ -3,6 +3,7 @@ import { useSupabase } from '~/lib/supabase';
 
 export const useExport = () => {
   const supabase = useSupabase();
+  const { t } = useI18n();
   const { toast } = useToast();
   const exporting = ref(false);
 
@@ -18,7 +19,7 @@ export const useExport = () => {
     try {
       const { user } = useAuth();
       if (!user.value) {
-        toast.error('Kamu harus login dulu');
+        toast.error(t('toast.login_required'));
         return;
       }
 
@@ -145,9 +146,9 @@ export const useExport = () => {
       a.click();
       URL.revokeObjectURL(url);
 
-      toast.success('Data berhasil diexport');
+      toast.success(t('toast.export_success'));
     } catch {
-      toast.error('Gagal mengexport data');
+      toast.error(t('toast.export_error'));
     } finally {
       exporting.value = false;
     }

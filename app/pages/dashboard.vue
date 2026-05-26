@@ -3,9 +3,9 @@
     <div class="flex items-center justify-between">
       <div>
         <ClientOnly>
-          <h2 class="text-3xl font-bold tracking-tight">Halo, {{ displayName }}</h2>
+          <h2 class="text-3xl font-bold tracking-tight">{{ $t('dashboard.greeting') }}, {{ displayName }}</h2>
           <template #fallback>
-            <h2 class="text-3xl font-bold tracking-tight">Halo...</h2>
+            <h2 class="text-3xl font-bold tracking-tight">{{ $t('dashboard.greeting_loading') }}</h2>
           </template>
         </ClientOnly>
         <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
@@ -28,10 +28,10 @@
               <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-500" />
             </div>
             <div class="rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-semibold text-green-500">
-              {{ trendIncome === null ? 'Baru' : `+${trendIncome}%` }}
+              {{ trendIncome === null ? $t('dashboard.new') : `+${trendIncome}%` }}
             </div>
           </div>
-          <p class="mt-3 text-xs text-muted-foreground">Pemasukan</p>
+          <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.income') }}</p>
           <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(totalIncome) }}</p>
         </div>
 
@@ -41,10 +41,10 @@
               <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-500" />
             </div>
             <div class="rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-500">
-              {{ trendExpense === null ? 'Baru' : `+${trendExpense}%` }}
+              {{ trendExpense === null ? $t('dashboard.new') : `+${trendExpense}%` }}
             </div>
           </div>
-          <p class="mt-3 text-xs text-muted-foreground">Pengeluaran</p>
+          <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.expense') }}</p>
           <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(totalExpense) }}</p>
         </div>
 
@@ -55,10 +55,10 @@
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-indigo-400" />
             </div>
             <div class="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-400">
-              {{ trendBalance === null ? 'Baru' : `${balance >= 0 ? '+' : ''}${trendBalance}%` }}
+              {{ trendBalance === null ? $t('dashboard.new') : `${balance >= 0 ? '+' : ''}${trendBalance}%` }}
             </div>
           </div>
-          <p class="relative mt-3 text-xs text-muted-foreground">Saldo</p>
+          <p class="relative mt-3 text-xs text-muted-foreground">{{ $t('dashboard.balance') }}</p>
           <p class="relative mt-1 text-xl font-bold text-foreground">{{ formatCurrency(balance) }}</p>
         </div>
       </div>
@@ -66,7 +66,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="rounded-2xl border border-border bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-foreground">Pengeluaran per Kategori</h3>
+            <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.per_category') }}</h3>
             <div class="flex gap-1">
               <button
                 v-for="period in chartPeriods"
@@ -94,17 +94,17 @@
         <div class="rounded-2xl border border-border bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-foreground">Tren 6 Bulan</h3>
-            <span class="text-xs text-muted-foreground/60">Pemasukan vs Pengeluaran</span>
+            <span class="text-xs text-muted-foreground/60">{{ $t('dashboard.income_vs_expense') }}</span>
           </div>
           <ChartsMonthlyBar :data="monthlyData" />
           <div class="mt-3 flex justify-center gap-4">
             <div class="flex items-center gap-1.5 text-xs">
               <span class="size-2.5 rounded-sm bg-green-500/70" />
-              <span class="text-muted-foreground">Pemasukan</span>
+              <span class="text-muted-foreground">{{ $t('dashboard.income') }}</span>
             </div>
             <div class="flex items-center gap-1.5 text-xs">
               <span class="size-2.5 rounded-sm bg-red-500/70" />
-              <span class="text-muted-foreground">Pengeluaran</span>
+              <span class="text-muted-foreground">{{ $t('dashboard.expense') }}</span>
             </div>
           </div>
         </div>
@@ -112,10 +112,10 @@
 
       <div class="rounded-2xl border border-border bg-card">
         <div class="flex items-center justify-between p-4 pb-0">
-          <h3 class="text-sm font-semibold text-foreground">Transaksi Terakhir</h3>
-          <NuxtLink to="/transactions" class="text-xs font-medium text-primary hover:underline">
-            Lihat semua &rarr;
-          </NuxtLink>
+          <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.recent') }}</h3>
+          <NuxtLinkLocale to="/transactions" class="text-xs font-medium text-primary hover:underline">
+            {{ $t('dashboard.view_all') }}
+          </NuxtLinkLocale>
         </div>
         <div class="p-4">
           <div v-if="recentTransactions.length === 0" class="flex flex-col items-center gap-3 py-8 text-center">
@@ -123,18 +123,18 @@
               <HugeiconsIcon :icon="ArrowLeftRightIcon" :size="24" class="text-muted-foreground/40" />
             </div>
             <div>
-              <p class="text-sm font-medium text-foreground">Belum ada transaksi</p>
-              <p class="text-xs text-muted-foreground">Mulai catat pemasukan atau pengeluaran pertama kamu</p>
+              <p class="text-sm font-medium text-foreground">{{ $t('dashboard.empty_title') }}</p>
+              <p class="text-xs text-muted-foreground">{{ $t('dashboard.empty_desc') }}</p>
             </div>
-            <NuxtLink
+            <NuxtLinkLocale
               to="/transactions/new"
               class="mt-1 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              + Tambah Transaksi
-            </NuxtLink>
+              {{ $t('dashboard.add_transaction') }}
+            </NuxtLinkLocale>
           </div>
           <div v-else class="-mx-4 space-y-0">
-            <NuxtLink
+            <NuxtLinkLocale
               v-for="(tx, index) in recentTransactions"
               :key="tx.id"
               :to="`/transactions/${tx.id}/edit`"
@@ -174,7 +174,7 @@
               >
                 {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
               </p>
-            </NuxtLink>
+            </NuxtLinkLocale>
           </div>
         </div>
       </div>
@@ -224,6 +224,7 @@ const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
+const { t } = useI18n();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');
@@ -245,10 +246,10 @@ const formatRelativeDate = (date: string) => {
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   if (diffDays === 0) {
-    return 'Hari ini';
+    return t('dashboard.today');
   }
   if (diffDays === 1) {
-    return 'Kemarin';
+    return t('dashboard.yesterday');
   }
   if (diffDays < 7) {
     return `${diffDays} hari lalu`;
@@ -361,7 +362,7 @@ const expenseByCategory = computed(() => {
         existing.total += t.amount;
       } else {
         map.set(key, {
-          name: cat?.name || 'Lainnya',
+          name: cat?.name || t('dashboard.other'),
           color: cat?.color || '#6b7280',
           total: t.amount,
         });

@@ -2,12 +2,12 @@
   <section id="features" class="relative px-6 py-16 md:py-24">
     <div class="mx-auto max-w-5xl">
       <div class="text-center max-w-2xl mx-auto">
-        <p class="text-sm font-medium text-primary mb-3">Fitur Lengkap</p>
+        <p class="text-sm font-medium text-primary mb-3">{{ $t('landing.features_title') }}</p>
         <h2 class="font-heading text-3xl font-bold tracking-tight md:text-4xl">
-          Semua yang kamu butuh
+          {{ $t('landing.features_heading') }}
         </h2>
         <p class="mt-3 text-muted-foreground">
-          Kelola keuangan pribadi dan bareng pasangan dengan fitur yang simpel tapi powerful.
+          {{ $t('landing.features_desc') }}
         </p>
       </div>
 

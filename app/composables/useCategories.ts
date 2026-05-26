@@ -29,6 +29,7 @@ const DEFAULT_CATEGORIES = {
 };
 
 export const useCategories = () => {
+  const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
   const categories = useState<Category[]>('categories', () => []);
@@ -74,9 +75,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories();
-      toast.success('Kategori berhasil ditambahkan');
+      toast.success(t('toast.category_added'));
     } else {
-      toast.error('Gagal menambahkan kategori');
+      toast.error(t('toast.category_add_error'));
     }
     return { error };
   };
@@ -89,9 +90,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories();
-      toast.success('Kategori berhasil diperbarui');
+      toast.success(t('toast.category_updated'));
     } else {
-      toast.error('Gagal memperbarui kategori');
+      toast.error(t('toast.category_update_error'));
     }
     return { error };
   };
@@ -101,9 +102,9 @@ export const useCategories = () => {
 
     if (!error) {
       await fetchCategories();
-      toast.success('Kategori berhasil dihapus');
+      toast.success(t('toast.category_deleted'));
     } else {
-      toast.error('Gagal menghapus kategori');
+      toast.error(t('toast.category_delete_error'));
     }
     return { error };
   };

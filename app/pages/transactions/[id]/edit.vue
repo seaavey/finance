@@ -12,15 +12,15 @@
     </template>
 
     <div v-else class="flex flex-col items-center gap-3 py-12">
-      <p class="text-sm text-muted-foreground">Transaksi tidak ditemukan</p>
-      <Button variant="outline" @click="navigateTo('/transactions')">Kembali</Button>
+      <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found') }}</p>
+      <Button variant="outline" @click="navigateTo('/transactions')">{{ $t('transaction_edit.back') }}</Button>
     </div>
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
-      title="Hapus Transaksi"
-      description="Yakin hapus transaksi ini? Tindakan ini tidak bisa dibatalkan."
-      confirm-text="Hapus"
+      :title="$t('transaction_edit.delete_title')"
+      :description="$t('transaction_edit.delete_confirm')"
+      :confirm-text="$t('transaction_edit.delete')"
       @confirm="onDelete"
     />
   </div>
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import type { Transaction } from '~/composables/useTransactions';
 
+const { t } = useI18n();
 const route = useRoute();
 const { getTransaction, deleteTransaction } = useTransactions();
 const { fetchCategories } = useCategories();

@@ -19,12 +19,13 @@ import {
   CurrencyIcon,
   ColorsIcon,
   Download01Icon,
+  GlobeIcon,
   ArrowRight01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 
 const props = defineProps<{
-  icon: 'user' | 'currency' | 'palette' | 'download';
+  icon: 'user' | 'currency' | 'palette' | 'download' | 'language';
   label: string;
   value: string;
 }>();
@@ -51,6 +52,11 @@ const iconMap = {
     component: Download01Icon,
     bg: 'bg-orange-100 dark:bg-orange-950/50',
     color: 'text-orange-600 dark:text-orange-400',
+  },
+  language: {
+    component: GlobeIcon,
+    bg: 'bg-cyan-100 dark:bg-cyan-950/50',
+    color: 'text-cyan-600 dark:text-cyan-400',
   },
 };
 

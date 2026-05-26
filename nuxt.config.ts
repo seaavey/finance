@@ -32,7 +32,16 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo'],
+  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo', '@nuxtjs/i18n'],
+  i18n: {
+    lazy: true,
+    langDir: 'locales',
+    defaultLocale: 'id',
+    locales: [
+      { code: 'id', iso: 'id-ID', file: 'id.json', name: 'Indonesia' },
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+    ],
+  },
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://seaavey.site',
     name: 'Finance',

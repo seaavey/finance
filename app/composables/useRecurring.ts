@@ -15,6 +15,7 @@ export interface RecurringTransaction {
 }
 
 export const useRecurring = () => {
+  const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
   const recurring = useState<RecurringTransaction[]>('recurring', () => []);
@@ -47,9 +48,9 @@ export const useRecurring = () => {
 
     if (!error) {
       await fetchRecurring();
-      toast.success('Transaksi rutin berhasil ditambahkan');
+      toast.success(t('toast.recurring_added'));
     } else {
-      toast.error('Gagal menambahkan transaksi rutin');
+      toast.error(t('toast.recurring_add_error'));
     }
     return { error };
   };
@@ -62,9 +63,9 @@ export const useRecurring = () => {
 
     if (!error) {
       await fetchRecurring();
-      toast.success('Transaksi rutin berhasil diperbarui');
+      toast.success(t('toast.recurring_updated'));
     } else {
-      toast.error('Gagal memperbarui transaksi rutin');
+      toast.error(t('toast.recurring_update_error'));
     }
     return { error };
   };
@@ -74,9 +75,9 @@ export const useRecurring = () => {
 
     if (!error) {
       await fetchRecurring();
-      toast.success('Transaksi rutin berhasil dihapus');
+      toast.success(t('toast.recurring_deleted'));
     } else {
-      toast.error('Gagal menghapus transaksi rutin');
+      toast.error(t('toast.recurring_delete_error'));
     }
     return { error };
   };

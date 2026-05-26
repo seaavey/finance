@@ -2,8 +2,8 @@
   <div class="mx-auto max-w-7xl space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-3xl font-bold tracking-tight">Transaksi</h2>
-        <p class="text-sm text-muted-foreground">{{ transactions.length }} transaksi</p>
+        <h2 class="text-3xl font-bold tracking-tight">{{ $t('transactions.title') }}</h2>
+        <p class="text-sm text-muted-foreground">{{ transactions.length }} {{ $t('transactions.title').toLowerCase() }}</p>
       </div>
     </div>
 
@@ -12,7 +12,7 @@
         <HugeiconsIcon :icon="Search01Icon" :size="20" class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input
           v-model="filters.search"
-          placeholder="Cari transaksi..."
+          :placeholder="$t('transactions.search_placeholder')"
           class="h-12 w-full rounded-2xl border border-border/50 bg-background/50 pl-12 pr-4 text-sm text-foreground outline-none transition focus:border-pink-500/20"
           @input="debouncedFetch"
         >
@@ -29,16 +29,16 @@
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Select v-model="filters.type" @update:model-value="applyFilters">
           <SelectTrigger>
-            <SelectValue placeholder="Semua tipe" />
+            <SelectValue :placeholder="$t('transactions.all_types')" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Semua tipe</SelectItem>
-            <SelectItem value="income">Pemasukan</SelectItem>
-            <SelectItem value="expense">Pengeluaran</SelectItem>
+            <SelectItem value="all">{{ $t('transactions.all_types') }}</SelectItem>
+            <SelectItem value="income">{{ $t('transactions.income') }}</SelectItem>
+            <SelectItem value="expense">{{ $t('transactions.expense') }}</SelectItem>
           </SelectContent>
         </Select>
 
-        <CategoryPicker v-model="filters.category_id" placeholder="Semua kategori" @update:model-value="applyFilters" />
+        <CategoryPicker v-model="filters.category_id" :placeholder="$t('transactions.all_categories')" @update:model-value="applyFilters" />
       </div>
 
       <Popover>
@@ -48,7 +48,7 @@
             <span v-if="dateRange.start && dateRange.end">
               {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
             </span>
-            <span v-else>Pilih rentang tanggal</span>
+            <span v-else>{{ $t('transactions.select_date_range') }}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent class="w-[calc(100vw-32px)] p-0 sm:w-auto" align="start">
@@ -64,15 +64,15 @@
 
     <div v-if="!loading" class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
       <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-4 md:p-5">
-        <p class="text-sm text-emerald-400/70">Pemasukan</p>
+        <p class="text-sm text-emerald-400/70">{{ $t('transactions.income') }}</p>
         <h3 class="mt-2 text-lg font-bold text-emerald-400 md:text-2xl">{{ formatCurrency(monthIncome) }}</h3>
       </div>
       <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-4 md:p-5">
-        <p class="text-sm text-red-400/70">Pengeluaran</p>
+        <p class="text-sm text-red-400/70">{{ $t('transactions.expense') }}</p>
         <h3 class="mt-2 text-lg font-bold text-red-400 md:text-2xl">{{ formatCurrency(monthExpense) }}</h3>
       </div>
       <div class="rounded-3xl border border-blue-500/10 bg-blue-500/[0.07] p-4 md:p-5">
-        <p class="text-sm text-blue-400/70">Selisih</p>
+        <p class="text-sm text-blue-400/70">{{ $t('transactions.difference') }}</p>
         <h3 class="mt-2 text-lg font-bold text-blue-400 md:text-2xl">{{ formatCurrency(monthIncome - monthExpense) }}</h3>
       </div>
     </div>
@@ -88,7 +88,7 @@
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon :icon="InboxIcon" :size="24" class="text-muted-foreground" />
       </div>
-      <p class="mt-3 text-sm text-muted-foreground">Belum ada transaksi</p>
+      <p class="mt-3 text-sm text-muted-foreground">{{ $t('transactions.empty') }}</p>
     </div>
 
     <div v-else class="space-y-4">
@@ -97,14 +97,14 @@
           <span class="text-xs font-medium text-muted-foreground">{{ formatGroupDate(date as string) }}</span>
         </div>
         <div class="space-y-2">
-          <NuxtLink
+          <NuxtLinkLocale
             v-for="tx in group"
             :key="tx.id"
             :to="`/transactions/${tx.id}/edit`"
             class="block"
           >
             <TransactionItem :transaction="tx" />
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </template>
     </div>
@@ -125,6 +125,7 @@ interface CalendarDateLike {
 const { transactions, loading, fetchTransactions } = useTransactions();
 const { fetchCategories } = useCategories();
 
+const { t } = useI18n();
 const { formatCurrency } = useCurrency();
 
 const monthIncome = computed(() =>
@@ -213,10 +214,10 @@ const formatGroupDate = (date: string) => {
   yesterday.setDate(yesterday.getDate() - 1);
 
   if (d.toDateString() === today.toDateString()) {
-    return 'Hari ini';
+    return t('transactions.today');
   }
   if (d.toDateString() === yesterday.toDateString()) {
-    return 'Kemarin';
+    return t('transactions.yesterday');
   }
   return d.toLocaleDateString('id-ID', {
     weekday: 'long',

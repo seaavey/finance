@@ -2,8 +2,8 @@
   <div class="mx-auto w-full max-w-3xl space-y-8">
     <!-- HEADER -->
     <div>
-      <h1 class="text-3xl font-bold">Tambah Transaksi</h1>
-      <p class="mt-1.5 text-sm text-muted-foreground">Catat pemasukan atau pengeluaran baru</p>
+      <h1 class="text-3xl font-bold">{{ $t('transaction_form.title_new') }}</h1>
+      <p class="mt-1.5 text-sm text-muted-foreground">{{ $t('transaction_form.subtitle') }}</p>
     </div>
 
     <!-- TYPE SELECTOR -->
@@ -17,7 +17,7 @@
         @click="form.type = 'income'"
       >
         <HugeiconsIcon :icon="ArrowDown01Icon" :size="20" class="mr-2 inline-block" />
-        Pemasukan
+        {{ $t('transaction_form.income') }}
       </button>
       <button
         type="button"
@@ -28,13 +28,13 @@
         @click="form.type = 'expense'"
       >
         <HugeiconsIcon :icon="ArrowUp01Icon" :size="20" class="mr-2 inline-block" />
-        Pengeluaran
+        {{ $t('transaction_form.expense') }}
       </button>
     </div>
 
     <!-- AMOUNT CARD -->
     <div class="rounded-3xl border border-border/50 bg-card/40 p-8">
-      <p class="text-sm font-medium text-muted-foreground">Nominal</p>
+      <p class="text-sm font-medium text-muted-foreground">{{ $t('transaction_form.amount') }}</p>
       <div class="mt-4 flex items-start gap-2">
         <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{ form.currency }}</span>
         <input
@@ -53,7 +53,7 @@
       <div class="flex items-center gap-3 px-5 py-4">
         <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
-          <CategoryPicker v-model="form.category_id" :type="form.type" placeholder="Pilih kategori" />
+          <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('transaction_form.select_category')" />
         </div>
       </div>
 
@@ -96,7 +96,7 @@
         <div class="flex-1">
           <Textarea
             v-model="form.description"
-            placeholder="Catatan (opsional)"
+            :placeholder="$t('transaction_form.note_optional')"
             rows="2"
             class="resize-none border-none shadow-none"
           />
@@ -111,20 +111,20 @@
         class="rounded-2xl border border-red-500/10 bg-red-500/3 px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/8"
         @click="$emit('delete')"
       >
-        Hapus
+        {{ $t('transaction_form.delete') }}
       </button>
       <button
         class="rounded-2xl border border-border/50 px-5 py-3 text-sm text-muted-foreground transition hover:bg-card/50"
         @click="$emit('cancel')"
       >
-        Batal
+        {{ $t('transaction_form.cancel') }}
       </button>
       <button
         class="rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
         :disabled="!form.amount || !form.date"
         @click="onSubmit"
       >
-        Simpan Transaksi
+        {{ $t('transaction_form.save') }}
       </button>
     </div>
   </div>
@@ -141,6 +141,8 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import type { Transaction } from '~/composables/useTransactions';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   transaction?: Transaction;

@@ -11,40 +11,39 @@
       <div class="flex justify-center mb-8 animate-[fade-up_0.5s_ease-out]">
         <div class="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-sm backdrop-blur-sm">
           <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <span class="text-muted-foreground">100+ pengguna aktif</span>
+          <span class="text-muted-foreground">{{ $t('landing.hero_badge') }}</span>
         </div>
       </div>
 
       <!-- Headline -->
       <div class="text-center max-w-3xl mx-auto">
         <h1 class="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl leading-tight">
-          Kontrol keuangan pribadi
+          {{ heroTitleStart }}
           <br class="hidden sm:block" />
-          <span class="text-primary">tanpa ribet.</span>
+          <span class="text-primary">{{ heroTitleHighlight }}</span>
         </h1>
         <p class="mt-6 text-base text-muted-foreground md:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
-          Pantau pengeluaran, transaksi rutin, dan saldo — bareng pasangan
-          dalam satu dashboard modern.
+          {{ $t('landing.hero_desc') }}
         </p>
       </div>
 
       <!-- CTA -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 animate-[fade-up_0.5s_ease-out_0.2s_both]">
         <Button class="w-full sm:w-auto gap-2" size="lg" @click="goToLogin">
-          Mulai Gratis
+          {{ $t('landing.hero_cta') }}
           <HugeiconsIcon :icon="ArrowRightIcon" :size="18" />
         </Button>
         <Button variant="outline" class="w-full sm:w-auto gap-2" size="lg" @click="scrollToFeatures">
           <HugeiconsIcon :icon="PlayCircleIcon" :size="18" />
-          Lihat Demo
+          {{ $t('landing.hero_demo') }}
         </Button>
       </div>
 
       <!-- Trust badges -->
       <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-muted-foreground animate-[fade-up_0.5s_ease-out_0.3s_both]">
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> Gratis selamanya</span>
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> Tanpa iklan</span>
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> Data terenkripsi</span>
+        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_free') }}</span>
+        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_noads') }}</span>
+        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_secure') }}</span>
       </div>
 
       <!-- Dashboard Preview -->
@@ -193,8 +192,20 @@ import { HugeiconsIcon } from '@hugeicons/vue';
 import { Button } from '@/components/ui/button';
 import { useRouter } from '#imports';
 
+const { t } = useI18n();
 const router = useRouter();
 const goToLogin = () => router.push('/login');
 const scrollToFeatures = () =>
   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+
+const heroTitleStart = computed(() => {
+  const full = t('landing.hero_title');
+  const idx = full.indexOf('tanpa');
+  return idx === -1 ? full : full.slice(0, idx);
+});
+const heroTitleHighlight = computed(() => {
+  const full = t('landing.hero_title');
+  const idx = full.indexOf('tanpa');
+  return idx === -1 ? '' : full.slice(idx);
+});
 </script>

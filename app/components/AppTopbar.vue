@@ -42,7 +42,7 @@
         <div
           class="flex h-10 w-60 cursor-pointer items-center rounded-2xl border border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
         >
-          <span>Cari transaksi...</span>
+          <span>{{ $t('topbar.search') }}</span>
           <kbd class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50">⌘K</kbd>
         </div>
       </div>
@@ -69,7 +69,7 @@
         @click="navigateTo('/transactions/new')"
       >
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
-        <span class="hidden sm:inline">Tambah</span>
+        <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </button>
     </div>
   </header>
@@ -92,6 +92,7 @@ defineEmits<{
 
 const route = useRoute();
 const colorMode = useColorMode();
+const { t } = useI18n();
 
 interface BreadcrumbItemDef {
   label: string;
@@ -100,34 +101,34 @@ interface BreadcrumbItemDef {
 
 const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
   const path = route.path;
-  const items: BreadcrumbItemDef[] = [{ label: 'Dashboard', to: '/' }];
+  const items: BreadcrumbItemDef[] = [{ label: t('topbar.dashboard'), to: '/' }];
 
   if (path === '/') {
     return items;
   }
 
   if (path.startsWith('/transactions')) {
-    items.push({ label: 'Transaksi', to: '/transactions' });
+    items.push({ label: t('topbar.transactions'), to: '/transactions' });
     if (path === '/transactions/new') {
-      items.push({ label: 'Tambah' });
+      items.push({ label: t('topbar.add_title') });
     } else if (path.includes('/edit')) {
-      items.push({ label: 'Edit' });
+      items.push({ label: t('topbar.edit') });
     }
     return items;
   }
 
   if (path.startsWith('/categories')) {
-    items.push({ label: 'Kategori' });
+    items.push({ label: t('topbar.categories') });
     return items;
   }
 
   if (path.startsWith('/recurring')) {
-    items.push({ label: 'Transaksi Rutin' });
+    items.push({ label: t('topbar.recurring') });
     return items;
   }
 
   if (path.startsWith('/settings')) {
-    items.push({ label: 'Setelan' });
+    items.push({ label: t('topbar.settings') });
     return items;
   }
 

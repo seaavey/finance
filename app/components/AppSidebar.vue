@@ -7,11 +7,11 @@
       <div class="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary">
         <HugeiconsIcon :icon="MoneyAdd01Icon" :size="18" class="text-sidebar-primary-foreground" />
       </div>
-      <span class="text-base font-bold text-sidebar-foreground">Finance</span>
+      <span class="text-base font-bold text-sidebar-foreground">{{ $t('sidebar.finance') }}</span>
     </div>
 
     <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
-      <NuxtLink
+      <NuxtLinkLocale
         v-for="item in mainNavItems"
         :key="item.to"
         :to="item.to"
@@ -21,10 +21,10 @@
       >
         <HugeiconsIcon :icon="item.icon" :size="18" />
         {{ item.label }}
-      </NuxtLink>
+      </NuxtLinkLocale>
 
       <div class="mt-auto border-t border-sidebar-border pt-3">
-        <NuxtLink
+        <NuxtLinkLocale
           v-for="item in bottomNavItems"
           :key="item.to"
           :to="item.to"
@@ -34,7 +34,7 @@
         >
           <HugeiconsIcon :icon="item.icon" :size="18" />
           {{ item.label }}
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </nav>
 
@@ -51,7 +51,7 @@
       <button
         class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
         @click="onSignOut"
-        title="Logout"
+        :title="$t('sidebar.logout')"
       >
         <HugeiconsIcon :icon="Logout01Icon" :size="16" />
       </button>
@@ -81,15 +81,18 @@ defineEmits<{
 
 const { user, signOut } = useAuth();
 const route = useRoute();
+const { t } = useI18n();
 
-const mainNavItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: Home03Icon },
-  { to: '/transactions', label: 'Transaksi', icon: ArrowLeftRightIcon },
-  { to: '/categories', label: 'Kategori', icon: GridViewIcon },
-  { to: '/recurring', label: 'Rutin', icon: RepeatIcon },
-];
+const mainNavItems = computed(() => [
+  { to: '/dashboard', label: t('sidebar.dashboard'), icon: Home03Icon },
+  { to: '/transactions', label: t('sidebar.transactions'), icon: ArrowLeftRightIcon },
+  { to: '/categories', label: t('sidebar.categories'), icon: GridViewIcon },
+  { to: '/recurring', label: t('sidebar.recurring'), icon: RepeatIcon },
+]);
 
-const bottomNavItems = [{ to: '/settings', label: 'Setelan', icon: Settings01Icon }];
+const bottomNavItems = computed(() => [
+  { to: '/settings', label: t('sidebar.settings'), icon: Settings01Icon },
+]);
 
 const isActive = (path: string) => {
   if (path === '/') {

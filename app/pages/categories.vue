@@ -2,8 +2,8 @@
   <div class="mx-auto max-w-6xl space-y-8">
     <!-- HEADER -->
     <div>
-      <h1 class="text-3xl font-bold tracking-tight">Kategori</h1>
-      <p class="mt-1 text-sm text-muted-foreground">Kelola kategori pemasukan dan pengeluaran</p>
+      <h1 class="text-3xl font-bold tracking-tight">{{ $t('categories.title') }}</h1>
+      <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
     </div>
 
     <div v-if="loading" class="space-y-6">
@@ -43,8 +43,8 @@
           <HugeiconsIcon :icon="GridViewIcon" :size="24" class="text-muted-foreground/60" />
         </div>
         <div class="text-center">
-          <p class="font-medium">Belum ada kategori</p>
-          <p class="mt-0.5 text-sm text-muted-foreground">Klik Tambah untuk membuat kategori {{ activeTab === 'income' ? 'pemasukan' : 'pengeluaran' }} baru</p>
+          <p class="font-medium">{{ $t('categories.empty') }}</p>
+          <p class="mt-0.5 text-sm text-muted-foreground">{{ $t('categories.empty_desc') }}</p>
         </div>
       </div>
 
@@ -98,9 +98,9 @@
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
-      title="Hapus Kategori"
-      :description="`Yakin hapus kategori &quot;${deletingCategory?.name}&quot;? Tindakan ini tidak bisa dibatalkan.`"
-      confirm-text="Hapus"
+      :title="$t('categories.delete_title')"
+      :description="`${t('categories.delete_confirm')} &quot;${deletingCategory?.name}&quot;? Tindakan ini tidak bisa dibatalkan.`"
+      :confirm-text="$t('categories.delete_action')"
       @confirm="onDelete"
     />
   </div>
@@ -111,6 +111,8 @@ import { PencilEdit01Icon, Delete01Icon, GridViewIcon } from '@hugeicons/core-fr
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
+
+const { t } = useI18n();
 
 const {
   categories,
@@ -139,8 +141,12 @@ const showDeleteDialog = ref(false);
 const deletingCategory = ref<Category | undefined>();
 
 const tabs = computed(() => [
-  { value: 'expense' as const, label: 'Pengeluaran', count: expenseCategories.value.length },
-  { value: 'income' as const, label: 'Pemasukan', count: incomeCategories.value.length },
+  {
+    value: 'expense' as const,
+    label: t('categories.expense'),
+    count: expenseCategories.value.length,
+  },
+  { value: 'income' as const, label: t('categories.income'), count: incomeCategories.value.length },
 ]);
 
 const filteredCategories = computed(() =>

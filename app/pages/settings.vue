@@ -30,27 +30,29 @@
 
       <!-- PREFERENCES -->
       <section>
-        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Preferensi</p>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">{{ $t('settings.preferences') }}</p>
         <div class="rounded-3xl border border-border/50 bg-card/20">
-          <SettingsItem icon="user" label="Nama Tampilan" :value="profile.display_name || 'Belum diatur'" @click="editName = true" />
+          <SettingsItem icon="user" :label="$t('settings.display_name')" :value="profile.display_name || $t('settings.not_set')" @click="editName = true" />
           <div class="mx-4 border-t border-border/50" />
-          <SettingsItem icon="currency" label="Mata Uang" :value="selectedCurrencyLabel" @click="editCurrency = true" />
+          <SettingsItem icon="currency" :label="$t('settings.currency')" :value="selectedCurrencyLabel" @click="editCurrency = true" />
           <div class="mx-4 border-t border-border/50" />
-          <SettingsItem icon="palette" label="Tema" :value="themeLabel" @click="cycleTheme" />
+          <SettingsItem icon="palette" :label="$t('settings.theme')" :value="themeLabel" @click="cycleTheme" />
+          <div class="mx-4 border-t border-border/50" />
+          <SettingsItem icon="language" :label="$t('settings.language')" :value="localeLabel" @click="cycleLanguage" />
         </div>
       </section>
 
       <!-- DATA -->
       <section>
-        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Data</p>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">{{ $t('settings.data') }}</p>
         <div class="rounded-3xl border border-border/50 bg-card/20">
-          <SettingsItem icon="download" label="Export Data" :value="exportLabel" @click="exportData" />
+          <SettingsItem icon="download" :label="$t('settings.export')" :value="exportLabel" @click="exportData" />
         </div>
       </section>
 
       <!-- DANGER ZONE -->
       <section>
-        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Akun</p>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">{{ $t('settings.account') }}</p>
         <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.03] p-2">
           <button
             class="flex w-full items-center justify-between rounded-2xl px-4 py-4 transition hover:bg-red-500/[0.05]"
@@ -61,8 +63,8 @@
                 <HugeiconsIcon :icon="Logout01Icon" :size="20" class="text-red-400" />
               </div>
               <div class="text-left">
-                <p class="font-medium text-red-400">Logout</p>
-                <p class="text-sm text-muted-foreground">Keluar dari akun saat ini</p>
+                <p class="font-medium text-red-400">{{ $t('settings.logout') }}</p>
+                <p class="text-sm text-muted-foreground">{{ $t('settings.logout_desc') }}</p>
               </div>
             </div>
             <HugeiconsIcon :icon="ArrowRight01Icon" :size="18" class="text-muted-foreground/40" />
@@ -70,21 +72,21 @@
         </div>
       </section>
 
-      <p class="text-center text-xs text-muted-foreground/30">v1.0.0</p>
+      <p class="text-center text-xs text-muted-foreground/30">{{ $t('settings.version') }}</p>
     </div>
 
     <Dialog v-model:open="editName">
       <DialogContent class="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Nama Tampilan</DialogTitle>
+          <DialogTitle>{{ $t('settings.dialog_name_title') }}</DialogTitle>
         </DialogHeader>
         <div class="space-y-3 py-2">
-          <Input v-model="profile.display_name" placeholder="Nama kamu" autofocus />
+          <Input v-model="profile.display_name" :placeholder="$t('settings.name_placeholder')" autofocus />
         </div>
         <div class="flex justify-end gap-2">
-          <Button variant="outline" size="sm" @click="editName = false">Batal</Button>
+          <Button variant="outline" size="sm" @click="editName = false">{{ $t('settings.cancel') }}</Button>
           <Button size="sm" :disabled="saving" @click="saveProfile">
-            {{ saving ? 'Menyimpan...' : 'Simpan' }}
+            {{ saving ? $t('settings.saving') : $t('settings.save') }}
           </Button>
         </div>
       </DialogContent>
@@ -93,7 +95,7 @@
     <Dialog v-model:open="editCurrency">
       <DialogContent class="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Mata Uang Default</DialogTitle>
+          <DialogTitle>{{ $t('settings.dialog_currency_title') }}</DialogTitle>
         </DialogHeader>
         <div class="max-h-64 overflow-y-auto py-2">
           <div v-for="group in currencyGroups" :key="group.label" class="mb-3 last:mb-0">
@@ -125,6 +127,7 @@ const supabase = useSupabase();
 const { user, signOut } = useAuth();
 const { currencies, currencyGroups } = useCurrency();
 const colorMode = useColorMode();
+const { locale, setLocale, t } = useI18n();
 
 const loading = ref(true);
 const saving = ref(false);
@@ -141,9 +144,24 @@ const selectedCurrencyLabel = computed(() => {
   return c ? c.value : 'IDR';
 });
 
+const localeLabel = computed(() => {
+  const map: Record<string, string> = { id: 'Indonesia', en: 'English' };
+  return map[locale.value] ?? 'Indonesia';
+});
+
+const cycleLanguage = async () => {
+  const locales = ['id', 'en'];
+  const idx = locales.indexOf(locale.value);
+  await setLocale(locales[(idx + 1) % locales.length]);
+};
+
 const themeLabel = computed(() => {
-  const map: Record<string, string> = { light: 'Terang', dark: 'Gelap', system: 'Sistem' };
-  return map[colorMode.preference] ?? 'Sistem';
+  const map: Record<string, string> = {
+    light: t('theme.light'),
+    dark: t('theme.dark'),
+    system: t('theme.system'),
+  };
+  return map[colorMode.preference] ?? t('theme.system');
 });
 
 const cycleTheme = () => {
@@ -185,9 +203,9 @@ const saveProfile = async () => {
     .eq('id', user.value.id);
 
   if (!error) {
-    toast.success('Profil berhasil disimpan');
+    toast.success(t('settings.toast_saved'));
   } else {
-    toast.error('Gagal menyimpan profil');
+    toast.error(t('settings.toast_save_error'));
   }
   saving.value = false;
   editName.value = false;
@@ -206,14 +224,16 @@ const selectCurrency = async (value: string) => {
     .eq('id', user.value.id);
 
   if (!error) {
-    toast.success('Mata uang diperbarui');
+    toast.success(t('settings.toast_currency_updated'));
   } else {
-    toast.error('Gagal memperbarui mata uang');
+    toast.error(t('settings.toast_currency_error'));
   }
 };
 
 const { exportAllData, exporting } = useExport();
-const exportLabel = computed(() => (exporting.value ? 'Mengexport...' : 'Excel'));
+const exportLabel = computed(() =>
+  exporting.value ? t('settings.exporting') : t('settings.export'),
+);
 const exportData = () => {
   exportAllData();
 };

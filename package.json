@@ -17,6 +17,7 @@
     "@hugeicons/vue": "^1.0.5",
     "@internationalized/date": "^3.12.1",
     "@nuxtjs/color-mode": "^4.0.0",
+    "@nuxtjs/i18n": "^10.4.0",
     "@nuxtjs/seo": "^5.1.3",
     "@resvg/resvg-js": "^2.6.2",
     "@supabase/supabase-js": "^2.106.1",

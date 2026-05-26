@@ -21,6 +21,7 @@ export interface TransactionFilters {
 }
 
 export const useTransactions = () => {
+  const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
   const transactions = useState<Transaction[]>('transactions', () => []);
@@ -64,9 +65,9 @@ export const useTransactions = () => {
 
     if (!error) {
       await fetchTransactions();
-      toast.success('Transaksi berhasil ditambahkan');
+      toast.success(t('toast.transaction_added'));
     } else {
-      toast.error('Gagal menambahkan transaksi');
+      toast.error(t('toast.transaction_add_error'));
     }
     return { error };
   };
@@ -79,9 +80,9 @@ export const useTransactions = () => {
 
     if (!error) {
       await fetchTransactions();
-      toast.success('Transaksi berhasil diperbarui');
+      toast.success(t('toast.transaction_updated'));
     } else {
-      toast.error('Gagal memperbarui transaksi');
+      toast.error(t('toast.transaction_update_error'));
     }
     return { error };
   };
@@ -91,9 +92,9 @@ export const useTransactions = () => {
 
     if (!error) {
       await fetchTransactions();
-      toast.success('Transaksi berhasil dihapus');
+      toast.success(t('toast.transaction_deleted'));
     } else {
-      toast.error('Gagal menghapus transaksi');
+      toast.error(t('toast.transaction_delete_error'));
     }
     return { error };
   };

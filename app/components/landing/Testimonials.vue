@@ -2,12 +2,12 @@
   <section class="relative px-6 py-16 md:py-24">
     <div class="mx-auto max-w-5xl">
       <div class="text-center max-w-2xl mx-auto">
-        <p class="text-sm font-medium text-primary mb-3">Testimoni</p>
+        <p class="text-sm font-medium text-primary mb-3">{{ $t('landing.testimonials_title') }}</p>
         <h2 class="font-heading text-3xl font-bold tracking-tight md:text-4xl">
-          Dipakai 100+ orang
+          {{ $t('landing.testimonials_heading') }}
         </h2>
         <p class="mt-3 text-muted-foreground">
-          Lihat apa kata mereka yang sudah pakai Finance sehari-hari.
+          {{ $t('landing.testimonials_desc') }}
         </p>
       </div>
 

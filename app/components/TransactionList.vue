@@ -3,14 +3,14 @@
     <div v-if="transactions.length === 0" class="py-8 text-center text-sm text-muted-foreground">
       Belum ada transaksi
     </div>
-    <NuxtLink
+    <NuxtLinkLocale
       v-for="tx in transactions"
       :key="tx.id"
       :to="`/transactions/${tx.id}/edit`"
       class="block"
     >
       <TransactionItem :transaction="tx" />
-    </NuxtLink>
+    </NuxtLinkLocale>
   </div>
 </template>
 

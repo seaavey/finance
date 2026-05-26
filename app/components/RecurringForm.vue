@@ -2,29 +2,29 @@
   <Dialog :open="true" @update:open="$emit('close')">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>{{ item ? 'Edit Transaksi Rutin' : 'Tambah Transaksi Rutin' }}</DialogTitle>
+        <DialogTitle>{{ item ? $t('recurring_form.title_edit') : $t('recurring_form.title_new') }}</DialogTitle>
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="space-y-2">
-          <Label>Tipe</Label>
+          <Label>{{ $t('recurring_form.type') }}</Label>
           <div class="flex gap-2">
             <Button type="button" :variant="form.type === 'income' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'income'">
-              Pemasukan
+              {{ $t('recurring_form.income') }}
             </Button>
             <Button type="button" :variant="form.type === 'expense' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'expense'">
-              Pengeluaran
+              {{ $t('recurring_form.expense') }}
             </Button>
           </div>
         </div>
 
         <div class="space-y-2">
-          <Label for="r-amount">Jumlah</Label>
+          <Label for="r-amount">{{ $t('recurring_form.amount') }}</Label>
           <Input id="r-amount" v-model.number="form.amount" type="number" min="1" step="any" placeholder="0" required />
         </div>
 
         <div class="space-y-2">
-          <Label>Mata Uang</Label>
+          <Label>{{ $t('recurring_form.currency') }}</Label>
           <Select v-model="form.currency">
             <SelectTrigger>
               <SelectValue />
@@ -36,38 +36,38 @@
         </div>
 
         <div class="space-y-2">
-          <Label>Kategori</Label>
-          <CategoryPicker v-model="form.category_id" :type="form.type" placeholder="Pilih kategori" />
+          <Label>{{ $t('recurring_form.category') }}</Label>
+          <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('recurring_form.select_category')" />
         </div>
 
         <div class="space-y-2">
-          <Label for="r-desc">Deskripsi</Label>
-          <Input id="r-desc" v-model="form.description" placeholder="Catatan (opsional)" />
+          <Label for="r-desc">{{ $t('recurring_form.description') }}</Label>
+          <Input id="r-desc" v-model="form.description" :placeholder="$t('recurring_form.note_optional')" />
         </div>
 
         <div class="space-y-2">
-          <Label>Frekuensi</Label>
+          <Label>{{ $t('recurring_form.frequency') }}</Label>
           <Select v-model="form.frequency">
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="daily">Harian</SelectItem>
-              <SelectItem value="weekly">Mingguan</SelectItem>
-              <SelectItem value="monthly">Bulanan</SelectItem>
-              <SelectItem value="yearly">Tahunan</SelectItem>
+              <SelectItem value="daily">{{ $t('recurring_form.daily') }}</SelectItem>
+              <SelectItem value="weekly">{{ $t('recurring_form.weekly') }}</SelectItem>
+              <SelectItem value="monthly">{{ $t('recurring_form.monthly') }}</SelectItem>
+              <SelectItem value="yearly">{{ $t('recurring_form.yearly') }}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div class="space-y-2">
-          <Label for="r-next">Tanggal Berikutnya</Label>
+          <Label for="r-next">{{ $t('recurring_form.next_date') }}</Label>
           <Input id="r-next" v-model="form.next_date" type="date" required />
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" @click="$emit('close')">Batal</Button>
-          <Button type="submit" :disabled="!form.amount || !form.next_date">Simpan</Button>
+          <Button type="button" variant="outline" @click="$emit('close')">{{ $t('recurring_form.cancel') }}</Button>
+          <Button type="submit" :disabled="!form.amount || !form.next_date">{{ $t('recurring_form.save') }}</Button>
         </div>
       </form>
     </DialogContent>
@@ -86,6 +86,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
+const { t } = useI18n();
 const { currencies, defaultCurrency } = useCurrency();
 const { addRecurring, updateRecurring } = useRecurring();
 

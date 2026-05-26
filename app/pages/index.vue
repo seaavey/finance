@@ -4,8 +4,8 @@
     <header class="relative z-20 flex items-center justify-between px-6 py-4">
       <span class="text-lg font-bold tracking-tight">Finance</span>
       <div class="flex items-center gap-2">
-        <Button variant="ghost" size="sm" @click="goToLogin">Masuk</Button>
-        <Button size="sm" @click="goToLogin">Daftar</Button>
+        <Button variant="ghost" size="sm" @click="goToLogin">{{ $t('auth.login_title') }}</Button>
+        <Button size="sm" @click="goToLogin">{{ $t('auth.register') }}</Button>
       </div>
     </header>
 
@@ -33,17 +33,16 @@ import LandingFooter from '@/components/landing/Footer.vue';
 
 definePageMeta({ layout: 'blank' });
 
+const { t } = useI18n();
+const router = useRouter();
+const goToLogin = () => router.push('/login');
+
 useSeoMeta({
-  title: 'Finance — Catat keuangan sendiri atau bareng',
-  description:
-    'Pantau pengeluaran, transaksi rutin, dan saldo bersama pasangan dalam satu dashboard modern. Gratis selamanya.',
-  ogTitle: 'Finance — Catat keuangan sendiri atau bareng',
-  ogDescription:
-    'Pantau pengeluaran, transaksi rutin, dan saldo bersama pasangan dalam satu dashboard modern. Gratis selamanya.',
+  title: `Finance ${t('landing.footer_text')}`,
+  description: `${t('landing.hero_desc')} ${t('landing.hero_free')}.`,
+  ogTitle: `Finance ${t('landing.footer_text')}`,
+  ogDescription: `${t('landing.hero_desc')} ${t('landing.hero_free')}.`,
   ogSiteName: 'Finance',
   twitterCard: 'summary_large_image',
 });
-
-const router = useRouter();
-const goToLogin = () => router.push('/login');
 </script>

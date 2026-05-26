@@ -4,7 +4,7 @@
       <div class="text-center">
         <p class="text-sm font-medium text-primary mb-3">FAQ</p>
         <h2 class="font-heading text-3xl font-bold tracking-tight md:text-4xl">
-          Pertanyaan Umum
+          {{ $t('landing.faq_title') }}
         </h2>
       </div>
 
