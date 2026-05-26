@@ -12,12 +12,12 @@
         <Skeleton class="h-9 w-28 rounded-xl" />
       </div>
       <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-        <Skeleton class="h-[88px] rounded-3xl" />
-        <Skeleton class="h-[88px] rounded-3xl" />
-        <Skeleton class="h-[88px] rounded-3xl" />
-        <Skeleton class="h-[88px] rounded-3xl" />
-        <Skeleton class="h-[88px] rounded-3xl" />
-        <Skeleton class="h-[88px] rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-3xl" />
       </div>
     </div>
 

@@ -3,9 +3,9 @@
     <div class="flex items-center justify-between">
       <div>
         <ClientOnly>
-          <h2 class="text-lg font-semibold text-foreground">Halo, {{ displayName }}</h2>
+          <h2 class="text-3xl font-bold tracking-tight">Halo, {{ displayName }}</h2>
           <template #fallback>
-            <h2 class="text-lg font-semibold text-foreground">Halo...</h2>
+            <h2 class="text-3xl font-bold tracking-tight">Halo...</h2>
           </template>
         </ClientOnly>
         <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>

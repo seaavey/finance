@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-7xl space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-bold">Transaksi</h2>
+        <h2 class="text-3xl font-bold tracking-tight">Transaksi</h2>
         <p class="text-sm text-muted-foreground">{{ transactions.length }} transaksi</p>
       </div>
     </div>
@@ -114,7 +114,6 @@
 <script setup lang="ts">
 import { Search01Icon, FilterIcon, InboxIcon, Calendar01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-import type { DateRange } from 'reka-ui';
 import type { TransactionFilters } from '~/composables/useTransactions';
 
 interface CalendarDateLike {
@@ -142,7 +141,7 @@ const filters = reactive({
   category_id: '',
 });
 
-const dateRange = ref<DateRange>({ start: undefined, end: undefined });
+const dateRange: any = ref({ start: undefined, end: undefined });
 
 let debounceTimer: ReturnType<typeof setTimeout>;
 
