@@ -18,5 +18,8 @@ onMounted(() => {
   });
 });
 
-defineOgImageComponent('Default');
+defineOgImage('Default', {
+  title: 'Finance',
+  description: 'Kelola keuanganmu dengan mudah.',
+});
 </script>
