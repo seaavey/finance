@@ -76,11 +76,21 @@ const debouncedEmit = () => {
 
 const emitFilters = () => {
   const f: TransactionFilters = {};
-  if (filters.search) f.search = filters.search;
-  if (filters.type && filters.type !== 'all') f.type = filters.type as 'income' | 'expense';
-  if (filters.category_id) f.category_id = filters.category_id;
-  if (filters.dateFrom) f.dateFrom = filters.dateFrom;
-  if (filters.dateTo) f.dateTo = filters.dateTo;
+  if (filters.search) {
+    f.search = filters.search;
+  }
+  if (filters.type && filters.type !== 'all') {
+    f.type = filters.type as 'income' | 'expense';
+  }
+  if (filters.category_id) {
+    f.category_id = filters.category_id;
+  }
+  if (filters.dateFrom) {
+    f.dateFrom = filters.dateFrom;
+  }
+  if (filters.dateTo) {
+    f.dateTo = filters.dateTo;
+  }
   emit('filter', f);
 };
 

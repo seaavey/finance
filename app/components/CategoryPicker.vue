@@ -26,14 +26,18 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
-  'update:modelValue': [value: string];
+  'update:modelValue': [value: string | number | boolean | null];
 }>();
 
 const { categories, incomeCategories, expenseCategories } = useCategories();
 
 const filteredCategories = computed(() => {
-  if (props.type === 'income') return incomeCategories.value;
-  if (props.type === 'expense') return expenseCategories.value;
+  if (props.type === 'income') {
+    return incomeCategories.value;
+  }
+  if (props.type === 'expense') {
+    return expenseCategories.value;
+  }
   return categories.value;
 });
 </script>

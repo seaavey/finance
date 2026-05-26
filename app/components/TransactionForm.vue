@@ -72,7 +72,7 @@
                   v-for="c in group.currencies"
                   :key="c.value"
                   :value="c.value"
-                  class="rounded-xl px-3 py-2.5 text-sm text-zinc-300 hover:bg-white/[0.05] cursor-pointer"
+                  class="rounded-xl px-3 py-2.5 text-sm text-zinc-300 hover:bg-white/5 cursor-pointer"
                 >
                   <div class="flex items-center gap-2">
                     <span class="font-medium">{{ c.value }}</span>
@@ -109,7 +109,7 @@
     <div class="flex items-center justify-end gap-3">
       <button
         v-if="transaction"
-        class="rounded-2xl border border-red-500/10 bg-red-500/[0.03] px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/[0.08]"
+        class="rounded-2xl border border-red-500/10 bg-red-500/3 px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/8"
         @click="$emit('delete')"
       >
         Hapus
@@ -202,7 +202,7 @@ const onSubmit = async () => {
     currency: form.currency,
     category_id: form.category_id || null,
     description: form.description || null,
-    date: form.date,
+    date: form.date!,
   };
 
   if (props.transaction) {

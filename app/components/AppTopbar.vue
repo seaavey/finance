@@ -77,14 +77,6 @@
 
 <script setup lang="ts">
 import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '~/components/ui/breadcrumb';
-import {
   Menu02Icon,
   Search01Icon,
   Notification03Icon,
@@ -101,16 +93,18 @@ defineEmits<{
 const route = useRoute();
 const colorMode = useColorMode();
 
-interface BreadcrumbItem {
+interface BreadcrumbItemDef {
   label: string;
   to?: string;
 }
 
-const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
+const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
   const path = route.path;
-  const items: BreadcrumbItem[] = [{ label: 'Dashboard', to: '/' }];
+  const items: BreadcrumbItemDef[] = [{ label: 'Dashboard', to: '/' }];
 
-  if (path === '/') return items;
+  if (path === '/') {
+    return items;
+  }
 
   if (path.startsWith('/transactions')) {
     items.push({ label: 'Transaksi', to: '/transactions' });

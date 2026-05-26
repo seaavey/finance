@@ -102,14 +102,14 @@ const form = reactive({
 });
 
 const onSubmit = async () => {
-  const payload = {
+  const payload: Omit<RecurringTransaction, 'id' | 'user_id' | 'created_at'> = {
     type: form.type,
     amount: Number(form.amount),
     currency: form.currency,
     category_id: form.category_id || null,
     description: form.description || null,
     frequency: form.frequency,
-    next_date: form.next_date,
+    next_date: form.next_date!,
     active: true,
   };
 
