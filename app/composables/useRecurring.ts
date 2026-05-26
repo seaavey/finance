@@ -37,7 +37,9 @@ export const useRecurring = () => {
     item: Omit<RecurringTransaction, 'id' | 'user_id' | 'created_at'>,
   ) => {
     const { user } = useAuth();
-    if (!user.value) return { error: { message: 'Not authenticated' } };
+    if (!user.value) {
+      return { error: { message: 'Not authenticated' } };
+    }
 
     const { error } = await supabase
       .from('recurring_transactions')

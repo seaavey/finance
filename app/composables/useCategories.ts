@@ -57,12 +57,16 @@ export const useCategories = () => {
       })),
     ];
     const { error } = await supabase.from('categories').insert(entries);
-    if (!error) await fetchCategories();
+    if (!error) {
+      await fetchCategories();
+    }
   };
 
   const addCategory = async (category: Omit<Category, 'id' | 'user_id' | 'created_at'>) => {
     const { user } = useAuth();
-    if (!user.value) return;
+    if (!user.value) {
+      return;
+    }
 
     const { error } = await supabase
       .from('categories')

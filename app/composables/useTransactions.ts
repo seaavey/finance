@@ -56,7 +56,9 @@ export const useTransactions = () => {
 
   const addTransaction = async (tx: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
     const { user } = useAuth();
-    if (!user.value) return { error: { message: 'Not authenticated' } };
+    if (!user.value) {
+      return { error: { message: 'Not authenticated' } };
+    }
 
     const { error } = await supabase.from('transactions').insert({ ...tx, user_id: user.value.id });
 
