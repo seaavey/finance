@@ -18,19 +18,20 @@ const cleanAmount = (val: string): number | null => {
   const hasDot = cleaned.includes('.');
   const hasComma = cleaned.includes(',');
 
-  if (hasComma && hasDot) {
-    const afterComma = cleaned.split(',')[1] || '';
-    if (afterComma.includes('.')) {
-      return Number(cleaned.replace(/\./g, '').replace(',', '.'));
-    }
-    return Number(cleaned.replace(',', ''));
-  }
+  // Format Indonesia: dot = thousand separator, comma = decimal
+  // e.g. "50.000" = 50000, "50.000,50" = 50000.5
   if (hasComma) {
-    const parts = cleaned.split(',');
-    if (parts[1] && parts[1].length <= 2) {
-      return Number(cleaned.replace(',', '.'));
+    return Number(cleaned.replace(/\./g, '').replace(',', '.'));
+  }
+  if (hasDot) {
+    const parts = cleaned.split('.');
+    const lastLen = parts[parts.length - 1].length;
+    // Jika bagian terakhir 3 digit, dot = pemisah ribuan (50.000 → 50000)
+    if (lastLen === 3 && parts.length > 1) {
+      return Number(parts.join(''));
     }
-    return Number(cleaned.replace(',', ''));
+    // Jika ≤2 digit, dot = desimal (50.00 → 50)
+    return Number(cleaned);
   }
   return Number(cleaned);
 };
@@ -188,10 +189,7 @@ export const useOcr = () => {
       await worker.terminate();
 
       const text = data.text;
-      const lines = text
-        .split('\n')
-        .map((l) => l.trim())
-        .filter(Boolean);
+      const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
 
       const total = parseAmount(text);
       const date = parseDate(text);
@@ -199,18 +197,18 @@ export const useOcr = () => {
       const descLines = lines
         .filter((l) => {
           const lower = l.toLowerCase();
-          return (
-            !lower.includes('total') &&
-            !lower.includes('rp') &&
-            !lower.includes('tanggal') &&
-            !lower.includes('date') &&
-            !/^\d+$/.test(l.trim())
-          );
+          return !lower.includes('total') && !lower.includes('rp')
+            && !lower.includes('tanggal') && !lower.includes('date')
+            && !/^\d+$/.test(l.trim());
         })
         .slice(0, 3);
       const description = storeName
         ? `${storeName} — ${descLines[0] || 'receipt'}`
-        : descLines[0] || 'Receipt scan';
+        : (descLines[0] || 'Receipt scan');
+
+      console.log('[OCR] Raw text:', text);
+      console.log('[OCR] Lines:', lines);
+      console.log('[OCR] Parsed:', { total, date, storeName, description });
 
       loading.value = false;
       progress.value = 100;
