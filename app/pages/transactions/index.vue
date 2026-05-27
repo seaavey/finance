@@ -165,8 +165,8 @@ const ownerOptions = computed(() => [
 
 const filteredTransactions = computed(() => {
   const all = transactions.value;
-  if (!isPartnered.value || ownerFilter.value === 'all') return all;
-  if (ownerFilter.value === 'mine') return all.filter((tx) => tx.user_id === user.value?.id);
+  if (!isPartnered.value || ownerFilter.value === 'all') {return all;}
+  if (ownerFilter.value === 'mine') {return all.filter((tx) => tx.user_id === user.value?.id);}
   // ownerFilter is 'partner'
   return all.filter((tx) => tx.user_id === partner.value?.id);
 });

@@ -38,11 +38,10 @@ serve(async (req) => {
       return new Response('Content-Type must be application/json', { status: 400 });
     }
 
-    const { id, sender_id, recipient_email, token } = record as {
+    const { id, sender_id, recipient_email } = record as {
       id?: string;
       sender_id?: string;
       recipient_email?: string;
-      token?: string;
     };
 
     if (!sender_id || !recipient_email) {

@@ -62,8 +62,8 @@
     </div>
 
     <!-- Gradient Overlays for smooth fade -->
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-background to-transparent"></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-background to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-background to-transparent"/>
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-background to-transparent"/>
   </section>
 </template>
 

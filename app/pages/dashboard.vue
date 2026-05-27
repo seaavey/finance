@@ -261,9 +261,9 @@ const viewModes = computed(() => [
 
 const filteredTransactions = computed(() => {
   const all = transactions.value;
-  if (!isPartnered.value || viewMode.value === 'all') return all;
+  if (!isPartnered.value || viewMode.value === 'all') {return all;}
   const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
-  if (!targetUserId) return all;
+  if (!targetUserId) {return all;}
   return all.filter((tx) => tx.user_id === targetUserId);
 });
 

@@ -446,7 +446,7 @@ const onSignOut = async () => {
 
 // === Couple handlers ===
 const onSendInvite = async () => {
-  if (!inviteEmail.value) return;
+  if (!inviteEmail.value) {return;}
   const { error } = await sendInvite(inviteEmail.value);
   if (!error) {
     inviteEmail.value = '';

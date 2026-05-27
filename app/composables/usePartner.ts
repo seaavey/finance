@@ -1,6 +1,4 @@
 import { useSupabase } from '~/lib/supabase';
-import type { User } from '@supabase/supabase-js';
-
 export interface CoupleInvitation {
   id: string;
   sender_id: string;
@@ -34,11 +32,6 @@ export const usePartner = () => {
   const loading = useState('partner-loading', () => false);
   const sending = useState('partner-sending', () => false);
 
-  const partnerId = computed(() => {
-    // partner_id will be loaded from profiles table
-    return null; // placeholder, set after fetch
-  });
-
   const isPartnered = computed(() => partner.value !== null);
 
   const partnerDisplayName = computed(
@@ -46,7 +39,7 @@ export const usePartner = () => {
   );
 
   const fetchPartner = async () => {
-    if (!user.value) return;
+    if (!user.value) {return;}
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -70,7 +63,7 @@ export const usePartner = () => {
   };
 
   const fetchInvitations = async () => {
-    if (!user.value?.email) return;
+    if (!user.value?.email) {return;}
     loading.value = true;
 
     const [sentResult, receivedResult] = await Promise.all([
@@ -224,7 +217,7 @@ export const usePartner = () => {
   };
 
   const disconnectPartner = async () => {
-    if (!user.value || !partner.value) return;
+    if (!user.value || !partner.value) {return;}
 
     loading.value = true;
     const partnerId = partner.value.id;

@@ -51,8 +51,8 @@
         <span class="flex-1 truncate text-sm font-medium text-sidebar-foreground">{{ user.user_metadata?.full_name }}</span>
         <button
           class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
-          @click="onSignOut"
           :title="$t('sidebar.logout')"
+          @click="onSignOut"
         >
           <HugeiconsIcon :icon="Logout01Icon" :size="16" />
         </button>

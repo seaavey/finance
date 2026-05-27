@@ -116,7 +116,7 @@
             <div class="flex-1 py-8 flex flex-col gap-6">
               <div class="flex flex-col gap-2">
                 <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2">Navigation</p>
-                <SheetClose as-child v-for="item in navItems" :key="item.href">
+                <SheetClose v-for="item in navItems" :key="item.href" as-child>
                   <button
                     class="w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors hover:bg-muted flex items-center justify-between group"
                     @click="scrollToSection(item.href)"

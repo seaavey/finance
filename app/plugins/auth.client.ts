@@ -1,6 +1,6 @@
 import { useSupabase } from '~/lib/supabase';
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async (_nuxtApp) => {
   const supabase = useSupabase();
   const { getSession, user } = useAuth();
 
