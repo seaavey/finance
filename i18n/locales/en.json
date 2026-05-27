@@ -60,13 +60,16 @@
   },
   "transaction_form": {
     "title_new": "Add Transaction",
+    "title_edit": "Edit Transaction Data",
     "subtitle": "Record a new income or expense",
+    "subtitle_edit": "Update your transaction details",
     "income": "Income",
     "expense": "Expense",
     "amount": "Amount",
     "amount_placeholder": "0",
     "select_category": "Select category",
     "note_optional": "Note (optional)",
+    "select_date": "Select date",
     "delete": "Delete",
     "cancel": "Cancel",
     "save": "Save Transaction"
@@ -76,7 +79,16 @@
     "back": "Back",
     "delete_title": "Delete Transaction",
     "delete_confirm": "Are you sure you want to delete this transaction? This action cannot be undone.",
-    "delete": "Delete"
+    "delete": "Delete",
+    "edit_label": "Edit Transaction",
+    "error_title": "Failed to Load Transaction",
+    "error_desc": "An error occurred while loading the transaction. Please try again.",
+    "retry": "Retry",
+    "not_found_desc": "The transaction may have been deleted or you don't have access to it.",
+    "unsaved_title": "Unsaved Changes",
+    "unsaved_desc": "You have unsaved changes. Are you sure you want to leave this page?",
+    "leave": "Leave",
+    "stay": "Stay"
   },
   "categories": {
     "title": "Categories",
@@ -143,6 +155,7 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "next_date": "Next Date",
+    "select_date": "Select date",
     "cancel": "Cancel"
   },
   "settings": {

@@ -92,7 +92,36 @@
 
         <div class="space-y-2">
           <Label for="r-next">{{ $t('recurring_form.next_date') }}</Label>
-          <Input id="r-next" v-model="form.next_date" type="date" required />
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                :class="
+                  cn(
+                    'w-full justify-between text-left font-medium',
+                    !form.next_date && 'text-muted-foreground',
+                  )
+                "
+              >
+                <div class="flex items-center">
+                  <HugeiconsIcon :icon="Calendar01Icon" :size="16" class="mr-2" />
+                  {{
+                    form.next_date
+                      ? df.format(calendarDate!.toDate(getLocalTimeZone()))
+                      : $t('recurring_form.select_date')
+                  }}
+                </div>
+                <HugeiconsIcon
+                  :icon="ArrowDown01Icon"
+                  :size="16"
+                  class="text-muted-foreground opacity-50"
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="w-auto p-0">
+              <Calendar v-model="calendarDate" initial-focus />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -109,7 +138,13 @@
 </template>
 
 <script setup lang="ts">
+import { Calendar01Icon, ArrowDown01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/vue';
+import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
 import type { RecurringTransaction } from '~/composables/useRecurring';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const props = defineProps<{
   item?: RecurringTransaction;
@@ -120,11 +155,15 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { currencies, defaultCurrency } = useCurrency();
 const { addRecurring, updateRecurring } = useRecurring();
 
-const today = new Date().toISOString().split('T')[0];
+const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
+  dateStyle: 'long',
+});
+
+const todayDate = today(getLocalTimeZone()).toString();
 
 const form = reactive({
   type: props.item?.type ?? ('expense' as 'income' | 'expense'),
@@ -133,7 +172,16 @@ const form = reactive({
   category_id: props.item?.category_id ?? '',
   description: props.item?.description ?? '',
   frequency: props.item?.frequency ?? ('monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly'),
-  next_date: props.item?.next_date ?? today,
+  next_date: props.item?.next_date ?? todayDate,
+});
+
+const calendarDate = computed({
+  get: () => (form.next_date ? parseDate(form.next_date) : undefined),
+  set: (val) => {
+    if (val) {
+      form.next_date = val.toString();
+    }
+  },
 });
 
 const onSubmit = async () => {

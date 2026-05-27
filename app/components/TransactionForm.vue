@@ -2,8 +2,12 @@
   <div class="mx-auto w-full max-w-3xl space-y-8">
     <!-- HEADER -->
     <div>
-      <h1 class="text-3xl font-bold">{{ $t('transaction_form.title_new') }}</h1>
-      <p class="mt-1.5 text-sm text-muted-foreground">{{ $t('transaction_form.subtitle') }}</p>
+      <h1 class="text-3xl font-bold">
+        {{ isEdit ? $t('transaction_form.title_edit') : $t('transaction_form.title_new') }}
+      </h1>
+      <p class="mt-1.5 text-sm text-muted-foreground">
+        {{ isEdit ? $t('transaction_form.subtitle_edit') : $t('transaction_form.subtitle') }}
+      </p>
     </div>
 
     <!-- TYPE SELECTOR -->
@@ -90,7 +94,7 @@
                 >
                   <div class="flex items-center gap-2">
                     <span class="font-medium">{{ c.value }}</span>
-                    <span class="text-muted-foreground">{{ c.label.split(' - ')[1] }}</span>
+                    <span class="text-muted-foreground"> - {{ c.label.split(' - ')[1] }}</span>
                   </div>
                 </SelectItem>
               </SelectGroup>
@@ -101,8 +105,34 @@
 
       <div class="flex items-center gap-3 px-5 py-4">
         <HugeiconsIcon :icon="Calendar01Icon" :size="18" class="text-muted-foreground" />
-        <div class="flex-1">
-          <Input v-model="form.date" type="date" class="border-none shadow-none" />
+        <div class="">
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                :class="
+                  cn(
+                    'w-full justify-between border-none px-4 font-medium shadow-none hover:bg-transparent',
+                    !form.date && 'text-muted-foreground',
+                  )
+                "
+              >
+                {{
+                  form.date
+                    ? df.format(calendarDate!.toDate(getLocalTimeZone()))
+                    : $t('transaction_form.select_date')
+                }}
+                <HugeiconsIcon
+                  :icon="ArrowDown01Icon"
+                  :size="16"
+                  class="text-muted-foreground ml-auto opacity-50"
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="w-auto p-0">
+              <Calendar v-model="calendarDate" initial-focus />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -121,13 +151,6 @@
 
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3">
-      <button
-        v-if="transaction"
-        class="rounded-2xl border border-red-500/10 bg-red-500/3 px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/8"
-        @click="$emit('delete')"
-      >
-        {{ $t('transaction_form.delete') }}
-      </button>
       <button
         class="rounded-2xl border border-border/50 px-5 py-3 text-sm text-muted-foreground transition hover:bg-card/50"
         @click="$emit('cancel')"
@@ -155,9 +178,14 @@ import {
   Note01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
+import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
 import type { Transaction } from '~/composables/useTransactions';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const props = defineProps<{
   transaction?: Transaction;
@@ -166,12 +194,26 @@ const props = defineProps<{
 const emit = defineEmits<{
   cancel: [];
   saved: [];
-  delete: [];
+  dirty: [value: boolean];
 }>();
 
 const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
 
 const { addTransaction, updateTransaction } = useTransactions();
+
+const isEdit = computed(() => !!props.transaction);
+
+onMounted(() => {
+  if (isEdit.value) {
+    console.log('TransactionForm mounted in EDIT mode', props.transaction);
+  } else {
+    console.log('TransactionForm mounted in NEW mode');
+  }
+});
+
+const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
+  dateStyle: 'long',
+});
 
 const amountDisplay = computed({
   get: () => {
@@ -185,7 +227,7 @@ const amountDisplay = computed({
   },
 });
 
-const today = new Date().toISOString().split('T')[0];
+const todayDate = today(getLocalTimeZone()).toString();
 
 const form = reactive({
   type: props.transaction?.type ?? ('expense' as 'income' | 'expense'),
@@ -193,8 +235,43 @@ const form = reactive({
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
   description: props.transaction?.description ?? '',
-  date: props.transaction?.date ?? today,
+  date: props.transaction?.date ?? todayDate,
 });
+
+const calendarDate = computed({
+  get: () => (form.date ? parseDate(form.date) : undefined),
+  set: (val) => {
+    if (val) {
+      form.date = val.toString();
+    }
+  },
+});
+
+watch(
+  () => ({ ...form }),
+  (newForm) => {
+    if (!props.transaction) {
+      return;
+    }
+    const initial = {
+      type: props.transaction.type,
+      amount: props.transaction.amount,
+      currency: props.transaction.currency,
+      category_id: props.transaction.category_id,
+      description: props.transaction.description,
+      date: props.transaction.date,
+    };
+    const changed =
+      newForm.type !== initial.type ||
+      Number(newForm.amount) !== Number(initial.amount) ||
+      newForm.currency !== initial.currency ||
+      newForm.category_id !== (initial.category_id ?? '') ||
+      newForm.description !== (initial.description ?? '') ||
+      newForm.date !== initial.date;
+    emit('dirty', changed);
+  },
+  { deep: true, immediate: true },
+);
 
 const onNumberKeydown = (e: KeyboardEvent) => {
   const allowed = [

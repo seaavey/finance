@@ -60,13 +60,16 @@
   },
   "transaction_form": {
     "title_new": "Tambah Transaksi",
+    "title_edit": "Edit Data Transaksi",
     "subtitle": "Catat pemasukan atau pengeluaran baru",
+    "subtitle_edit": "Perbarui rincian transaksi Anda",
     "income": "Pemasukan",
     "expense": "Pengeluaran",
     "amount": "Nominal",
     "amount_placeholder": "0",
     "select_category": "Pilih kategori",
     "note_optional": "Catatan (opsional)",
+    "select_date": "Pilih tanggal",
     "delete": "Hapus",
     "cancel": "Batal",
     "save": "Simpan Transaksi"
@@ -76,7 +79,16 @@
     "back": "Kembali",
     "delete_title": "Hapus Transaksi",
     "delete_confirm": "Yakin hapus transaksi ini? Tindakan ini tidak bisa dibatalkan.",
-    "delete": "Hapus"
+    "delete": "Hapus",
+    "edit_label": "Edit Transaksi",
+    "error_title": "Gagal Memuat Transaksi",
+    "error_desc": "Terjadi kesalahan saat memuat transaksi. Silakan coba lagi.",
+    "retry": "Coba Lagi",
+    "not_found_desc": "Transaksi mungkin telah dihapus atau kamu tidak memiliki akses.",
+    "unsaved_title": "Perubahan Belum Disimpan",
+    "unsaved_desc": "Kamu memiliki perubahan yang belum disimpan. Yakin ingin meninggalkan halaman ini?",
+    "leave": "Tinggalkan",
+    "stay": "Tetap di Sini"
   },
   "categories": {
     "title": "Kategori",
@@ -143,6 +155,7 @@
     "monthly": "Bulanan",
     "yearly": "Tahunan",
     "next_date": "Tanggal Berikutnya",
+    "select_date": "Pilih tanggal",
     "cancel": "Batal"
   },
   "settings": {

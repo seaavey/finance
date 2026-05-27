@@ -489,7 +489,7 @@ const profile = reactive({
 
 const selectedCurrencyLabel = computed(() => {
   const c = currencies.find((c) => c.value === profile.currency);
-  return c ? c.value : 'IDR';
+  return c ? c.label : 'IDR';
 });
 
 const localeLabel = computed(() => {
