@@ -221,7 +221,9 @@
     "recurring": "Transaksi Rutin",
     "settings": "Setelan",
     "searching": "Mencari...",
-    "no_results": "Tidak ada hasil ditemukan"
+    "no_results": "Tidak ada hasil ditemukan",
+    "suggestions": "Saran",
+    "quick_actions": "Aksi Cepat"
   },
   "landing": {
     "hero_badge": "100+ pengguna aktif",

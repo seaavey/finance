@@ -221,7 +221,9 @@
     "recurring": "Recurring Transactions",
     "settings": "Settings",
     "searching": "Searching...",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "suggestions": "Suggestions",
+    "quick_actions": "Quick Actions"
   },
   "landing": {
     "hero_badge": "100+ active users",

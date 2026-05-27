@@ -5,7 +5,7 @@ import { reactiveOmit } from '@vueuse/core'
 import { ListboxGroup, ListboxGroupLabel, useId } from 'reka-ui'
 import { computed, onMounted, onUnmounted } from 'vue'
 import { cn } from '@/lib/utils'
-import { provideCommandGroupContext, useCommand } from '.'
+import { provideCommandGroupContext, useCommand } from './CommandContext'
 
 const props = defineProps<ListboxGroupProps & {
   class?: HTMLAttributes['class']
@@ -34,7 +34,7 @@ onUnmounted(() => {
     v-bind="delegatedProps"
     :id="id"
     data-slot="command-group"
-    :class="cn('text-foreground **:[[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium', props.class)"
+    :class="cn('text-foreground overflow-hidden p-1 **:[data-slot=command-group-heading]:text-muted-foreground **:[data-slot=command-group-heading]:px-2 **:[data-slot=command-group-heading]:py-1.5 **:[data-slot=command-group-heading]:text-xs **:[data-slot=command-group-heading]:font-medium', props.class)"
     :hidden="isRender ? undefined : true"
   >
     <ListboxGroupLabel v-if="heading" data-slot="command-group-heading" class="">

@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { PencilEdit01Icon } from '@hugeicons/core-free-icons';
+import {
+  PencilEdit01Icon,
+  Home03Icon,
+  ArrowLeftRightIcon,
+  GridViewIcon,
+  RepeatIcon,
+  Settings01Icon,
+  Add01Icon as Plus01Icon,
+  MoneyAdd01Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import { useTransactions, type Transaction } from '~/composables/useTransactions';
@@ -10,6 +19,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
+  CommandShortcut,
 } from '@/components/ui/command';
 
 const { searchTransactions } = useTransactions();
@@ -21,6 +32,19 @@ const open = defineModel<boolean>('open', { default: false });
 const searchQuery = ref('');
 const results = ref<Transaction[]>([]);
 const loading = ref(false);
+
+const suggestions = computed(() => [
+  { label: t('sidebar.dashboard'), icon: Home03Icon, to: '/dashboard' },
+  { label: t('sidebar.transactions'), icon: ArrowLeftRightIcon, to: '/transactions' },
+  { label: t('sidebar.categories'), icon: GridViewIcon, to: '/categories' },
+  { label: t('sidebar.recurring'), icon: RepeatIcon, to: '/recurring' },
+]);
+
+const quickActions = computed(() => [
+  { label: t('dashboard.actions_add_transaction'), icon: Plus01Icon, to: '/transactions/new' },
+  { label: t('recurring.add'), icon: MoneyAdd01Icon, to: '/recurring' },
+  { label: t('sidebar.settings'), icon: Settings01Icon, to: '/settings', shortcut: '⌘S' },
+]);
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   day: 'numeric',
@@ -46,9 +70,9 @@ const onInput = (e: Event) => {
   debounceTimer = setTimeout(() => search(searchQuery.value), 300);
 };
 
-const select = (id: string) => {
+const select = (to: string) => {
   open.value = false;
-  navigateTo(`/transactions/${id}/edit`);
+  navigateTo(to);
 };
 
 const getCategory = (id: string | null) => categories.value.find((c) => c.id === id);
@@ -74,13 +98,14 @@ const formatDate = (date: string) => {
         {{ $t('topbar.no_results') }}
       </CommandEmpty>
 
-      <CommandGroup v-else-if="results.length > 0" :heading="$t('transactions.title')">
+      <!-- RESULTS -->
+      <CommandGroup v-if="results.length > 0 && searchQuery" :heading="$t('transactions.title')">
         <CommandItem
           v-for="tx in results"
           :key="tx.id"
           :value="tx.description || tx.id"
           class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
-          @select="select(tx.id)"
+          @select="select(`/transactions/${tx.id}/edit`)"
         >
           <div
             class="size-2 shrink-0 rounded-full"
@@ -112,6 +137,38 @@ const formatDate = (date: string) => {
           />
         </CommandItem>
       </CommandGroup>
+
+      <!-- DEFAULT VIEW (SUGGESTIONS) -->
+      <template v-if="!searchQuery && !loading">
+        <CommandGroup :heading="$t('topbar.suggestions')">
+          <CommandItem
+            v-for="item in suggestions"
+            :key="item.to"
+            :value="item.label"
+            class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
+            @select="select(item.to)"
+          >
+            <HugeiconsIcon :icon="item.icon" :size="16" class="text-muted-foreground" />
+            <span class="text-sm font-medium">{{ item.label }}</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup :heading="$t('topbar.quick_actions')">
+          <CommandItem
+            v-for="item in quickActions"
+            :key="item.to"
+            :value="item.label"
+            class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
+            @select="select(item.to)"
+          >
+            <HugeiconsIcon :icon="item.icon" :size="16" class="text-muted-foreground" />
+            <span class="text-sm font-medium">{{ item.label }}</span>
+            <CommandShortcut v-if="item.shortcut">
+              {{ item.shortcut }}
+            </CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+      </template>
     </CommandList>
   </CommandDialog>
 </template>
