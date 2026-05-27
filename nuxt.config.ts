@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: ['~/styles/global.css'],
   runtimeConfig: {
     public: {
@@ -18,8 +18,6 @@ export default defineNuxtConfig({
         '@hugeicons/vue',
         '@internationalized/date',
         '@supabase/supabase-js',
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
         '@vueuse/core',
         'chart.js',
         'class-variance-authority',

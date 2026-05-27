@@ -176,7 +176,9 @@
                   <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleColorMode" />
                 </div>
                 <div class="flex flex-col gap-1 px-2 mt-2">
-                  <p class="text-xs font-medium text-muted-foreground mb-1">{{ $t('settings.language') }}</p>
+                  <p class="text-xs font-medium text-muted-foreground mb-1">
+                    {{ $t('settings.language') }}
+                  </p>
                   <div class="flex gap-2">
                     <Button
                       v-for="locale in locales"

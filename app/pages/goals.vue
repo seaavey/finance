@@ -48,12 +48,7 @@
     </template>
 
     <!-- FORM DIALOG -->
-    <GoalForm
-      v-if="showForm"
-      :goal="editingGoal"
-      @close="closeForm"
-      @saved="onSaved"
-    />
+    <GoalForm v-if="showForm" :goal="editingGoal" @close="closeForm" @saved="onSaved" />
 
     <!-- ADD FUNDS DIALOG -->
     <AddFundsDialog

@@ -19,11 +19,7 @@ const handleError = () => clearError({ redirect: '/' });
           {{ error?.statusCode === 404 ? $t('error.title_404') : $t('error.title_500') }}
         </h2>
         <p class="text-muted-foreground text-lg">
-          {{
-            error?.statusCode === 404
-              ? $t('error.desc_404')
-              : $t('error.desc_500')
-          }}
+          {{ error?.statusCode === 404 ? $t('error.desc_404') : $t('error.desc_500') }}
         </p>
       </div>
 

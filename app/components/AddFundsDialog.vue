@@ -11,14 +11,7 @@
       <form class="space-y-4 pt-4" @submit.prevent="onSubmit">
         <div class="space-y-2">
           <Label for="amount">{{ $t('funds_form.amount') }}</Label>
-          <Input
-            id="amount"
-            v-model="amount"
-            type="number"
-            placeholder="0"
-            required
-            auto-focus
-          />
+          <Input id="amount" v-model="amount" type="number" placeholder="0" required auto-focus />
         </div>
 
         <div class="flex justify-end gap-2 pt-2">

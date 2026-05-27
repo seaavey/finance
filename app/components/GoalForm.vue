@@ -25,8 +25,9 @@
           <Label for="target_amount">{{ $t('goal_form.target_amount') }}</Label>
           <Input
             id="target_amount"
-            v-model="form.target_amount"
-            type="number"
+            v-model="amountDisplay"
+            type="text"
+            inputmode="numeric"
             placeholder="0"
             required
           />
@@ -127,7 +128,8 @@ const emit = defineEmits<{
 }>();
 
 const { t, locale } = useI18n();
-const { addGoal, updateGoal } = useGoals();
+const { addGoal, updateGoal, uploadGoalImage, deleteGoalImage } = useGoals();
+const { formatCurrency, parseLocalizedNumber } = useCurrency();
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
@@ -136,6 +138,22 @@ const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const imagePreview = ref<string>(props.goal?.image_url ?? '');
 const selectedFile = ref<File | null>(null);
+
+function stripCurrency(val: string) {
+  return val.replace(/^[^\d.,]+/, '').replace(/[^\d.,]+$/, '').trim();
+}
+
+const amountDisplay = computed({
+  get: () => {
+    if (!form.target_amount) {
+      return '';
+    }
+    return formatCurrency(Number(form.target_amount));
+  },
+  set: (val: string) => {
+    form.target_amount = parseLocalizedNumber(stripCurrency(val));
+  },
+});
 
 const form = reactive({
   name: props.goal?.name ?? '',

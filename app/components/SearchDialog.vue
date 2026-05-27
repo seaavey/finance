@@ -128,7 +128,8 @@ const formatDate = (date: string) => {
             class="shrink-0 text-sm font-semibold"
             :class="tx.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
           >
-            {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(tx.amount), tx.currency) }}
+            {{ tx.type === 'income' ? '+' : '-'
+            }}{{ formatCurrency(Number(tx.amount), tx.currency) }}
           </p>
           <HugeiconsIcon
             :icon="PencilEdit01Icon"
