@@ -186,6 +186,9 @@
     "target_amount": "Target Amount",
     "deadline": "Target Date (Optional)",
     "color": "Color",
+    "image": "Image",
+    "image_placeholder": "Click to upload image",
+    "image_remove": "Remove",
     "cancel": "Cancel",
     "save": "Save"
   },

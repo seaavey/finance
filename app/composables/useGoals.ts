@@ -9,6 +9,7 @@ export interface Goal {
   deadline: string | null;
   icon: string | null;
   color: string;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -33,9 +34,13 @@ export const useGoals = () => {
     loading.value = false;
   };
 
-  const addGoal = async (goal: Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'current_amount'>) => {
+  const addGoal = async (
+    goal: Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'current_amount'>,
+  ) => {
     const { user } = useAuth();
-    if (!user.value) return { error: { message: 'Not authenticated' } };
+    if (!user.value) {
+      return { error: { message: 'Not authenticated' } };
+    }
 
     const { error } = await supabase
       .from('goals')
@@ -50,11 +55,11 @@ export const useGoals = () => {
     return { error };
   };
 
-  const updateGoal = async (id: string, updates: Partial<Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at'>>) => {
-    const { error } = await supabase
-      .from('goals')
-      .update(updates)
-      .eq('id', id);
+  const updateGoal = async (
+    id: string,
+    updates: Partial<Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at'>>,
+  ) => {
+    const { error } = await supabase.from('goals').update(updates).eq('id', id);
 
     if (!error) {
       await fetchGoals();
@@ -66,8 +71,10 @@ export const useGoals = () => {
   };
 
   const addFunds = async (goalId: string, amount: number) => {
-    const goal = goals.value.find(g => g.id === goalId);
-    if (!goal) return { error: { message: 'Goal not found' } };
+    const goal = goals.value.find((g) => g.id === goalId);
+    if (!goal) {
+      return { error: { message: 'Goal not found' } };
+    }
 
     const newAmount = Number(goal.current_amount) + Number(amount);
     const { error } = await supabase
@@ -84,11 +91,46 @@ export const useGoals = () => {
     return { error };
   };
 
+  const uploadGoalImage = async (file: File): Promise<string | null> => {
+    const { user } = useAuth();
+    if (!user.value) {
+      return null;
+    }
+
+    const ext = file.name.split('.').pop() || 'png';
+    const filePath = `${user.value.id}/${crypto.randomUUID()}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from('goal-images')
+      .upload(filePath, file, { upsert: false });
+
+    if (error) {
+      toast.error('Gagal upload gambar');
+      return null;
+    }
+
+    const { data } = supabase.storage.from('goal-images').getPublicUrl(filePath);
+    return data.publicUrl;
+  };
+
+  const deleteGoalImage = async (url: string) => {
+    const prefix = '/object/public/goal-images/';
+    const idx = url.indexOf(prefix);
+    if (idx === -1) {
+      return;
+    }
+    const path = url.slice(idx + prefix.length);
+
+    await supabase.storage.from('goal-images').remove([path]);
+  };
+
   const deleteGoal = async (id: string) => {
-    const { error } = await supabase
-      .from('goals')
-      .delete()
-      .eq('id', id);
+    const goal = goals.value.find((g) => g.id === id);
+    if (goal?.image_url) {
+      await deleteGoalImage(goal.image_url);
+    }
+
+    const { error } = await supabase.from('goals').delete().eq('id', id);
 
     if (!error) {
       await fetchGoals();
@@ -106,6 +148,8 @@ export const useGoals = () => {
     addGoal,
     updateGoal,
     addFunds,
-    deleteGoal
+    uploadGoalImage,
+    deleteGoalImage,
+    deleteGoal,
   };
 };

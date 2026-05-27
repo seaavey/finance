@@ -5,10 +5,20 @@
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-4">
         <div
-          class="flex size-12 shrink-0 items-center justify-center rounded-2xl"
-          :style="{ backgroundColor: (goal.color || '#ec4899') + '20' }"
+          class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
+          :style="!goal.image_url ? { backgroundColor: (goal.color || '#ec4899') + '20' } : {}"
         >
-          <div class="size-3 rounded-full" :style="{ backgroundColor: goal.color || '#ec4899' }" />
+          <img
+            v-if="goal.image_url"
+            :src="goal.image_url"
+            :alt="goal.name"
+            class="size-full object-cover"
+          />
+          <div
+            v-else
+            class="size-3 rounded-full"
+            :style="{ backgroundColor: goal.color || '#ec4899' }"
+          />
         </div>
         <div>
           <h3 class="font-semibold text-foreground md:text-lg">{{ goal.name }}</h3>
@@ -18,12 +28,7 @@
         </div>
       </div>
       <div class="flex gap-1">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          class="rounded-full"
-          @click="$emit('edit', goal)"
-        >
+        <Button variant="ghost" size="icon-sm" class="rounded-full" @click="$emit('edit', goal)">
           <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
         </Button>
         <Button
@@ -39,25 +44,18 @@
 
     <div class="mt-6">
       <div class="flex justify-between text-sm mb-2">
-        <span class="text-muted-foreground">
-          {{ formattedCurrent }} / {{ formattedTarget }}
-        </span>
-        <span class="font-medium" :style="{ color: goal.color }">
-          {{ percentage }}%
-        </span>
+        <span class="text-muted-foreground"> {{ formattedCurrent }} / {{ formattedTarget }} </span>
+        <span class="font-medium" :style="{ color: goal.color }"> {{ percentage }}% </span>
       </div>
-      
+
       <!-- Progress Bar Shadcn -->
-      <Progress 
-        :model-value="percentage" 
-        class="h-3"
-      >
+      <Progress :model-value="percentage" class="h-3">
         <template #indicator>
-          <div 
+          <div
             class="h-full w-full transition-all duration-500 ease-out"
-            :style="{ 
+            :style="{
               backgroundColor: goal.color || '#ec4899',
-              transform: `translateX(-${100 - Math.min(percentage, 100)}%)`
+              transform: `translateX(-${100 - Math.min(percentage, 100)}%)`,
             }"
           />
         </template>
@@ -72,11 +70,9 @@
             {{ $t('goals.completed') }}
           </span>
         </template>
-        <template v-else>
-          {{ $t('goals.remaining') }}: {{ formattedRemaining }}
-        </template>
+        <template v-else> {{ $t('goals.remaining') }}: {{ formattedRemaining }} </template>
       </div>
-      
+
       <Button
         size="sm"
         class="rounded-full gap-2"
@@ -100,15 +96,17 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
-  (e: 'add-funds', goal: Goal): void;
-  (e: 'edit', goal: Goal): void;
-  (e: 'delete', id: string): void;
+  'add-funds': [goal: Goal];
+  edit: [goal: Goal];
+  delete: [id: string];
 }>();
 
 const { formatCurrency } = useCurrency();
 
 const percentage = computed(() => {
-  if (!props.goal.target_amount || props.goal.target_amount <= 0) return 0;
+  if (!props.goal.target_amount || props.goal.target_amount <= 0) {
+    return 0;
+  }
   return Math.round((props.goal.current_amount / props.goal.target_amount) * 100);
 });
 
@@ -120,7 +118,9 @@ const formattedRemaining = computed(() => {
 });
 
 const formattedDate = computed(() => {
-  if (!props.goal.deadline) return '';
+  if (!props.goal.deadline) {
+    return '';
+  }
   const d = new Date(props.goal.deadline);
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 });

@@ -186,6 +186,9 @@
     "target_amount": "Nominal Target",
     "deadline": "Tanggal Target (Opsional)",
     "color": "Warna",
+    "image": "Gambar",
+    "image_placeholder": "Klik untuk upload gambar",
+    "image_remove": "Hapus",
     "cancel": "Batal",
     "save": "Simpan"
   },

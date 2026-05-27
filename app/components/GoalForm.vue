@@ -61,17 +61,39 @@
         </div>
 
         <div class="space-y-2">
-          <Label>{{ $t('goal_form.color') }}</Label>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="color in colorOptions"
-              :key="color"
-              type="button"
-              class="size-8 rounded-full border-2 transition-transform"
-              :class="form.color === color ? 'scale-110 border-foreground' : 'border-transparent'"
-              :style="{ backgroundColor: color }"
-              @click="form.color = color"
+          <Label>{{ $t('goal_form.image') }}</Label>
+          <div class="relative">
+            <input
+              ref="fileInputRef"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              class="hidden"
+              @change="onFileSelect"
             />
+            <button
+              v-if="!imagePreview"
+              type="button"
+              class="flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-border/50 bg-muted/20 px-4 py-8 transition-colors hover:border-border hover:bg-muted/40"
+              @click="fileInputRef?.click()"
+            >
+              <HugeiconsIcon :icon="Image01Icon" :size="32" class="text-muted-foreground" />
+              <span class="text-sm text-muted-foreground">{{
+                $t('goal_form.image_placeholder')
+              }}</span>
+            </button>
+            <div v-else class="relative">
+              <img :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover" />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                class="absolute right-2 top-2 rounded-full"
+                @click="removeImage"
+              >
+                <HugeiconsIcon :icon="Delete01Icon" :size="14" />
+                {{ $t('goal_form.image_remove') }}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -90,7 +112,7 @@
 
 <script setup lang="ts">
 import { HugeiconsIcon } from '@hugeicons/vue';
-import { Calendar01Icon } from '@hugeicons/core-free-icons';
+import { Calendar01Icon, Image01Icon, Delete01Icon } from '@hugeicons/core-free-icons';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import type { Goal } from '~/composables/useGoals';
 import { cn } from '~/lib/utils';
@@ -111,20 +133,9 @@ const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
 });
 
-const colorOptions = [
-  '#ec4899',
-  '#3b82f6',
-  '#8b5cf6',
-  '#f59e0b',
-  '#06b6d4',
-  '#10b981',
-  '#ef4444',
-  '#f97316',
-  '#14b8a6',
-  '#6366f1',
-  '#f43f5e',
-  '#84cc16',
-];
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const imagePreview = ref<string>(props.goal?.image_url ?? '');
+const selectedFile = ref<File | null>(null);
 
 const form = reactive({
   name: props.goal?.name ?? '',
@@ -132,7 +143,38 @@ const form = reactive({
   deadline: props.goal?.deadline ?? '',
   color: props.goal?.color ?? '#ec4899',
   icon: props.goal?.icon ?? 'target',
+  image_url: props.goal?.image_url ?? null,
 });
+
+const onFileSelect = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    const { toast } = useToast();
+    toast.error('Max 5MB');
+    return;
+  }
+
+  selectedFile.value = file;
+  const reader = new FileReader();
+  reader.onload = () => {
+    imagePreview.value = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+};
+
+const removeImage = () => {
+  selectedFile.value = null;
+  imagePreview.value = '';
+  form.image_url = null;
+  if (fileInputRef.value) {
+    fileInputRef.value.value = '';
+  }
+};
 
 const calendarDate = computed({
   get: () => (form.deadline ? parseDate(form.deadline) : undefined),
@@ -144,12 +186,25 @@ const calendarDate = computed({
 });
 
 const onSubmit = async () => {
+  let imageUrl = form.image_url;
+
+  if (selectedFile.value) {
+    const url = await uploadGoalImage(selectedFile.value);
+    if (url) {
+      if (props.goal?.image_url) {
+        deleteGoalImage(props.goal.image_url);
+      }
+      imageUrl = url;
+    }
+  }
+
   if (props.goal) {
     await updateGoal(props.goal.id, {
       name: form.name,
       target_amount: Number(form.target_amount),
       deadline: form.deadline || null,
       color: form.color,
+      image_url: imageUrl,
     });
   } else {
     await addGoal({
@@ -158,6 +213,7 @@ const onSubmit = async () => {
       deadline: form.deadline || null,
       color: form.color,
       icon: form.icon,
+      image_url: imageUrl,
     });
   }
   emit('saved');
