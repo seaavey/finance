@@ -1,3 +1,5 @@
+import { useSupabase } from '~/lib/supabase';
+
 export interface ReceiptData {
   total: number | null;
   date: string | null;
@@ -124,6 +126,7 @@ export const useOcr = () => {
   const loading = ref(false);
   const progress = ref(0);
   const status = ref('');
+  const supabase = useSupabase();
 
   const scanReceipt = async (file: File): Promise<ReceiptData | null> => {
     loading.value = true;
@@ -135,12 +138,18 @@ export const useOcr = () => {
       progress.value = 30;
       status.value = 'Processing...';
 
-      const response = await $fetch<{ text: string }>('/api/ocr', {
-        method: 'POST',
+      const { data, error } = await supabase.functions.invoke('ocr-process', {
         body: { base64, filename: file.name },
       });
 
-      const text = response.text;
+      if (error || !data?.text) {
+        console.error('[OCR] Error:', error || 'No text returned');
+        loading.value = false;
+        status.value = 'Error';
+        return null;
+      }
+
+      const text = data.text;
       const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
 
       const total = parseAmount(text);
