@@ -361,16 +361,6 @@
     "export_error": "Gagal mengexport data",
     "login_required": "Kamu harus login dulu"
   },
-  "receipt": {
-    "take_photo": "Ambil Foto",
-    "scanning": "Memindai...",
-    "scan_receipt": "Scan Struk",
-    "scan_receipt_desc": "Ambil foto atau unggah gambar struk",
-    "use_photo": "Gunakan Foto Ini",
-    "photo_selected": "Foto dipilih",
-    "scan_struk": "Scan Struk",
-    "scan_struk_desc": "Foto struk untuk isi otomatis"
-  },
   "chart": {
     "no_data": "Belum ada data"
   },

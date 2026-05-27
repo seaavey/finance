@@ -9,7 +9,6 @@ export interface Transaction {
   category_id: string | null;
   description: string | null;
   date: string;
-  receipt_image: string | null;
   created_at: string;
 }
 
@@ -119,25 +118,6 @@ export const useTransactions = () => {
     return error || !data ? [] : (data as Transaction[]);
   };
 
-  const uploadReceipt = async (file: File): Promise<string | null> => {
-    const { user } = useAuth();
-    if (!user.value) {
-      return null;
-    }
-
-    const ext = file.name.split('.').pop() || 'jpg';
-    const path = `${user.value.id}/${Date.now()}.${ext}`;
-
-    const { error } = await supabase.storage.from('receipts').upload(path, file);
-    if (error) {
-      toast.error('Failed to upload receipt');
-      return null;
-    }
-
-    const { data: urlData } = supabase.storage.from('receipts').getPublicUrl(path);
-    return urlData?.publicUrl || null;
-  };
-
   const monthlySummary = computed(() => {
     const now = new Date();
     const month = now.getMonth();
@@ -164,7 +144,6 @@ export const useTransactions = () => {
     loading,
     fetchTransactions,
     searchTransactions,
-    uploadReceipt,
     addTransaction,
     updateTransaction,
     deleteTransaction,

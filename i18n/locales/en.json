@@ -361,16 +361,6 @@
     "export_error": "Failed to export data",
     "login_required": "You must be logged in"
   },
-  "receipt": {
-    "take_photo": "Take Photo",
-    "scanning": "Scanning...",
-    "scan_receipt": "Scan Receipt",
-    "scan_receipt_desc": "Take a photo or upload a receipt image",
-    "use_photo": "Use This Photo",
-    "photo_selected": "Photo selected",
-    "scan_struk": "Scan Receipt",
-    "scan_struk_desc": "Scan a receipt to auto-fill transaction data"
-  },
   "chart": {
     "no_data": "No data yet"
   },
