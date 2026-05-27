@@ -1,9 +1,9 @@
 <template>
   <Dialog v-model:open="open">
     <DialogContent class="sm:max-w-md gap-0 p-0">
-      <DialogTitle class="sr-only">Scan Receipt</DialogTitle>
+      <DialogTitle class="sr-only">{{ $t('receipt.scan_receipt') }}</DialogTitle>
       <DialogDescription class="sr-only"
-        >Upload or take a photo of your receipt to auto-fill transaction data</DialogDescription
+        >{{ $t('receipt.scan_receipt_desc') }}</DialogDescription
       >
 
       <div v-if="!preview" class="p-8">
@@ -12,14 +12,14 @@
             <HugeiconsIcon :icon="Camera01Icon" :size="28" class="text-primary" />
           </div>
           <div>
-            <p class="font-semibold text-foreground">Scan Receipt</p>
-            <p class="mt-1 text-sm text-muted-foreground">Take a photo or upload a receipt image</p>
+            <p class="font-semibold text-foreground">{{ $t('receipt.scan_receipt') }}</p>
+            <p class="mt-1 text-sm text-muted-foreground">{{ $t('receipt.scan_receipt_desc') }}</p>
           </div>
           <label
             class="flex cursor-pointer items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
           >
             <HugeiconsIcon :icon="Camera01Icon" :size="18" />
-            <span>{{ ocrLoading ? 'Scanning...' : 'Take Photo' }}</span>
+            <span>{{ ocrLoading ? $t('receipt.scanning') : $t('receipt.take_photo') }}</span>
             <input
               ref="fileInputRef"
               type="file"
@@ -55,7 +55,7 @@
             class="flex-1 rounded-xl bg-linear-to-b from-pink-500 to-pink-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-400 hover:to-pink-500"
             @click="confirm"
           >
-            Use This Photo
+            {{ $t('receipt.use_photo') }}
           </Button>
         </div>
       </div>

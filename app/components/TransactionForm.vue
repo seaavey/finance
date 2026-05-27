@@ -129,10 +129,10 @@
         <HugeiconsIcon :icon="Camera01Icon" :size="18" class="text-pink-400" />
       </div>
       <div class="flex-1">
-        <p class="text-sm font-medium text-foreground">Scan Struk</p>
-        <p class="text-xs text-muted-foreground">Foto struk untuk isi otomatis</p>
+        <p class="text-sm font-medium text-foreground">{{ $t('receipt.scan_struk') }}</p>
+        <p class="text-xs text-muted-foreground">{{ $t('receipt.scan_struk_desc') }}</p>
       </div>
-      <p v-if="receiptFile" class="text-xs text-emerald-400">Photo selected</p>
+      <p v-if="receiptFile" class="text-xs text-emerald-400">{{ $t('receipt.photo_selected') }}</p>
     </div>
 
     <img
