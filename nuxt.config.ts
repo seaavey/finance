@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         'clsx',
         'reka-ui',
         'tailwind-merge',
+        'tesseract.js',
         'sortablejs-vue3',
         'sortablejs',
         'chart.js',
