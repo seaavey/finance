@@ -19,7 +19,7 @@
             class="flex cursor-pointer items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
           >
             <HugeiconsIcon :icon="Camera01Icon" :size="18" />
-            <span>{{ $t(scanning ? 'Scanning...' : 'Take Photo') }}</span>
+            <span>{{ ocrLoading ? 'Scanning...' : 'Take Photo' }}</span>
             <input
               ref="fileInputRef"
               type="file"
