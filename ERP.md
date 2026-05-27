@@ -732,14 +732,6 @@ couple_invitations
   updated_at        timestamptz
   INDEX: (sender_id), (recipient_email), (token)
 
-todos  (unused/inactive feature — table ada tapi tidak ada UI)
-  id                uuid PK
-  user_id           uuid → auth.users
-  title             text
-  is_complete       boolean
-  priority          'low' | 'medium' | 'high'
-  due_date          date, nullable
-  created_at        timestamptz
 ```
 
 ## 21. Migration History
@@ -758,6 +750,8 @@ todos  (unused/inactive feature — table ada tapi tidak ada UI)
 | 10  | `20260526000004_invitation_profiles_rls.sql` | Sender↔recipient profile visibility via invitations join                        |
 | 11  | `20260526000005_fix_invitation_fk.sql`       | sender_id FK: auth.users → public.profiles                                      |
 | 12  | `20260526000006_accept_invitation_rpc.sql`   | RPC accept_couple_invitation, security definer, row lock                        |
+| 13  | `20260527000000_receipt_image.sql`           | Add `receipt_image` to transactions, create storage bucket `receipts`           |
+| 14  | `20260527000001_drop_todos.sql`              | Drop `todos` table (unused feature)                                             |
 
 ## 22. Ringkasan State Management
 
