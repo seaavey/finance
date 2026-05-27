@@ -16,7 +16,7 @@ export default defineEventHandler((event) => {
   setResponseHeader(
     event,
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; frame-ancestors 'none'; form-action 'self';",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; frame-ancestors 'none'; form-action 'self';",
   );
   setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
   setResponseHeader(event, 'X-Frame-Options', 'DENY');
