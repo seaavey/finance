@@ -2,13 +2,19 @@
   <section id="faq" class="relative px-6 py-20 md:py-32 overflow-hidden">
     <!-- Animated dynamic background glows -->
     <div class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute top-1/4 -left-20 size-96 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
-      <div class="absolute bottom-1/4 -right-20 size-96 rounded-full bg-blue-500/10 blur-[100px] animate-pulse [animation-delay:2s]" />
+      <div
+        class="absolute top-1/4 -left-20 size-96 rounded-full bg-primary/10 blur-[100px] animate-pulse"
+      />
+      <div
+        class="absolute bottom-1/4 -right-20 size-96 rounded-full bg-blue-500/10 blur-[100px] animate-pulse [animation-delay:2s]"
+      />
     </div>
 
     <div class="mx-auto max-w-3xl">
       <div class="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 shadow-sm">
+        <div
+          class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 shadow-sm"
+        >
           <HugeiconsIcon :icon="HelpCircleIcon" :size="14" />
           {{ $t('landing.nav_faq') }}
         </div>
@@ -29,15 +35,21 @@
         >
           <Accordion type="single" collapsible class="w-full">
             <AccordionItem :value="item.value" class="border-0">
-              <AccordionTrigger class="px-6 py-5 text-base md:text-lg font-semibold hover:no-underline text-left transition-all data-[state=open]:text-primary [&[data-state=open]>svg]:rotate-180">
+              <AccordionTrigger
+                class="px-6 py-5 text-base md:text-lg font-semibold hover:no-underline text-left transition-all data-[state=open]:text-primary [&[data-state=open]>svg]:rotate-180"
+              >
                 <div class="flex items-center gap-4">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors text-muted-foreground group-hover:text-primary">
+                  <div
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors text-muted-foreground group-hover:text-primary"
+                  >
                     <HugeiconsIcon :icon="item.icon" :size="20" />
                   </div>
                   {{ $t(item.questionKey) }}
                 </div>
               </AccordionTrigger>
-              <AccordionContent class="px-6 pb-6 text-sm md:text-base text-muted-foreground leading-relaxed pl-[4.5rem]">
+              <AccordionContent
+                class="px-6 pb-6 text-sm md:text-base text-muted-foreground leading-relaxed pl-[4.5rem]"
+              >
                 {{ $t(item.answerKey) }}
               </AccordionContent>
             </AccordionItem>
@@ -46,12 +58,21 @@
       </div>
 
       <!-- Support CTA -->
-      <div class="mt-16 text-center p-10 rounded-[2.5rem] border border-dashed border-primary/30 bg-primary/5 relative overflow-hidden group">
-        <div class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div
+        class="mt-16 text-center p-10 rounded-[2.5rem] border border-dashed border-primary/30 bg-primary/5 relative overflow-hidden group"
+      >
+        <div
+          class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        />
         <div class="relative z-10">
-          <p class="text-base font-medium text-foreground mb-2">{{ $t('landing.faq_support_title') }}</p>
+          <p class="text-base font-medium text-foreground mb-2">
+            {{ $t('landing.faq_support_title') }}
+          </p>
           <p class="text-sm text-muted-foreground mb-6">{{ $t('landing.faq_support_desc') }}</p>
-          <Button variant="default" class="rounded-full gap-2 px-8 py-6 h-auto text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all">
+          <Button
+            variant="default"
+            class="rounded-full gap-2 px-8 py-6 h-auto text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all"
+          >
             <HugeiconsIcon :icon="CustomerServiceIcon" :size="20" />
             {{ $t('landing.faq_support_button') }}
           </Button>

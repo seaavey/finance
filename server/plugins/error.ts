@@ -16,9 +16,13 @@ export default defineNitroPlugin((nitroApp) => {
         if ('statusCode' in error && error.statusCode === 404) {
           error.message = 'Not Found';
           // @ts-ignore
-          if (error.statusMessage) {error.statusMessage = 'Not Found';}
+          if (error.statusMessage) {
+            error.statusMessage = 'Not Found';
+          }
           // @ts-ignore
-          if (error.data) {error.data = undefined;}
+          if (error.data) {
+            error.data = undefined;
+          }
         }
       }
     }

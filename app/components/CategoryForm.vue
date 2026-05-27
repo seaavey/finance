@@ -2,13 +2,20 @@
   <Dialog :open="true" @update:open="$emit('close')">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>{{ category ? $t('category_form.title_edit') : $t('category_form.title_new') }}</DialogTitle>
+        <DialogTitle>{{
+          category ? $t('category_form.title_edit') : $t('category_form.title_new')
+        }}</DialogTitle>
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="space-y-2">
           <Label for="name">{{ $t('category_form.name') }}</Label>
-          <Input id="name" v-model="form.name" :placeholder="$t('category_form.name_placeholder')" required />
+          <Input
+            id="name"
+            v-model="form.name"
+            :placeholder="$t('category_form.name_placeholder')"
+            required
+          />
         </div>
 
         <div class="space-y-2">
@@ -40,8 +47,12 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" @click="$emit('close')">{{ $t('category_form.cancel') }}</Button>
-          <Button type="submit" :disabled="!form.name || !form.type">{{ $t('category_form.save') }}</Button>
+          <Button type="button" variant="outline" @click="$emit('close')">{{
+            $t('category_form.cancel')
+          }}</Button>
+          <Button type="submit" :disabled="!form.name || !form.type">{{
+            $t('category_form.save')
+          }}</Button>
         </div>
       </form>
     </DialogContent>

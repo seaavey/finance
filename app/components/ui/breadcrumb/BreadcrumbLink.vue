@@ -7,10 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLinkLocale
-    :to="to"
-    class="transition-colors hover:text-foreground"
-  >
+  <NuxtLinkLocale :to="to" class="transition-colors hover:text-foreground">
     <slot />
   </NuxtLinkLocale>
 </template>

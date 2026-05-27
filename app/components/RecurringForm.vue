@@ -2,17 +2,29 @@
   <Dialog :open="true" @update:open="$emit('close')">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>{{ item ? $t('recurring_form.title_edit') : $t('recurring_form.title_new') }}</DialogTitle>
+        <DialogTitle>{{
+          item ? $t('recurring_form.title_edit') : $t('recurring_form.title_new')
+        }}</DialogTitle>
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="space-y-2">
           <Label>{{ $t('recurring_form.type') }}</Label>
           <div class="flex gap-2">
-            <Button type="button" :variant="form.type === 'income' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'income'">
+            <Button
+              type="button"
+              :variant="form.type === 'income' ? 'default' : 'outline'"
+              class="flex-1"
+              @click="form.type = 'income'"
+            >
               {{ $t('recurring_form.income') }}
             </Button>
-            <Button type="button" :variant="form.type === 'expense' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'expense'">
+            <Button
+              type="button"
+              :variant="form.type === 'expense' ? 'default' : 'outline'"
+              class="flex-1"
+              @click="form.type = 'expense'"
+            >
               {{ $t('recurring_form.expense') }}
             </Button>
           </div>
@@ -20,7 +32,15 @@
 
         <div class="space-y-2">
           <Label for="r-amount">{{ $t('recurring_form.amount') }}</Label>
-          <Input id="r-amount" v-model.number="form.amount" type="number" min="1" step="any" :placeholder="$t('transaction_form.amount_placeholder')" required />
+          <Input
+            id="r-amount"
+            v-model.number="form.amount"
+            type="number"
+            min="1"
+            step="any"
+            :placeholder="$t('transaction_form.amount_placeholder')"
+            required
+          />
         </div>
 
         <div class="space-y-2">
@@ -30,19 +50,29 @@
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">{{ c.label }}</SelectItem>
+              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">{{
+                c.label
+              }}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div class="space-y-2">
           <Label>{{ $t('recurring_form.category') }}</Label>
-          <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('recurring_form.select_category')" />
+          <CategoryPicker
+            v-model="form.category_id"
+            :type="form.type"
+            :placeholder="$t('recurring_form.select_category')"
+          />
         </div>
 
         <div class="space-y-2">
           <Label for="r-desc">{{ $t('recurring_form.description') }}</Label>
-          <Input id="r-desc" v-model="form.description" :placeholder="$t('recurring_form.note_optional')" />
+          <Input
+            id="r-desc"
+            v-model="form.description"
+            :placeholder="$t('recurring_form.note_optional')"
+          />
         </div>
 
         <div class="space-y-2">
@@ -66,8 +96,12 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" @click="$emit('close')">{{ $t('recurring_form.cancel') }}</Button>
-          <Button type="submit" :disabled="!form.amount || !form.next_date">{{ $t('recurring_form.save') }}</Button>
+          <Button type="button" variant="outline" @click="$emit('close')">{{
+            $t('recurring_form.cancel')
+          }}</Button>
+          <Button type="submit" :disabled="!form.amount || !form.next_date">{{
+            $t('recurring_form.save')
+          }}</Button>
         </div>
       </form>
     </DialogContent>

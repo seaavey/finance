@@ -1,5 +1,5 @@
 <template>
-    <TransactionForm @saved="onSaved" @cancel="navigateTo('/transactions')" />
+  <TransactionForm @saved="onSaved" @cancel="navigateTo('/transactions')" />
 </template>
 
 <script setup lang="ts">

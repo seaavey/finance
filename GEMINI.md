@@ -11,7 +11,6 @@ A personal finance tracker designed for individuals and couples, built with Nuxt
 - **UI Integration:** [shadcn-nuxt](https://www.shadcn-vue.com/docs/installation/nuxt.html) for seamless component auto-import.
 - **Data Visualization:** [Chart.js](https://www.chartjs.org/) with `vue-chartjs`.
 
-
 ## Getting Started
 
 ### Prerequisites
@@ -22,12 +21,14 @@ A personal finance tracker designed for individuals and couples, built with Nuxt
 ### Development Setup
 
 1.  **Install dependencies:**
+
     ```bash
     bun install
     ```
 
 2.  **Environment Variables:**
     Create a `.env` file in the root with the following keys:
+
     ```env
     NUXT_PUBLIC_SUPABASE_URL=your_supabase_url
     NUXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -64,6 +65,9 @@ bun run build
 - **Linting:** Use ESLint (via `@nuxt/eslint`) for linting and formatting.
   - `bun run lint`: Run checks.
   - `bun run lint:fix`: Format and fix issues.
+- **Formatting:** Use [Prettier](https://prettier.io/) for code formatting.
+  - `bun run format`: Format all files.
+  - `bun run format:check`: Check formatting without changes.
 - **UI Components:** **Use `shadcn-vue` components** for UI elements. Primitive UI components are located in `app/components/ui/`. When adding new UI components, use the `bun x shadcn-vue@latest add <component>` command.
 - **Tailwind 4:** Use the latest Tailwind CSS 4 features and the `@tailwindcss/vite` plugin.
 - **State Management:** Use `useState` for shared state within composables to ensure SSR compatibility.
@@ -72,13 +76,16 @@ bun run build
 ## External Tools & MCP
 
 ### pentest-ai
+
 An offensive-security MCP server providing 200+ wrapped security tools and specialist agents.
+
 - **Status:** Registered globally in Gemini CLI.
 - **Usage:** Tools are automatically available. You can ask for security scans, vulnerability assessments, or authenticated pentesting.
 - **Key Tools:** `list_tools`, `run_tool`, `test_web_app`, `test_api_security`, etc.
 - **Configuration:** Managed via `gemini mcp` commands.
 
 ## Key Features
+
 ...
 
 - **Transaction Management:** Create, read, update, and delete income and expense transactions.

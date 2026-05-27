@@ -3,7 +3,9 @@
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('transactions.title') }}</h2>
-        <p class="text-sm text-muted-foreground">{{ transactions.length }} {{ $t('transactions.title').toLowerCase() }}</p>
+        <p class="text-sm text-muted-foreground">
+          {{ transactions.length }} {{ $t('transactions.title').toLowerCase() }}
+        </p>
       </div>
       <Button
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
@@ -16,7 +18,11 @@
 
     <div class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/30 p-3">
       <div class="relative flex-1">
-        <HugeiconsIcon :icon="Search01Icon" :size="20" class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <HugeiconsIcon
+          :icon="Search01Icon"
+          :size="20"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
         <input
           v-model="filters.search"
           :placeholder="$t('transactions.search_placeholder')"
@@ -45,12 +51,20 @@
           </SelectContent>
         </Select>
 
-        <CategoryPicker v-model="filters.category_id" :placeholder="$t('transactions.all_categories')" @update:model-value="applyFilters" />
+        <CategoryPicker
+          v-model="filters.category_id"
+          :placeholder="$t('transactions.all_categories')"
+          @update:model-value="applyFilters"
+        />
       </div>
 
       <Popover>
         <PopoverTrigger as-child>
-          <Button variant="outline" class="w-full justify-start text-left font-normal" :class="!dateRange.start && 'text-muted-foreground'">
+          <Button
+            variant="outline"
+            class="w-full justify-start text-left font-normal"
+            :class="!dateRange.start && 'text-muted-foreground'"
+          >
             <HugeiconsIcon :icon="Calendar01Icon" :size="16" class="mr-2" />
             <span v-if="dateRange.start && dateRange.end">
               {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
@@ -61,7 +75,7 @@
         <PopoverContent class="w-[calc(100vw-32px)] p-0 sm:w-auto" align="start">
           <RangeCalendar
             v-model="dateRange"
-            :number-of-months="1" 
+            :number-of-months="1"
             locale="id-ID"
             @update:model-value="onDateRangeChange"
           />
@@ -73,8 +87,15 @@
           v-for="opt in ownerOptions"
           :key="opt.value"
           class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
-          :class="ownerFilter === opt.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-          @click="ownerFilter = opt.value; applyFilters()"
+          :class="
+            ownerFilter === opt.value
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          "
+          @click="
+            ownerFilter = opt.value;
+            applyFilters();
+          "
         >
           {{ opt.label }}
         </button>
@@ -84,15 +105,21 @@
     <div v-if="!loading" class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
       <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-emerald-400/70">{{ $t('transactions.income') }}</p>
-        <h3 class="mt-2 text-lg font-bold text-emerald-400 md:text-2xl">{{ formatCurrency(monthIncome) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-emerald-400 md:text-2xl">
+          {{ formatCurrency(monthIncome) }}
+        </h3>
       </div>
       <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-red-400/70">{{ $t('transactions.expense') }}</p>
-        <h3 class="mt-2 text-lg font-bold text-red-400 md:text-2xl">{{ formatCurrency(monthExpense) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-red-400 md:text-2xl">
+          {{ formatCurrency(monthExpense) }}
+        </h3>
       </div>
       <div class="rounded-3xl border border-blue-500/10 bg-blue-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-blue-400/70">{{ $t('transactions.difference') }}</p>
-        <h3 class="mt-2 text-lg font-bold text-blue-400 md:text-2xl">{{ formatCurrency(monthIncome - monthExpense) }}</h3>
+        <h3 class="mt-2 text-lg font-bold text-blue-400 md:text-2xl">
+          {{ formatCurrency(monthIncome - monthExpense) }}
+        </h3>
       </div>
     </div>
 
@@ -103,7 +130,10 @@
       <Skeleton class="h-20 rounded-3xl" />
     </div>
 
-    <div v-else-if="transactions.length === 0" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20">
+    <div
+      v-else-if="transactions.length === 0"
+      class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20"
+    >
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon :icon="InboxIcon" :size="24" class="text-muted-foreground" />
       </div>
@@ -113,7 +143,9 @@
     <div v-else class="space-y-4">
       <template v-for="(group, date) in groupedTransactions" :key="date">
         <div class="sticky top-0 z-10 bg-background/80 py-1.5 backdrop-blur-sm">
-          <span class="text-xs font-medium text-muted-foreground">{{ formatGroupDate(date as string) }}</span>
+          <span class="text-xs font-medium text-muted-foreground">{{
+            formatGroupDate(date as string)
+          }}</span>
         </div>
         <div class="space-y-2">
           <NuxtLinkLocale
@@ -165,8 +197,12 @@ const ownerOptions = computed(() => [
 
 const filteredTransactions = computed(() => {
   const all = transactions.value;
-  if (!isPartnered.value || ownerFilter.value === 'all') {return all;}
-  if (ownerFilter.value === 'mine') {return all.filter((tx) => tx.user_id === user.value?.id);}
+  if (!isPartnered.value || ownerFilter.value === 'all') {
+    return all;
+  }
+  if (ownerFilter.value === 'mine') {
+    return all.filter((tx) => tx.user_id === user.value?.id);
+  }
   // ownerFilter is 'partner'
   return all.filter((tx) => tx.user_id === partner.value?.id);
 });

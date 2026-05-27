@@ -27,8 +27,18 @@ const delegatedProps = reactiveOmit(props, 'class');
     >
       <slot />
       <slot name="icon">
-        <HugeiconsIcon :icon="ArrowDown01Icon" :size="16" data-slot="accordion-trigger-icon" class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden" />
-        <HugeiconsIcon :icon="ArrowUp01Icon" :size="16" data-slot="accordion-trigger-icon" class="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline" />
+        <HugeiconsIcon
+          :icon="ArrowDown01Icon"
+          :size="16"
+          data-slot="accordion-trigger-icon"
+          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
+        />
+        <HugeiconsIcon
+          :icon="ArrowUp01Icon"
+          :size="16"
+          data-slot="accordion-trigger-icon"
+          class="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+        />
       </slot>
     </AccordionTrigger>
   </AccordionHeader>

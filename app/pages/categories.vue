@@ -37,9 +37,11 @@
           v-for="tab in tabs"
           :key="tab.value"
           class="rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200"
-          :class="activeTab === tab.value
-            ? 'bg-primary text-primary-foreground shadow-sm'
-            : 'text-muted-foreground hover:text-foreground'"
+          :class="
+            activeTab === tab.value
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          "
           @click="activeTab = tab.value"
         >
           {{ tab.label }} ({{ tab.count }})
@@ -67,19 +69,27 @@
         @end="onReorder"
       >
         <template #item="{ element: cat }">
-          <div class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-4 transition-all duration-200 hover:border-border/80 hover:bg-card/60">
+          <div
+            class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-4 transition-all duration-200 hover:border-border/80 hover:bg-card/60"
+          >
             <div class="flex items-center gap-4">
-              <div class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing" :style="{ backgroundColor: cat.color + '15' }">
+              <div
+                class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing"
+                :style="{ backgroundColor: cat.color + '15' }"
+              >
                 <div class="size-3.5 rounded-full" :style="{ backgroundColor: cat.color }" />
               </div>
               <div>
                 <h3 class="font-medium">{{ cat.name }}</h3>
                 <p class="text-sm text-muted-foreground">
-                  {{ getCategoryStats(cat.id).count }} transaksi · Rp {{ getCategoryStats(cat.id).total.toLocaleString('id-ID') }}
+                  {{ getCategoryStats(cat.id).count }} transaksi · Rp
+                  {{ getCategoryStats(cat.id).total.toLocaleString('id-ID') }}
                 </p>
               </div>
             </div>
-            <div class="flex gap-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div
+              class="flex gap-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+            >
               <button
                 class="rounded-xl p-2 text-muted-foreground transition hover:bg-card hover:text-foreground"
                 @click="editCategory(cat)"
@@ -101,7 +111,10 @@
     <CategoryForm
       v-if="showForm"
       :category="editingCategory"
-      @close="showForm = false; editingCategory = undefined"
+      @close="
+        showForm = false;
+        editingCategory = undefined;
+      "
       @saved="onSaved"
     />
 

@@ -8,12 +8,19 @@
     </div>
 
     <template v-else-if="transaction">
-      <TransactionForm :transaction="transaction" @saved="onSaved" @cancel="navigateTo('/transactions')" @delete="showDeleteDialog = true" />
+      <TransactionForm
+        :transaction="transaction"
+        @saved="onSaved"
+        @cancel="navigateTo('/transactions')"
+        @delete="showDeleteDialog = true"
+      />
     </template>
 
     <div v-else class="flex flex-col items-center gap-3 py-12">
       <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found') }}</p>
-      <Button variant="outline" @click="navigateTo('/transactions')">{{ $t('transaction_edit.back') }}</Button>
+      <Button variant="outline" @click="navigateTo('/transactions')">{{
+        $t('transaction_edit.back')
+      }}</Button>
     </div>
 
     <ConfirmDialog

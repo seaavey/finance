@@ -18,7 +18,9 @@
         <span class="text-[8px] font-bold text-sidebar-foreground">{{ partnerInitial }}</span>
       </div>
       <div class="min-w-0">
-        <h3 class="truncate font-medium text-foreground">{{ transaction.description || categoryName || $t('transactions.no_description') }}</h3>
+        <h3 class="truncate font-medium text-foreground">
+          {{ transaction.description || categoryName || $t('transactions.no_description') }}
+        </h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
       </div>
     </div>
@@ -29,7 +31,9 @@
       >
         {{ transaction.type === 'income' ? '+' : '-' }}{{ formatted }}
       </p>
-      <p class="mt-1 text-xs text-muted-foreground md:text-sm">{{ transaction.type === 'income' ? $t('transactions.income') : $t('transactions.expense') }}</p>
+      <p class="mt-1 text-xs text-muted-foreground md:text-sm">
+        {{ transaction.type === 'income' ? $t('transactions.income') : $t('transactions.expense') }}
+      </p>
     </div>
   </div>
 </template>

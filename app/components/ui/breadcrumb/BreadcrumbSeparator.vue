@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <li role="presentation" aria-hidden="true" class="[&>svg]:size-3.5">

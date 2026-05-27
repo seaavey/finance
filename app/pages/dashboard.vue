@@ -3,9 +3,13 @@
     <div class="flex items-center justify-between">
       <div>
         <ClientOnly>
-          <h2 class="text-3xl font-bold tracking-tight">{{ $t('dashboard.greeting') }}, {{ displayName }}</h2>
+          <h2 class="text-3xl font-bold tracking-tight">
+            {{ $t('dashboard.greeting') }}, {{ displayName }}
+          </h2>
           <template #fallback>
-            <h2 class="text-3xl font-bold tracking-tight">{{ $t('dashboard.greeting_loading') }}</h2>
+            <h2 class="text-3xl font-bold tracking-tight">
+              {{ $t('dashboard.greeting_loading') }}
+            </h2>
           </template>
         </ClientOnly>
         <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
@@ -15,7 +19,11 @@
           v-for="mode in viewModes"
           :key="mode.value"
           class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
-          :class="viewMode === mode.value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+          :class="
+            viewMode === mode.value
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          "
           @click="viewMode = mode.value"
         >
           {{ mode.label }}
@@ -33,23 +41,38 @@
 
     <template v-else>
       <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
-        <div class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1">
+        <div
+          class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
+        >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-indigo-500/10">
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-indigo-400" />
             </div>
-            <div class="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-400">
-              {{ trendBalance === null ? $t('dashboard.new') : `${balance >= 0 ? '+' : ''}${trendBalance}%` }}
+            <div
+              class="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-400"
+            >
+              {{
+                trendBalance === null
+                  ? $t('dashboard.new')
+                  : `${balance >= 0 ? '+' : ''}${trendBalance}%`
+              }}
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.balance_this_month') }}</p>
           <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(balance) }}</p>
           <p class="mt-1 text-[10px] text-muted-foreground/60">
-            {{ $t('dashboard.vs_last_month', { value: (trendBalance || 0) > 0 ? '+' + trendBalance + '%' : (trendBalance || 0) + '%' }) }}
+            {{
+              $t('dashboard.vs_last_month', {
+                value:
+                  (trendBalance || 0) > 0 ? '+' + trendBalance + '%' : (trendBalance || 0) + '%',
+              })
+            }}
           </p>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1">
+        <div
+          class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
+        >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-green-500/10">
               <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-500" />
@@ -59,7 +82,9 @@
           <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(totalIncome) }}</p>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1">
+        <div
+          class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
+        >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-red-500/10">
               <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-500" />
@@ -69,27 +94,37 @@
           <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(totalExpense) }}</p>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1">
+        <div
+          class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
+        >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-cyan-500/10">
               <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-cyan-500" />
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.savings_this_month') }}</p>
-          <p class="mt-1 text-xl font-bold text-foreground">{{ formatCurrency(totalIncome - totalExpense > 0 ? totalIncome - totalExpense : 0) }}</p>
+          <p class="mt-1 text-xl font-bold text-foreground">
+            {{ formatCurrency(totalIncome - totalExpense > 0 ? totalIncome - totalExpense : 0) }}
+          </p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="rounded-2xl border border-border bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.per_category') }}</h3>
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ $t('dashboard.per_category') }}
+            </h3>
             <div class="flex gap-1">
               <button
                 v-for="period in chartPeriods"
                 :key="period"
                 class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors"
-                :class="selectedPeriod === period ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent'"
+                :class="
+                  selectedPeriod === period
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-accent'
+                "
                 @click="selectedPeriod = period"
               >
                 {{ period }}
@@ -98,7 +133,11 @@
           </div>
           <ChartsExpenseDonut :categories="expenseByCategory" />
           <div v-if="expenseByCategory.length > 0" class="mt-4 space-y-2">
-            <div v-for="cat in expenseByCategory" :key="cat.name" class="flex items-center justify-between text-xs">
+            <div
+              v-for="cat in expenseByCategory"
+              :key="cat.name"
+              class="flex items-center justify-between text-xs"
+            >
               <div class="flex items-center gap-2">
                 <span class="size-2 rounded-full" :style="{ backgroundColor: cat.color }" />
                 <span class="text-muted-foreground">{{ cat.name }}</span>
@@ -110,8 +149,12 @@
 
         <div class="rounded-2xl border border-border bg-card p-4">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.expense_chart') }}</h3>
-            <span class="text-xs text-muted-foreground/60">{{ $t('dashboard.income_vs_expense') }}</span>
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ $t('dashboard.expense_chart') }}
+            </h3>
+            <span class="text-xs text-muted-foreground/60">{{
+              $t('dashboard.income_vs_expense')
+            }}</span>
           </div>
           <ChartsMonthlyBar :data="monthlyData" />
           <div class="mt-3 flex justify-center gap-4">
@@ -130,14 +173,24 @@
       <div class="rounded-2xl border border-border bg-card">
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.recent') }}</h3>
-          <NuxtLinkLocale to="/transactions" class="text-xs font-medium text-primary hover:underline">
+          <NuxtLinkLocale
+            to="/transactions"
+            class="text-xs font-medium text-primary hover:underline"
+          >
             {{ $t('dashboard.view_all') }}
           </NuxtLinkLocale>
         </div>
         <div class="p-4">
-          <div v-if="recentTransactions.length === 0" class="flex flex-col items-center gap-3 py-8 text-center">
+          <div
+            v-if="recentTransactions.length === 0"
+            class="flex flex-col items-center gap-3 py-8 text-center"
+          >
             <div class="flex size-12 items-center justify-center rounded-full bg-muted">
-              <HugeiconsIcon :icon="ArrowLeftRightIcon" :size="24" class="text-muted-foreground/40" />
+              <HugeiconsIcon
+                :icon="ArrowLeftRightIcon"
+                :size="24"
+                class="text-muted-foreground/40"
+              />
             </div>
             <div>
               <p class="text-sm font-medium text-foreground">{{ $t('dashboard.empty_title') }}</p>
@@ -169,9 +222,15 @@
                 />
               </div>
               <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium text-foreground">{{ tx.description || getCategoryName(tx.category_id) || $t('sidebar.transactions') }}</p>
+                <p class="truncate text-sm font-medium text-foreground">
+                  {{
+                    tx.description || getCategoryName(tx.category_id) || $t('sidebar.transactions')
+                  }}
+                </p>
                 <div class="mt-0.5 flex items-center gap-2">
-                  <span class="text-xs text-muted-foreground/60">{{ formatRelativeDate(tx.date) }}</span>
+                  <span class="text-xs text-muted-foreground/60">{{
+                    formatRelativeDate(tx.date)
+                  }}</span>
                   <span v-if="tx.category_id" class="size-1 rounded-full bg-muted-foreground/30" />
                   <span
                     v-if="getCategoryName(tx.category_id)"
@@ -201,24 +260,36 @@
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           @click="navigateToLocale('/transactions/new')"
         >
-          <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10">
+          <div
+            class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10"
+          >
             <HugeiconsIcon :icon="Add01Icon" :size="22" class="text-indigo-400" />
           </div>
           <div>
-            <p class="text-sm font-semibold text-foreground">{{ $t('dashboard.actions_add_transaction') }}</p>
-            <p class="text-xs text-muted-foreground">{{ $t('dashboard.actions_add_transaction_desc') }}</p>
+            <p class="text-sm font-semibold text-foreground">
+              {{ $t('dashboard.actions_add_transaction') }}
+            </p>
+            <p class="text-xs text-muted-foreground">
+              {{ $t('dashboard.actions_add_transaction_desc') }}
+            </p>
           </div>
         </div>
         <div
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           @click="navigateToLocale('/categories')"
         >
-          <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/10">
+          <div
+            class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/10"
+          >
             <HugeiconsIcon :icon="GridViewIcon" :size="22" class="text-orange-400" />
           </div>
           <div>
-            <p class="text-sm font-semibold text-foreground">{{ $t('dashboard.actions_manage_categories') }}</p>
-            <p class="text-xs text-muted-foreground">{{ $t('dashboard.actions_manage_categories_desc') }}</p>
+            <p class="text-sm font-semibold text-foreground">
+              {{ $t('dashboard.actions_manage_categories') }}
+            </p>
+            <p class="text-xs text-muted-foreground">
+              {{ $t('dashboard.actions_manage_categories_desc') }}
+            </p>
           </div>
         </div>
       </div>
@@ -261,9 +332,13 @@ const viewModes = computed(() => [
 
 const filteredTransactions = computed(() => {
   const all = transactions.value;
-  if (!isPartnered.value || viewMode.value === 'all') {return all;}
+  if (!isPartnered.value || viewMode.value === 'all') {
+    return all;
+  }
   const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
-  if (!targetUserId) {return all;}
+  if (!targetUserId) {
+    return all;
+  }
   return all.filter((tx) => tx.user_id === targetUserId);
 });
 

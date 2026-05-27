@@ -38,6 +38,7 @@
       },
       "devDependencies": {
         "nuxt-site-config-kit": "^4.0.8",
+        "prettier": "^3.5.0",
         "typescript": "^6.0.3",
       },
     },

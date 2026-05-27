@@ -40,10 +40,16 @@
 
       <div class="space-y-1">
         <Label class="text-xs">{{ $t('transactions.category') }}</Label>
-        <CategoryPicker v-model="filters.category_id" :placeholder="$t('transactions.all')" @update:model-value="emitFilters" />
+        <CategoryPicker
+          v-model="filters.category_id"
+          :placeholder="$t('transactions.all')"
+          @update:model-value="emitFilters"
+        />
       </div>
 
-      <Button variant="ghost" size="sm" class="w-full" @click="resetFilters">{{ $t('transactions.reset_filter') }}</Button>
+      <Button variant="ghost" size="sm" class="w-full" @click="resetFilters">{{
+        $t('transactions.reset_filter')
+      }}</Button>
     </div>
   </div>
 </template>

@@ -10,11 +10,7 @@
       </main>
     </div>
 
-    <div
-      v-if="sidebarOpen"
-      class="fixed inset-0 z-40 md:hidden"
-      @click="sidebarOpen = false"
-    />
+    <div v-if="sidebarOpen" class="fixed inset-0 z-40 md:hidden" @click="sidebarOpen = false" />
   </div>
 </template>
 

@@ -6,10 +6,14 @@
         <!-- Column 1: Brand -->
         <div class="space-y-6">
           <NuxtLinkLocale to="/" class="flex items-center gap-2 group w-fit">
-            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
+            <div
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm"
+            >
               <HugeiconsIcon :icon="Wallet01Icon" :size="20" />
             </div>
-            <span class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500">
+            <span
+              class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
+            >
               Finance
             </span>
           </NuxtLinkLocale>
@@ -17,7 +21,13 @@
             {{ $t('landing.hero_title') }}
           </p>
           <div class="flex items-center gap-3">
-            <a v-for="social in socialLinks" :key="social.label" :href="social.href" class="h-9 w-9 flex items-center justify-center rounded-lg border border-border/40 bg-muted/20 text-muted-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary" :aria-label="social.label">
+            <a
+              v-for="social in socialLinks"
+              :key="social.label"
+              :href="social.href"
+              class="h-9 w-9 flex items-center justify-center rounded-lg border border-border/40 bg-muted/20 text-muted-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+              :aria-label="social.label"
+            >
               <HugeiconsIcon :icon="social.icon" :size="18" />
             </a>
           </div>
@@ -30,7 +40,10 @@
           </h4>
           <ul class="space-y-4">
             <li v-for="link in productLinks" :key="link.labelKey">
-              <button class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary text-left" @click="scrollToSection(link.href)">
+              <button
+                class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary text-left"
+                @click="scrollToSection(link.href)"
+              >
                 {{ $t(link.labelKey) }}
               </button>
             </li>
@@ -44,7 +57,10 @@
           </h4>
           <ul class="space-y-4">
             <li v-for="link in companyLinks" :key="link.labelKey">
-              <a :href="link.href" class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary">
+              <a
+                :href="link.href"
+                class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary"
+              >
                 {{ $t(link.labelKey) }}
               </a>
             </li>
@@ -61,9 +77,13 @@
           </p>
           <div class="flex gap-2">
             <div class="relative flex-1">
-              <HugeiconsIcon :icon="Mail01Icon" :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input 
-                type="email" 
+              <HugeiconsIcon
+                :icon="Mail01Icon"
+                :size="16"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                type="email"
                 :placeholder="$t('landing.footer_subscribe_placeholder')"
                 class="w-full h-10 pl-10 pr-3 rounded-xl border border-border/40 bg-muted/20 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
               >
@@ -76,12 +96,19 @@
       </div>
 
       <!-- Bottom Section: Copyright -->
-      <div class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div
+        class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
         <p class="text-xs text-muted-foreground font-medium">
           {{ $t('landing.footer_copyright', { year: new Date().getFullYear() }) }}
         </p>
         <div class="flex items-center gap-6">
-          <a v-for="link in legalLinks" :key="link.labelKey" :href="link.href" class="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 transition-colors hover:text-primary">
+          <a
+            v-for="link in legalLinks"
+            :key="link.labelKey"
+            :href="link.href"
+            class="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 transition-colors hover:text-primary"
+          >
             {{ $t(link.labelKey) }}
           </a>
         </div>

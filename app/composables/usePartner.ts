@@ -39,7 +39,9 @@ export const usePartner = () => {
   );
 
   const fetchPartner = async () => {
-    if (!user.value) {return;}
+    if (!user.value) {
+      return;
+    }
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -63,7 +65,9 @@ export const usePartner = () => {
   };
 
   const fetchInvitations = async () => {
-    if (!user.value?.email) {return;}
+    if (!user.value?.email) {
+      return;
+    }
     loading.value = true;
 
     const [sentResult, receivedResult] = await Promise.all([
@@ -217,7 +221,9 @@ export const usePartner = () => {
   };
 
   const disconnectPartner = async () => {
-    if (!user.value || !partner.value) {return;}
+    if (!user.value || !partner.value) {
+      return;
+    }
 
     loading.value = true;
     const partnerId = partner.value.id;

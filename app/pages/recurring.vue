@@ -4,7 +4,9 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold tracking-tight">{{ $t('recurring.title') }}</h1>
-        <p class="mt-1 text-sm text-muted-foreground">{{ recurring.length }} {{ $t('recurring.schedule_active') }}</p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          {{ recurring.length }} {{ $t('recurring.schedule_active') }}
+        </p>
       </div>
       <Button
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
@@ -23,7 +25,9 @@
       </div>
       <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
         <p class="text-sm text-emerald-400/70">{{ $t('recurring.income') }}</p>
-        <h3 class="mt-2 text-2xl font-bold text-emerald-400">{{ formatCurrency(monthlyIncome) }}</h3>
+        <h3 class="mt-2 text-2xl font-bold text-emerald-400">
+          {{ formatCurrency(monthlyIncome) }}
+        </h3>
       </div>
     </div>
 
@@ -35,12 +39,17 @@
     </div>
 
     <!-- EMPTY STATE -->
-    <div v-else-if="recurring.length === 0" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 px-6 py-16">
+    <div
+      v-else-if="recurring.length === 0"
+      class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 px-6 py-16"
+    >
       <div class="flex size-16 items-center justify-center rounded-full bg-card/30">
         <HugeiconsIcon :icon="RepeatIcon" :size="28" class="text-muted-foreground/60" />
       </div>
       <h3 class="mt-5 text-lg font-medium">{{ $t('recurring.empty') }}</h3>
-      <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">{{ $t('recurring.empty_desc') }}</p>
+      <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">
+        {{ $t('recurring.empty_desc') }}
+      </p>
       <button
         class="mt-6 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-5 py-2.5 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="showForm = true"
@@ -69,7 +78,11 @@
             />
           </div>
           <div>
-            <h3 class="font-medium">{{ item.description || categoryName(item.category_id) || $t('recurring.no_description') }}</h3>
+            <h3 class="font-medium">
+              {{
+                item.description || categoryName(item.category_id) || $t('recurring.no_description')
+              }}
+            </h3>
             <div class="mt-1.5 flex items-center gap-2">
               <span class="rounded-lg bg-card/50 px-2 py-0.5 text-xs text-muted-foreground">
                 {{ frequencyLabel(item.frequency) }}
@@ -88,7 +101,8 @@
               class="text-lg font-semibold"
               :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
             >
-              {{ item.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(item.amount), item.currency) }}
+              {{ item.type === 'income' ? '+' : '-'
+              }}{{ formatCurrency(Number(item.amount), item.currency) }}
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -113,7 +127,10 @@
     <RecurringForm
       v-if="showForm"
       :item="editingItem"
-      @close="showForm = false; editingItem = undefined"
+      @close="
+        showForm = false;
+        editingItem = undefined;
+      "
       @saved="onSaved"
     />
 

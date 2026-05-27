@@ -1,15 +1,13 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from './.nuxt/eslint.config.mjs';
 
-export default withNuxt(
-  {
-    name: 'biome-custom-rules',
-    rules: {
-      curly: 'error',
-      'no-template-curly-in-string': 'off',
-    },
+export default withNuxt({
+  name: 'biome-custom-rules',
+  rules: {
+    curly: 'error',
+    'no-template-curly-in-string': 'off',
   },
-)
+})
   .override('nuxt/typescript/rules', {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -23,4 +21,4 @@ export default withNuxt(
       '@typescript-eslint/no-unused-vars': 'off',
       'vue/require-default-prop': 'off',
     },
-  })
+  });

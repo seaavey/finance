@@ -11,9 +11,11 @@
       <button
         type="button"
         class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
-        :class="form.type === 'income'
-          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-[0_0_20px_-4px] shadow-emerald-500/20'
-          : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'"
+        :class="
+          form.type === 'income'
+            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-[0_0_20px_-4px] shadow-emerald-500/20'
+            : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'
+        "
         @click="form.type = 'income'"
       >
         <HugeiconsIcon :icon="ArrowDown01Icon" :size="20" class="mr-2 inline-block" />
@@ -22,9 +24,11 @@
       <button
         type="button"
         class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
-        :class="form.type === 'expense'
-          ? 'border-red-500/30 bg-red-500/10 text-red-500 shadow-[0_0_20px_-4px] shadow-red-500/20'
-          : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'"
+        :class="
+          form.type === 'expense'
+            ? 'border-red-500/30 bg-red-500/10 text-red-500 shadow-[0_0_20px_-4px] shadow-red-500/20'
+            : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'
+        "
         @click="form.type = 'expense'"
       >
         <HugeiconsIcon :icon="ArrowUp01Icon" :size="20" class="mr-2 inline-block" />
@@ -36,7 +40,9 @@
     <div class="rounded-3xl border border-border/50 bg-card/40 p-8">
       <p class="text-sm font-medium text-muted-foreground">{{ $t('transaction_form.amount') }}</p>
       <div class="mt-4 flex items-start gap-2">
-        <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{ form.currency }}</span>
+        <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{
+          form.currency
+        }}</span>
         <input
           v-model="amountDisplay"
           type="text"
@@ -53,7 +59,11 @@
       <div class="flex items-center gap-3 px-5 py-4">
         <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
-          <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('transaction_form.select_category')" />
+          <CategoryPicker
+            v-model="form.category_id"
+            :type="form.type"
+            :placeholder="$t('transaction_form.select_category')"
+          />
         </div>
       </div>
 
@@ -64,9 +74,14 @@
             <SelectTrigger class="border-none shadow-none">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2">
+            <SelectContent
+              class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2"
+            >
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel class="sticky top-0 bg-popover z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{{ group.label }}</SelectLabel>
+                <SelectLabel
+                  class="sticky top-0 bg-popover z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  >{{ group.label }}</SelectLabel
+                >
                 <SelectItem
                   v-for="c in group.currencies"
                   :key="c.value"

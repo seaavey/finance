@@ -2,7 +2,9 @@
   <section id="testimonials" class="relative overflow-hidden py-24 md:py-40">
     <div class="mx-auto max-w-5xl px-6">
       <div class="text-center max-w-2xl mx-auto mb-16 md:mb-24">
-        <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6">
+        <div
+          class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6"
+        >
           <HugeiconsIcon :icon="Comment01Icon" :size="14" />
           {{ $t('landing.testimonials_title') }}
         </div>
@@ -17,7 +19,9 @@
 
     <!-- Marquee Container -->
     <div class="group relative flex overflow-hidden py-12 [--duration:40s] [--gap:2rem]">
-      <div class="flex shrink-0 animate-marquee items-stretch gap-[--gap] px-[--gap] group-hover:paused">
+      <div
+        class="flex shrink-0 animate-marquee items-stretch gap-[--gap] px-[--gap] group-hover:paused"
+      >
         <!-- 3 sets of testimonials to ensure full coverage and smooth loop -->
         <template v-for="set in 3" :key="set">
           <div
@@ -34,7 +38,9 @@
                   :key="n"
                   :icon="StarIcon"
                   :size="14"
-                  :class="n <= t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'"
+                  :class="
+                    n <= t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'
+                  "
                 />
               </div>
               <!-- Quote -->
@@ -62,8 +68,12 @@
     </div>
 
     <!-- Gradient Overlays for smooth fade -->
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-background to-transparent"/>
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-background to-transparent"/>
+    <div
+      class="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-background to-transparent"
+    />
+    <div
+      class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-background to-transparent"
+    />
   </section>
 </template>
 

@@ -33,7 +33,9 @@ const emit = defineEmits<{
       <AlertDialogFooter>
         <AlertDialogCancel @click="emit('update:open', false)">{{ cancelText }}</AlertDialogCancel>
         <AlertDialogAction
-          :class="variant === 'destructive' ? 'bg-destructive text-white hover:bg-destructive/90' : ''"
+          :class="
+            variant === 'destructive' ? 'bg-destructive text-white hover:bg-destructive/90' : ''
+          "
           @click="emit('confirm')"
         >
           {{ confirmText }}
