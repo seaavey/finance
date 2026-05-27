@@ -105,6 +105,17 @@ export const useTransactions = () => {
     return { data: data as Transaction | null, error };
   };
 
+  const searchTransactions = async (term: string): Promise<Transaction[]> => {
+    if (!term.trim()) { return []; }
+    const { data, error } = await supabase
+      .from('transactions')
+      .select('*')
+      .ilike('description', `%${term}%`)
+      .order('date', { ascending: false })
+      .limit(10);
+    return error || !data ? [] : data as Transaction[];
+  };
+
   const monthlySummary = computed(() => {
     const now = new Date();
     const month = now.getMonth();
@@ -130,6 +141,7 @@ export const useTransactions = () => {
     transactions,
     loading,
     fetchTransactions,
+    searchTransactions,
     addTransaction,
     updateTransaction,
     deleteTransaction,

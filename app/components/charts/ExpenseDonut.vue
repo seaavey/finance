@@ -40,7 +40,11 @@ const chartOptions = {
 
 <template>
   <div class="relative h-[220px]">
-    <Doughnut v-if="data.length > 0" :data="chartData" :options="chartOptions" />
+    <Doughnut
+      v-if="chartData.datasets[0].data.length > 0"
+      :data="chartData"
+      :options="chartOptions"
+    />
     <div v-else class="flex size-full items-center justify-center">
       <p class="text-xs text-muted-foreground">{{ $t('chart.no_data') }}</p>
     </div>

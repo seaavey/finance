@@ -258,7 +258,7 @@
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          @click="navigateToLocale('/transactions/new')"
+          @click="navigateTo('/transactions/new')"
         >
           <div
             class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10"
@@ -276,7 +276,7 @@
         </div>
         <div
           class="flex cursor-pointer items-center gap-4 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          @click="navigateToLocale('/categories')"
+          @click="navigateTo('/categories')"
         >
           <div
             class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/10"
@@ -312,7 +312,7 @@ const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { partner, isPartnered, fetchPartner } = usePartner();
 
 const loading = ref(true);
@@ -349,7 +349,7 @@ const displayName = computed(() => {
 
 const monthLabel = computed(() => {
   const d = new Date();
-  return d.toLocaleDateString(currentLocale.value === 'id' ? 'id-ID' : 'en-US', {
+  return d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
     month: 'long',
     year: 'numeric',
   });
@@ -367,9 +367,9 @@ const formatRelativeDate = (date: string) => {
     return t('dashboard.yesterday');
   }
   if (diffDays < 7) {
-    return currentLocale.value === 'id' ? `${diffDays} hari lalu` : `${diffDays} days ago`;
+    return locale.value === 'id' ? `${diffDays} hari lalu` : `${diffDays} days ago`;
   }
-  return d.toLocaleDateString(currentLocale.value === 'id' ? 'id-ID' : 'en-US', {
+  return d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
     day: 'numeric',
     month: 'short',
   });
@@ -472,17 +472,17 @@ const expenseByCategory = computed(() => {
   const map = new Map<string, { name: string; color: string; total: number }>();
   thisMonthTransactions.value
     .filter((t) => t.type === 'expense')
-    .forEach((t) => {
-      const cat = categories.value.find((c) => c.id === t.category_id);
+    .forEach((tx) => {
+      const cat = categories.value.find((c) => c.id === tx.category_id);
       const key = cat?.id || 'uncategorized';
       const existing = map.get(key);
       if (existing) {
-        existing.total += t.amount;
+        existing.total += tx.amount;
       } else {
         map.set(key, {
           name: cat?.name || t('dashboard.other'),
           color: cat?.color || '#6b7280',
-          total: t.amount,
+          total: tx.amount,
         });
       }
     });
@@ -493,7 +493,7 @@ const monthlyData = computed(() => {
   const months: { label: string; income: number; expense: number }[] = [];
   for (let i = 5; i >= 0; i--) {
     const d = new Date(currentYear, currentMonth - i, 1);
-    const label = d.toLocaleDateString(currentLocale.value === 'id' ? 'id-ID' : 'en-US', {
+    const label = d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
       month: 'short',
     });
     const m = d.getMonth();

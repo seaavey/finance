@@ -36,22 +36,31 @@
 
     <!-- RIGHT -->
     <div class="ml-auto flex items-center gap-3">
-      <!-- SEARCH -->
+      <!-- SEARCH - Mobile -->
+      <button
+        class="flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground md:hidden"
+        @click="showSearchDialog = true"
+      >
+        <HugeiconsIcon :icon="Search01Icon" :size="18" />
+      </button>
+
+      <!-- SEARCH - Desktop -->
       <div class="relative hidden md:block">
-        <HugeiconsIcon
-          :icon="Search01Icon"
-          :size="16"
-          class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
-        />
-        <div
+        <button
           class="flex h-10 w-60 cursor-pointer items-center rounded-2xl border border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
+          @click="showSearchDialog = true"
         >
-          <span>{{ $t('topbar.search') }}</span>
+          <HugeiconsIcon
+            :icon="Search01Icon"
+            :size="16"
+            class="shrink-0 text-muted-foreground/60"
+          />
+          <span class="ml-2 flex-1 text-left">{{ $t('topbar.search') }}</span>
           <kbd
-            class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50"
+            class="rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50"
             >⌘K</kbd
           >
-        </div>
+        </button>
       </div>
 
       <!-- NOTIFICATION -->
@@ -88,6 +97,8 @@
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </button>
     </div>
+
+    <SearchDialog v-model:open="showSearchDialog" />
   </header>
 </template>
 
@@ -101,7 +112,6 @@ import {
   Add01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-
 defineEmits<{
   toggleSidebar: [];
 }>();
@@ -109,6 +119,18 @@ defineEmits<{
 const route = useRoute();
 const colorMode = useColorMode();
 const { t } = useI18n();
+
+const showSearchDialog = ref(false);
+
+const searchKeydownHandler = (e: KeyboardEvent) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    showSearchDialog.value = true;
+  }
+};
+
+onMounted(() => document.addEventListener('keydown', searchKeydownHandler));
+onUnmounted(() => document.removeEventListener('keydown', searchKeydownHandler));
 
 interface BreadcrumbItemDef {
   label: string;

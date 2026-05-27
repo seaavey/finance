@@ -235,7 +235,7 @@ Komponen root: `NuxtLoadingIndicator` + `NuxtLayout` + `AppToast` (Teleport body
 
 Sidebar: Logo (`rounded-lg bg-sidebar-primary`), nav links (`rounded-xl px-3 py-2.5`, active: `bg-sidebar-accent`), Settings (`mt-auto`), avatar + logout (border-t), partner badge (border-t).
 
-Topbar: Hamburger (`lg:hidden`, `size-9 rounded-xl border`), Breadcrumb (`hidden md:block`), Search bar (desktop, rounded-2xl, ⌘K badge), Notification bell (decorative, red dot), Theme toggle (rounded-2xl border), CTA "+" pink gradient → `/transactions/new`.
+Topbar: Hamburger (`lg:hidden`, `size-9 rounded-xl border`), Breadcrumb (`hidden md:block`), Search bar (desktop, input functional, debounced 300ms `fetchTransactions`, ⌘K badge hides while typing), Notification bell (decorative, red dot), Theme toggle (rounded-2xl border), CTA "+" pink gradient → `/transactions/new`.
 
 ### 11.5 Layout CSS Detail
 
@@ -604,15 +604,19 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 ## 17. Search Implementation
 
-### 17.1 Topbar Search (Visual Only)
+### 17.1 Topbar Search (Functional)
 
-`AppTopbar.vue:40-54` — Pencarian di topbar adalah **purely visual/decorative**:
+`AppTopbar.vue:40-57` — Pencarian di topbar sekarang **fungsional**, memanfaatkan `useTransactions` yang global:
 
-- `<div>` dengan `cursor-pointer` (bukan `<input>`)
-- Tidak ada `@click` handler — klik tidak melakukan apa-apa
-- `<kbd>⌘K</kbd>` — **tidak ada event listener** Command+K
+- `<input>` dengan `v-model="searchQuery"` dan `@input="onSearchInput"`
+- 300ms debounce → `fetchTransactions({ search: searchQuery.value || undefined })`
+- Keyboard hint `<kbd>⌘K</kbd>` hanya tampil saat input kosong (`v-if="!searchQuery"`)
+- Timer dibersihkan di `onUnmounted` untuk mencegah memory leak
+- Promise rejection di-handle dengan `.catch(() => {})`
 - Hidden di mobile (`hidden md:block`)
 - Label dari i18n `$t('topbar.search')`
+
+Karena transaksi disimpan di `useState` global, search dari topbar otomatis memfilter daftar transaksi di **dashboard** (`RecentTransactions.vue`) maupun **halaman transaksi** (`transactions/index.vue`).
 
 ### 17.2 Transactions Search (Functional)
 
@@ -651,23 +655,23 @@ Semua page authenticated (kecuali `/` dan `/login`) dilindungi `app/middleware/a
 
 ## 19. Komponen Utama
 
-| Komponen                | Parent                                               | Deskripsi                                                  |
-| ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
-| `AppSidebar`            | `layouts/default.vue`                                | Navigasi utama, avatar, partner badge, logout              |
-| `AppTopbar`             | `layouts/default.vue`                                | Breadcrumb, search (visual), theme toggle, CTA "+"         |
-| `AppToast`              | `app.vue`                                            | Root-level toast notification via ref + TransitionGroup    |
-| `TransactionForm`       | `transactions/new.vue`, `transactions/[id]/edit.vue` | Form CRUD transaksi (shared component)                     |
-| `CategoryForm`          | `categories.vue`                                     | Dialog modal untuk CRUD kategori (color picker, type)      |
-| `RecurringForm`         | `recurring.vue`                                      | Dialog modal untuk CRUD recurring                          |
-| `CategoryPicker`        | `TransactionForm`, `FilterBar`                       | Dropdown kategori (shadcn Select, computed filter by type) |
-| `ConfirmDialog`         | `categories.vue`, `recurring.vue`, `edit.vue`        | AlertDialog konfirmasi delete (destructive variant)        |
-| `FilterBar`             | `transactions/index.vue`                             | Filter search, type, category, date range (RangeCalendar)  |
-| `DashboardSummary`      | `dashboard.vue`                                      | 3-4 card: balance, income, expense, savings                |
-| `RecentTransactions`    | `dashboard.vue`                                      | 5 transaksi terbaru                                        |
-| `ChartsExpenseDonut`    | `dashboard.vue`                                      | Donut chart per kategori (chart.js, current month)         |
-| `ChartsMonthlyBar`      | `dashboard.vue`                                      | Bar chart 6 bulan (chart.js, income vs expense)            |
-| `SettingsItem`          | `settings.vue`                                       | Row item (icon + label + value + arrow right)              |
-| `Landing*` (6 komponen) | `index.vue`                                          | Navbar, Hero, Features, Testimonials, Faq, Cta, Footer     |
+| Komponen                | Parent                                               | Deskripsi                                                                  |
+| ----------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| `AppSidebar`            | `layouts/default.vue`                                | Navigasi utama, avatar, partner badge, logout                              |
+| `AppTopbar`             | `layouts/default.vue`                                | Breadcrumb, search (functional via useTransactions), theme toggle, CTA "+" |
+| `AppToast`              | `app.vue`                                            | Root-level toast notification via ref + TransitionGroup                    |
+| `TransactionForm`       | `transactions/new.vue`, `transactions/[id]/edit.vue` | Form CRUD transaksi (shared component)                                     |
+| `CategoryForm`          | `categories.vue`                                     | Dialog modal untuk CRUD kategori (color picker, type)                      |
+| `RecurringForm`         | `recurring.vue`                                      | Dialog modal untuk CRUD recurring                                          |
+| `CategoryPicker`        | `TransactionForm`, `FilterBar`                       | Dropdown kategori (shadcn Select, computed filter by type)                 |
+| `ConfirmDialog`         | `categories.vue`, `recurring.vue`, `edit.vue`        | AlertDialog konfirmasi delete (destructive variant)                        |
+| `FilterBar`             | `transactions/index.vue`                             | Filter search, type, category, date range (RangeCalendar)                  |
+| `DashboardSummary`      | `dashboard.vue`                                      | 3-4 card: balance, income, expense, savings                                |
+| `RecentTransactions`    | `dashboard.vue`                                      | 5 transaksi terbaru                                                        |
+| `ChartsExpenseDonut`    | `dashboard.vue`                                      | Donut chart per kategori (chart.js, current month)                         |
+| `ChartsMonthlyBar`      | `dashboard.vue`                                      | Bar chart 6 bulan (chart.js, income vs expense)                            |
+| `SettingsItem`          | `settings.vue`                                       | Row item (icon + label + value + arrow right)                              |
+| `Landing*` (6 komponen) | `index.vue`                                          | Navbar, Hero, Features, Testimonials, Faq, Cta, Footer                     |
 
 ## 20. Database Schema (Ringkasan)
 
@@ -794,7 +798,7 @@ Semua composable menggunakan **singleton pattern**: `useState` dengan key unik m
 10. **Toast** — terdaftar di `app.vue` `onMounted`. Jika composable dipanggil sebelum mounted, `toastFn.value` masih null
 11. **Date formatting tidak konsisten** — Ada yang hardcoded `'id-ID'`, ada yang ternary `currentLocale === 'id' ? 'id-ID' : 'en-US'`
 12. **Recurring bukan auto-generate** — Tidak ada cron/edge function yang bikin transaksi dari recurring. Recurring cuma template scheduler. Monthly projection dihitung client-side
-13. **Topbar search adalah visual only** — `<div>` tanpa handler, ⌘K tanpa listener. Hanya `transactions/index.vue` yang punya search functional
+13. **Topbar search sekarang fungsional** — input dengan `v-model`, debounced 300ms `fetchTransactions`, cleanup `onUnmounted`. Keyboard hint ⌘K hilang saat user mengetik
 14. **SEO minimal** — Hanya landing page yang punya `useSeoMeta`. Page authenticated tidak punya SEO setup
 15. **`cn()` import** — Import dari `~/lib/utils`, **bukan** `@/lib/utils` (meski `components.json` define `utils: "@/lib/utils"`)
 16. **Font DM Sans di-import tapi var font pakai Inter** — `--font-sans` dan `--font-heading` diset ke `'Inter', sans-serif`, bukan DM Sans
