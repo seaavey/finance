@@ -33,7 +33,14 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-  modules: ['shadcn-nuxt', '@nuxtjs/color-mode', '@nuxtjs/seo', '@nuxtjs/i18n', '@nuxt/fonts'],
+  modules: [
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
+    '@nuxtjs/seo',
+    '@nuxtjs/i18n',
+    '@nuxt/fonts',
+    '@nuxt/eslint',
+  ],
   i18n: {
     langDir: 'locales',
     defaultLocale: 'id',

@@ -10,7 +10,7 @@ A personal finance tracker designed for individuals and couples, built with Nuxt
 - **Icons:** [HugeIcons](https://hugeicons.com/).
 - **UI Integration:** [shadcn-nuxt](https://www.shadcn-vue.com/docs/installation/nuxt.html) for seamless component auto-import.
 - **Data Visualization:** [Chart.js](https://www.chartjs.org/) with `vue-chartjs`.
-- **Linting & Formatting:** [Biome](https://biomejs.dev/).
+
 
 ## Getting Started
 
@@ -61,7 +61,7 @@ bun run build
 - **Command Execution:** **Always use `bun`** for package management, running scripts, and executing binaries.
 - **TypeScript:** Strict type checking is mandatory. **Never use the `any` type.** Always define explicit interfaces or types for all data and function signatures.
 - **Operational Constraints:** **Do not execute `bun run dev` or `bun run build`** unless specifically requested by the user. These commands are heavy and should be avoided during standard development/refactoring tasks.
-- **Linting:** Use Biome for linting and formatting.
+- **Linting:** Use ESLint (via `@nuxt/eslint`) for linting and formatting.
   - `bun run lint`: Run checks.
   - `bun run lint:fix`: Format and fix issues.
 - **UI Components:** **Use `shadcn-vue` components** for UI elements. Primitive UI components are located in `app/components/ui/`. When adding new UI components, use the `bun x shadcn-vue@latest add <component>` command.
