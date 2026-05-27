@@ -28,7 +28,7 @@
           :placeholder="$t('transactions.search_placeholder')"
           class="h-12 w-full rounded-2xl border border-border/50 bg-background/50 pl-12 pr-4 text-sm text-foreground outline-none transition focus:border-pink-500/20"
           @input="debouncedFetch"
-        >
+        />
       </div>
       <button
         class="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/50"
