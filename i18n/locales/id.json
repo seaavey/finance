@@ -219,7 +219,9 @@
     "edit": "Edit",
     "categories": "Kategori",
     "recurring": "Transaksi Rutin",
-    "settings": "Setelan"
+    "settings": "Setelan",
+    "searching": "Mencari...",
+    "no_results": "Tidak ada hasil ditemukan"
   },
   "landing": {
     "hero_badge": "100+ pengguna aktif",
@@ -233,6 +235,7 @@
     "nav_features": "Fitur",
     "nav_testimonials": "Testimoni",
     "nav_faq": "FAQ",
+    "navigation": "Navigasi",
     "features_title": "Fitur Lengkap",
     "features_heading": "Semua yang kamu butuh",
     "features_desc": "Kelola keuangan pribadi dan bareng pasangan dengan fitur yang simpel tapi powerful.",
@@ -351,6 +354,10 @@
     "delete": "Hapus",
     "cancel": "Batal"
   },
+  "common": {
+    "close": "Tutup",
+    "more": "Lainnya"
+  },
   "toast": {
     "transaction_added": "Transaksi berhasil ditambahkan",
     "transaction_add_error": "Gagal menambahkan transaksi",
@@ -373,6 +380,14 @@
     "export_success": "Data berhasil diexport",
     "export_error": "Gagal mengexport data",
     "login_required": "Kamu harus login dulu"
+  },
+  "error": {
+    "title_404": "Halaman tidak ditemukan",
+    "title_500": "Terjadi kesalahan sistem",
+    "desc_404": "Maaf, halaman yang kamu cari tidak tersedia atau telah dipindahkan.",
+    "desc_500": "Kami sedang mengalami masalah teknis. Silakan coba lagi nanti.",
+    "back_to_home": "Kembali ke Beranda",
+    "view_transactions": "Lihat Transaksi"
   },
   "chart": {
     "no_data": "Belum ada data"

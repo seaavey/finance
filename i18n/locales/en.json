@@ -219,7 +219,9 @@
     "edit": "Edit",
     "categories": "Categories",
     "recurring": "Recurring Transactions",
-    "settings": "Settings"
+    "settings": "Settings",
+    "searching": "Searching...",
+    "no_results": "No results found"
   },
   "landing": {
     "hero_badge": "100+ active users",
@@ -233,6 +235,7 @@
     "nav_features": "Features",
     "nav_testimonials": "Testimonials",
     "nav_faq": "FAQ",
+    "navigation": "Navigation",
     "features_title": "Features",
     "features_heading": "Everything you need",
     "features_desc": "Manage personal and shared finances with simple yet powerful tools.",
@@ -351,6 +354,10 @@
     "delete": "Delete",
     "cancel": "Cancel"
   },
+  "common": {
+    "close": "Close",
+    "more": "More"
+  },
   "toast": {
     "transaction_added": "Transaction added successfully",
     "transaction_add_error": "Failed to add transaction",
@@ -373,6 +380,14 @@
     "export_success": "Data exported successfully",
     "export_error": "Failed to export data",
     "login_required": "You must be logged in"
+  },
+  "error": {
+    "title_404": "Page not found",
+    "title_500": "System error occurred",
+    "desc_404": "Sorry, the page you are looking for is not available or has been moved.",
+    "desc_500": "We are experiencing technical issues. Please try again later.",
+    "back_to_home": "Back to Home",
+    "view_transactions": "View Transactions"
   },
   "chart": {
     "no_data": "No data yet"

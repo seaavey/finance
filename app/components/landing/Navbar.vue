@@ -139,7 +139,7 @@
                 >
                   <HugeiconsIcon :icon="Wallet01Icon" :size="18" />
                 </div>
-                Finance
+                {{ $t('sidebar.finance') }}
               </SheetTitle>
             </SheetHeader>
 
@@ -148,7 +148,7 @@
                 <p
                   class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2"
                 >
-                  Navigation
+                  {{ $t('landing.navigation') }}
                 </p>
                 <SheetClose v-for="item in navItems" :key="item.href" as-child>
                   <button
@@ -169,14 +169,14 @@
                 <p
                   class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2"
                 >
-                  Settings
+                  {{ $t('settings.preferences') }}
                 </p>
                 <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-muted/50">
-                  <span class="text-sm font-medium">Dark Mode</span>
+                  <span class="text-sm font-medium">{{ $t('settings.theme') }}</span>
                   <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleColorMode" />
                 </div>
                 <div class="flex flex-col gap-1 px-2 mt-2">
-                  <p class="text-xs font-medium text-muted-foreground mb-1">Language</p>
+                  <p class="text-xs font-medium text-muted-foreground mb-1">{{ $t('settings.language') }}</p>
                   <div class="flex gap-2">
                     <Button
                       v-for="locale in locales"

@@ -125,7 +125,7 @@
       <!-- COUPLE -->
       <section>
         <h2 class="mb-4 px-1 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-          Pasangan
+          {{ $t('sidebar.partner') }}
         </h2>
 
         <!-- LOADING: PASANGAN -->
@@ -137,10 +137,9 @@
             <div
               class="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
             />
-            <span class="text-sm font-medium text-muted-foreground">Memuat data pasangan...</span>
+            <span class="text-sm font-medium text-muted-foreground">{{ $t('settings.loading_partner') }}</span>
           </div>
         </div>
-
         <!-- NOT CONNECTED -->
         <div v-else-if="!isPartnered" class="space-y-4">
           <!-- Kirim Undangan -->

@@ -14,7 +14,7 @@
             <span
               class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
             >
-              Finance
+              {{ $t('sidebar.finance') }}
             </span>
           </NuxtLinkLocale>
           <p class="text-sm text-muted-foreground leading-relaxed font-medium max-w-60">

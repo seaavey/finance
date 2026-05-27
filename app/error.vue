@@ -16,21 +16,21 @@ const handleError = () => clearError({ redirect: '/' });
           {{ error?.statusCode || '500' }}
         </h1>
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          {{ error?.statusCode === 404 ? 'Halaman tidak ditemukan' : 'Terjadi kesalahan sistem' }}
+          {{ error?.statusCode === 404 ? $t('error.title_404') : $t('error.title_500') }}
         </h2>
         <p class="text-muted-foreground text-lg">
           {{
             error?.statusCode === 404
-              ? 'Maaf, halaman yang Anda cari tidak tersedia atau telah dipindahkan.'
-              : 'Kami sedang mengalami masalah teknis. Silakan coba lagi nanti.'
+              ? $t('error.desc_404')
+              : $t('error.desc_500')
           }}
         </p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button size="lg" @click="handleError"> Kembali ke Beranda </Button>
+        <Button size="lg" @click="handleError"> {{ $t('error.back_to_home') }} </Button>
         <Button variant="outline" size="lg" @click="navigateTo('/transactions')">
-          Lihat Transaksi
+          {{ $t('error.view_transactions') }}
         </Button>
       </div>
     </div>

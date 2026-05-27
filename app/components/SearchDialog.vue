@@ -16,14 +16,14 @@
       </div>
 
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <p class="text-sm text-muted-foreground/60">Searching...</p>
+        <p class="text-sm text-muted-foreground/60">{{ $t('topbar.searching') }}</p>
       </div>
 
       <div
         v-else-if="results.length === 0 && searchQuery"
         class="flex items-center justify-center py-12"
       >
-        <p class="text-sm text-muted-foreground/60">{{ $t('transactions.empty') }}</p>
+        <p class="text-sm text-muted-foreground/60">{{ $t('topbar.no_results') }}</p>
       </div>
 
       <div v-else-if="results.length > 0" class="max-h-80 overflow-y-auto p-2">
