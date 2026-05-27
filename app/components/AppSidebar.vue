@@ -92,6 +92,7 @@ import {
   MoneyAdd01Icon,
   Logout01Icon,
   UserIcon,
+  Target02Icon,
 } from '@hugeicons/core-free-icons';
 
 defineProps<{
@@ -112,6 +113,7 @@ const mainNavItems = computed(() => [
   { to: '/transactions', label: t('sidebar.transactions'), icon: ArrowLeftRightIcon },
   { to: '/categories', label: t('sidebar.categories'), icon: GridViewIcon },
   { to: '/recurring', label: t('sidebar.recurring'), icon: RepeatIcon },
+  { to: '/goals', label: t('sidebar.goals'), icon: Target02Icon },
 ]);
 
 const bottomNavItems = computed(() => [

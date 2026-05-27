@@ -5,6 +5,9 @@
         <DialogTitle>{{
           item ? $t('recurring_form.title_edit') : $t('recurring_form.title_new')
         }}</DialogTitle>
+        <DialogDescription>
+          {{ $t('recurring.empty_desc') }}
+        </DialogDescription>
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">

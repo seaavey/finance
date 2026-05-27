@@ -386,6 +386,9 @@
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{{ $t('settings.dialog_name_title') }}</DialogTitle>
+          <DialogDescription class="sr-only">
+            Update your display name
+          </DialogDescription>
         </DialogHeader>
         <div class="space-y-3 py-2">
           <Input
@@ -409,6 +412,9 @@
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{{ $t('settings.dialog_currency_title') }}</DialogTitle>
+          <DialogDescription class="sr-only">
+            Select your preferred currency
+          </DialogDescription>
         </DialogHeader>
         <div class="max-h-64 overflow-y-auto py-2">
           <div v-for="group in currencyGroups" :key="group.label" class="mb-3 last:mb-0">

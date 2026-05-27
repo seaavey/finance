@@ -5,6 +5,9 @@
         <DialogTitle>{{
           category ? $t('category_form.title_edit') : $t('category_form.title_new')
         }}</DialogTitle>
+        <DialogDescription>
+          {{ $t('categories.subtitle') }}
+        </DialogDescription>
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
