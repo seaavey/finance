@@ -1,159 +1,153 @@
 <template>
-  <section class="relative overflow-hidden px-6 pt-16 pb-20 md:pt-24 md:pb-28">
-    <!-- Background effects -->
-    <div class="pointer-events-none absolute inset-0">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 size-150 rounded-full bg-primary/8 blur-[120px]" />
-      <div class="absolute bottom-0 right-0 size-100 rounded-full bg-primary/5 blur-[100px]" />
+  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-6 pt-20 pb-24 md:pt-32 md:pb-40">
+    <!-- Premium Dynamic Background -->
+    <div class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full opacity-30">
+        <div class="absolute top-[-10%] left-[-10%] size-[500px] rounded-full bg-primary/20 blur-[120px] animate-pulse" />
+        <div class="absolute bottom-[-10%] right-[-10%] size-[400px] rounded-full bg-blue-500/10 blur-[100px] animate-pulse [animation-delay:3s]" />
+      </div>
+      <!-- Grid Overlay -->
+      <div class="absolute inset-0 opacity-20 brightness-100 contrast-150" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" />
     </div>
 
-    <div class="relative z-10 mx-auto max-w-6xl">
-      <!-- Badge -->
-      <div class="flex justify-center mb-8 animate-[fade-up_0.5s_ease-out]">
-        <div class="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-sm backdrop-blur-sm">
-          <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <span class="text-muted-foreground">{{ $t('landing.hero_badge') }}</span>
+    <div class="relative z-10 mx-auto max-w-6xl w-full">
+      <!-- Animated Badge -->
+      <div class="flex justify-center mb-10">
+        <div class="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/60 px-4 py-1.5 text-sm font-medium backdrop-blur-md transition-all hover:border-primary/40 hover:bg-background/80 shadow-sm">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+          </span>
+          <span class="text-muted-foreground group-hover:text-foreground transition-colors">{{ $t('landing.hero_badge') }}</span>
+          <HugeiconsIcon :icon="ArrowRightIcon" :size="12" class="text-primary opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
         </div>
       </div>
 
-      <!-- Headline -->
-      <div class="text-center max-w-3xl mx-auto">
-        <h1 class="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl leading-tight">
+      <!-- Main Headline -->
+      <div class="text-center max-w-4xl mx-auto">
+        <h1 class="font-heading text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1]">
           {{ heroTitleStart }}
-          <br class="hidden sm:block" />
-          <span class="text-primary">{{ heroTitleHighlight }}</span>
+          <span class="relative inline-block mt-2 sm:mt-0">
+            <span class="relative z-10 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+              {{ heroTitleHighlight }}
+            </span>
+            <div class="absolute -bottom-2 left-0 w-full h-3 bg-primary/10 -rotate-1 -z-10 rounded-full blur-[2px]" />
+          </span>
         </h1>
-        <p class="mt-6 text-base text-muted-foreground md:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
+        <p class="mt-8 text-lg text-muted-foreground md:text-xl lg:text-2xl max-w-2xl mx-auto leading-relaxed font-medium">
           {{ $t('landing.hero_desc') }}
         </p>
       </div>
 
-      <!-- CTA -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 animate-[fade-up_0.5s_ease-out_0.2s_both]">
-        <Button class="w-full sm:w-auto gap-2" size="lg" @click="goToLogin">
+      <!-- Enhanced CTA -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
+        <Button class="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all gap-3" size="lg" @click="goToLogin">
           {{ $t('landing.hero_cta') }}
-          <HugeiconsIcon :icon="ArrowRightIcon" :size="18" />
+          <HugeiconsIcon :icon="ArrowRightIcon" :size="20" class="animate-bounce-x" />
         </Button>
-        <Button variant="outline" class="w-full sm:w-auto gap-2" size="lg" @click="scrollToFeatures">
-          <HugeiconsIcon :icon="PlayCircleIcon" :size="18" />
+        <Button variant="outline" class="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-bold backdrop-blur-sm hover:bg-muted/50 transition-all border-border/60 gap-3" size="lg" @click="scrollToFeatures">
+          <HugeiconsIcon :icon="PlayCircleIcon" :size="20" />
           {{ $t('landing.hero_demo') }}
         </Button>
       </div>
 
-      <!-- Trust badges -->
-      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-muted-foreground animate-[fade-up_0.5s_ease-out_0.3s_both]">
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_free') }}</span>
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_noads') }}</span>
-        <span class="flex items-center gap-1.5"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" class="text-green-500" /> {{ $t('landing.hero_secure') }}</span>
+      <!-- Micro-Trust Badges -->
+      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mt-12 text-xs md:text-sm font-semibold text-muted-foreground">
+        <span class="flex items-center gap-2 group cursor-default"><div class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" /></div> {{ $t('landing.hero_free') }}</span>
+        <span class="flex items-center gap-2 group cursor-default"><div class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" /></div> {{ $t('landing.hero_noads') }}</span>
+        <span class="flex items-center gap-2 group cursor-default"><div class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"><HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" /></div> {{ $t('landing.hero_secure') }}</span>
       </div>
 
-      <!-- Dashboard Preview -->
-      <div class="relative mt-14 md:mt-20 animate-[fade-up_0.7s_ease-out_0.4s_both]">
-        <!-- Glow behind -->
-        <div class="absolute inset-0 -m-4 rounded-2xl bg-linear-to-b from-primary/10 via-transparent to-transparent blur-2xl" />
+      <!-- Premium Dashboard Preview -->
+      <div class="relative mt-20 md:mt-28 perspective-1000 group">
+        <!-- Floating Glows around the card -->
+        <div class="absolute -top-10 -left-10 size-40 bg-primary/20 blur-[80px] rounded-full animate-float" />
+        <div class="absolute -bottom-10 -right-10 size-40 bg-blue-500/20 blur-[80px] rounded-full animate-float [animation-delay:2s]" />
 
-        <!-- Main dashboard card -->
-        <div class="relative rounded-2xl border border-border/50 bg-background/80 shadow-2xl shadow-primary/5 backdrop-blur-sm overflow-hidden">
-          <!-- Top bar -->
-          <div class="flex items-center gap-2 border-b border-border/40 px-4 py-3">
-            <div class="flex gap-1.5">
-              <div class="h-3 w-3 rounded-full bg-red-500/70" />
-              <div class="h-3 w-3 rounded-full bg-yellow-500/70" />
-              <div class="h-3 w-3 rounded-full bg-green-500/70" />
+        <!-- Main Card with 3D-like hover -->
+        <div class="relative rounded-3xl border border-border/40 bg-background/60 shadow-2xl shadow-primary/10 backdrop-blur-xl overflow-hidden transition-all duration-700 group-hover:shadow-primary/20 group-hover:border-primary/20 group-hover:-rotate-x-1 group-hover:rotate-y-1">
+          <!-- Browser-like Top bar -->
+          <div class="flex items-center gap-3 border-b border-border/40 px-6 py-4 bg-muted/20">
+            <div class="flex gap-2">
+              <div class="h-3.5 w-3.5 rounded-full bg-[#FF5F57] shadow-inner" />
+              <div class="h-3.5 w-3.5 rounded-full bg-[#FFBD2E] shadow-inner" />
+              <div class="h-3.5 w-3.5 rounded-full bg-[#28C840] shadow-inner" />
             </div>
             <div class="flex-1 flex justify-center">
-              <div class="rounded-md bg-muted/50 px-3 py-1 text-xs text-muted-foreground">seaavey.site/dashboard</div>
+              <div class="rounded-full bg-muted/40 px-6 py-1.5 text-[11px] font-medium text-muted-foreground border border-border/20 flex items-center gap-2">
+                <HugeiconsIcon :icon="Shield01Icon" :size="10" />
+                seaavey.site/dashboard
+              </div>
             </div>
           </div>
 
-          <!-- Dashboard content -->
-          <div class="p-4 md:p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-              <!-- Balance Card -->
-              <div class="rounded-xl border border-border/40 bg-muted/30 p-4">
-                <p class="text-xs text-muted-foreground">Saldo Bulan Ini</p>
-                <p class="mt-1 text-2xl font-bold font-heading">Rp 12.450.000</p>
-                <div class="mt-2 flex items-center gap-1 text-xs text-green-500">
+          <!-- Dashboard Mockup Content -->
+          <div class="p-6 md:p-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Cards with inner glow -->
+              <div class="rounded-2xl border border-border/40 bg-muted/20 p-6 relative overflow-hidden group/card transition-all hover:bg-muted/30 hover:border-primary/20">
+                <div class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('landing.hero_preview.balance') }}</p>
+                <p class="mt-2 text-3xl font-bold font-heading">Rp 12.450.000</p>
+                <div class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
                   <HugeiconsIcon :icon="ArrowUp01Icon" :size="12" />
-                  <span>+12.5% dari bulan lalu</span>
+                  <span>{{ $t('landing.hero_preview.trend') }}</span>
                 </div>
               </div>
 
-              <!-- Income Card -->
-              <div class="rounded-xl border border-border/40 bg-muted/30 p-4">
-                <p class="text-xs text-muted-foreground">Pemasukan</p>
-                <p class="mt-1 text-2xl font-bold font-heading text-green-500">Rp 18.200.000</p>
-                <div class="mt-3 flex gap-1">
-                  <div class="h-1.5 flex-1 rounded-full bg-green-500/30"><div class="h-full w-3/4 rounded-full bg-green-500" /></div>
+              <div class="rounded-2xl border border-border/40 bg-muted/20 p-6 transition-all hover:bg-muted/30">
+                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('landing.hero_preview.income') }}</p>
+                <p class="mt-2 text-3xl font-bold font-heading text-green-500">Rp 18.200.000</p>
+                <div class="mt-5 flex gap-1">
+                  <div class="h-2 flex-1 rounded-full bg-green-500/20"><div class="h-full w-3/4 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" /></div>
                 </div>
               </div>
 
-              <!-- Expense Card -->
-              <div class="rounded-xl border border-border/40 bg-muted/30 p-4">
-                <p class="text-xs text-muted-foreground">Pengeluaran</p>
-                <p class="mt-1 text-2xl font-bold font-heading text-red-400">Rp 5.750.000</p>
-                <div class="mt-3 flex gap-1">
-                  <div class="h-1.5 flex-1 rounded-full bg-red-500/30"><div class="h-full w-1/3 rounded-full bg-red-400" /></div>
+              <div class="rounded-2xl border border-border/40 bg-muted/20 p-6 transition-all hover:bg-muted/30">
+                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('landing.hero_preview.expense') }}</p>
+                <p class="mt-2 text-3xl font-bold font-heading text-red-400">Rp 5.750.000</p>
+                <div class="mt-5 flex gap-1">
+                  <div class="h-2 flex-1 rounded-full bg-red-500/20"><div class="h-full w-1/3 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" /></div>
                 </div>
               </div>
             </div>
 
-            <!-- Chart + Transactions row -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mt-4 md:mt-6">
-              <!-- Mini Chart -->
-              <div class="md:col-span-3 rounded-xl border border-border/40 bg-muted/30 p-4">
-                <div class="flex items-center justify-between mb-4">
-                  <p class="text-sm font-medium">Grafik Pengeluaran</p>
-                  <div class="flex gap-1">
-                    <span class="rounded bg-primary/10 px-2 py-0.5 text-xs text-primary">Minggu</span>
+            <!-- Enhanced Chart row -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6 md:mt-8">
+              <div class="md:col-span-3 rounded-2xl border border-border/40 bg-muted/20 p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <p class="text-base font-bold">{{ $t('landing.hero_preview.chart_title') }}</p>
+                  <div class="rounded-lg bg-primary/10 px-3 py-1 text-xs font-bold text-primary">{{ $t('landing.hero_preview.chart_period') }}</div>
+                </div>
+                <div class="flex items-end gap-3 h-32">
+                  <div v-for="(h, i) in [40, 65, 45, 80, 55, 70, 50]" :key="i" class="flex-1 rounded-t-lg bg-primary/30 relative group/bar hover:bg-primary/50 transition-all duration-300" :style="{ height: `${h}%` }">
+                    <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity">Rp {{ h }}0k</div>
                   </div>
                 </div>
-                <div class="flex items-end gap-2 h-24">
-                  <div class="flex-1 rounded-t bg-primary/20 h-[40%]" />
-                  <div class="flex-1 rounded-t bg-primary/30 h-[65%]" />
-                  <div class="flex-1 rounded-t bg-primary/20 h-[45%]" />
-                  <div class="flex-1 rounded-t bg-primary/40 h-[80%]" />
-                  <div class="flex-1 rounded-t bg-primary/25 h-[55%]" />
-                  <div class="flex-1 rounded-t bg-primary/35 h-[70%]" />
-                  <div class="flex-1 rounded-t bg-primary/20 h-[50%]" />
-                </div>
-                <div class="flex justify-between mt-2 text-[10px] text-muted-foreground">
-                  <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+                <div class="flex justify-between mt-4 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                  <span>{{ $t('landing.hero_preview.days.mon') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.tue') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.wed') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.thu') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.fri') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.sat') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.sun') }}</span>
                 </div>
               </div>
 
-              <!-- Recent Transactions -->
-              <div class="md:col-span-2 rounded-xl border border-border/40 bg-muted/30 p-4">
-                <p class="text-sm font-medium mb-3">Transaksi Terakhir</p>
-                <div class="space-y-3">
-                  <div class="flex items-center gap-3">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
-                      <HugeiconsIcon :icon="ShoppingBag01Icon" :size="14" class="text-orange-500" />
+              <!-- Simplified Transaction List -->
+              <div class="md:col-span-2 rounded-2xl border border-border/40 bg-muted/20 p-6">
+                <p class="text-base font-bold mb-5">{{ $t('landing.hero_preview.recent_title') }}</p>
+                <div class="space-y-4">
+                  <div v-for="(tx, i) in previewTransactions" :key="i" class="flex items-center gap-4 group/tx cursor-default">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all" :class="tx.bg">
+                      <HugeiconsIcon :icon="tx.icon" :size="18" :class="tx.color" />
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="text-xs font-medium truncate">Belanja Bulanan</p>
-                      <p class="text-[10px] text-muted-foreground">Hari ini</p>
+                      <p class="text-sm font-bold truncate group-hover/tx:text-primary transition-colors">{{ $t(tx.title) }}</p>
+                      <p class="text-[11px] font-medium text-muted-foreground">{{ $t(tx.date) }}</p>
                     </div>
-                    <span class="text-xs font-medium text-red-400">-Rp 350rb</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10">
-                      <HugeiconsIcon :icon="MoneyReceive02Icon" :size="14" class="text-green-500" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-xs font-medium truncate">Gaji</p>
-                      <p class="text-[10px] text-muted-foreground">2 hari lalu</p>
-                    </div>
-                    <span class="text-xs font-medium text-green-500">+Rp 15jt</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
-                      <HugeiconsIcon :icon="CreditCardIcon" :size="14" class="text-blue-500" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-xs font-medium truncate">Tagihan Listrik</p>
-                      <p class="text-[10px] text-muted-foreground">3 hari lalu</p>
-                    </div>
-                    <span class="text-xs font-medium text-red-400">-Rp 280rb</span>
+                    <span class="text-sm font-bold" :class="tx.amountColor">{{ tx.amount }}</span>
                   </div>
                 </div>
               </div>
@@ -161,15 +155,15 @@
           </div>
         </div>
 
-        <!-- Floating stat card -->
-        <div class="absolute -right-2 -bottom-3 md:right-4 md:-bottom-4 rounded-xl border border-border/50 bg-background/90 p-3 shadow-lg backdrop-blur-sm hidden sm:block">
-          <div class="flex items-center gap-2">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10">
-              <HugeiconsIcon :icon="ArrowUp01Icon" :size="16" class="text-green-500" />
+        <!-- Enhanced Floating stat card -->
+        <div class="absolute -right-4 -bottom-6 md:right-8 md:-bottom-8 rounded-3xl border border-primary/20 bg-background/95 p-5 shadow-2xl shadow-primary/20 backdrop-blur-xl hidden sm:block animate-float">
+          <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10 text-green-500">
+              <HugeiconsIcon :icon="Wallet01Icon" :size="24" />
             </div>
             <div>
-              <p class="text-xs font-medium">Hemat bulan ini</p>
-              <p class="text-sm font-bold text-green-500">Rp 2.100.000</p>
+              <p class="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em]">{{ $t('landing.hero_preview.savings') }}</p>
+              <p class="text-xl font-black text-green-500">Rp 2.100.000</p>
             </div>
           </div>
         </div>
@@ -187,6 +181,8 @@ import {
   ShoppingBag01Icon,
   MoneyReceive02Icon,
   CreditCardIcon,
+  Wallet01Icon,
+  Shield01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import { Button } from '@/components/ui/button';
@@ -208,4 +204,58 @@ const heroTitleHighlight = computed(() => {
   const idx = full.indexOf('tanpa');
   return idx === -1 ? '' : full.slice(idx);
 });
+
+const previewTransactions = [
+  {
+    icon: ShoppingBag01Icon,
+    title: 'landing.hero_preview.item_shopping',
+    date: 'landing.hero_preview.today',
+    amount: '-Rp 350rb',
+    color: 'text-orange-500',
+    bg: 'bg-orange-500/10',
+    amountColor: 'text-red-400',
+  },
+  {
+    icon: MoneyReceive02Icon,
+    title: 'landing.hero_preview.item_salary',
+    date: 'landing.hero_preview.days_ago_2',
+    amount: '+Rp 15jt',
+    color: 'text-green-500',
+    bg: 'bg-green-500/10',
+    amountColor: 'text-green-500',
+  },
+  {
+    icon: CreditCardIcon,
+    title: 'landing.hero_preview.item_bill',
+    date: 'landing.hero_preview.days_ago_3',
+    amount: '-Rp 280rb',
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+    amountColor: 'text-red-400',
+  },
+];
 </script>
+
+<style scoped>
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+@keyframes bounce-x {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+.animate-bounce-x {
+  animation: bounce-x 1s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+</style>

@@ -48,6 +48,9 @@
     "typescript": "^6.0.3"
   },
   "trustedDependencies": [
-    "@parcel/watcher"
+    "@parcel/watcher",
+    "esbuild",
+    "sharp",
+    "vue-demi"
   ]
 }

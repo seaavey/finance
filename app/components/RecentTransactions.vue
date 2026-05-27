@@ -4,7 +4,7 @@
       <h3 class="text-sm font-semibold">{{ $t('dashboard.recent') }}</h3>
       <NuxtLinkLocale to="/transactions" class="text-xs text-primary">{{ $t('dashboard.view_all') }}</NuxtLinkLocale>
     </div>    <div v-if="recent.length === 0" class="py-4 text-center text-sm text-muted-foreground">
-      Belum ada transaksi
+      {{ $t('dashboard.empty_title') }}
     </div>
     <TransactionList :transactions="recent" />
   </div>

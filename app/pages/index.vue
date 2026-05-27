@@ -1,13 +1,6 @@
 <template>
   <div class="flex min-h-screen flex-col">
-    <!-- Header -->
-    <header class="relative z-20 flex items-center justify-between px-6 py-4">
-      <span class="text-lg font-bold tracking-tight">{{ $t('sidebar.finance') }}</span>
-      <div class="flex items-center gap-2">
-        <Button variant="ghost" size="sm" @click="goToLogin">{{ $t('auth.login_title') }}</Button>
-        <Button size="sm" @click="goToLogin">{{ $t('auth.register') }}</Button>
-      </div>
-    </header>
+    <LandingNavbar />
 
     <main class="flex-1">
       <LandingHero />
@@ -21,9 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import { useRouter } from '#imports';
-
+import LandingNavbar from '@/components/landing/Navbar.vue';
 import LandingHero from '@/components/landing/Hero.vue';
 import LandingFeatures from '@/components/landing/Features.vue';
 import LandingTestimonials from '@/components/landing/Testimonials.vue';
@@ -34,8 +25,6 @@ import LandingFooter from '@/components/landing/Footer.vue';
 definePageMeta({ layout: 'blank' });
 
 const { t } = useI18n();
-const router = useRouter();
-const goToLogin = () => router.push('/login');
 
 useSeoMeta({
   title: `Finance ${t('landing.footer_text')}`,
