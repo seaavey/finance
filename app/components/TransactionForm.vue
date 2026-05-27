@@ -119,6 +119,29 @@
       </div>
     </div>
 
+    <!-- RECEIPT SCAN -->
+    <div
+      v-if="!transaction"
+      class="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-border/50 bg-card/20 px-5 py-4 transition hover:border-pink-500/30 hover:bg-card/40"
+      @click="showScanner = true"
+    >
+      <div class="flex size-10 items-center justify-center rounded-xl bg-pink-500/10">
+        <HugeiconsIcon :icon="Camera01Icon" :size="18" class="text-pink-400" />
+      </div>
+      <div class="flex-1">
+        <p class="text-sm font-medium text-foreground">Scan Struk</p>
+        <p class="text-xs text-muted-foreground">Foto struk untuk isi otomatis</p>
+      </div>
+      <p v-if="receiptFile" class="text-xs text-emerald-400">Photo selected</p>
+    </div>
+
+    <img
+      v-if="receiptPreview && !transaction"
+      :src="receiptPreview"
+      alt="Receipt preview"
+      class="max-h-32 w-full rounded-2xl object-cover border border-border/50"
+    />
+
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3">
       <button
@@ -142,6 +165,7 @@
         {{ $t('transaction_form.save') }}
       </button>
     </div>
+    <ReceiptScanner v-model:open="showScanner" @scanned="onScanned" />
   </div>
 </template>
 
@@ -153,6 +177,7 @@ import {
   CoinsSwapIcon,
   Calendar01Icon,
   Note01Icon,
+  Camera01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import type { Transaction } from '~/composables/useTransactions';
@@ -171,7 +196,7 @@ const emit = defineEmits<{
 
 const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
 
-const { addTransaction, updateTransaction } = useTransactions();
+const { addTransaction, updateTransaction, uploadReceipt } = useTransactions();
 
 const amountDisplay = computed({
   get: () => {
@@ -195,6 +220,31 @@ const form = reactive({
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? today,
 });
+
+const showScanner = ref(false);
+const receiptFile = ref<File | null>(null);
+const receiptPreview = ref<string | null>(null);
+const receiptUrl = ref<string | null>(null);
+
+const onScanned = async (data: {
+  receiptFile: File;
+  total: number | null;
+  date: string | null;
+  description: string;
+}) => {
+  receiptFile.value = data.receiptFile;
+  receiptPreview.value = URL.createObjectURL(data.receiptFile);
+
+  if (data.total && data.total > 0) {
+    form.amount = data.total;
+  }
+  if (data.date) {
+    form.date = data.date;
+  }
+  if (data.description) {
+    form.description = data.description;
+  }
+};
 
 const onNumberKeydown = (e: KeyboardEvent) => {
   const allowed = [
@@ -226,6 +276,10 @@ const onNumberKeydown = (e: KeyboardEvent) => {
 };
 
 const onSubmit = async () => {
+  if (receiptFile.value && !receiptUrl.value) {
+    receiptUrl.value = await uploadReceipt(receiptFile.value);
+  }
+
   const payload = {
     type: form.type,
     amount: Number(form.amount),
@@ -233,6 +287,7 @@ const onSubmit = async () => {
     category_id: form.category_id || null,
     description: form.description || null,
     date: form.date!,
+    receipt_image: receiptUrl.value || null,
   };
 
   if (props.transaction) {
