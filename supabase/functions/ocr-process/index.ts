@@ -12,14 +12,14 @@ serve(async (req) => {
   }
 
   if (req.method !== 'POST') {
-    return new Response('Method not allowed', {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
   try {
-    const { base64 } = await req.json();
+    const { base64, contentType } = await req.json();
 
     if (!base64) {
       return new Response(JSON.stringify({ error: 'Missing base64' }), {
@@ -36,8 +36,9 @@ serve(async (req) => {
       });
     }
 
+    const mimeType = contentType || 'image/jpeg';
     const formData = new FormData();
-    formData.append('base64Image', `data:image/jpeg;base64,${base64}`);
+    formData.append('base64Image', `data:${mimeType};base64,${base64}`);
     formData.append('language', 'eng');
     formData.append('isOverlayRequired', 'false');
 
@@ -50,7 +51,10 @@ serve(async (req) => {
     const data = await response.json();
 
     if (data.IsErroredOnProcessing) {
-      return new Response(JSON.stringify({ error: data.ErrorMessage?.[0] || 'OCR failed' }), {
+      return new Response(JSON.stringify({
+        error: data.ErrorMessage?.[0] || 'OCR processing failed',
+        details: data.ErrorDetails || data.ErrorMessage,
+      }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });

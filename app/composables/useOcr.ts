@@ -139,11 +139,20 @@ export const useOcr = () => {
       status.value = 'Processing...';
 
       const { data, error } = await supabase.functions.invoke('ocr-process', {
-        body: { base64, filename: file.name },
+        body: { base64, filename: file.name, contentType: file.type },
       });
 
-      if (error || !data?.text) {
-        console.error('[OCR] Error:', error || 'No text returned');
+      console.log('[OCR] Response:', { data, error });
+
+      if (error) {
+        console.error('[OCR] Invoke error:', error);
+        loading.value = false;
+        status.value = 'Error';
+        return null;
+      }
+
+      if (!data?.text) {
+        console.error('[OCR] Empty response:', data);
         loading.value = false;
         status.value = 'Error';
         return null;
