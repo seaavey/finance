@@ -52,7 +52,7 @@
                     ? df.format(calendarDate!.toDate(getLocalTimeZone()))
                     : $t('goal_form.deadline')
                 }}
-                <HugeiconsIcon :icon="Calendar01Icon" :size="16" class="opacity-50" />
+                <Icon name="hugeicons:calendar-01" :size="16" class="opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-auto p-0">
@@ -77,13 +77,13 @@
               class="flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-border/50 bg-muted/20 px-4 py-8 transition-colors hover:border-border hover:bg-muted/40"
               @click="fileInputRef?.click()"
             >
-              <HugeiconsIcon :icon="Image01Icon" :size="32" class="text-muted-foreground" />
+              <Icon name="hugeicons:image-01" :size="32" class="text-muted-foreground" />
               <span class="text-sm text-muted-foreground">{{
                 $t('goal_form.image_placeholder')
               }}</span>
             </button>
             <div v-else class="relative">
-              <NuxtImage :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover" />
+              <img :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover">
               <Button
                 type="button"
                 variant="secondary"
@@ -91,7 +91,7 @@
                 class="absolute right-2 top-2 rounded-full"
                 @click="removeImage"
               >
-                <HugeiconsIcon :icon="Delete01Icon" :size="14" />
+                <Icon name="hugeicons:delete-01" :size="14" />
                 {{ $t('goal_form.image_remove') }}
               </Button>
             </div>
@@ -112,8 +112,6 @@
 </template>
 
 <script setup lang="ts">
-import { HugeiconsIcon } from '@hugeicons/vue';
-import { Calendar01Icon, Image01Icon, Delete01Icon } from '@hugeicons/core-free-icons';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import type { Goal } from '~/composables/useGoals';
 import { cn } from '~/lib/utils';

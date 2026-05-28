@@ -12,7 +12,7 @@
         <div
           class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700"
         >
-          <HugeiconsIcon :icon="GridViewIcon" :size="14" />
+          <Icon name="hugeicons:grid-view" :size="14" />
           {{ $t('landing.features_title') }}
         </div>
         <h2
@@ -49,8 +49,8 @@
               class="absolute inset-0 rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity"
               :class="feature.iconBg"
             />
-            <HugeiconsIcon
-              :icon="feature.icon"
+            <Icon
+              :name="feature.icon"
               :size="32"
               :class="feature.iconColor"
               class="relative z-10"
@@ -77,7 +77,7 @@
             <div
               class="h-8 w-8 rounded-full border border-primary/20 flex items-center justify-center text-primary bg-primary/5"
             >
-              <HugeiconsIcon :icon="ArrowRightIcon" :size="14" />
+              <Icon name="hugeicons:arrow-right-01" :size="14" />
             </div>
           </div>
         </div>
@@ -87,23 +87,10 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ChartIcon,
-  RepeatIcon,
-  GroupIcon,
-  Wallet01Icon,
-  File02Icon,
-  ArrangeIcon,
-  GridViewIcon,
-  ArrowRightIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
-import type { Component } from 'vue';
-
 interface Feature {
   titleKey: string;
   descKey: string;
-  icon: Component;
+  icon: string;
   iconBg: string;
   iconColor: string;
 }
@@ -112,42 +99,42 @@ const features: Feature[] = [
   {
     titleKey: 'landing.feature_dashboard_title',
     descKey: 'landing.feature_dashboard_desc',
-    icon: ChartIcon,
+    icon: 'hugeicons:chart',
     iconBg: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
   },
   {
     titleKey: 'landing.feature_recurring_title',
     descKey: 'landing.feature_recurring_desc',
-    icon: RepeatIcon,
+    icon: 'hugeicons:repeat',
     iconBg: 'bg-purple-500/10',
     iconColor: 'text-purple-500',
   },
   {
     titleKey: 'landing.feature_couple_title',
     descKey: 'landing.feature_couple_desc',
-    icon: GroupIcon,
+    icon: 'hugeicons:group',
     iconBg: 'bg-pink-500/10',
     iconColor: 'text-pink-500',
   },
   {
     titleKey: 'landing.feature_wallet_title',
     descKey: 'landing.feature_wallet_desc',
-    icon: Wallet01Icon,
+    icon: 'hugeicons:wallet-01',
     iconBg: 'bg-green-500/10',
     iconColor: 'text-green-500',
   },
   {
     titleKey: 'landing.feature_export_title',
     descKey: 'landing.feature_export_desc',
-    icon: File02Icon,
+    icon: 'hugeicons:file-02',
     iconBg: 'bg-orange-500/10',
     iconColor: 'text-orange-500',
   },
   {
     titleKey: 'landing.feature_category_title',
     descKey: 'landing.feature_category_desc',
-    icon: ArrangeIcon,
+    icon: 'hugeicons:arrange',
     iconBg: 'bg-cyan-500/10',
     iconColor: 'text-cyan-500',
   },

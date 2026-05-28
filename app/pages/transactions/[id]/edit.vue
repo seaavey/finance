@@ -36,7 +36,7 @@
       <div v-else-if="fetchError" key="error" class="mx-auto max-w-md py-20">
         <div class="flex flex-col items-center gap-4 text-center">
           <div class="flex size-14 items-center justify-center rounded-2xl bg-red-500/10">
-            <HugeiconsIcon :icon="AlertCircleIcon" :size="28" class="text-red-400" />
+            <Icon name="hugeicons:alert-circle" :size="28" class="text-red-400" />
           </div>
           <h3 class="text-lg font-semibold">{{ $t('transaction_edit.error_title') }}</h3>
           <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.error_desc') }}</p>
@@ -52,7 +52,7 @@
       <div v-else-if="!transaction" key="not-found" class="mx-auto max-w-md py-20">
         <div class="flex flex-col items-center gap-4 text-center">
           <div class="flex size-14 items-center justify-center rounded-2xl bg-muted">
-            <HugeiconsIcon :icon="AlertCircleIcon" :size="28" class="text-muted-foreground" />
+            <Icon name="hugeicons:alert-circle" :size="28" class="text-muted-foreground" />
           </div>
           <h3 class="text-lg font-semibold">{{ $t('transaction_edit.not_found') }}</h3>
           <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found_desc') }}</p>
@@ -68,7 +68,7 @@
           class="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           @click="navigateTo('/transactions')"
         >
-          <HugeiconsIcon :icon="ArrowLeft01Icon" :size="16" />
+          <Icon name="hugeicons:arrow-left-01" :size="16" />
           {{ $t('transaction_edit.back') }}
         </button>
 
@@ -81,8 +81,8 @@
               class="flex size-11 items-center justify-center rounded-xl"
               :class="transaction.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
             >
-              <HugeiconsIcon
-                :icon="transaction.type === 'income' ? ArrowDown01Icon : ArrowUp01Icon"
+              <Icon
+                :name="transaction.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
                 :size="22"
                 :class="transaction.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
               />
@@ -103,7 +103,7 @@
             class="flex items-center gap-1.5 rounded-2xl border border-red-500/10 bg-red-500/3 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/8"
             @click="showDeleteDialog = true"
           >
-            <HugeiconsIcon :icon="Delete01Icon" :size="16" />
+            <Icon name="hugeicons:delete-01" :size="16" />
             {{ $t('transaction_edit.delete') }}
           </button>
         </div>
@@ -141,14 +141,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  ArrowLeft01Icon,
-  Delete01Icon,
-  AlertCircleIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import type { Transaction } from '~/composables/useTransactions';

@@ -32,8 +32,8 @@
             >
               <NuxtLink to="/login">
                 {{ $t('landing.cta_button') }}
-                <HugeiconsIcon
-                  :icon="ArrowRight01Icon"
+                <Icon
+                  name="hugeicons:arrow-right-01"
                   :size="20"
                   class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
                 />
@@ -51,7 +51,5 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { Button } from '@/components/ui/button';
 </script>

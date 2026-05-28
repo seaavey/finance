@@ -14,8 +14,6 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
-        '@hugeicons/core-free-icons',
-        '@hugeicons/vue',
         '@internationalized/date',
         '@supabase/supabase-js',
         '@vueuse/core',
@@ -39,7 +37,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@nuxt/fonts',
-    '@nuxt/image',
     '@nuxt/eslint',
     '@nuxt/icon',
   ],

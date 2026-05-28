@@ -14,7 +14,7 @@
       </div>
 
       <Button class="w-full gap-2" size="lg" @click="signInWithGoogle">
-        <HugeiconsIcon :icon="GoogleIcon" :size="20" />
+        <Icon name="hugeicons:google" :size="20" />
         {{ $t('auth.login_google') }}
       </Button>
 
@@ -28,8 +28,6 @@
 </template>
 
 <script setup lang="ts">
-import { GoogleIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 definePageMeta({ layout: 'blank' });
 

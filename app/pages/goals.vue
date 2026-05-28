@@ -10,7 +10,7 @@
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="showForm = true"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('goals.add') }}</span>
       </Button>
     </div>
@@ -24,7 +24,7 @@
       <!-- EMPTY STATE -->
       <div v-if="goals.length === 0" class="flex flex-col items-center gap-4 py-16">
         <div class="flex size-14 items-center justify-center rounded-2xl bg-card/30">
-          <HugeiconsIcon :icon="Target01Icon" :size="24" class="text-muted-foreground/60" />
+          <Icon name="hugeicons:target-01" :size="24" class="text-muted-foreground/60" />
         </div>
         <div class="text-center max-w-sm">
           <p class="font-medium">{{ $t('goals.empty') }}</p>
@@ -70,8 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import { HugeiconsIcon } from '@hugeicons/vue';
-import { Add01Icon, Target01Icon } from '@hugeicons/core-free-icons';
 import type { Goal } from '~/composables/useGoals';
 
 const { goals, loading, fetchGoals, deleteGoal } = useGoals();

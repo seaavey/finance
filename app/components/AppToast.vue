@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import {
-  CheckmarkCircle02Icon,
-  CancelCircleIcon,
-  InformationCircleIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 type ToastType = 'success' | 'error' | 'info';
 
@@ -26,9 +20,9 @@ const addToast = (message: string, type: ToastType = 'info') => {
 };
 
 const iconMap = {
-  success: CheckmarkCircle02Icon,
-  error: CancelCircleIcon,
-  info: InformationCircleIcon,
+  success: 'hugeicons:checkmark-circle-02',
+  error: 'hugeicons:cancel-circle',
+  info: 'hugeicons:information-circle',
 };
 
 const colorMap = {
@@ -57,7 +51,7 @@ defineExpose({ addToast });
           class="flex items-center gap-2 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm"
           :class="colorMap[t.type]"
         >
-          <HugeiconsIcon :icon="iconMap[t.type]" :size="18" />
+          <Icon :name="iconMap[t.type]" :size="18" />
           <span class="text-sm font-medium">{{ t.message }}</span>
         </div>
       </TransitionGroup>

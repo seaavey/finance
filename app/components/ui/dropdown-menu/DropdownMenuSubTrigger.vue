@@ -2,8 +2,6 @@
 import type { DropdownMenuSubTriggerProps } from 'reka-ui';
 
 import type { HTMLAttributes } from 'vue';
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { reactiveOmit } from '@vueuse/core';
 import { DropdownMenuSubTrigger, useForwardProps } from 'reka-ui';
 import { cn } from '@/lib/utils';
@@ -29,6 +27,6 @@ const forwardedProps = useForwardProps(delegatedProps);
     "
   >
     <slot />
-    <HugeiconsIcon :icon="ArrowRight01Icon" :size="16" class="cn-rtl-flip ml-auto" />
+    <Icon name="hugeicons:arrow-right-01" :size="16" class="cn-rtl-flip ml-auto" />
   </DropdownMenuSubTrigger>
 </template>

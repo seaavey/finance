@@ -22,7 +22,7 @@
         "
         @click="form.type = 'income'"
       >
-        <HugeiconsIcon :icon="ArrowDown01Icon" :size="20" class="mr-2 inline-block" />
+        <Icon name="hugeicons:arrow-down-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.income') }}
       </button>
       <button
@@ -35,7 +35,7 @@
         "
         @click="form.type = 'expense'"
       >
-        <HugeiconsIcon :icon="ArrowUp01Icon" :size="20" class="mr-2 inline-block" />
+        <Icon name="hugeicons:arrow-up-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.expense') }}
       </button>
     </div>
@@ -61,7 +61,7 @@
     <!-- DETAIL FORM -->
     <div class="space-y-px overflow-hidden rounded-3xl border border-border/50 bg-card/20">
       <div class="flex items-center gap-3 px-5 py-4">
-        <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-muted-foreground" />
+        <Icon name="hugeicons:wallet-01" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
           <CategoryPicker
             v-model="form.category_id"
@@ -72,7 +72,7 @@
       </div>
 
       <div class="flex items-center gap-3 px-5 py-4">
-        <HugeiconsIcon :icon="CoinsSwapIcon" :size="18" class="text-muted-foreground" />
+        <Icon name="hugeicons:coins-swap" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
           <Select v-model="form.currency">
             <SelectTrigger class="border-none shadow-none">
@@ -104,7 +104,7 @@
       </div>
 
       <div class="flex items-center gap-3 px-5 py-4">
-        <HugeiconsIcon :icon="Calendar01Icon" :size="18" class="text-muted-foreground" />
+        <Icon name="hugeicons:calendar-01" :size="18" class="text-muted-foreground" />
         <div class="">
           <Popover>
             <PopoverTrigger as-child>
@@ -122,8 +122,8 @@
                     ? df.format(calendarDate!.toDate(getLocalTimeZone()))
                     : $t('transaction_form.select_date')
                 }}
-                <HugeiconsIcon
-                  :icon="ArrowDown01Icon"
+                <Icon
+                  name="hugeicons:arrow-down-01"
                   :size="16"
                   class="text-muted-foreground ml-auto opacity-50"
                 />
@@ -137,7 +137,7 @@
       </div>
 
       <div class="flex items-start gap-3 px-5 py-4">
-        <HugeiconsIcon :icon="Note01Icon" :size="18" class="mt-0.5 text-muted-foreground" />
+        <Icon name="hugeicons:note-01" :size="18" class="mt-0.5 text-muted-foreground" />
         <div class="flex-1">
           <Textarea
             v-model="form.description"
@@ -169,15 +169,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  Wallet01Icon,
-  CoinsSwapIcon,
-  Calendar01Icon,
-  Note01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
 import type { Transaction } from '~/composables/useTransactions';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';

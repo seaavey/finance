@@ -8,7 +8,7 @@
         class="flex size-9 items-center justify-center rounded-xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground lg:hidden"
         @click="$emit('toggleSidebar')"
       >
-        <HugeiconsIcon :icon="Menu02Icon" :size="18" />
+        <Icon name="hugeicons:menu-02" :size="18" />
       </button>
 
       <Breadcrumb class="hidden md:block">
@@ -41,7 +41,7 @@
         class="flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground md:hidden"
         @click="showSearchDialog = true"
       >
-        <HugeiconsIcon :icon="Search01Icon" :size="18" />
+        <Icon name="hugeicons:search-01" :size="18" />
       </button>
 
       <!-- SEARCH - Desktop -->
@@ -50,8 +50,8 @@
           class="flex h-10 w-60 cursor-pointer items-center rounded-2xl border border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
           @click="showSearchDialog = true"
         >
-          <HugeiconsIcon
-            :icon="Search01Icon"
+          <Icon
+            name="hugeicons:search-01"
             :size="16"
             class="shrink-0 text-muted-foreground/60"
           />
@@ -67,7 +67,7 @@
       <button
         class="relative flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground"
       >
-        <HugeiconsIcon :icon="Notification03Icon" :size="18" />
+        <Icon name="hugeicons:notification-03" :size="18" />
         <span
           class="absolute right-2.5 top-2.5 size-2 rounded-full bg-destructive ring-2 ring-background"
         />
@@ -79,8 +79,8 @@
         @click="cycleColorMode"
       >
         <ClientOnly>
-          <HugeiconsIcon v-if="colorMode.value === 'dark'" :icon="Sun01Icon" :size="18" />
-          <HugeiconsIcon v-else :icon="Moon01Icon" :size="18" />
+          <Icon v-if="colorMode.value === 'dark'" name="hugeicons:sun-01" :size="18" />
+          <Icon v-else name="hugeicons:moon-01" :size="18" />
           <template #fallback>
             <div class="size-[18px]" />
           </template>
@@ -93,7 +93,7 @@
         class="flex h-10 items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="navigateTo('/transactions/new')"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </button>
     </div>
@@ -103,15 +103,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Menu02Icon,
-  Search01Icon,
-  Notification03Icon,
-  Sun01Icon,
-  Moon01Icon,
-  Add01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 defineEmits<{
   toggleSidebar: [];
 }>();

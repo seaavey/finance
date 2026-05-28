@@ -168,7 +168,7 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 5. **Card pattern standar** = `rounded-2xl md:rounded-3xl border border-border/50 bg-card/30 p-4 md:p-6`.
 6. **Jangan tambah inline `dark:` classes** — semua dark mode via CSS variables. Cuma `bg-{color}/10` untuk icon bg (itu light mode doang, dark mode warnanya TIDAK perlu diubah karena opacity bikin dia tetap keliatan).
 7. **Pendinginan animasi** = `transition-all duration-200` untuk interaksi kecil, `duration-300` untuk hover card, `duration-500` untuk page entry.
-8. **Ikon** = `@hugeicons/core-free-icons` + `<HugeiconsIcon :icon="NamaIcon" :size="18" />`.
+8. **Ikon** = `@nuxt/icon` + `<Icon name="hugeicons:icon-name" :size="18" />`.
 
 ### 11.1 Design Tokens & Theme
 
@@ -199,15 +199,15 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 
 ### 11.2 Komponen UI (shadcn-vue style)
 
-| Package          | Detail                                                     |
-| ---------------- | ---------------------------------------------------------- |
-| UI system        | shadcn-vue (reka-ui based), style `reka-vega`              |
-| Icon library     | `@hugeicons/core-free-icons` + `<HugeiconsIcon>` component |
-| Class utility    | `cn()` = clsx + tailwind-merge, dari `app/lib/utils.ts`    |
-| Component prefix | `''` (none) — langsung `Button`, `Card`, `Dialog`, dll     |
+| Package          | Detail                                                  |
+| ---------------- | ------------------------------------------------------- |
+| UI system        | shadcn-vue (reka-ui based), style `reka-vega`           |
+| Icon library     | `@nuxt/icon` + `<Icon name="hugeicons:...">` component  |
+| Class utility    | `cn()` = clsx + tailwind-merge, dari `app/lib/utils.ts` |
+| Component prefix | `''` (none) — langsung `Button`, `Card`, `Dialog`, dll  |
 
-**17 komponen ui/** (shadcn-vue):
-`accordion`, `alert-dialog`, `avatar`, `breadcrumb`, `button`, `card`, `dialog`, `dropdown-menu`, `input`, `label`, `popover`, `range-calendar`, `select`, `sheet`, `skeleton`, `switch`, `textarea`
+**60 komponen ui/** (shadcn-vue):
+`accordion`, `alert`, `alert-dialog`, `aspect-ratio`, `avatar`, `badge`, `breadcrumb`, `button`, `button-group`, `calendar`, `card`, `carousel`, `chart`, `checkbox`, `collapsible`, `combobox`, `command`, `context-menu`, `dialog`, `drawer`, `dropdown-menu`, `empty`, `field`, `form`, `hover-card`, `input`, `input-group`, `input-otp`, `item`, `kbd`, `label`, `menubar`, `native-select`, `navigation-menu`, `number-field`, `pagination`, `pin-input`, `popover`, `progress`, `radio-group`, `range-calendar`, `resizable`, `scroll-area`, `select`, `separator`, `sheet`, `sidebar`, `skeleton`, `slider`, `sonner`, `spinner`, `stepper`, `switch`, `table`, `tabs`, `tags-input`, `textarea`, `toggle`, `toggle-group`, `tooltip`
 
 ### 11.3 Responsive Breakpoint Strategy
 
@@ -408,29 +408,35 @@ Semua komponen shadcn prefix kosong (`''`), jadi import `Button` bukan `UiButton
 
 ### 11.14 Icon Library Detail
 
-- **Package**: `@hugeicons/core-free-icons` v4, `@hugeicons/vue` v1
+- **Module**: `@nuxt/icon` v2 (Iconify-based, 200k+ icons)
+- **Usage**: `<Icon name="hugeicons:icon-name" :size="18" />`
+- **Prefix**: `hugeicons:` — semua icon dari koleksi Huge Icons (Iconify)
 - **Size**: `:size="18"` (default), `:size="16"` (small), `:size="20"` (medium), `:size="24"` (large), `:size="32"` (feature card)
-- **Icons sering dipakai** (extracted from codebase):
+- **No manual imports** — cukup `<Icon name="hugeicons:name" />`
+- **Auto tree-shake** — hanya icon yang dipakai di-bundle
+- **Icons sering dipakai** (kebab-case untuk Iconify):
 
-| Icon                                         | Lokasi                                                               |
-| -------------------------------------------- | -------------------------------------------------------------------- |
-| `ArrowDown01Icon`                            | Income indicator (green), TransactionForm type selector              |
-| `ArrowUp01Icon`                              | Expense indicator (red), TransactionForm type selector               |
-| `Wallet01Icon`                               | Logo, Landing, Balance card, Settings header, TransactionForm detail |
-| `Add01Icon`                                  | CTA "+" button, Category add button                                  |
-| `GridViewIcon`                               | Categories nav, Features section badge                               |
-| `RepeatIcon`                                 | Recurring nav, empty state, Features                                 |
-| `ArrowLeftRightIcon`                         | Transactions nav, empty state                                        |
-| `Search01Icon`                               | Search bar, Topbar                                                   |
-| `Calendar01Icon`                             | Date picker icons                                                    |
-| `FilterIcon`                                 | Filter toggle                                                        |
-| `ArrowRight01Icon`                           | CTA arrows, Settings chevron                                         |
-| `Tick01Icon`                                 | Currency selector checkmark                                          |
-| `PencilEdit01Icon`                           | Edit action                                                          |
-| `Delete01Icon`                               | Delete action                                                        |
-| `Logout01Icon`                               | Sign out                                                             |
-| `UserIcon` / `Mail01Icon` / `Settings01Icon` | Sidebar/Profile                                                      |
-| `Sun01Icon` / `Moon01Icon`                   | Theme toggle                                                         |
+| Icon (kebab)         | Pascal asli                | Lokasi                                                               |
+| -------------------- | -------------------------- | -------------------------------------------------------------------- |
+| `arrow-down-01`      | `ArrowDown01Icon`          | Income indicator (green), TransactionForm type selector              |
+| `arrow-up-01`        | `ArrowUp01Icon`            | Expense indicator (red), TransactionForm type selector               |
+| `wallet-01`          | `Wallet01Icon`             | Logo, Landing, Balance card, Settings header, TransactionForm detail |
+| `add-01`             | `Add01Icon`                | CTA "+" button, Category add button                                  |
+| `grid-view`          | `GridViewIcon`             | Categories nav, Features section badge                               |
+| `repeat`             | `RepeatIcon`               | Recurring nav, empty state, Features                                 |
+| `arrow-left-right`   | `ArrowLeftRightIcon`       | Transactions nav, empty state                                        |
+| `search-01`          | `Search01Icon`             | Search bar, Topbar                                                   |
+| `calendar-01`        | `Calendar01Icon`           | Date picker icons                                                    |
+| `filter`             | `FilterIcon`               | Filter toggle                                                        |
+| `arrow-right-01`     | `ArrowRight01Icon`         | CTA arrows, Settings chevron                                         |
+| `tick-01`            | `Tick01Icon`               | Currency selector checkmark                                          |
+| `pencil-edit-01`     | `PencilEdit01Icon`         | Edit action                                                          |
+| `delete-01`          | `Delete01Icon`             | Delete action                                                        |
+| `logout-01`          | `Logout01Icon`             | Sign out                                                             |
+| `user` / `mail-01`   | `UserIcon` / `Mail01Icon`  | Sidebar/Profile                                                      |
+| `sun-01` / `moon-01` | `Sun01Icon` / `Moon01Icon` | Theme toggle                                                         |
+
+- **Installed packages** (removed): ~~`@hugeicons/core-free-icons`~~, ~~`@hugeicons/vue`~~
 
 ### 11.15 Chart.js Configuration
 
@@ -520,7 +526,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 | `$t('key')`           | Template (223+)                                      | Auto-imported         |
 | `useI18n()` → `{ t }` | 23 file                                              | Auto-imported         |
 | `setLocale(code)`     | `settings.vue:503`, `Navbar.vue:94,190`              | Cycle / dropdown      |
-| `navigateToLocale`    | `dashboard.vue:261,279`, `transactions/index.vue:12` | Locale-aware navigate |
+| `navigateTo($localePath(...))` | `transactions/index.vue:12` | Locale-aware navigate |
 | `<NuxtLinkLocale>`    | 14 instances                                         | Locale-aware link     |
 | `tm()` + `rt()`       | `Testimonials.vue:84,98`                             | Array translation     |
 
@@ -545,7 +551,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 ## 14. Nuxt Config & Package
 
-**Modules** (6): `shadcn-nuxt`, `@nuxtjs/color-mode`, `@nuxtjs/seo`, `@nuxtjs/i18n`, `@nuxt/fonts`, `@nuxt/eslint`.
+**Modules** (7): `shadcn-nuxt`, `@nuxtjs/color-mode`, `@nuxtjs/seo`, `@nuxtjs/i18n`, `@nuxt/fonts`, `@nuxt/eslint`, `@nuxt/icon`.
 
 **Key config**: `colorMode: { classSuffix: '' }` → class `.dark`, bukan `.dark-mode`. `shadcn: { prefix: '' }` → `Button` bukan `UiButton`. `runtimeConfig.public`: `supabaseUrl`, `supabaseAnonKey`, `siteUrl`. No `app.config.ts` or `typescript` override.
 
@@ -559,7 +565,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 | `shadcn-nuxt` / `reka-ui`           | 2.7.3 / ^2.9.8   | UI components |
 | `tailwindcss` / `@tailwindcss/vite` | ^4.3.0           | CSS           |
 | `chart.js` + `vue-chartjs`          | ^4.5.1 / ^5.3.3  | Charts        |
-| `@hugeicons/core-free-icons`        | ^4.1.4           | Icons         |
+| `@nuxt/icon`                        | ^2.2.2           | Icons (Iconify) |
 | `exceljs`                           | ^4.4.0           | Export        |
 | `sortablejs` + `sortablejs-vue3`    | ^1.15.7 / ^1.3.0 | Drag          |
 | `typescript`                        | ^6.0.3 (dev)     | Types         |

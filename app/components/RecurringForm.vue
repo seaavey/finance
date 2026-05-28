@@ -107,15 +107,15 @@
                 "
               >
                 <div class="flex items-center">
-                  <HugeiconsIcon :icon="Calendar01Icon" :size="16" class="mr-2" />
+                  <Icon name="hugeicons:calendar-01" :size="16" class="mr-2" />
                   {{
                     form.next_date
                       ? df.format(calendarDate!.toDate(getLocalTimeZone()))
                       : $t('recurring_form.select_date')
                   }}
                 </div>
-                <HugeiconsIcon
-                  :icon="ArrowDown01Icon"
+                <Icon
+                  name="hugeicons:arrow-down-01"
                   :size="16"
                   class="text-muted-foreground opacity-50"
                 />
@@ -141,8 +141,6 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar01Icon, ArrowDown01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
 import type { RecurringTransaction } from '~/composables/useRecurring';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';

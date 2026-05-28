@@ -5,7 +5,7 @@
   >
     <div class="flex shrink-0 items-center gap-3 border-b border-sidebar-border px-4 h-16">
       <div class="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary">
-        <HugeiconsIcon :icon="MoneyAdd01Icon" :size="18" class="text-sidebar-primary-foreground" />
+        <Icon name="hugeicons:money-add-01" :size="18" class="text-sidebar-primary-foreground" />
       </div>
       <span class="text-base font-bold text-sidebar-foreground">{{ $t('sidebar.finance') }}</span>
     </div>
@@ -19,7 +19,7 @@
         :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive(item.to) }"
         @click="$emit('close')"
       >
-        <HugeiconsIcon :icon="item.icon" :size="18" />
+        <Icon :name="item.icon" :size="18" />
         {{ item.label }}
       </NuxtLinkLocale>
 
@@ -32,7 +32,7 @@
           :class="{ 'bg-sidebar-accent text-sidebar-foreground': isActive(item.to) }"
           @click="$emit('close')"
         >
-          <HugeiconsIcon :icon="item.icon" :size="18" />
+          <Icon :name="item.icon" :size="18" />
           {{ item.label }}
         </NuxtLinkLocale>
       </div>
@@ -61,7 +61,7 @@
           :title="$t('sidebar.logout')"
           @click="onSignOut"
         >
-          <HugeiconsIcon :icon="Logout01Icon" :size="16" />
+          <Icon name="hugeicons:logout-01" :size="16" />
         </button>
       </div>
 
@@ -71,7 +71,7 @@
         to="/settings"
         class="flex items-center gap-2 border-t border-sidebar-border/50 px-3 py-2 text-xs text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
       >
-        <HugeiconsIcon :icon="UserIcon" :size="14" />
+        <Icon name="hugeicons:user" :size="14" />
         <span>{{ partnerDisplayName }}</span>
         <span class="ml-auto text-[10px] text-sidebar-foreground/30">{{
           $t('sidebar.partner')
@@ -82,18 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import { HugeiconsIcon } from '@hugeicons/vue';
-import {
-  Home03Icon,
-  ArrowLeftRightIcon,
-  GridViewIcon,
-  RepeatIcon,
-  Settings01Icon,
-  MoneyAdd01Icon,
-  Logout01Icon,
-  UserIcon,
-  Target02Icon,
-} from '@hugeicons/core-free-icons';
 
 defineProps<{
   open: boolean;
@@ -109,15 +97,15 @@ const route = useRoute();
 const { t } = useI18n();
 
 const mainNavItems = computed(() => [
-  { to: '/dashboard', label: t('sidebar.dashboard'), icon: Home03Icon },
-  { to: '/transactions', label: t('sidebar.transactions'), icon: ArrowLeftRightIcon },
-  { to: '/categories', label: t('sidebar.categories'), icon: GridViewIcon },
-  { to: '/recurring', label: t('sidebar.recurring'), icon: RepeatIcon },
-  { to: '/goals', label: t('sidebar.goals'), icon: Target02Icon },
+  { to: '/dashboard', label: t('sidebar.dashboard'), icon: 'hugeicons:home-03' },
+  { to: '/transactions', label: t('sidebar.transactions'), icon: 'hugeicons:arrow-left-right' },
+  { to: '/categories', label: t('sidebar.categories'), icon: 'hugeicons:grid-view' },
+  { to: '/recurring', label: t('sidebar.recurring'), icon: 'hugeicons:repeat' },
+  { to: '/goals', label: t('sidebar.goals'), icon: 'hugeicons:target-02' },
 ]);
 
 const bottomNavItems = computed(() => [
-  { to: '/settings', label: t('sidebar.settings'), icon: Settings01Icon },
+  { to: '/settings', label: t('sidebar.settings'), icon: 'hugeicons:settings-01' },
 ]);
 
 const isActive = (path: string) => {

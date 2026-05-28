@@ -2,8 +2,6 @@
 import type { ListboxFilterProps } from 'reka-ui';
 
 import type { HTMLAttributes } from 'vue';
-import { Search01Icon as SearchIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { reactiveOmit } from '@vueuse/core';
 import { ListboxFilter, useForwardProps } from 'reka-ui';
 import { cn } from '@/lib/utils';
@@ -33,7 +31,7 @@ const { filterState } = useCommand();
       class="bg-input/30 border-input/30 h-8! rounded-lg! shadow-none! *:data-[slot=input-group-addon]:pr-2!"
     >
       <InputGroupAddon>
-        <HugeiconsIcon :icon="SearchIcon" class="size-4 shrink-0 opacity-50" />
+        <Icon name="hugeicons:search-01" class="size-4 shrink-0 opacity-50" />
       </InputGroupAddon>
       <ListboxFilter
         v-bind="{ ...forwardedProps, ...$attrs }"

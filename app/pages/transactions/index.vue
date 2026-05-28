@@ -11,15 +11,15 @@
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="navigateTo($localePath('/transactions/new'))"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </Button>
     </div>
 
     <div class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/30 p-3">
       <div class="relative flex-1">
-        <HugeiconsIcon
-          :icon="Search01Icon"
+        <Icon
+          name="hugeicons:search-01"
           :size="20"
           class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
@@ -34,7 +34,7 @@
         class="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/50"
         @click="showFilters = !showFilters"
       >
-        <HugeiconsIcon :icon="FilterIcon" :size="20" />
+        <Icon name="hugeicons:filter" :size="20" />
       </button>
     </div>
 
@@ -65,7 +65,7 @@
             class="w-full justify-start text-left font-normal"
             :class="!dateRange.start && 'text-muted-foreground'"
           >
-            <HugeiconsIcon :icon="Calendar01Icon" :size="16" class="mr-2" />
+            <Icon name="hugeicons:calendar-01" :size="16" class="mr-2" />
             <span v-if="dateRange.start && dateRange.end">
               {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
             </span>
@@ -135,7 +135,7 @@
       class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20"
     >
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
-        <HugeiconsIcon :icon="InboxIcon" :size="24" class="text-muted-foreground" />
+        <Icon name="hugeicons:inbox" :size="24" class="text-muted-foreground" />
       </div>
       <p class="mt-3 text-sm text-muted-foreground">{{ $t('transactions.empty') }}</p>
     </div>
@@ -163,14 +163,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Search01Icon,
-  FilterIcon,
-  InboxIcon,
-  Calendar01Icon,
-  Add01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import type { TransactionFilters } from '~/composables/useTransactions';
 
 interface CalendarDateLike {

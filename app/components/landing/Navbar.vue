@@ -14,7 +14,7 @@
           <div
             class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm"
           >
-            <HugeiconsIcon :icon="Wallet01Icon" :size="20" />
+            <Icon name="hugeicons:wallet-01" :size="20" />
           </div>
           <span
             class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
@@ -64,8 +64,8 @@
             @click="toggleColorMode"
           >
             <ClientOnly>
-              <HugeiconsIcon
-                :icon="colorMode.value === 'dark' ? Sun01Icon : Moon01Icon"
+              <Icon
+                :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
                 :size="18"
               />
               <template #fallback>
@@ -83,7 +83,7 @@
                 size="icon"
                 class="h-8 w-8 rounded-md hover:bg-background shadow-none transition-transform active:scale-95"
               >
-                <HugeiconsIcon :icon="LanguageSkillIcon" :size="18" />
+                <Icon name="hugeicons:language-skill" :size="18" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-32">
@@ -128,7 +128,7 @@
               size="icon"
               class="md:hidden h-10 w-10 rounded-xl hover:bg-muted transition-colors"
             >
-              <HugeiconsIcon :icon="Menu01Icon" :size="24" />
+              <Icon name="hugeicons:menu-01" :size="24" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" class="w-75 sm:w-100 flex flex-col">
@@ -137,7 +137,7 @@
                 <div
                   class="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground"
                 >
-                  <HugeiconsIcon :icon="Wallet01Icon" :size="18" />
+                  <Icon name="hugeicons:wallet-01" :size="18" />
                 </div>
                 {{ $t('sidebar.finance') }}
               </SheetTitle>
@@ -156,8 +156,8 @@
                     @click="scrollToSection(item.href)"
                   >
                     {{ $t(item.label) }}
-                    <HugeiconsIcon
-                      :icon="ArrowRight01Icon"
+                    <Icon
+                      name="hugeicons:arrow-right-01"
                       :size="18"
                       class="opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0"
                     />
@@ -237,15 +237,6 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
-import { HugeiconsIcon } from '@hugeicons/vue';
-import {
-  Sun01Icon,
-  Moon01Icon,
-  LanguageSkillIcon,
-  Wallet01Icon,
-  Menu01Icon,
-  ArrowRight01Icon,
-} from '@hugeicons/core-free-icons';
 import { useRouter } from '#imports';
 import { useWindowScroll } from '@vueuse/core';
 

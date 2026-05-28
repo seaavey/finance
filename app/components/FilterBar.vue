@@ -8,7 +8,7 @@
         @input="debouncedEmit"
       />
       <Button variant="outline" size="icon" @click="showMore = !showMore">
-        <HugeIcon :icon="FilterIcon" :size="18" />
+        <HugeIcon name="hugeicons:filter" :size="18" />
       </Button>
     </div>
 
@@ -55,8 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import { FilterIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon as HugeIcon } from '@hugeicons/vue';
 import type { TransactionFilters } from '~/composables/useTransactions';
 
 const { t } = useI18n();

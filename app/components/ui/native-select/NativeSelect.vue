@@ -2,8 +2,6 @@
 import type { AcceptableValue } from 'reka-ui';
 
 import type { HTMLAttributes } from 'vue';
-import { ArrowDown01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { reactiveOmit, useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';
 
@@ -49,8 +47,8 @@ const delegatedProps = reactiveOmit(props, 'class', 'size');
     >
       <slot />
     </select>
-    <HugeiconsIcon
-      :icon="ArrowDown01Icon"
+    <Icon
+      name="hugeicons:arrow-down-01"
       class="text-muted-foreground top-1/2 right-2.5 size-4 -translate-y-1/2 pointer-events-none absolute select-none"
       aria-hidden="true"
       data-slot="native-select-icon"

@@ -1,15 +1,4 @@
 <script setup lang="ts">
-import {
-  PencilEdit01Icon,
-  Home03Icon,
-  ArrowLeftRightIcon,
-  GridViewIcon,
-  RepeatIcon,
-  Settings01Icon,
-  Add01Icon as Plus01Icon,
-  MoneyAdd01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import { useTransactions, type Transaction } from '~/composables/useTransactions';
 import {
@@ -34,16 +23,16 @@ const results = ref<Transaction[]>([]);
 const loading = ref(false);
 
 const suggestions = computed(() => [
-  { label: t('sidebar.dashboard'), icon: Home03Icon, to: '/dashboard' },
-  { label: t('sidebar.transactions'), icon: ArrowLeftRightIcon, to: '/transactions' },
-  { label: t('sidebar.categories'), icon: GridViewIcon, to: '/categories' },
-  { label: t('sidebar.recurring'), icon: RepeatIcon, to: '/recurring' },
+  { label: t('sidebar.dashboard'), icon: 'hugeicons:home-03', to: '/dashboard' },
+  { label: t('sidebar.transactions'), icon: 'hugeicons:arrow-left-right', to: '/transactions' },
+  { label: t('sidebar.categories'), icon: 'hugeicons:grid-view', to: '/categories' },
+  { label: t('sidebar.recurring'), icon: 'hugeicons:repeat', to: '/recurring' },
 ]);
 
 const quickActions = computed(() => [
-  { label: t('dashboard.actions_add_transaction'), icon: Plus01Icon, to: '/transactions/new' },
-  { label: t('recurring.add'), icon: MoneyAdd01Icon, to: '/recurring' },
-  { label: t('sidebar.settings'), icon: Settings01Icon, to: '/settings', shortcut: '⌘S' },
+  { label: t('dashboard.actions_add_transaction'), icon: 'hugeicons:plus-01', to: '/transactions/new' },
+  { label: t('recurring.add'), icon: 'hugeicons:money-add-01', to: '/recurring' },
+  { label: t('sidebar.settings'), icon: 'hugeicons:settings-01', to: '/settings', shortcut: '⌘S' },
 ]);
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
@@ -131,8 +120,8 @@ const formatDate = (date: string) => {
             {{ tx.type === 'income' ? '+' : '-'
             }}{{ formatCurrency(Number(tx.amount), tx.currency) }}
           </p>
-          <HugeiconsIcon
-            :icon="PencilEdit01Icon"
+          <Icon
+            name="hugeicons:pencil-edit-01"
             :size="14"
             class="shrink-0 text-muted-foreground/40"
           />
@@ -149,7 +138,7 @@ const formatDate = (date: string) => {
             class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
             @select="select(item.to)"
           >
-            <HugeiconsIcon :icon="item.icon" :size="16" class="text-muted-foreground" />
+            <Icon :name="item.icon" :size="16" class="text-muted-foreground" />
             <span class="text-sm font-medium">{{ item.label }}</span>
           </CommandItem>
         </CommandGroup>
@@ -162,7 +151,7 @@ const formatDate = (date: string) => {
             class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
             @select="select(item.to)"
           >
-            <HugeiconsIcon :icon="item.icon" :size="16" class="text-muted-foreground" />
+            <Icon :name="item.icon" :size="16" class="text-muted-foreground" />
             <span class="text-sm font-medium">{{ item.label }}</span>
             <CommandShortcut v-if="item.shortcut">
               {{ item.shortcut }}

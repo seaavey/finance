@@ -10,7 +10,7 @@
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="showForm = true"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('categories.add') }}</span>
       </Button>
     </div>
@@ -51,7 +51,7 @@
       <!-- EMPTY STATE -->
       <div v-if="filteredCategories.length === 0" class="flex flex-col items-center gap-4 py-16">
         <div class="flex size-14 items-center justify-center rounded-2xl bg-card/30">
-          <HugeiconsIcon :icon="GridViewIcon" :size="24" class="text-muted-foreground/60" />
+          <Icon name="hugeicons:grid-view" :size="24" class="text-muted-foreground/60" />
         </div>
         <div class="text-center">
           <p class="font-medium">{{ $t('categories.empty') }}</p>
@@ -94,13 +94,13 @@
                 class="rounded-xl p-2 text-muted-foreground transition hover:bg-card hover:text-foreground"
                 @click="editCategory(cat)"
               >
-                <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
+                <Icon name="hugeicons:pencil-edit-01" :size="16" />
               </button>
               <button
                 class="rounded-xl p-2 text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
                 @click="confirmDelete(cat)"
               >
-                <HugeiconsIcon :icon="Delete01Icon" :size="16" />
+                <Icon name="hugeicons:delete-01" :size="16" />
               </button>
             </div>
           </div>
@@ -129,13 +129,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  PencilEdit01Icon,
-  Delete01Icon,
-  GridViewIcon,
-  Add01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
 

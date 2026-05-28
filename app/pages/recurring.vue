@@ -12,7 +12,7 @@
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="showForm = true"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="18" />
+        <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </Button>
     </div>
@@ -44,7 +44,7 @@
       class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 px-6 py-16"
     >
       <div class="flex size-16 items-center justify-center rounded-full bg-card/30">
-        <HugeiconsIcon :icon="RepeatIcon" :size="28" class="text-muted-foreground/60" />
+        <Icon name="hugeicons:repeat" :size="28" class="text-muted-foreground/60" />
       </div>
       <h3 class="mt-5 text-lg font-medium">{{ $t('recurring.empty') }}</h3>
       <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">
@@ -71,8 +71,8 @@
             class="flex size-14 items-center justify-center rounded-2xl"
             :class="item.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
           >
-            <HugeiconsIcon
-              :icon="item.type === 'income' ? ArrowDown01Icon : ArrowUp01Icon"
+            <Icon
+              :name="item.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
               :size="24"
               :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
             />
@@ -111,13 +111,13 @@
               class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-card hover:text-foreground group-hover:opacity-100"
               @click="editItem(item)"
             >
-              <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
+              <Icon name="hugeicons:pencil-edit-01" :size="16" />
             </button>
             <button
               class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
               @click="onDelete(item)"
             >
-              <HugeiconsIcon :icon="Delete01Icon" :size="16" />
+              <Icon name="hugeicons:delete-01" :size="16" />
             </button>
           </div>
         </div>
@@ -145,15 +145,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  RepeatIcon,
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  PencilEdit01Icon,
-  Delete01Icon,
-  Add01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import type { RecurringTransaction } from '~/composables/useRecurring';
 
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();

@@ -8,12 +8,12 @@
           class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           :style="!goal.image_url ? { backgroundColor: (goal.color || '#ec4899') + '20' } : {}"
         >
-          <NuxtImage
+          <img
             v-if="goal.image_url"
             :src="goal.image_url"
             :alt="goal.name"
             class="size-full object-cover"
-          />
+          >
           <div
             v-else
             class="size-3 rounded-full"
@@ -29,7 +29,7 @@
       </div>
       <div class="flex gap-1">
         <Button variant="ghost" size="icon-sm" class="rounded-full" @click="$emit('edit', goal)">
-          <HugeiconsIcon :icon="PencilEdit01Icon" :size="16" />
+          <Icon name="hugeicons:pencil-edit-01" :size="16" />
         </Button>
         <Button
           variant="ghost"
@@ -37,7 +37,7 @@
           class="rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
           @click="$emit('delete', goal.id)"
         >
-          <HugeiconsIcon :icon="Delete01Icon" :size="16" />
+          <Icon name="hugeicons:delete-01" :size="16" />
         </Button>
       </div>
     </div>
@@ -66,7 +66,7 @@
       <div class="text-xs text-muted-foreground">
         <template v-if="percentage >= 100">
           <span class="font-medium text-emerald-500 flex items-center gap-1">
-            <HugeiconsIcon :icon="Tick01Icon" :size="14" />
+            <Icon name="hugeicons:tick-01" :size="14" />
             {{ $t('goals.completed') }}
           </span>
         </template>
@@ -79,7 +79,7 @@
         variant="secondary"
         @click="$emit('add-funds', goal)"
       >
-        <HugeiconsIcon :icon="Add01Icon" :size="16" />
+        <Icon name="hugeicons:add-01" :size="16" />
         {{ $t('goals.add_funds') }}
       </Button>
     </div>
@@ -87,8 +87,6 @@
 </template>
 
 <script setup lang="ts">
-import { HugeiconsIcon } from '@hugeicons/vue';
-import { PencilEdit01Icon, Delete01Icon, Add01Icon, Tick01Icon } from '@hugeicons/core-free-icons';
 import type { Goal } from '~/composables/useGoals';
 
 const props = defineProps<{

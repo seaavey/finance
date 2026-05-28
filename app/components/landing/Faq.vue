@@ -15,7 +15,7 @@
         <div
           class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 shadow-sm"
         >
-          <HugeiconsIcon :icon="HelpCircleIcon" :size="14" />
+          <Icon name="hugeicons:help-circle" :size="14" />
           {{ $t('landing.nav_faq') }}
         </div>
         <h2 class="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
@@ -42,7 +42,7 @@
                   <div
                     class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors text-muted-foreground group-hover:text-primary"
                   >
-                    <HugeiconsIcon :icon="item.icon" :size="20" />
+                    <Icon :name="item.icon" :size="20" />
                   </div>
                   {{ $t(item.questionKey) }}
                 </div>
@@ -73,7 +73,7 @@
             variant="default"
             class="rounded-full gap-2 px-8 py-6 h-auto text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all"
           >
-            <HugeiconsIcon :icon="CustomerServiceIcon" :size="20" />
+            <Icon name="hugeicons:customer-service" :size="20" />
             {{ $t('landing.faq_support_button') }}
           </Button>
         </div>
@@ -90,54 +90,43 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { HugeiconsIcon } from '@hugeicons/vue';
-import {
-  HelpCircleIcon,
-  CustomerServiceIcon,
-  LicenseIcon,
-  UserGroupIcon,
-  Shield01Icon,
-  SmartPhone01Icon,
-  File02Icon,
-  GridViewIcon,
-} from '@hugeicons/core-free-icons';
 
 const faqItems = [
   {
     value: 'free',
     questionKey: 'landing.faq_q_free',
     answerKey: 'landing.faq_a_free',
-    icon: LicenseIcon,
+    icon: 'hugeicons:license',
   },
   {
     value: 'couple',
     questionKey: 'landing.faq_q_couple',
     answerKey: 'landing.faq_a_couple',
-    icon: UserGroupIcon,
+    icon: 'hugeicons:user-group',
   },
   {
     value: 'security',
     questionKey: 'landing.faq_q_security',
     answerKey: 'landing.faq_a_security',
-    icon: Shield01Icon,
+    icon: 'hugeicons:shield-01',
   },
   {
     value: 'mobile',
     questionKey: 'landing.faq_q_mobile',
     answerKey: 'landing.faq_a_mobile',
-    icon: SmartPhone01Icon,
+    icon: 'hugeicons:smart-phone-01',
   },
   {
     value: 'export',
     questionKey: 'landing.faq_q_export',
     answerKey: 'landing.faq_a_export',
-    icon: File02Icon,
+    icon: 'hugeicons:file-02',
   },
   {
     value: 'category',
     questionKey: 'landing.faq_q_category',
     answerKey: 'landing.faq_a_category',
-    icon: GridViewIcon,
+    icon: 'hugeicons:grid-view',
   },
 ];
 </script>

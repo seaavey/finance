@@ -9,7 +9,7 @@
             <div
               class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm"
             >
-              <HugeiconsIcon :icon="Wallet01Icon" :size="20" />
+              <Icon name="hugeicons:wallet-01" :size="20" />
             </div>
             <span
               class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
@@ -28,7 +28,7 @@
               class="h-9 w-9 flex items-center justify-center rounded-lg border border-border/40 bg-muted/20 text-muted-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
               :aria-label="social.label"
             >
-              <HugeiconsIcon :icon="social.icon" :size="18" />
+              <Icon :name="social.icon" :size="18" />
             </a>
           </div>
         </div>
@@ -77,8 +77,8 @@
           </p>
           <div class="flex gap-2">
             <div class="relative flex-1">
-              <HugeiconsIcon
-                :icon="Mail01Icon"
+              <Icon
+                name="hugeicons:mail-01"
                 :size="16"
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
@@ -118,20 +118,12 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Wallet01Icon,
-  GithubIcon,
-  TwitterIcon,
-  Linkedin01Icon,
-  Mail01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { Button } from '@/components/ui/button';
 
 const socialLinks = [
-  { label: 'GitHub', href: '#', icon: GithubIcon },
-  { label: 'Twitter', href: '#', icon: TwitterIcon },
-  { label: 'LinkedIn', href: '#', icon: Linkedin01Icon },
+  { label: 'GitHub', href: '#', icon: 'hugeicons:github' },
+  { label: 'Twitter', href: '#', icon: 'hugeicons:twitter' },
+  { label: 'LinkedIn', href: '#', icon: 'hugeicons:linkedin-01' },
 ];
 
 const productLinks = [

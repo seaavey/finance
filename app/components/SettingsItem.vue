@@ -7,7 +7,7 @@
       class="flex size-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95"
       :class="iconBg"
     >
-      <HugeiconsIcon :icon="iconComponent" :size="20" :class="iconColor" />
+      <Icon :name="iconComponent" :size="20" :class="iconColor" />
     </div>
 
     <div
@@ -27,8 +27,8 @@
         >
           {{ value }}
         </span>
-        <HugeiconsIcon
-          :icon="ArrowRight01Icon"
+        <Icon
+          name="hugeicons:arrow-right-01"
           :size="14"
           class="shrink-0 text-muted-foreground/30 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-muted-foreground/60"
         />
@@ -38,15 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  UserIcon,
-  CurrencyIcon,
-  ColorsIcon,
-  Download01Icon,
-  GlobeIcon,
-  ArrowRight01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 const props = defineProps<{
   icon: 'user' | 'currency' | 'palette' | 'download' | 'language';
@@ -58,27 +49,27 @@ defineEmits(['click']);
 
 const iconMap = {
   user: {
-    component: UserIcon,
+    component: 'hugeicons:user',
     bg: 'bg-blue-100 dark:bg-blue-950/50',
     color: 'text-blue-600 dark:text-blue-400',
   },
   currency: {
-    component: CurrencyIcon,
+    component: 'hugeicons:currency',
     bg: 'bg-green-100 dark:bg-green-950/50',
     color: 'text-green-600 dark:text-green-400',
   },
   palette: {
-    component: ColorsIcon,
+    component: 'hugeicons:colors',
     bg: 'bg-purple-100 dark:bg-purple-950/50',
     color: 'text-purple-600 dark:text-purple-400',
   },
   download: {
-    component: Download01Icon,
+    component: 'hugeicons:download-01',
     bg: 'bg-orange-100 dark:bg-orange-950/50',
     color: 'text-orange-600 dark:text-orange-400',
   },
   language: {
-    component: GlobeIcon,
+    component: 'hugeicons:globe',
     bg: 'bg-cyan-100 dark:bg-cyan-950/50',
     color: 'text-cyan-600 dark:text-cyan-400',
   },

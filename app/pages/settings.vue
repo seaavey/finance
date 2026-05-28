@@ -152,7 +152,7 @@
               <div
                 class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"
               >
-                <HugeiconsIcon :icon="MailSend01Icon" :size="20" />
+                <Icon name="hugeicons:mail-send-01" :size="20" />
               </div>
               <div>
                 <p class="text-sm font-bold text-foreground">
@@ -200,7 +200,7 @@
                   <div
                     class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50"
                   >
-                    <HugeiconsIcon :icon="Mail01Icon" :size="18" class="text-muted-foreground" />
+                    <Icon name="hugeicons:mail-01" :size="18" class="text-muted-foreground" />
                   </div>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-foreground">
@@ -318,7 +318,7 @@
               <div
                 class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"
               >
-                <HugeiconsIcon :icon="UnlinkIcon" :size="20" />
+                <Icon name="hugeicons:unlink-01" :size="20" />
               </div>
               <div class="min-w-0 text-left">
                 <p class="text-sm font-bold text-red-500 md:text-base">
@@ -329,8 +329,8 @@
                 </p>
               </div>
             </div>
-            <HugeiconsIcon
-              :icon="ArrowRight01Icon"
+            <Icon
+              name="hugeicons:arrow-right-01"
               :size="18"
               class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
             />
@@ -354,7 +354,7 @@
               <div
                 class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"
               >
-                <HugeiconsIcon :icon="Logout01Icon" :size="20" />
+                <Icon name="hugeicons:logout-01" :size="20" />
               </div>
               <div class="min-w-0 text-left">
                 <p class="text-sm font-bold text-red-500 md:text-base">
@@ -365,8 +365,8 @@
                 </p>
               </div>
             </div>
-            <HugeiconsIcon
-              :icon="ArrowRight01Icon"
+            <Icon
+              name="hugeicons:arrow-right-01"
               :size="18"
               class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
             />
@@ -429,9 +429,9 @@
               @click="selectCurrency(c.value)"
             >
               <span>{{ c.label }}</span>
-              <HugeiconsIcon
+              <Icon
                 v-if="profile.currency === c.value"
-                :icon="Tick01Icon"
+                name="hugeicons:tick-01"
                 :size="16"
                 class="text-primary"
               />
@@ -444,16 +444,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Logout01Icon,
-  Tick01Icon,
-  ArrowRight01Icon,
-  Mail01Icon,
-  UserIcon,
-  UnlinkIcon,
-  MailSend01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { useSupabase } from '~/lib/supabase';
 
 const { toast } = useToast();

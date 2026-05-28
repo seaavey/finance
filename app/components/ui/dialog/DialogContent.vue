@@ -2,8 +2,6 @@
 import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
 
 import type { HTMLAttributes } from 'vue';
-import { Cancel01Icon as XIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { reactiveOmit } from '@vueuse/core';
 import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui';
 import { cn } from '@/lib/utils';
@@ -46,7 +44,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 
       <DialogClose v-if="showCloseButton" data-slot="dialog-close" as-child>
         <Button variant="ghost" class="absolute top-4 right-4" size="icon-sm">
-          <HugeiconsIcon :icon="XIcon" />
+          <Icon name="hugeicons:cancel-01" />
           <span class="sr-only">{{ $t('common.close') }}</span>
         </Button>
       </DialogClose>

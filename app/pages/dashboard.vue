@@ -46,7 +46,7 @@
         >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-indigo-500/10">
-              <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-indigo-400" />
+              <Icon name="hugeicons:wallet-01" :size="18" class="text-indigo-400" />
             </div>
             <div
               class="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-400"
@@ -75,7 +75,7 @@
         >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-green-500/10">
-              <HugeiconsIcon :icon="ArrowDown01Icon" :size="18" class="text-green-500" />
+              <Icon name="hugeicons:arrow-down-01" :size="18" class="text-green-500" />
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.income') }}</p>
@@ -87,7 +87,7 @@
         >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-red-500/10">
-              <HugeiconsIcon :icon="ArrowUp01Icon" :size="18" class="text-red-500" />
+              <Icon name="hugeicons:arrow-up-01" :size="18" class="text-red-500" />
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.expense') }}</p>
@@ -99,7 +99,7 @@
         >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-cyan-500/10">
-              <HugeiconsIcon :icon="Wallet01Icon" :size="18" class="text-cyan-500" />
+              <Icon name="hugeicons:wallet-01" :size="18" class="text-cyan-500" />
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.savings_this_month') }}</p>
@@ -186,8 +186,8 @@
             class="flex flex-col items-center gap-3 py-8 text-center"
           >
             <div class="flex size-12 items-center justify-center rounded-full bg-muted">
-              <HugeiconsIcon
-                :icon="ArrowLeftRightIcon"
+              <Icon
+                name="hugeicons:arrow-left-right"
                 :size="24"
                 class="text-muted-foreground/40"
               />
@@ -215,8 +215,8 @@
                 class="flex size-9 shrink-0 items-center justify-center rounded-xl"
                 :class="tx.type === 'income' ? 'bg-green-500/10' : 'bg-red-500/10'"
               >
-                <HugeiconsIcon
-                  :icon="tx.type === 'income' ? ArrowDown01Icon : ArrowUp01Icon"
+                <Icon
+                  :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
                   :size="16"
                   :class="tx.type === 'income' ? 'text-green-500' : 'text-red-500'"
                 />
@@ -263,7 +263,7 @@
           <div
             class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10"
           >
-            <HugeiconsIcon :icon="Add01Icon" :size="22" class="text-indigo-400" />
+            <Icon name="hugeicons:add-01" :size="22" class="text-indigo-400" />
           </div>
           <div>
             <p class="text-sm font-semibold text-foreground">
@@ -281,7 +281,7 @@
           <div
             class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/10"
           >
-            <HugeiconsIcon :icon="GridViewIcon" :size="22" class="text-orange-400" />
+            <Icon name="hugeicons:grid-view" :size="22" class="text-orange-400" />
           </div>
           <div>
             <p class="text-sm font-semibold text-foreground">
@@ -298,15 +298,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  Wallet01Icon,
-  Add01Icon,
-  GridViewIcon,
-  ArrowLeftRightIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();

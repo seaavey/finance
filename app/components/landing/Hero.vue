@@ -36,8 +36,8 @@
           <span class="text-muted-foreground group-hover:text-foreground transition-colors">{{
             $t('landing.hero_badge')
           }}</span>
-          <HugeiconsIcon
-            :icon="ArrowRightIcon"
+          <Icon
+            name="hugeicons:arrow-right-01"
             :size="12"
             class="text-primary opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0"
           />
@@ -76,7 +76,7 @@
           @click="goToLogin"
         >
           {{ $t('landing.hero_cta') }}
-          <HugeiconsIcon :icon="ArrowRightIcon" :size="20" class="animate-bounce-x" />
+          <Icon name="hugeicons:arrow-right-01" :size="20" class="animate-bounce-x" />
         </Button>
         <Button
           variant="outline"
@@ -84,7 +84,7 @@
           size="lg"
           @click="scrollToFeatures"
         >
-          <HugeiconsIcon :icon="PlayCircleIcon" :size="20" />
+          <Icon name="hugeicons:play-circle" :size="20" />
           {{ $t('landing.hero_demo') }}
         </Button>
       </div>
@@ -97,7 +97,7 @@
           ><div
             class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
           >
-            <HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" />
+            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_free') }}</span
         >
@@ -105,7 +105,7 @@
           ><div
             class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
           >
-            <HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" />
+            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_noads') }}</span
         >
@@ -113,7 +113,7 @@
           ><div
             class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
           >
-            <HugeiconsIcon :icon="CheckmarkCircle02Icon" :size="14" />
+            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_secure') }}</span
         >
@@ -144,7 +144,7 @@
               <div
                 class="rounded-full bg-muted/40 px-6 py-1.5 text-[11px] font-medium text-muted-foreground border border-border/20 flex items-center gap-2"
               >
-                <HugeiconsIcon :icon="Shield01Icon" :size="10" />
+                <Icon name="hugeicons:shield-01" :size="10" />
                 seaavey.site/dashboard
               </div>
             </div>
@@ -167,7 +167,7 @@
                 <div
                   class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500"
                 >
-                  <HugeiconsIcon :icon="ArrowUp01Icon" :size="12" />
+                  <Icon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend') }}</span>
                 </div>
               </div>
@@ -256,7 +256,7 @@
                       class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all"
                       :class="tx.bg"
                     >
-                      <HugeiconsIcon :icon="tx.icon" :size="18" :class="tx.color" />
+                      <Icon :name="tx.icon" :size="18" :class="tx.color" />
                     </div>
                     <div class="flex-1 min-w-0">
                       <p
@@ -282,7 +282,7 @@
             <div
               class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10 text-green-500"
             >
-              <HugeiconsIcon :icon="Wallet01Icon" :size="24" />
+              <Icon name="hugeicons:wallet-01" :size="24" />
             </div>
             <div>
               <p class="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
@@ -298,18 +298,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ArrowRightIcon,
-  ArrowUp01Icon,
-  CheckmarkCircle02Icon,
-  PlayCircleIcon,
-  ShoppingBag01Icon,
-  MoneyReceive02Icon,
-  CreditCardIcon,
-  Wallet01Icon,
-  Shield01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { Button } from '@/components/ui/button';
 import { useRouter } from '#imports';
 
@@ -332,7 +320,7 @@ const heroTitleHighlight = computed(() => {
 
 const previewTransactions = [
   {
-    icon: ShoppingBag01Icon,
+    icon: 'hugeicons:shopping-bag-01',
     title: 'landing.hero_preview.item_shopping',
     date: 'landing.hero_preview.today',
     amount: '-Rp 350rb',
@@ -341,7 +329,7 @@ const previewTransactions = [
     amountColor: 'text-red-400',
   },
   {
-    icon: MoneyReceive02Icon,
+    icon: 'hugeicons:money-receive-02',
     title: 'landing.hero_preview.item_salary',
     date: 'landing.hero_preview.days_ago_2',
     amount: '+Rp 15jt',
@@ -350,7 +338,7 @@ const previewTransactions = [
     amountColor: 'text-green-500',
   },
   {
-    icon: CreditCardIcon,
+    icon: 'hugeicons:credit-card',
     title: 'landing.hero_preview.item_bill',
     date: 'landing.hero_preview.days_ago_3',
     amount: '-Rp 280rb',

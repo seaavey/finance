@@ -5,7 +5,7 @@
         <div
           class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6"
         >
-          <HugeiconsIcon :icon="Comment01Icon" :size="14" />
+          <Icon name="hugeicons:comment-01" :size="14" />
           {{ $t('landing.testimonials_title') }}
         </div>
         <h2 class="font-heading text-4xl font-bold tracking-tight md:text-5xl">
@@ -33,10 +33,10 @@
             <div>
               <!-- Stars -->
               <div class="flex gap-0.5">
-                <HugeiconsIcon
+                <Icon
                   v-for="n in 5"
                   :key="n"
-                  :icon="StarIcon"
+                  name="hugeicons:star"
                   :size="14"
                   :class="
                     n <= t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'
@@ -78,8 +78,6 @@
 </template>
 
 <script setup lang="ts">
-import { StarIcon, Comment01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 
 const { tm, rt } = useI18n();
 

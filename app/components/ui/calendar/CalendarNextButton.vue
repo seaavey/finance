@@ -2,8 +2,6 @@
 import type { CalendarNextProps } from 'reka-ui';
 
 import type { HTMLAttributes } from 'vue';
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/vue';
 import { reactiveOmit } from '@vueuse/core';
 import { CalendarNext, useForwardProps } from 'reka-ui';
 import { cn } from '@/lib/utils';
@@ -29,7 +27,7 @@ const forwardedProps = useForwardProps(delegatedProps);
     v-bind="forwardedProps"
   >
     <slot>
-      <HugeiconsIcon :icon="ArrowRight01Icon" class="cn-rtl-flip size-4" />
+      <Icon name="hugeicons:arrow-right-01" class="cn-rtl-flip size-4" />
     </slot>
   </CalendarNext>
 </template>
