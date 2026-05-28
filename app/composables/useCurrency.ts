@@ -5,6 +5,30 @@ export const useCurrency = () => {
   const { user } = useAuth();
 
   const defaultCurrency = useState<string>('default-currency', () => 'IDR');
+  const exchangeRates = useState<Record<string, number> | null>('exchange-rates', () => null);
+  const isRatesLoading = ref(false);
+
+  const fetchRates = async () => {
+    if (exchangeRates.value) return;
+    isRatesLoading.value = true;
+    try {
+      const data = await $fetch<{ rates: Record<string, number> }>('/api/v1/rates');
+      exchangeRates.value = data.rates;
+    } catch (error) {
+      console.error('Failed to fetch rates:', error);
+    } finally {
+      isRatesLoading.value = false;
+    }
+  };
+
+  const convertTo = (amount: number, targetCurrency: string = 'USD') => {
+    if (!exchangeRates.value || !exchangeRates.value[targetCurrency]) {
+      return null;
+    }
+    // Base is assumed to be IDR as per API config
+    const rate = exchangeRates.value[targetCurrency];
+    return amount * rate;
+  };
 
   const loadCurrency = async () => {
     if (!user.value) {
@@ -131,5 +155,9 @@ export const useCurrency = () => {
     currencyGroups,
     loadCurrency,
     defaultCurrency,
+    exchangeRates,
+    fetchRates,
+    convertTo,
+    isRatesLoading,
   };
 };
