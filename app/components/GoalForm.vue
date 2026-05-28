@@ -87,7 +87,7 @@
               </Button>
               <div v-else class="relative">
                 <AspectRatio :ratio="4 / 3" class="overflow-hidden rounded-xl">
-                  <img :src="imagePreview" alt="Preview" class="h-full w-full object-cover">
+                  <img :src="imagePreview" alt="Preview" class="h-full w-full object-cover" >
                 </AspectRatio>
                 <Button
                   type="button"

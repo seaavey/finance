@@ -9,7 +9,9 @@ export const useCurrency = () => {
   const isRatesLoading = ref(false);
 
   const fetchRates = async () => {
-    if (exchangeRates.value) return;
+    if (exchangeRates.value) {
+      return;
+    }
     isRatesLoading.value = true;
     try {
       const data = await $fetch<{ rates: Record<string, number> }>('/api/v1/rates');
