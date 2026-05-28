@@ -41,6 +41,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/eslint',
+    '@nuxt/icon',
   ],
   i18n: {
     langDir: 'locales',
