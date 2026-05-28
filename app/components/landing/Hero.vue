@@ -303,7 +303,7 @@ import { useRouter } from '#imports';
 
 const { t } = useI18n();
 const router = useRouter();
-const goToLogin = () => router.push('/login');
+const goToLogin = () => router.push('/auth/login');
 const scrollToFeatures = () =>
   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
 

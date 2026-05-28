@@ -12,7 +12,7 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     user.value = session?.user ?? null;
     if (session) {
       const path = window.location.pathname;
-      if (path === '/login') {
+      if (path === '/auth/login') {
         navigateTo('/dashboard');
       }
     }

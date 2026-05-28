@@ -7,7 +7,7 @@ export const useAuth = () => {
   const loading = useState('auth-loading', () => true);
 
   const signInWithGoogle = async () => {
-    const redirectTo = `${window.location.origin}/login`;
+    const redirectTo = `${window.location.origin}/auth/login`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo },
@@ -20,7 +20,7 @@ export const useAuth = () => {
   const signOut = async () => {
     await supabase.auth.signOut();
     user.value = null;
-    await navigateTo('/login');
+    await navigateTo('/auth/login');
   };
 
   const getSession = async () => {

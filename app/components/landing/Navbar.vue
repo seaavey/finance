@@ -308,7 +308,7 @@ const scrollToSection = (href: string) => {
   }
 };
 
-const goToLogin = () => router.push('/login');
+const goToLogin = () => router.push('/auth/login');
 
 onMounted(() => {
   const observer = new IntersectionObserver(

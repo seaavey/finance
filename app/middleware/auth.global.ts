@@ -12,13 +12,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const session = await getSession();
 
   if (!session) {
-    if (to.path !== '/login' && to.path !== '/') {
-      return navigateTo('/login');
+    if (to.path !== '/auth/login' && to.path !== '/') {
+      return navigateTo('/auth/login');
     }
     return;
   }
 
-  if (to.path === '/login') {
+  if (to.path === '/auth/login') {
     return navigateTo('/dashboard');
   }
 

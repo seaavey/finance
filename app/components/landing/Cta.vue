@@ -30,14 +30,14 @@
               class="h-14 px-8 text-base font-bold rounded-2xl group transition-all duration-300 hover:scale-105"
               as-child
             >
-              <NuxtLink to="/login">
+              <NuxtLinkLocale to="/auth/login">
                 {{ $t('landing.cta_button') }}
                 <Icon
                   name="hugeicons:arrow-right-01"
                   :size="20"
                   class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
                 />
-              </NuxtLink>
+              </NuxtLinkLocale>
             </Button>
           </div>
 
