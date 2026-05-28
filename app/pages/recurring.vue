@@ -189,6 +189,14 @@ const monthlyIncome = computed(() =>
     }, 0),
 );
 
+const categoryMap = computed(() => {
+  const map = new Map<string, string>();
+  for (const cat of categories.value) {
+    map.set(cat.id, cat.name);
+  }
+  return map;
+});
+
 onMounted(async () => {
   await Promise.all([fetchCategories(), fetchRecurring()]);
 });
@@ -197,7 +205,7 @@ const categoryName = (id: string | null) => {
   if (!id) {
     return '';
   }
-  return categories.value.find((c) => c.id === id)?.name ?? '';
+  return categoryMap.value.get(id) ?? '';
 };
 
 const frequencyLabel = (f: string) => {

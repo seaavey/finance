@@ -82,8 +82,8 @@
               <div>
                 <h3 class="font-medium">{{ cat.name }}</h3>
                 <p class="text-sm text-muted-foreground">
-                  {{ getCategoryStats(cat.id).count }} transaksi · Rp
-                  {{ getCategoryStats(cat.id).total.toLocaleString('id-ID') }}
+                  {{ (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count }} transaksi · Rp
+                  {{ (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total.toLocaleString('id-ID') }}
                 </p>
               </div>
             </div>
@@ -146,13 +146,22 @@ const {
 const { transactions, fetchTransactions } = useTransactions();
 const { user } = useAuth();
 
-const getCategoryStats = (catId: string) => {
-  const txs = transactions.value.filter((t) => t.category_id === catId);
-  return {
-    count: txs.length,
-    total: txs.reduce((s, t) => s + t.amount, 0),
-  };
-};
+const categoryStats = computed(() => {
+  const map = new Map<string, { count: number; total: number }>();
+  for (const tx of transactions.value) {
+    if (!tx.category_id) {
+      continue;
+    }
+    const existing = map.get(tx.category_id);
+    if (existing) {
+      existing.count++;
+      existing.total += tx.amount;
+    } else {
+      map.set(tx.category_id, { count: 1, total: tx.amount });
+    }
+  }
+  return map;
+});
 
 const showForm = ref(false);
 const editingCategory = ref<Category | undefined>();
