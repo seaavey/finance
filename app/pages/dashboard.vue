@@ -15,19 +15,16 @@
         <p class="text-sm text-muted-foreground">{{ monthLabel }}</p>
       </div>
       <div v-if="isPartnered" class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1">
-        <button
+        <Button
           v-for="mode in viewModes"
           :key="mode.value"
-          class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
-          :class="
-            viewMode === mode.value
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground hover:text-foreground'
-          "
+          :variant="viewMode === mode.value ? 'default' : 'ghost'"
+          size="sm"
+          class="rounded-xl"
           @click="viewMode = mode.value"
         >
           {{ mode.label }}
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -116,19 +113,16 @@
               {{ $t('dashboard.per_category') }}
             </h3>
             <div class="flex gap-1">
-              <button
+              <Button
                 v-for="period in chartPeriods"
                 :key="period"
-                class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors"
-                :class="
-                  selectedPeriod === period
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-accent'
-                "
+                :variant="selectedPeriod === period ? 'default' : 'ghost'"
+                size="sm"
+                class="rounded-md"
                 @click="selectedPeriod = period"
               >
                 {{ period }}
-              </button>
+              </Button>
             </div>
           </div>
           <ChartsExpenseDonut :categories="expenseByCategory" />
@@ -298,6 +292,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
