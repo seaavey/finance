@@ -1,4 +1,5 @@
 import { useSupabase } from '~/lib/supabase';
+import { createCache } from '~/lib/cache';
 
 export interface Category {
   id: string;
@@ -32,16 +33,17 @@ export const useCategories = () => {
   const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
+  const cache = createCache();
   const categories = useState<Category[]>('categories', () => []);
   const loading = useState('categories-loading', () => false);
 
   const fetchCategories = async () => {
     loading.value = true;
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .order('created_at', { ascending: true });
-
+    const { data, error } = await cache.fetch(
+      'categories',
+      () => supabase.from('categories').select('*').order('created_at', { ascending: true }),
+      60_000,
+    );
     if (!error && data) {
       categories.value = data as Category[];
     }
@@ -59,6 +61,7 @@ export const useCategories = () => {
     ];
     const { error } = await supabase.from('categories').insert(entries);
     if (!error) {
+      cache.invalidate('categories');
       await fetchCategories();
     }
   };
@@ -74,6 +77,7 @@ export const useCategories = () => {
       .insert({ ...category, user_id: user.value.id });
 
     if (!error) {
+      cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_added'));
     } else {
@@ -89,6 +93,7 @@ export const useCategories = () => {
     const { error } = await supabase.from('categories').update(updates).eq('id', id);
 
     if (!error) {
+      cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_updated'));
     } else {
@@ -101,6 +106,7 @@ export const useCategories = () => {
     const { error } = await supabase.from('categories').delete().eq('id', id);
 
     if (!error) {
+      cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_deleted'));
     } else {

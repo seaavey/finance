@@ -1,4 +1,5 @@
 import { useSupabase } from '~/lib/supabase';
+import { createCache } from '~/lib/cache';
 export interface CoupleInvitation {
   id: string;
   sender_id: string;
@@ -22,6 +23,7 @@ export interface PartnerProfile {
 
 export const usePartner = () => {
   const supabase = useSupabase();
+  const cache = createCache();
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useI18n();
@@ -43,25 +45,29 @@ export const usePartner = () => {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('partner_id')
-      .eq('id', user.value.id)
-      .single();
+    const result = await cache.fetch(
+      `partner:${user.value.id}`,
+      async () => {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('partner_id')
+          .eq('id', user.value.id)
+          .single();
 
-    if (profile?.partner_id) {
-      const { data: partnerData } = await supabase
-        .from('profiles')
-        .select('id, display_name, avatar_url, currency')
-        .eq('id', profile.partner_id)
-        .single();
+        if (profile?.partner_id) {
+          const { data: partnerData } = await supabase
+            .from('profiles')
+            .select('id, display_name, avatar_url, currency')
+            .eq('id', profile.partner_id)
+            .single();
+          return partnerData as PartnerProfile | null;
+        }
+        return null;
+      },
+      60_000,
+    );
 
-      if (partnerData) {
-        partner.value = partnerData as PartnerProfile;
-      }
-    } else {
-      partner.value = null;
-    }
+    partner.value = result;
   };
 
   const fetchInvitations = async () => {
@@ -71,17 +77,16 @@ export const usePartner = () => {
     loading.value = true;
 
     const [sentResult, receivedResult] = await Promise.all([
-      supabase
-        .from('couple_invitations')
-        .select('*')
-        .eq('sender_id', user.value.id)
-        .order('created_at', { ascending: false }),
-      supabase
-        .from('couple_invitations')
-        .select('*, sender:profiles(display_name, avatar_url)')
-        .eq('recipient_email', user.value.email)
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false }),
+      cache.fetch(
+        `invitations:sent:${user.value.id}`,
+        () => supabase.from('couple_invitations').select('*').eq('sender_id', user.value.id).order('created_at', { ascending: false }),
+        60_000,
+      ),
+      cache.fetch(
+        `invitations:received:${user.value.email}`,
+        () => supabase.from('couple_invitations').select('*, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value.email).eq('status', 'pending').order('created_at', { ascending: false }),
+        60_000,
+      ),
     ]);
 
     if (!sentResult.error && sentResult.data) {
@@ -90,7 +95,6 @@ export const usePartner = () => {
     if (!receivedResult.error && receivedResult.data) {
       receivedInvitations.value = receivedResult.data as CoupleInvitation[];
     }
-
     loading.value = false;
   };
 
@@ -141,6 +145,7 @@ export const usePartner = () => {
     });
 
     if (!error) {
+      cache.invalidate('invitations');
       await fetchInvitations();
       toast.success('Undangan berhasil dikirim');
 
@@ -184,6 +189,8 @@ export const usePartner = () => {
       return { error: new Error(errorMsg) };
     }
 
+    cache.invalidate('partner');
+    cache.invalidate('invitations');
     await Promise.all([fetchPartner(), fetchInvitations()]);
     toast.success('Berhasil terhubung dengan pasangan!');
     loading.value = false;
@@ -197,6 +204,7 @@ export const usePartner = () => {
       .eq('id', invitation.id);
 
     if (!error) {
+      cache.invalidate('invitations');
       await fetchInvitations();
       toast.success('Undangan ditolak');
     } else {
@@ -212,6 +220,7 @@ export const usePartner = () => {
       .eq('id', invitation.id);
 
     if (!error) {
+      cache.invalidate('invitations');
       await fetchInvitations();
       toast.success('Undangan dibatalkan');
     } else {
@@ -241,6 +250,8 @@ export const usePartner = () => {
     }
 
     partner.value = null;
+    cache.invalidate('partner');
+    cache.invalidate('invitations');
     toast.success('Hubungan dengan pasangan diputuskan');
     loading.value = false;
     return { error: null };

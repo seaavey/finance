@@ -1,4 +1,5 @@
 import { useSupabase } from '~/lib/supabase';
+import { createCache } from '~/lib/cache';
 
 export interface RecurringTransaction {
   id: string;
@@ -18,16 +19,17 @@ export const useRecurring = () => {
   const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
+  const cache = createCache();
   const recurring = useState<RecurringTransaction[]>('recurring', () => []);
   const loading = useState('recurring-loading', () => false);
 
   const fetchRecurring = async () => {
     loading.value = true;
-    const { data, error } = await supabase
-      .from('recurring_transactions')
-      .select('*')
-      .order('next_date', { ascending: true });
-
+    const { data, error } = await cache.fetch(
+      'recurring',
+      () => supabase.from('recurring_transactions').select('*').order('next_date', { ascending: true }),
+      30_000,
+    );
     if (!error && data) {
       recurring.value = data as RecurringTransaction[];
     }
@@ -47,6 +49,7 @@ export const useRecurring = () => {
       .insert({ ...item, user_id: user.value.id });
 
     if (!error) {
+      cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_added'));
     } else {
@@ -62,6 +65,7 @@ export const useRecurring = () => {
     const { error } = await supabase.from('recurring_transactions').update(updates).eq('id', id);
 
     if (!error) {
+      cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_updated'));
     } else {
@@ -74,6 +78,7 @@ export const useRecurring = () => {
     const { error } = await supabase.from('recurring_transactions').delete().eq('id', id);
 
     if (!error) {
+      cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_deleted'));
     } else {

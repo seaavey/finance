@@ -1,4 +1,5 @@
 import { useSupabase } from '~/lib/supabase';
+import { createCache } from '~/lib/cache';
 
 export interface Transaction {
   id: string;
@@ -24,6 +25,7 @@ export const useTransactions = () => {
   const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
+  const cache = createCache();
   const transactions = useState<Transaction[]>('transactions', () => []);
   const loading = useState('transactions-loading', () => false);
 
@@ -47,7 +49,8 @@ export const useTransactions = () => {
       query = query.ilike('description', `%${filters.search}%`);
     }
 
-    const { data, error } = await query;
+    const cacheKey = `transactions:${JSON.stringify(filters || {})}`;
+    const { data, error } = await cache.fetch(cacheKey, () => query, 30_000);
 
     if (!error && data) {
       transactions.value = data as Transaction[];
@@ -64,6 +67,7 @@ export const useTransactions = () => {
     const { error } = await supabase.from('transactions').insert({ ...tx, user_id: user.value.id });
 
     if (!error) {
+      cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_added'));
     } else {
@@ -79,6 +83,7 @@ export const useTransactions = () => {
     const { error } = await supabase.from('transactions').update(updates).eq('id', id);
 
     if (!error) {
+      cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_updated'));
     } else {
@@ -91,6 +96,7 @@ export const useTransactions = () => {
     const { error } = await supabase.from('transactions').delete().eq('id', id);
 
     if (!error) {
+      cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_deleted'));
     } else {
