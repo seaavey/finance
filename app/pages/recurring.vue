@@ -190,8 +190,7 @@ const monthlyIncome = computed(() =>
 );
 
 onMounted(async () => {
-  await fetchCategories();
-  await fetchRecurring();
+  await Promise.all([fetchCategories(), fetchRecurring()]);
 });
 
 const categoryName = (id: string | null) => {

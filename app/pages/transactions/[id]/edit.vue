@@ -227,8 +227,7 @@ const loadTransaction = async () => {
 };
 
 onMounted(async () => {
-  await fetchCategories();
-  await loadTransaction();
+  await Promise.all([fetchCategories(), loadTransaction()]);
 });
 
 const onSaved = () => {

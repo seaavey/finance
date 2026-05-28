@@ -218,9 +218,7 @@ const dateRange: any = ref({ start: undefined, end: undefined });
 let debounceTimer: ReturnType<typeof setTimeout>;
 
 onMounted(async () => {
-  await fetchCategories();
-  await fetchPartner();
-  await fetchTransactions();
+  await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()]);
 });
 
 const debouncedFetch = () => {
