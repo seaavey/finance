@@ -37,12 +37,12 @@
         <div class="space-y-2">
           <Label>{{ $t('category_form.color') }}</Label>
           <div class="flex flex-wrap gap-2">
-            <button
+            <Button
               v-for="color in colorOptions"
               :key="color"
-              type="button"
-              class="size-8 rounded-full border-2 transition-transform"
-              :class="form.color === color ? 'scale-110 border-foreground' : 'border-transparent'"
+              variant="outline"
+              class="size-8 rounded-full p-0"
+              :class="form.color === color && 'scale-110 ring-2 ring-foreground'"
               :style="{ backgroundColor: color }"
               @click="form.color = color"
             />

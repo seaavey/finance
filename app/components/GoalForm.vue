@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="true" @update:open="$emit('close')">
-    <DialogContent class="sm:max-w-md">
+    <DialogContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{
           goal ? $t('goal_form.title_edit') : $t('goal_form.title_new')
@@ -11,89 +11,95 @@
       </DialogHeader>
 
       <form class="space-y-4" @submit.prevent="onSubmit">
-        <div class="space-y-2">
-          <Label for="name">{{ $t('goal_form.name') }}</Label>
-          <Input
-            id="name"
-            v-model="form.name"
-            :placeholder="$t('goal_form.name_placeholder')"
-            required
-          />
-        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <Label for="name">{{ $t('goal_form.name') }}</Label>
+              <Input
+                id="name"
+                v-model="form.name"
+                :placeholder="$t('goal_form.name_placeholder')"
+                required
+              />
+            </div>
 
-        <div class="space-y-2">
-          <Label for="target_amount">{{ $t('goal_form.target_amount') }}</Label>
-          <Input
-            id="target_amount"
-            v-model="amountDisplay"
-            type="text"
-            inputmode="numeric"
-            placeholder="0"
-            required
-          />
-        </div>
+            <div class="space-y-2">
+              <Label for="target_amount">{{ $t('goal_form.target_amount') }}</Label>
+              <Input
+                id="target_amount"
+                v-model="amountDisplay"
+                type="text"
+                inputmode="numeric"
+                placeholder="0"
+                required
+              />
+            </div>
 
-        <!-- CALENDAR INPUT -->
-        <div class="space-y-2">
-          <Label for="deadline">{{ $t('goal_form.deadline') }}</Label>
-          <Popover>
-            <PopoverTrigger as-child>
-              <Button
-                variant="outline"
-                :class="
-                  cn(
-                    'w-full justify-between px-3 font-normal',
-                    !form.deadline && 'text-muted-foreground',
-                  )
-                "
+            <div class="space-y-2">
+              <Label for="deadline">{{ $t('goal_form.deadline') }}</Label>
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    :class="
+                      cn(
+                        'w-full justify-between px-3 font-normal',
+                        !form.deadline && 'text-muted-foreground',
+                      )
+                    "
+                  >
+                    {{
+                      form.deadline
+                        ? df.format(calendarDate!.toDate(getLocalTimeZone()))
+                        : $t('goal_form.deadline')
+                    }}
+                    <Icon name="hugeicons:calendar-01" :size="16" class="opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0">
+                  <Calendar v-model="calendarDate" initial-focus />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <Label>{{ $t('goal_form.image') }}</Label>
+            <div class="relative h-full">
+              <input
+                ref="fileInputRef"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                class="hidden"
+                @change="onFileSelect"
               >
-                {{
-                  form.deadline
-                    ? df.format(calendarDate!.toDate(getLocalTimeZone()))
-                    : $t('goal_form.deadline')
-                }}
-                <Icon name="hugeicons:calendar-01" :size="16" class="opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="w-auto p-0">
-              <Calendar v-model="calendarDate" initial-focus />
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        <div class="space-y-2">
-          <Label>{{ $t('goal_form.image') }}</Label>
-          <div class="relative">
-            <input
-              ref="fileInputRef"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              class="hidden"
-              @change="onFileSelect"
-            >
-            <button
-              v-if="!imagePreview"
-              type="button"
-              class="flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-border/50 bg-muted/20 px-4 py-8 transition-colors hover:border-border hover:bg-muted/40"
-              @click="fileInputRef?.click()"
-            >
-              <Icon name="hugeicons:image-01" :size="32" class="text-muted-foreground" />
-              <span class="text-sm text-muted-foreground">{{
-                $t('goal_form.image_placeholder')
-              }}</span>
-            </button>
-            <div v-else class="relative">
-              <img :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover">
               <Button
+                v-if="!imagePreview"
                 type="button"
-                variant="secondary"
-                size="sm"
-                class="absolute right-2 top-2 rounded-full"
-                @click="removeImage"
+                variant="outline"
+                class="flex-col gap-2 py-6"
+                @click="fileInputRef?.click()"
               >
-                <Icon name="hugeicons:delete-01" :size="14" />
-                {{ $t('goal_form.image_remove') }}
+                <Icon name="hugeicons:image-01" :size="28" class="text-muted-foreground" />
+                <span class="text-sm text-muted-foreground">{{
+                  $t('goal_form.image_placeholder')
+                }}</span>
               </Button>
+              <div v-else class="relative">
+                <AspectRatio :ratio="4 / 3" class="overflow-hidden rounded-xl">
+                  <img :src="imagePreview" alt="Preview" class="h-full w-full object-cover">
+                </AspectRatio>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  class="absolute right-2 top-2 rounded-full"
+                  @click="removeImage"
+                >
+                  <Icon name="hugeicons:delete-01" :size="14" />
+                  {{ $t('goal_form.image_remove') }}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

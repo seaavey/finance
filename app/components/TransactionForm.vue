@@ -12,32 +12,22 @@
 
     <!-- TYPE SELECTOR -->
     <div class="grid grid-cols-2 gap-3">
-      <button
-        type="button"
-        class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
-        :class="
-          form.type === 'income'
-            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-[0_0_20px_-4px] shadow-emerald-500/20'
-            : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'
-        "
+      <Button
+        :variant="form.type === 'income' ? 'default' : 'outline'"
+        class="rounded-2xl px-5 py-4 text-center"
         @click="form.type = 'income'"
       >
         <Icon name="hugeicons:arrow-down-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.income') }}
-      </button>
-      <button
-        type="button"
-        class="rounded-2xl border px-5 py-4 text-center text-sm font-semibold transition-all duration-300"
-        :class="
-          form.type === 'expense'
-            ? 'border-red-500/30 bg-red-500/10 text-red-500 shadow-[0_0_20px_-4px] shadow-red-500/20'
-            : 'border-border/50 bg-card/30 text-muted-foreground hover:border-border hover:bg-card/60'
-        "
+      </Button>
+      <Button
+        :variant="form.type === 'expense' ? 'default' : 'outline'"
+        class="rounded-2xl px-5 py-4 text-center"
         @click="form.type = 'expense'"
       >
         <Icon name="hugeicons:arrow-up-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.expense') }}
-      </button>
+      </Button>
     </div>
 
     <!-- AMOUNT CARD -->
@@ -151,12 +141,12 @@
 
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3">
-      <button
-        class="rounded-2xl border border-border/50 px-5 py-3 text-sm text-muted-foreground transition hover:bg-card/50"
+      <Button
+        variant="outline"
         @click="$emit('cancel')"
       >
         {{ $t('transaction_form.cancel') }}
-      </button>
+      </Button>
       <button
         class="rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
         :disabled="!form.amount || !form.date"
