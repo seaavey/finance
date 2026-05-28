@@ -366,18 +366,25 @@ const formatRelativeDate = (date: string) => {
   });
 };
 
+const categoryMap = computed(() => {
+  const map = new Map<string, { name: string; color: string }>();
+  for (const cat of categories.value) {
+    map.set(cat.id, { name: cat.name, color: cat.color });
+  }
+  return map;
+});
+
 const getCategoryName = (id: string | null) => {
   if (!id) {
     return '';
   }
-  return categories.value.find((c) => c.id === id)?.name || '';
+  return categoryMap.value.get(id)?.name || '';
 };
-
 const getCategoryColor = (id: string | null) => {
   if (!id) {
     return '#6b7280';
   }
-  return categories.value.find((c) => c.id === id)?.color || '#6b7280';
+  return categoryMap.value.get(id)?.color || '#6b7280';
 };
 
 const now = new Date();
@@ -461,22 +468,23 @@ const recentTransactions = computed(() =>
 
 const expenseByCategory = computed(() => {
   const map = new Map<string, { name: string; color: string; total: number }>();
-  thisMonthTransactions.value
-    .filter((t) => t.type === 'expense')
-    .forEach((tx) => {
-      const cat = categories.value.find((c) => c.id === tx.category_id);
-      const key = cat?.id || 'uncategorized';
-      const existing = map.get(key);
-      if (existing) {
-        existing.total += tx.amount;
-      } else {
-        map.set(key, {
-          name: cat?.name || t('dashboard.other'),
-          color: cat?.color || '#6b7280',
-          total: tx.amount,
-        });
-      }
-    });
+  for (const tx of thisMonthTransactions.value) {
+    if (tx.type !== 'expense') {
+      continue;
+    }
+    const cat = tx.category_id ? categoryMap.value.get(tx.category_id) : undefined;
+    const key = cat ? tx.category_id : 'uncategorized';
+    const existing = map.get(key!);
+    if (existing) {
+      existing.total += tx.amount;
+    } else {
+      map.set(key!, {
+        name: cat?.name || t('dashboard.other'),
+        color: cat?.color || '#6b7280',
+        total: tx.amount,
+      });
+    }
+  }
   return [...map.values()].sort((a, b) => b.total - a.total);
 });
 
@@ -503,7 +511,13 @@ const monthlyData = computed(() => {
 });
 
 onMounted(async () => {
-  await Promise.all([fetchTransactions(), fetchCategories(), fetchPartner()]);
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  await Promise.all([
+    fetchTransactions({ dateFrom: firstDay }),
+    fetchCategories(),
+    fetchPartner(),
+  ]);
   loading.value = false;
 });
 </script>
