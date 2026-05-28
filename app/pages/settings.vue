@@ -211,13 +211,14 @@
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   v-if="inv.status === 'pending'"
-                  class="rounded-xl bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-500 transition-all hover:bg-red-500/20 active:scale-95"
+                  variant="outline"
+                  size="sm"
                   @click="onCancelInvite(inv)"
                 >
                   Batal
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -309,8 +310,8 @@
             </div>
           </div>
 
-          <button
-            class="group flex w-full items-center justify-between rounded-3xl border border-red-500/20 bg-red-500/[0.03] px-5 py-4 transition-all duration-300 hover:bg-red-500/[0.08] active:scale-[0.99]"
+          <Button
+            variant="destructive"
             :disabled="partnerLoading"
             @click="onDisconnect"
           >
@@ -334,7 +335,7 @@
               :size="18"
               class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
             />
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -346,8 +347,8 @@
         <div
           class="rounded-3xl border border-red-500/20 bg-red-500/[0.02] p-1.5 backdrop-blur-sm transition-all duration-300 hover:bg-red-500/[0.05]"
         >
-          <button
-            class="group flex w-full items-center justify-between rounded-[1.25rem] px-4 py-4 transition-all duration-300 hover:bg-red-500/5 active:scale-[0.99]"
+          <Button
+            variant="outline"
             @click="onSignOut"
           >
             <div class="flex items-center gap-4">
@@ -370,7 +371,7 @@
               :size="18"
               class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
             />
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -421,10 +422,11 @@
             >
               {{ group.label }}
             </p>
-            <button
+            <Button
               v-for="c in group.currencies"
               :key="c.value"
-              class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors hover:bg-accent"
+              variant="ghost"
+              class="w-full justify-start"
               :class="profile.currency === c.value && 'bg-accent font-medium'"
               @click="selectCurrency(c.value)"
             >
@@ -435,7 +437,7 @@
                 :size="16"
                 class="text-primary"
               />
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>
