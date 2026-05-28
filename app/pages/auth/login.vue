@@ -14,19 +14,22 @@
           </p>
         </div>
 
-        <div class="mt-8 space-y-4">
-          <Button class="w-full gap-2" size="lg" @click="signInWithGoogle">
+        <div class="mt-8">
+          <Button class="w-full gap-2 rounded-xl" size="lg" @click="signInWithGoogle">
             <Icon name="hugeicons:google" :size="20" />
             {{ $t('auth.login_google') }}
           </Button>
-
-          <p class="text-center text-xs text-muted-foreground">
-            <NuxtLinkLocale to="/" class="hover:text-foreground transition-colors">{{
-              $t('auth.back')
-            }}</NuxtLinkLocale>
-          </p>
         </div>
       </div>
+
+      <p class="text-center">
+        <NuxtLinkLocale
+          to="/"
+          class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {{ $t('auth.back') }}
+        </NuxtLinkLocale>
+      </p>
     </div>
   </div>
 </template>
