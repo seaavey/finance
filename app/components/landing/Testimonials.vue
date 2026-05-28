@@ -87,10 +87,14 @@ interface Testimonial {
   quote: string | object;
   initials: string | object;
   color: string | object;
-  rating: number;
+  rating: number | object;
 }
 
-const testimonials = tm('landing.testimonials_items') as Testimonial[];
+const rawTestimonials = tm('landing.testimonials_items') as any[];
+const testimonials = rawTestimonials.map((t) => ({
+  ...t,
+  rating: typeof t.rating === 'number' ? t.rating : parseInt(rt(t.rating as any)) || 5,
+})) as Testimonial[];
 
 const getColorClasses = (color: string | object) => {
   const colorStr = typeof color === 'string' ? color : rt(color as any);
