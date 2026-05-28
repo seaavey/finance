@@ -70,7 +70,7 @@
               accept="image/png,image/jpeg,image/webp"
               class="hidden"
               @change="onFileSelect"
-            />
+            >
             <button
               v-if="!imagePreview"
               type="button"
@@ -83,7 +83,7 @@
               }}</span>
             </button>
             <div v-else class="relative">
-              <img :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover" />
+              <NuxtImage :src="imagePreview" alt="Preview" class="h-40 w-full rounded-xl object-cover" />
               <Button
                 type="button"
                 variant="secondary"
@@ -140,7 +140,10 @@ const imagePreview = ref<string>(props.goal?.image_url ?? '');
 const selectedFile = ref<File | null>(null);
 
 function stripCurrency(val: string) {
-  return val.replace(/^[^\d.,]+/, '').replace(/[^\d.,]+$/, '').trim();
+  return val
+    .replace(/^[^\d.,]+/, '')
+    .replace(/[^\d.,]+$/, '')
+    .trim();
 }
 
 const amountDisplay = computed({

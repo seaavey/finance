@@ -8,7 +8,7 @@
           class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           :style="!goal.image_url ? { backgroundColor: (goal.color || '#ec4899') + '20' } : {}"
         >
-          <img
+          <NuxtImage
             v-if="goal.image_url"
             :src="goal.image_url"
             :alt="goal.name"

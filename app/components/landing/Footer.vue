@@ -86,7 +86,7 @@
                 type="email"
                 :placeholder="$t('landing.footer_subscribe_placeholder')"
                 class="w-full h-10 pl-10 pr-3 rounded-xl border border-border/40 bg-muted/20 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-              />
+              >
             </div>
             <Button size="sm" class="rounded-xl font-bold px-4">
               {{ $t('landing.footer_subscribe_button') }}

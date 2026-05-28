@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@nuxt/fonts',
+    '@nuxt/image',
     '@nuxt/eslint',
   ],
   i18n: {
