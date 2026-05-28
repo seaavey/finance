@@ -521,14 +521,14 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 ### 12.2 Pola Pemakaian
 
-| Helper                | Lokasi                                               | Catatan               |
-| --------------------- | ---------------------------------------------------- | --------------------- |
-| `$t('key')`           | Template (223+)                                      | Auto-imported         |
-| `useI18n()` → `{ t }` | 23 file                                              | Auto-imported         |
-| `setLocale(code)`     | `settings.vue:503`, `Navbar.vue:94,190`              | Cycle / dropdown      |
-| `navigateTo($localePath(...))` | `transactions/index.vue:12` | Locale-aware navigate |
-| `<NuxtLinkLocale>`    | 14 instances                                         | Locale-aware link     |
-| `tm()` + `rt()`       | `Testimonials.vue:84,98`                             | Array translation     |
+| Helper                         | Lokasi                                  | Catatan               |
+| ------------------------------ | --------------------------------------- | --------------------- |
+| `$t('key')`                    | Template (223+)                         | Auto-imported         |
+| `useI18n()` → `{ t }`          | 23 file                                 | Auto-imported         |
+| `setLocale(code)`              | `settings.vue:503`, `Navbar.vue:94,190` | Cycle / dropdown      |
+| `navigateTo($localePath(...))` | `transactions/index.vue:12`             | Locale-aware navigate |
+| `<NuxtLinkLocale>`             | 14 instances                            | Locale-aware link     |
+| `tm()` + `rt()`                | `Testimonials.vue:84,98`                | Array translation     |
 
 ### 12.3 Date Formatting (Inconsistency)
 
@@ -557,19 +557,19 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 **Package manager**: `bun` (bun.lock). **Postinstall**: `nuxt prepare`.
 
-| Package                             | Version          | Fungsi        |
-| ----------------------------------- | ---------------- | ------------- |
-| `nuxt` / `vue`                      | ^4.4.6 / ^3.5.34 | Framework     |
-| `@supabase/supabase-js`             | ^2.106.1         | DB client     |
-| `@nuxtjs/i18n`                      | ^10.4.0          | i18n          |
-| `shadcn-nuxt` / `reka-ui`           | 2.7.3 / ^2.9.8   | UI components |
-| `tailwindcss` / `@tailwindcss/vite` | ^4.3.0           | CSS           |
-| `chart.js` + `vue-chartjs`          | ^4.5.1 / ^5.3.3  | Charts        |
+| Package                             | Version          | Fungsi          |
+| ----------------------------------- | ---------------- | --------------- |
+| `nuxt` / `vue`                      | ^4.4.6 / ^3.5.34 | Framework       |
+| `@supabase/supabase-js`             | ^2.106.1         | DB client       |
+| `@nuxtjs/i18n`                      | ^10.4.0          | i18n            |
+| `shadcn-nuxt` / `reka-ui`           | 2.7.3 / ^2.9.8   | UI components   |
+| `tailwindcss` / `@tailwindcss/vite` | ^4.3.0           | CSS             |
+| `chart.js` + `vue-chartjs`          | ^4.5.1 / ^5.3.3  | Charts          |
 | `@nuxt/icon`                        | ^2.2.2           | Icons (Iconify) |
-| `exceljs`                           | ^4.4.0           | Export        |
-| `sortablejs` + `sortablejs-vue3`    | ^1.15.7 / ^1.3.0 | Drag          |
-| `typescript`                        | ^6.0.3 (dev)     | Types         |
-| `prettier`                          | ^3.5.0 (dev)     | Formatter     |
+| `exceljs`                           | ^4.4.0           | Export          |
+| `sortablejs` + `sortablejs-vue3`    | ^1.15.7 / ^1.3.0 | Drag            |
+| `typescript`                        | ^6.0.3 (dev)     | Types           |
+| `prettier`                          | ^3.5.0 (dev)     | Formatter       |
 
 ## 15. TypeScript Types & Interfaces
 
