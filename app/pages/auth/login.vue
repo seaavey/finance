@@ -2,16 +2,14 @@
   <div class="flex min-h-screen items-center justify-center bg-background p-6">
     <div class="w-full max-w-md space-y-6">
       <div class="rounded-2xl border border-border bg-card p-8 shadow-sm">
-        <div class="space-y-2 text-center">
-          <NuxtLinkLocale
-            to="/"
-            class="text-lg font-bold tracking-tight hover:text-primary transition-colors"
-            >{{ $t('sidebar.finance') }}</NuxtLinkLocale
-          >
-          <h1 class="font-heading text-xl font-bold tracking-tight">
+        <div class="flex flex-col items-center text-center">
+          <div class="mb-6 flex size-12 items-center justify-center rounded-xl bg-primary/10">
+            <Icon name="hugeicons:wallet-01" :size="24" class="text-primary" />
+          </div>
+          <h1 class="font-heading text-2xl font-bold tracking-tight text-foreground">
             {{ $t('auth.login_title') }}
           </h1>
-          <p class="text-sm text-muted-foreground">
+          <p class="mt-2 text-sm text-muted-foreground">
             {{ $t('auth.login_subtitle') }}
           </p>
         </div>
