@@ -64,13 +64,10 @@
 
       <div v-else key="content" class="mx-auto w-full max-w-3xl space-y-6">
         <!-- Back link -->
-        <button
-          class="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          @click="navigateTo('/transactions')"
-        >
+        <Button variant="outline" size="icon" @click="navigateTo('/transactions')">
           <Icon name="hugeicons:arrow-left-01" :size="16" />
           {{ $t('transaction_edit.back') }}
-        </button>
+        </Button>
 
         <!-- Header card -->
         <div
@@ -99,13 +96,10 @@
               </p>
             </div>
           </div>
-          <button
-            class="flex items-center gap-1.5 rounded-2xl border border-red-500/10 bg-red-500/3 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/8"
-            @click="showDeleteDialog = true"
-          >
+          <Button variant="destructive" size="sm" @click="showDeleteDialog = true">
             <Icon name="hugeicons:delete-01" :size="16" />
             {{ $t('transaction_edit.delete') }}
-          </button>
+          </Button>
         </div>
 
         <!-- Form -->

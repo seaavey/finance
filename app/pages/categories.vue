@@ -33,19 +33,15 @@
     <template v-else>
       <!-- TABS -->
       <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1">
-        <button
+        <Button
           v-for="tab in tabs"
           :key="tab.value"
-          class="rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200"
-          :class="
-            activeTab === tab.value
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          "
+          :variant="activeTab === tab.value ? 'default' : 'outline'"
+          size="sm"
           @click="activeTab = tab.value"
         >
           {{ tab.label }} ({{ tab.count }})
-        </button>
+        </Button>
       </div>
 
       <!-- EMPTY STATE -->
@@ -90,18 +86,12 @@
             <div
               class="flex gap-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
             >
-              <button
-                class="rounded-xl p-2 text-muted-foreground transition hover:bg-card hover:text-foreground"
-                @click="editCategory(cat)"
-              >
+              <Button variant="ghost" size="icon" @click="editCategory(cat)">
                 <Icon name="hugeicons:pencil-edit-01" :size="16" />
-              </button>
-              <button
-                class="rounded-xl p-2 text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
-                @click="confirmDelete(cat)"
-              >
+              </Button>
+              <Button variant="ghost" size="icon" @click="confirmDelete(cat)">
                 <Icon name="hugeicons:delete-01" :size="16" />
-              </button>
+              </Button>
             </div>
           </div>
         </template>

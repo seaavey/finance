@@ -23,19 +23,16 @@
           :size="20"
           class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
-        <input
+        <Input
           v-model="filters.search"
           :placeholder="$t('transactions.search_placeholder')"
-          class="h-12 w-full rounded-2xl border border-border/50 bg-background/50 pl-12 pr-4 text-sm text-foreground outline-none transition focus:border-pink-500/20"
+          class="h-12 rounded-2xl border-border/50 bg-background/50 pl-12 pr-4 focus:border-pink-500/20"
           @input="debouncedFetch"
-        >
+        />
       </div>
-      <button
-        class="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/50"
-        @click="showFilters = !showFilters"
-      >
+      <Button variant="outline" size="icon" class="size-12 !rounded-2xl" @click="showFilters = !showFilters">
         <Icon name="hugeicons:filter" :size="20" />
-      </button>
+      </Button>
     </div>
 
     <div v-if="showFilters" class="space-y-3 rounded-3xl border border-border/50 bg-card/30 p-4">
@@ -83,22 +80,18 @@
       </Popover>
 
       <div v-if="isPartnered" class="flex items-center gap-2 rounded-2xl bg-card/30 p-1">
-        <button
+        <Button
           v-for="opt in ownerOptions"
           :key="opt.value"
-          class="rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
-          :class="
-            ownerFilter === opt.value
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground hover:text-foreground'
-          "
+          :variant="ownerFilter === opt.value ? 'default' : 'ghost'"
+          size="sm"
           @click="
             ownerFilter = opt.value;
             applyFilters();
           "
         >
           {{ opt.label }}
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -163,6 +156,7 @@
 </template>
 
 <script setup lang="ts">
+import { Input } from '@/components/ui/input';
 import type { TransactionFilters } from '~/composables/useTransactions';
 
 interface CalendarDateLike {

@@ -50,12 +50,9 @@
       <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">
         {{ $t('recurring.empty_desc') }}
       </p>
-      <button
-        class="mt-6 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-5 py-2.5 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
-        @click="showForm = true"
-      >
+      <Button variant="default" class="mt-6" @click="showForm = true">
         {{ $t('recurring.add') }}
-      </button>
+      </Button>
     </div>
 
     <!-- LIST -->
@@ -107,18 +104,12 @@
           </div>
           <div class="flex items-center gap-2">
             <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
-            <button
-              class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-card hover:text-foreground group-hover:opacity-100"
-              @click="editItem(item)"
-            >
+            <Button variant="ghost" size="icon" @click="editItem(item)">
               <Icon name="hugeicons:pencil-edit-01" :size="16" />
-            </button>
-            <button
-              class="rounded-xl p-2 text-muted-foreground opacity-0 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-              @click="onDelete(item)"
-            >
+            </Button>
+            <Button variant="ghost" size="icon" @click="onDelete(item)">
               <Icon name="hugeicons:delete-01" :size="16" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
