@@ -56,13 +56,15 @@
         <span class="flex-1 truncate text-sm font-medium text-sidebar-foreground">{{
           user.user_metadata?.full_name
         }}</span>
-        <button
-          class="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        <Button
+          variant="ghost"
+          size="icon"
+          class="size-8 rounded-lg"
           :title="$t('sidebar.logout')"
           @click="onSignOut"
         >
           <Icon name="hugeicons:logout-01" :size="16" />
-        </button>
+        </Button>
       </div>
 
       <!-- PARTNER BADGE -->
@@ -82,6 +84,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 
 defineProps<{
   open: boolean;

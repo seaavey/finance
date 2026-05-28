@@ -1,6 +1,7 @@
 <template>
-  <button
-    class="group flex w-full items-center gap-4 overflow-hidden px-4 py-3.5 transition-all duration-200 hover:bg-card/40 active:bg-card/60"
+  <Button
+    variant="ghost"
+    class="group flex w-full items-center gap-4 overflow-hidden px-4 py-3.5 hover:bg-card/40 active:bg-card/60"
     @click="$emit('click')"
   >
     <div
@@ -34,10 +35,11 @@
         />
       </div>
     </div>
-  </button>
+  </Button>
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 
 const props = defineProps<{
   icon: 'user' | 'currency' | 'palette' | 'download' | 'language';
