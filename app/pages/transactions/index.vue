@@ -9,7 +9,7 @@
       </div>
       <Button
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
-        @click="navigateToLocale('/transactions/new')"
+        @click="navigateTo($localePath('/transactions/new'))"
       >
         <HugeiconsIcon :icon="Add01Icon" :size="18" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>

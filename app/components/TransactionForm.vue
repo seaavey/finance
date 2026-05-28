@@ -203,14 +203,6 @@ const { addTransaction, updateTransaction } = useTransactions();
 
 const isEdit = computed(() => !!props.transaction);
 
-onMounted(() => {
-  if (isEdit.value) {
-    console.log('TransactionForm mounted in EDIT mode', props.transaction);
-  } else {
-    console.log('TransactionForm mounted in NEW mode');
-  }
-});
-
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
 });
