@@ -242,6 +242,7 @@ import { useRouter } from '#imports';
 import { useWindowScroll } from '@vueuse/core';
 
 const { t, locale: currentLocale, locales, setLocale } = useI18n();
+const localePath = useLocalePath();
 const router = useRouter();
 const colorMode = useColorMode();
 const { y } = useWindowScroll();
@@ -308,7 +309,7 @@ const scrollToSection = (href: string) => {
   }
 };
 
-const goToLogin = () => router.push('/auth/login');
+const goToLogin = () => router.push(localePath('/auth/login'));
 
 onMounted(() => {
   const observer = new IntersectionObserver(

@@ -22,8 +22,8 @@
 | Langkah             | File                                          | Detail                                                                                             |
 | ------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Landing page        | `app/pages/index.vue`                         | Layout `blank`, 6 komponen landing. `useSeoMeta` + `defineOgImage`                                 |
-| Login               | `app/pages/login.vue`                         | Layout `blank`. Tombol Google OAuth via `signInWithGoogle()`                                       |
-| Auth plugin         | `app/plugins/auth.client.ts`                  | Client-only. Load session di mount, listen `onAuthStateChange`, redirect `/login` → `/dashboard`   |
+| Login               | `app/pages/auth/login.vue`                   | Layout `blank`. Tombol Google OAuth via `signInWithGoogle()`                                       |
+| Auth plugin         | `app/plugins/auth.client.ts`                  | Client-only. Load session di mount, listen `onAuthStateChange`, redirect `/auth/login` → `/dashboard`   |
 | Auth middleware     | `app/middleware/auth.global.ts`               | Guard semua route. Skip SSR (`import.meta.server`), skip hash token routes. Panggil `getSession()` |
 | Profile auto-create | `supabase/migrations/20260523165600_init.sql` | Trigger `on_auth_user_created` → insert ke `profiles`                                              |
 | Currency init       | `app/composables/useCurrency.ts`              | `loadCurrency()` dipanggil dari middleware setelah auth                                            |
@@ -639,7 +639,7 @@ Karena transaksi disimpan di `useState` global, search dari topbar otomatis memf
 | Route                    | Layout    | Auth                                       | File                                   |
 | ------------------------ | --------- | ------------------------------------------ | -------------------------------------- |
 | `/`                      | `blank`   | No                                         | `app/pages/index.vue`                  |
-| `/login`                 | `blank`   | No (redirect to dashboard if already auth) | `app/pages/login.vue`                  |
+| `/auth/login`           | `blank`   | No (redirect to dashboard if already auth) | `app/pages/auth/login.vue`             |
 | `/dashboard`             | `default` | Yes                                        | `app/pages/dashboard.vue`              |
 | `/transactions`          | `default` | Yes                                        | `app/pages/transactions/index.vue`     |
 | `/transactions/new`      | `default` | Yes                                        | `app/pages/transactions/new.vue`       |
@@ -648,15 +648,15 @@ Karena transaksi disimpan di `useState` global, search dari topbar otomatis memf
 | `/recurring`             | `default` | Yes                                        | `app/pages/recurring.vue`              |
 | `/settings`              | `default` | Yes                                        | `app/pages/settings.vue`               |
 
-Semua page authenticated (kecuali `/` dan `/login`) dilindungi `app/middleware/auth.global.ts`.
+Semua page authenticated (kecuali `/` dan `/auth/login`) dilindungi `app/middleware/auth.global.ts`.
 
 **Middleware flow** (`auth.global.ts:1-28`):
 
 1. Skip server-side (`import.meta.server`)
 2. Skip OAuth callback (hash contains `access_token` or query has `code`)
 3. Panggil `getSession()` dari useAuth
-4. Not authenticated + not on `/login` or `/` → redirect to `/login`
-5. Authenticated + on `/login` → redirect to `/dashboard`
+4. Not authenticated + not on `/auth/login` or `/` → redirect to `/auth/login`
+5. Authenticated + on `/auth/login` → redirect to `/dashboard`
 6. After auth: `loadCurrency()` background
 
 ## 19. Komponen Utama

@@ -302,8 +302,9 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from '#imports';
 
 const { t } = useI18n();
+const localePath = useLocalePath();
 const router = useRouter();
-const goToLogin = () => router.push('/auth/login');
+const goToLogin = () => router.push(localePath('/auth/login'));
 const scrollToFeatures = () =>
   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
 

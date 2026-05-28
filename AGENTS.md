@@ -34,7 +34,7 @@ No test infrastructure exists.
 
 | Path                   | Purpose                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------ |
-| `app/pages/`           | Page routes (dashboard, transactions/, categories, recurring, settings, login) |
+| `app/pages/`           | Page routes (dashboard, transactions/, categories, recurring, settings, auth/login) |
 | `app/components/`      | Shared SFCs (landing/, charts/, ui/ via shadcn, AppSidebar, etc.)              |
 | `app/composables/`     | 8 composables — single-file, import from `~/composables/`                      |
 | `app/lib/`             | supabase.ts (client), utils.ts (cn helper)                                     |
