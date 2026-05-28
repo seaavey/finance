@@ -40,12 +40,13 @@
           </h4>
           <ul class="space-y-4">
             <li v-for="link in productLinks" :key="link.labelKey">
-              <button
-                class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary text-left"
+              <Button
+                variant="link"
+                class="h-auto p-0 text-sm text-muted-foreground font-medium"
                 @click="scrollToSection(link.href)"
               >
                 {{ $t(link.labelKey) }}
-              </button>
+              </Button>
             </li>
           </ul>
         </div>
@@ -82,11 +83,11 @@
                 :size="16"
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
-              <input
+              <Input
                 type="email"
                 :placeholder="$t('landing.footer_subscribe_placeholder')"
                 class="w-full h-10 pl-10 pr-3 rounded-xl border border-border/40 bg-muted/20 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-              >
+              />
             </div>
             <Button size="sm" class="rounded-xl font-bold px-4">
               {{ $t('landing.footer_subscribe_button') }}
@@ -119,6 +120,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const socialLinks = [
   { label: 'GitHub', href: '#', icon: 'hugeicons:github' },

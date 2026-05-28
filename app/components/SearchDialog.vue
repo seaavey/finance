@@ -30,7 +30,11 @@ const suggestions = computed(() => [
 ]);
 
 const quickActions = computed(() => [
-  { label: t('dashboard.actions_add_transaction'), icon: 'hugeicons:plus-01', to: '/transactions/new' },
+  {
+    label: t('dashboard.actions_add_transaction'),
+    icon: 'hugeicons:add-01',
+    to: '/transactions/new',
+  },
   { label: t('recurring.add'), icon: 'hugeicons:money-add-01', to: '/recurring' },
   { label: t('sidebar.settings'), icon: 'hugeicons:settings-01', to: '/settings', shortcut: '⌘S' },
 ]);

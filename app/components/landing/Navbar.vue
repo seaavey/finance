@@ -35,12 +35,12 @@
             :style="pillStyle"
           />
 
-          <button
+          <Button
             v-for="(item, index) in navItems"
             :key="item.href"
             ref="navRefs"
-            type="button"
-            class="relative z-10 px-5 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full whitespace-nowrap"
+            variant="ghost"
+            class="relative z-10 px-5 py-1.5 text-sm font-medium whitespace-nowrap rounded-full"
             :class="[
               activeSection === item.href.replace('#', '')
                 ? 'text-primary-foreground'
@@ -49,7 +49,7 @@
             @click="scrollToSection(item.href)"
           >
             {{ $t(item.label) }}
-          </button>
+          </Button>
         </div>
       </nav>
 
@@ -151,8 +151,9 @@
                   {{ $t('landing.navigation') }}
                 </p>
                 <SheetClose v-for="item in navItems" :key="item.href" as-child>
-                  <button
-                    class="w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors hover:bg-muted flex items-center justify-between group"
+                  <Button
+                    variant="ghost"
+                    class="w-full justify-start"
                     @click="scrollToSection(item.href)"
                   >
                     {{ $t(item.label) }}
@@ -161,7 +162,7 @@
                       :size="18"
                       class="opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0"
                     />
-                  </button>
+                  </Button>
                 </SheetClose>
               </div>
 

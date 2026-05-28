@@ -8,12 +8,17 @@
           class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           :style="!goal.image_url ? { backgroundColor: (goal.color || '#ec4899') + '20' } : {}"
         >
-          <img
+          <AspectRatio
             v-if="goal.image_url"
-            :src="goal.image_url"
-            :alt="goal.name"
-            class="size-full object-cover"
+            :ratio="16 / 9"
+            class="overflow-hidden rounded-xl"
           >
+            <img
+              :src="goal.image_url"
+              :alt="goal.name"
+              class="h-full w-full object-cover"
+            >
+          </AspectRatio>
           <div
             v-else
             class="size-3 rounded-full"
@@ -87,6 +92,7 @@
 </template>
 
 <script setup lang="ts">
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import type { Goal } from '~/composables/useGoals';
 
 const props = defineProps<{

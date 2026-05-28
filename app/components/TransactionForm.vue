@@ -147,13 +147,13 @@
       >
         {{ $t('transaction_form.cancel') }}
       </Button>
-      <button
+      <Button
         class="rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
         :disabled="!form.amount || !form.date"
         @click="onSubmit"
       >
         {{ $t('transaction_form.save') }}
-      </button>
+      </Button>
     </div>
   </div>
 </template>
