@@ -29,7 +29,7 @@ export const useTransactions = () => {
 
   const fetchTransactions = async (filters?: TransactionFilters) => {
     loading.value = true;
-    let query = supabase.from('transactions').select('*').order('date', { ascending: false });
+    let query = supabase.from('transactions').select('*').order('date', { ascending: false }).limit(100);
 
     if (filters?.type) {
       query = query.eq('type', filters.type);
