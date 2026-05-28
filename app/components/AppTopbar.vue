@@ -4,12 +4,9 @@
   >
     <!-- LEFT -->
     <div class="flex items-center gap-3">
-      <button
-        class="flex size-9 items-center justify-center rounded-xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground lg:hidden"
-        @click="$emit('toggleSidebar')"
-      >
+      <Button variant="ghost" size="icon" class="lg:hidden" @click="$emit('toggleSidebar')">
         <Icon name="hugeicons:menu-02" :size="18" />
-      </button>
+      </Button>
 
       <Breadcrumb class="hidden md:block">
         <BreadcrumbList>
@@ -37,17 +34,15 @@
     <!-- RIGHT -->
     <div class="ml-auto flex items-center gap-3">
       <!-- SEARCH - Mobile -->
-      <button
-        class="flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground md:hidden"
-        @click="showSearchDialog = true"
-      >
+      <Button variant="ghost" size="icon" class="md:hidden" @click="showSearchDialog = true">
         <Icon name="hugeicons:search-01" :size="18" />
-      </button>
+      </Button>
 
       <!-- SEARCH - Desktop -->
       <div class="relative hidden md:block">
-        <button
-          class="flex h-10 w-60 cursor-pointer items-center rounded-2xl border border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
+        <Button
+          variant="outline"
+          class="h-10 w-60 cursor-pointer items-center rounded-2xl border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
           @click="showSearchDialog = true"
         >
           <Icon
@@ -60,24 +55,19 @@
             class="rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50"
             >⌘K</kbd
           >
-        </button>
+        </Button>
       </div>
 
       <!-- NOTIFICATION -->
-      <button
-        class="relative flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground"
-      >
+      <Button variant="ghost" size="icon" class="relative">
         <Icon name="hugeicons:notification-03" :size="18" />
         <span
           class="absolute right-2.5 top-2.5 size-2 rounded-full bg-destructive ring-2 ring-background"
         />
-      </button>
+      </Button>
 
       <!-- THEME -->
-      <button
-        class="flex size-10 items-center justify-center rounded-2xl border border-border/50 bg-card/30 text-muted-foreground transition hover:bg-card/60 hover:text-foreground"
-        @click="cycleColorMode"
-      >
+      <Button variant="ghost" size="icon" @click="cycleColorMode">
         <ClientOnly>
           <Icon v-if="colorMode.value === 'dark'" name="hugeicons:sun-01" :size="18" />
           <Icon v-else name="hugeicons:moon-01" :size="18" />
@@ -85,17 +75,17 @@
             <div class="size-[18px]" />
           </template>
         </ClientOnly>
-      </button>
+      </Button>
 
       <!-- CTA -->
-      <button
+      <Button
         v-if="route.path !== '/settings'"
-        class="flex h-10 items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="h-10 gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
         @click="navigateTo('/transactions/new')"
       >
         <Icon name="hugeicons:add-01" :size="18" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
-      </button>
+      </Button>
     </div>
 
     <SearchDialog v-model:open="showSearchDialog" />
@@ -103,6 +93,8 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
+
 defineEmits<{
   toggleSidebar: [];
 }>();
