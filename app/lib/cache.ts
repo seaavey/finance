@@ -35,11 +35,13 @@ export function createCache() {
   function invalidate(pattern?: string) {
     if (!pattern) {
       store.clear();
+      inflight.clear();
       return;
     }
     for (const key of store.keys()) {
       if (key.startsWith(pattern)) {
         store.delete(key);
+        inflight.delete(key);
       }
     }
   }
