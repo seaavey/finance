@@ -443,18 +443,20 @@ const progressColor = computed(() => {
     </div>
 
     <div class="mt-4 space-y-1.5">
-  <div class="flex justify-between text-xs">
-    <span class="text-muted-foreground">
-      {{ $t('budget.spent') }}: {{ formatCurrency(budget.spent) }}
-    </span>
-    <span :class="progress.overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'">
-      {{
-        progress.overspent > 0
-          ? $t('budget.overspent')
-          : `${$t('budget.remaining')}: ${formatCurrency(progress.remaining)}`
-      }}
-    </span>
-  </div>
+      <div class="flex justify-between text-xs">
+        <span class="text-muted-foreground">
+          {{ $t('budget.spent') }}: {{ formatCurrency(budget.spent) }}
+        </span>
+        <span
+          :class="progress.overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'"
+        >
+          {{
+            progress.overspent > 0
+              ? $t('budget.overspent')
+              : `${$t('budget.remaining')}: ${formatCurrency(progress.remaining)}`
+          }}
+        </span>
+      </div>
       <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
         <div
           class="h-full rounded-full transition-all duration-500"

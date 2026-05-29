@@ -105,7 +105,7 @@ export const useGoals = () => {
       .upload(filePath, file, { upsert: false });
 
     if (error) {
-      toast.error('Gagal upload gambar');
+      toast.error(t('goals.upload_error'));
       return null;
     }
 

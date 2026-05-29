@@ -54,7 +54,7 @@
               <span
                 class="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
               >
-                {{ isPartnered ? 'Couple Mode' : 'Personal Mode' }}
+                {{ isPartnered ? $t('settings.couple_mode') : $t('settings.personal_mode') }}
               </span>
               <span
                 v-if="user?.app_metadata?.provider"
@@ -217,7 +217,7 @@
                   size="sm"
                   @click="onCancelInvite(inv)"
                 >
-                  Batal
+                  {{ $t('settings.cancel_invite') }}
                 </Button>
               </div>
             </div>
@@ -250,7 +250,7 @@
                   </Avatar>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-foreground">
-                      {{ inv.sender?.display_name || 'Seseorang' }}
+                      {{ inv.sender?.display_name || $t('settings.someone') }}
                     </p>
                     <p class="text-[10px] font-medium text-muted-foreground">
                       {{ $t('settings.invite_wants_to_connect') }}
@@ -264,14 +264,14 @@
                     class="rounded-lg font-bold text-red-500 hover:bg-red-500/10 hover:text-red-600"
                     @click="onRejectInvite(inv)"
                   >
-                    Tolak
+                    {{ $t('settings.reject') }}
                   </Button>
                   <Button
                     size="sm"
                     class="rounded-lg font-bold shadow-md shadow-primary/10"
                     @click="onAcceptInvite(inv)"
                   >
-                    Terima
+                    {{ $t('settings.accept') }}
                   </Button>
                 </div>
               </div>
@@ -382,7 +382,9 @@
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{{ $t('settings.dialog_name_title') }}</DialogTitle>
-          <DialogDescription class="sr-only"> Update your display name </DialogDescription>
+          <DialogDescription class="sr-only">{{
+            $t('settings.dialog_name_desc')
+          }}</DialogDescription>
         </DialogHeader>
         <div class="space-y-3 py-2">
           <Input
@@ -406,7 +408,9 @@
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{{ $t('settings.dialog_currency_title') }}</DialogTitle>
-          <DialogDescription class="sr-only"> Select your preferred currency </DialogDescription>
+          <DialogDescription class="sr-only">{{
+            $t('settings.dialog_currency_desc')
+          }}</DialogDescription>
         </DialogHeader>
         <div class="max-h-64 overflow-y-auto py-2">
           <div v-for="group in currencyGroups" :key="group.label" class="mb-3 last:mb-0">
@@ -481,8 +485,8 @@ const selectedCurrencyLabel = computed(() => {
 });
 
 const localeLabel = computed(() => {
-  const map: Record<string, string> = { id: 'Indonesia', en: 'English' };
-  return map[locale.value] ?? 'Indonesia';
+  const map: Record<string, string> = { id: t('settings.locale_id'), en: t('settings.locale_en') };
+  return map[locale.value] ?? t('settings.locale_id');
 });
 
 const cycleLanguage = async () => {
@@ -609,7 +613,7 @@ const confirmDisconnect = ref(false);
 const onDisconnect = async () => {
   if (!confirmDisconnect.value) {
     confirmDisconnect.value = true;
-    toast.info('Tekan sekali lagi untuk konfirmasi');
+    toast.info(t('settings.disconnect_confirm'));
     setTimeout(() => {
       confirmDisconnect.value = false;
     }, 3000);

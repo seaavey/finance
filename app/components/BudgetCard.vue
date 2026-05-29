@@ -17,8 +17,12 @@ const { formatCurrency: fmtCurrency } = useCurrency();
 const progress = computed(() => getProgress(props.budget));
 
 const progressColor = computed(() => {
-  if (progress.value.overspent > 0) return 'bg-red-500';
-  if (progress.value.percentage >= 80) return 'bg-amber-500';
+  if (progress.value.overspent > 0) {
+    return 'bg-red-500';
+  }
+  if (progress.value.percentage >= 80) {
+    return 'bg-amber-500';
+  }
   return 'bg-primary';
 });
 </script>
@@ -33,18 +37,30 @@ const progressColor = computed(() => {
           class="flex size-10 items-center justify-center rounded-xl"
           :style="{ backgroundColor: budget.category_color + '20' }"
         >
-          <Icon v-if="budget.category_icon" :name="budget.category_icon" :size="20" :style="{ color: budget.category_color }" />
+          <Icon
+            v-if="budget.category_icon"
+            :name="budget.category_icon"
+            :size="20"
+            :style="{ color: budget.category_color }"
+          />
         </div>
         <div>
           <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
-          <p class="text-xs text-muted-foreground">{{ t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}</p>
+          <p class="text-xs text-muted-foreground">
+            {{ t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
+          </p>
         </div>
       </div>
       <div class="flex gap-1">
         <Button variant="ghost" size="icon" class="size-8" @click="emit('edit', budget)">
           <Icon name="hugeicons:edit-01" :size="16" />
         </Button>
-        <Button variant="ghost" size="icon" class="size-8 text-red-500 hover:text-red-600" @click="emit('delete', budget)">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="size-8 text-red-500 hover:text-red-600"
+          @click="emit('delete', budget)"
+        >
           <Icon name="hugeicons:delete-01" :size="16" />
         </Button>
       </div>
@@ -55,7 +71,9 @@ const progressColor = computed(() => {
         <span class="text-muted-foreground">
           {{ t('budget.spent') }}: {{ fmtCurrency(budget.spent) }}
         </span>
-        <span :class="progress.overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'">
+        <span
+          :class="progress.overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'"
+        >
           {{
             progress.overspent > 0
               ? t('budget.overspent')

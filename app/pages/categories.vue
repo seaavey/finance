@@ -78,10 +78,15 @@
               <div>
                 <h3 class="font-medium">{{ cat.name }}</h3>
                 <p class="text-sm text-muted-foreground">
-                  {{ (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count }} transaksi · Rp
+                  {{
+                    t('categories.transaction_count', {
+                      count: (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count,
+                    })
+                  }}
+                  · Rp
                   {{
                     (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total.toLocaleString(
-                      'id-ID',
+                      locale,
                     )
                   }}
                 </p>
@@ -115,7 +120,7 @@
     <ConfirmDialog
       v-model:open="showDeleteDialog"
       :title="$t('categories.delete_title')"
-      :description="`${t('categories.delete_confirm')} &quot;${deletingCategory?.name}&quot;? Tindakan ini tidak bisa dibatalkan.`"
+      :description="`${t('categories.delete_confirm')} &quot;${deletingCategory?.name}&quot;? ${t('categories.delete_confirm_suffix')}`"
       :confirm-text="$t('categories.delete_action')"
       @confirm="onDelete"
     />
@@ -126,7 +131,7 @@
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const {
   categories,

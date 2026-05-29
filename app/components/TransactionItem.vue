@@ -46,6 +46,7 @@ const props = defineProps<{
 }>();
 
 const { formatCurrency } = useCurrency();
+const { locale } = useI18n();
 const { categories } = useCategories();
 const { partner, isPartnered, partnerDisplayName } = usePartner();
 const { user } = useAuth();
@@ -63,6 +64,6 @@ const formatted = computed(() =>
 );
 const formattedDate = computed(() => {
   const d = new Date(props.transaction.date);
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short', year: 'numeric' });
 });
 </script>

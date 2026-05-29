@@ -23,10 +23,10 @@
           <div class="flex items-center gap-3">
             <a
               v-for="social in socialLinks"
-              :key="social.label"
+              :key="social.labelKey"
               :href="social.href"
               class="h-9 w-9 flex items-center justify-center rounded-lg border border-border/40 bg-muted/20 text-muted-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
-              :aria-label="social.label"
+              :aria-label="$t(`landing.${social.labelKey}`)"
             >
               <Icon :name="social.icon" :size="18" />
             </a>
@@ -123,9 +123,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const socialLinks = [
-  { label: 'GitHub', href: '#', icon: 'hugeicons:github' },
-  { label: 'Twitter', href: '#', icon: 'hugeicons:twitter' },
-  { label: 'LinkedIn', href: '#', icon: 'hugeicons:linkedin-01' },
+  { labelKey: 'footer_github', href: '#', icon: 'hugeicons:github' },
+  { labelKey: 'footer_twitter', href: '#', icon: 'hugeicons:twitter' },
+  { labelKey: 'footer_linkedin', href: '#', icon: 'hugeicons:linkedin-01' },
 ];
 
 const productLinks = [

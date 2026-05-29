@@ -168,10 +168,7 @@
       <div v-if="budgetSummaries.length > 0" class="space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-bold tracking-tight">{{ $t('budget.dashboard_title') }}</h2>
-          <NuxtLinkLocale
-            to="/budget"
-            class="text-xs font-medium text-primary hover:underline"
-          >
+          <NuxtLinkLocale to="/budget" class="text-xs font-medium text-primary hover:underline">
             {{ $t('dashboard.view_all') }}
           </NuxtLinkLocale>
         </div>
@@ -182,7 +179,9 @@
             class="rounded-2xl border border-border/50 bg-card/20 p-4 backdrop-blur-sm"
           >
             <div class="flex items-center justify-between">
-              <p class="text-xs font-medium text-muted-foreground truncate">{{ sbudget.category_name }}</p>
+              <p class="text-xs font-medium text-muted-foreground truncate">
+                {{ sbudget.category_name }}
+              </p>
               <span
                 class="text-[11px] font-semibold"
                 :class="sbudget.spent > sbudget.amount ? 'text-red-500' : 'text-muted-foreground'"
@@ -193,7 +192,13 @@
             <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <div
                 class="h-full rounded-full transition-all"
-                :class="sbudget.spent > sbudget.amount ? 'bg-red-500' : sbudget.spent / sbudget.amount >= 0.8 ? 'bg-amber-500' : 'bg-primary'"
+                :class="
+                  sbudget.spent > sbudget.amount
+                    ? 'bg-red-500'
+                    : sbudget.spent / sbudget.amount >= 0.8
+                      ? 'bg-amber-500'
+                      : 'bg-primary'
+                "
                 :style="{ width: `${Math.min((sbudget.spent / sbudget.amount) * 100, 100)}%` }"
               />
             </div>

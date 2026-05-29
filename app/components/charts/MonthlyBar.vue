@@ -16,6 +16,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const { formatCurrency } = useCurrency();
 
 const chartData = computed(() => ({
   labels: props.data.map((d) => d.label),
@@ -37,7 +38,7 @@ const chartData = computed(() => ({
   ],
 }));
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -46,7 +47,7 @@ const chartOptions = {
       callbacks: {
         label: (ctx: TooltipItem<'bar'>) => {
           const val = ctx.raw as number;
-          return ` ${ctx.dataset.label}: Rp ${val.toLocaleString('id-ID')}`;
+          return ` ${ctx.dataset.label}: ${formatCurrency(val)}`;
         },
       },
     },
@@ -62,12 +63,16 @@ const chartOptions = {
         font: { size: 11 },
         callback: (val: number | string) => {
           const v = Number(val);
-          return v >= 1000000 ? `${v / 1000000}jt` : v >= 1000 ? `${v / 1000}rb` : val;
+          return v >= 1000000
+            ? `${v / 1000000}${t('chart.million')}`
+            : v >= 1000
+              ? `${v / 1000}${t('chart.thousand')}`
+              : val;
         },
       },
     },
   },
-};
+}));
 </script>
 
 <template>

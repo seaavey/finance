@@ -14,11 +14,7 @@ const currentMonth = computed(() => {
   return d.toISOString().slice(0, 10);
 });
 
-const {
-  loading,
-  fetchBudgetWithProgress,
-  deleteBudget,
-} = useBudgets();
+const { loading, fetchBudgetWithProgress, deleteBudget } = useBudgets();
 
 const budgetList = ref<BudgetWithProgress[]>([]);
 const showForm = ref(false);
@@ -51,7 +47,9 @@ const onDeleteRequest = (budget: BudgetWithProgress) => {
 };
 
 const onDeleteConfirm = async () => {
-  if (!deletingBudget.value) return;
+  if (!deletingBudget.value) {
+    return;
+  }
   await deleteBudget(deletingBudget.value.id, currentMonth.value);
   budgetList.value = await fetchBudgetWithProgress(currentMonth.value);
   showDeleteDialog.value = false;
@@ -62,9 +60,7 @@ const onFormSaved = async () => {
   budgetList.value = await fetchBudgetWithProgress(currentMonth.value);
 };
 
-const expenseCategories = computed(() =>
-  categories.value.filter((c) => c.type === 'expense'),
-);
+const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'));
 </script>
 
 <template>

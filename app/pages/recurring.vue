@@ -141,7 +141,7 @@ import type { RecurringTransaction } from '~/composables/useRecurring';
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const showForm = ref(false);
 const editingItem = ref<RecurringTransaction | undefined>();
@@ -223,7 +223,7 @@ const formatNextDate = (date: string) => {
   if (diff < 7) {
     return `${diff} ${t('recurring.days_left')}`;
   }
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 
 const showDeleteDialog = ref(false);

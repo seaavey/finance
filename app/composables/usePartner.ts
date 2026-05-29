@@ -37,7 +37,7 @@ export const usePartner = () => {
   const isPartnered = computed(() => partner.value !== null);
 
   const partnerDisplayName = computed(
-    () => partner.value?.display_name || (partner.value ? 'Pasangan' : ''),
+    () => partner.value?.display_name || (partner.value ? t('sidebar.partner') : ''),
   );
 
   const fetchPartner = async () => {
@@ -116,7 +116,7 @@ export const usePartner = () => {
     }
 
     if (user.value.email === email) {
-      toast.error('Tidak bisa mengundang diri sendiri');
+      toast.error(t('toast.partner_invite_self'));
       return { error: new Error('Cannot invite yourself') };
     }
 
@@ -130,7 +130,7 @@ export const usePartner = () => {
       .single();
 
     if (myProfile?.partner_id) {
-      toast.error('Kamu sudah terhubung dengan pasangan');
+      toast.error(t('toast.partner_already_connected'));
       sending.value = false;
       return { error: new Error('Already partnered') };
     }
@@ -145,7 +145,7 @@ export const usePartner = () => {
       .maybeSingle();
 
     if (existing) {
-      toast.error('Undangan sudah dikirim ke email ini');
+      toast.error(t('toast.partner_invite_exists'));
       sending.value = false;
       return { error: new Error('Invitation already sent') };
     }
@@ -158,7 +158,7 @@ export const usePartner = () => {
     if (!error) {
       cache.invalidate('invitations');
       await fetchInvitations();
-      toast.success('Undangan berhasil dikirim');
+      toast.success(t('toast.partner_invite_sent'));
 
       // Notify recipient via email (fire-and-forget)
       const config = useRuntimeConfig();
@@ -174,7 +174,7 @@ export const usePartner = () => {
         console.warn('Failed to send notification email:', e);
       });
     } else {
-      toast.error('Gagal mengirim undangan');
+      toast.error(t('toast.partner_invite_error'));
     }
 
     sending.value = false;
@@ -195,7 +195,7 @@ export const usePartner = () => {
 
     if (error || (data as any)?.error) {
       const errorMsg = error?.message || (data as any)?.error;
-      toast.error(errorMsg || 'Gagal menerima undangan');
+      toast.error(errorMsg || t('toast.partner_accept_error'));
       loading.value = false;
       return { error: new Error(errorMsg) };
     }
@@ -203,7 +203,7 @@ export const usePartner = () => {
     cache.invalidate('partner');
     cache.invalidate('invitations');
     await Promise.all([fetchPartner(), fetchInvitations()]);
-    toast.success('Berhasil terhubung dengan pasangan!');
+    toast.success(t('toast.partner_connected'));
     loading.value = false;
     return { error: null };
   };
@@ -217,9 +217,9 @@ export const usePartner = () => {
     if (!error) {
       cache.invalidate('invitations');
       await fetchInvitations();
-      toast.success('Undangan ditolak');
+      toast.success(t('toast.partner_rejected'));
     } else {
-      toast.error('Gagal menolak undangan');
+      toast.error(t('toast.partner_reject_error'));
     }
     return { error };
   };
@@ -233,9 +233,9 @@ export const usePartner = () => {
     if (!error) {
       cache.invalidate('invitations');
       await fetchInvitations();
-      toast.success('Undangan dibatalkan');
+      toast.success(t('toast.partner_cancelled'));
     } else {
-      toast.error('Gagal membatalkan undangan');
+      toast.error(t('toast.partner_cancel_error'));
     }
     return { error };
   };
@@ -255,7 +255,7 @@ export const usePartner = () => {
     ]);
 
     if (myUpdate.error || partnerUpdate.error) {
-      toast.error('Gagal memutuskan hubungan');
+      toast.error(t('toast.partner_disconnect_error'));
       loading.value = false;
       return { error: myUpdate.error || partnerUpdate.error };
     }
@@ -263,7 +263,7 @@ export const usePartner = () => {
     partner.value = null;
     cache.invalidate('partner');
     cache.invalidate('invitations');
-    toast.success('Hubungan dengan pasangan diputuskan');
+    toast.success(t('toast.partner_disconnected'));
     loading.value = false;
     return { error: null };
   };

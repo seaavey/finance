@@ -181,9 +181,12 @@ const { user } = useAuth();
 const ownerFilter = ref<'all' | 'mine' | 'partner'>('all');
 
 const ownerOptions = computed(() => [
-  { value: 'all' as const, label: 'Semua' },
-  { value: 'mine' as const, label: 'Saya' },
-  { value: 'partner' as const, label: partner.value?.display_name?.split(' ')[0] || 'Pasangan' },
+  { value: 'all' as const, label: t('transactions.owner_filter_all') },
+  { value: 'mine' as const, label: t('transactions.owner_filter_mine') },
+  {
+    value: 'partner' as const,
+    label: partner.value?.display_name?.split(' ')[0] || t('transactions.owner_filter_partner'),
+  },
 ]);
 
 const filteredTransactions = computed(() => {

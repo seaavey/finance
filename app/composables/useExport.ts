@@ -8,10 +8,10 @@ export const useExport = () => {
   const exporting = ref(false);
 
   const frequencyLabels: Record<string, string> = {
-    daily: 'Harian',
-    weekly: 'Mingguan',
-    monthly: 'Bulanan',
-    yearly: 'Tahunan',
+    daily: t('export.frequency_daily'),
+    weekly: t('export.frequency_weekly'),
+    monthly: t('export.frequency_monthly'),
+    yearly: t('export.frequency_yearly'),
   };
 
   const exportAllData = async () => {
@@ -45,7 +45,7 @@ export const useExport = () => {
 
       const workbook = new ExcelJS.Workbook();
       workbook.created = new Date();
-      workbook.creator = 'Finansiil';
+      workbook.creator = t('export.creator');
 
       const headerFont = { bold: true, color: { argb: 'FFFFFFFF' } } as const;
       const headerFill = {
@@ -55,15 +55,15 @@ export const useExport = () => {
       };
 
       // Sheet 1: Transaksi
-      const txSheet = workbook.addWorksheet('Transaksi');
+      const txSheet = workbook.addWorksheet(t('export.sheet_transactions'));
       txSheet.columns = [
-        { header: 'No', key: 'no', width: 5 },
-        { header: 'Tanggal', key: 'date', width: 14 },
-        { header: 'Tipe', key: 'type', width: 14 },
-        { header: 'Kategori', key: 'category', width: 20 },
-        { header: 'Jumlah', key: 'amount', width: 18 },
-        { header: 'Mata Uang', key: 'currency', width: 10 },
-        { header: 'Deskripsi', key: 'description', width: 35 },
+        { header: t('export.col_no'), key: 'no', width: 5 },
+        { header: t('export.col_date'), key: 'date', width: 14 },
+        { header: t('export.col_type'), key: 'type', width: 14 },
+        { header: t('export.col_category'), key: 'category', width: 20 },
+        { header: t('export.col_amount'), key: 'amount', width: 18 },
+        { header: t('export.col_currency'), key: 'currency', width: 10 },
+        { header: t('export.col_description'), key: 'description', width: 35 },
       ];
 
       const txHeader = txSheet.getRow(1);
@@ -74,7 +74,7 @@ export const useExport = () => {
         txSheet.addRow({
           no: i + 1,
           date: tx.date,
-          type: tx.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+          type: tx.type === 'income' ? t('export.type_income') : t('export.type_expense'),
           category: catMap.get(tx.category_id) || '-',
           amount: Number(tx.amount),
           currency: tx.currency,
@@ -83,16 +83,16 @@ export const useExport = () => {
       }
 
       // Sheet 2: Transaksi Rutin
-      const recSheet = workbook.addWorksheet('Transaksi Rutin');
+      const recSheet = workbook.addWorksheet(t('export.sheet_recurring'));
       recSheet.columns = [
-        { header: 'No', key: 'no', width: 5 },
-        { header: 'Tipe', key: 'type', width: 14 },
-        { header: 'Jumlah', key: 'amount', width: 18 },
-        { header: 'Mata Uang', key: 'currency', width: 10 },
-        { header: 'Frekuensi', key: 'frequency', width: 14 },
-        { header: 'Tgl Berikutnya', key: 'next_date', width: 16 },
-        { header: 'Aktif', key: 'active', width: 8 },
-        { header: 'Deskripsi', key: 'description', width: 35 },
+        { header: t('export.col_no'), key: 'no', width: 5 },
+        { header: t('export.col_type'), key: 'type', width: 14 },
+        { header: t('export.col_amount'), key: 'amount', width: 18 },
+        { header: t('export.col_currency'), key: 'currency', width: 10 },
+        { header: t('export.col_frequency'), key: 'frequency', width: 14 },
+        { header: t('export.col_next_date'), key: 'next_date', width: 16 },
+        { header: t('export.col_active'), key: 'active', width: 8 },
+        { header: t('export.col_description'), key: 'description', width: 35 },
       ];
 
       const recHeader = recSheet.getRow(1);
@@ -102,23 +102,23 @@ export const useExport = () => {
       for (const [i, r] of recurring.entries()) {
         recSheet.addRow({
           no: i + 1,
-          type: r.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+          type: r.type === 'income' ? t('export.type_income') : t('export.type_expense'),
           amount: Number(r.amount),
           currency: r.currency,
           frequency: frequencyLabels[r.frequency] || r.frequency,
           next_date: r.next_date,
-          active: r.active ? 'Ya' : 'Tidak',
+          active: r.active ? t('export.yes') : t('export.no'),
           description: r.description || '',
         });
       }
 
       // Sheet 3: Kategori
-      const catSheet = workbook.addWorksheet('Kategori');
+      const catSheet = workbook.addWorksheet(t('export.sheet_categories'));
       catSheet.columns = [
-        { header: 'No', key: 'no', width: 5 },
-        { header: 'Nama', key: 'name', width: 22 },
-        { header: 'Tipe', key: 'type', width: 14 },
-        { header: 'Warna', key: 'color', width: 12 },
+        { header: t('export.col_no'), key: 'no', width: 5 },
+        { header: t('export.col_name'), key: 'name', width: 22 },
+        { header: t('export.col_type'), key: 'type', width: 14 },
+        { header: t('export.col_color'), key: 'color', width: 12 },
       ];
 
       const catHeader = catSheet.getRow(1);
@@ -129,7 +129,7 @@ export const useExport = () => {
         catSheet.addRow({
           no: i + 1,
           name: c.name,
-          type: c.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+          type: c.type === 'income' ? t('export.type_income') : t('export.type_expense'),
           color: c.color,
         });
       }

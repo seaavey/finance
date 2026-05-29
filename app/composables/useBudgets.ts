@@ -29,7 +29,9 @@ export const useBudgets = () => {
   const loading = useState('budgets-loading', () => false);
 
   const fetchBudgets = async (month: string) => {
-    if (!user.value) return;
+    if (!user.value) {
+      return;
+    }
     loading.value = true;
 
     try {
@@ -42,7 +44,9 @@ export const useBudgets = () => {
             .eq('user_id', user.value!.id)
             .eq('month', month)
             .order('created_at');
-          if (error) throw error;
+          if (error) {
+            throw error;
+          }
           return data as Budget[];
         },
         30_000,
@@ -55,7 +59,9 @@ export const useBudgets = () => {
   };
 
   const fetchBudgetWithProgress = async (month: string): Promise<BudgetWithProgress[]> => {
-    if (!user.value) return [];
+    if (!user.value) {
+      return [];
+    }
 
     const { data: budgetData } = await supabase
       .from('budgets')
@@ -65,7 +71,9 @@ export const useBudgets = () => {
 
     const budgetsList = (budgetData as Budget[]) || [];
 
-    if (budgetsList.length === 0) return [];
+    if (budgetsList.length === 0) {
+      return [];
+    }
 
     const categoryIds = budgetsList.map((b) => b.category_id);
 
@@ -75,7 +83,10 @@ export const useBudgets = () => {
       .in('id', categoryIds);
 
     const categoryMap = new Map(
-      (categoriesData || []).map((c: { id: string; name: string; color: string; icon: string }) => [c.id, c]),
+      (categoriesData || []).map((c: { id: string; name: string; color: string; icon: string }) => [
+        c.id,
+        c,
+      ]),
     );
 
     const [year, mon] = month.split('-').map(Number);
@@ -125,10 +136,7 @@ export const useBudgets = () => {
 
     let error;
     if (existing) {
-      const result = await supabase
-        .from('budgets')
-        .update({ amount })
-        .eq('id', existing.id);
+      const result = await supabase.from('budgets').update({ amount }).eq('id', existing.id);
       error = result.error;
     } else {
       const result = await supabase.from('budgets').insert({

@@ -4,6 +4,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, type TooltipItem } from 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const { formatCurrency } = useCurrency();
+
 const props = defineProps<{
   categories: { name: string; color: string; total: number }[];
 }>();
@@ -20,7 +22,7 @@ const chartData = computed(() => ({
   ],
 }));
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   cutout: '70%',
@@ -30,12 +32,12 @@ const chartOptions = {
       callbacks: {
         label: (ctx: TooltipItem<'doughnut'>) => {
           const val = ctx.raw as number;
-          return ` Rp ${val.toLocaleString('id-ID')}`;
+          return ` ${formatCurrency(val)}`;
         },
       },
     },
   },
-};
+}));
 </script>
 
 <template>

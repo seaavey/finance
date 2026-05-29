@@ -28,10 +28,14 @@ watchEffect(() => {
 });
 
 const handleSave = async () => {
-  if (!selectedCategoryId.value || !amountInput.value) return;
+  if (!selectedCategoryId.value || !amountInput.value) {
+    return;
+  }
 
   const amount = parseLocalizedNumber(amountInput.value);
-  if (amount <= 0) return;
+  if (amount <= 0) {
+    return;
+  }
 
   const result = await setBudget(selectedCategoryId.value, props.month, amount);
   if (!result.error) {
@@ -40,9 +44,7 @@ const handleSave = async () => {
   }
 };
 
-const availableCategories = computed(() =>
-  props.categories.filter((c) => c.type === 'expense'),
-);
+const availableCategories = computed(() => props.categories.filter((c) => c.type === 'expense'));
 </script>
 
 <template>

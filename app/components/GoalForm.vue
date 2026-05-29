@@ -180,7 +180,7 @@ const onFileSelect = (e: Event) => {
 
   if (file.size > 5 * 1024 * 1024) {
     const { toast } = useToast();
-    toast.error('Max 5MB');
+    toast.error(t('goals.max_size_error'));
     return;
   }
 
