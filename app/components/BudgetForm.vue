@@ -15,24 +15,65 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const { setBudget, loading } = useBudgets();
-const { parseLocalizedNumber } = useCurrency();
+const { formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
 
 const selectedCategoryId = ref(props.budget?.category_id || '');
-const amountInput = ref(props.budget ? String(props.budget.amount) : '');
+const rawAmount = ref(props.budget?.amount ?? 0);
 
 watchEffect(() => {
   if (props.open) {
     selectedCategoryId.value = props.budget?.category_id || '';
-    amountInput.value = props.budget ? String(props.budget.amount) : '';
+    rawAmount.value = props.budget?.amount ?? 0;
   }
 });
 
+const amountDisplay = computed({
+  get: () => {
+    if (rawAmount.value === 0 && !props.budget) {
+      return '';
+    }
+    return formatNumberOnly(rawAmount.value, defaultCurrency.value);
+  },
+  set: (val: string) => {
+    rawAmount.value = parseLocalizedNumber(val, defaultCurrency.value);
+  },
+});
+
+const onNumberKeydown = (e: KeyboardEvent) => {
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  if (e.key === ',' || e.key === '.') {
+    return;
+  }
+  e.preventDefault();
+};
+
 const handleSave = async () => {
-  if (!selectedCategoryId.value || !amountInput.value) {
+  if (!selectedCategoryId.value || !rawAmount.value) {
     return;
   }
 
-  const amount = parseLocalizedNumber(amountInput.value);
+  const amount = rawAmount.value;
   if (amount <= 0) {
     return;
   }
@@ -81,11 +122,12 @@ const availableCategories = computed(() => props.categories.filter((c) => c.type
         <div class="space-y-2">
           <Label>{{ $t('budget.monthly_limit') }}</Label>
           <Input
-            v-model="amountInput"
+            v-model="amountDisplay"
             type="text"
             inputmode="numeric"
             :placeholder="t('budget.monthly_limit')"
             autofocus
+            @keydown="onNumberKeydown"
           />
         </div>
       </div>
@@ -95,7 +137,7 @@ const availableCategories = computed(() => props.categories.filter((c) => c.type
         </Button>
         <Button
           size="sm"
-          :disabled="loading || !selectedCategoryId || !amountInput"
+          :disabled="loading || !selectedCategoryId || !rawAmount"
           @click="handleSave"
         >
           {{ loading ? $t('common.saving') : t('budget.set_budget') }}
