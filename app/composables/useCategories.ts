@@ -13,19 +13,19 @@ export interface Category {
 
 const DEFAULT_CATEGORIES = {
   income: [
-    { name: 'Gaji', icon: 'wallet', color: '#22c55e' },
-    { name: 'Freelance', icon: 'laptop', color: '#3b82f6' },
-    { name: 'Investasi', icon: 'chart', color: '#8b5cf6' },
-    { name: 'Lainnya', icon: 'more', color: '#6b7280' },
+    { name: 'Gaji', icon: 'hugeicons:wallet-01', color: '#22c55e' },
+    { name: 'Freelance', icon: 'hugeicons:laptop', color: '#3b82f6' },
+    { name: 'Investasi', icon: 'hugeicons:chart', color: '#8b5cf6' },
+    { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280' },
   ],
   expense: [
-    { name: 'Makanan', icon: 'food', color: '#f97316' },
-    { name: 'Transport', icon: 'car', color: '#06b6d4' },
-    { name: 'Belanja', icon: 'bag', color: '#ec4899' },
-    { name: 'Tagihan', icon: 'receipt', color: '#ef4444' },
-    { name: 'Hiburan', icon: 'game', color: '#a855f7' },
-    { name: 'Kesehatan', icon: 'health', color: '#14b8a6' },
-    { name: 'Lainnya', icon: 'more', color: '#6b7280' },
+    { name: 'Makanan', icon: 'hugeicons:restaurant-01', color: '#f97316' },
+    { name: 'Transport', icon: 'hugeicons:car-01', color: '#06b6d4' },
+    { name: 'Belanja', icon: 'hugeicons:shopping-bag-01', color: '#ec4899' },
+    { name: 'Tagihan', icon: 'hugeicons:receipt-text', color: '#ef4444' },
+    { name: 'Hiburan', icon: 'hugeicons:game-controller-01', color: '#a855f7' },
+    { name: 'Kesehatan', icon: 'hugeicons:health', color: '#14b8a6' },
+    { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280' },
   ],
 };
 

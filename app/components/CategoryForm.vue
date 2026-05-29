@@ -94,7 +94,7 @@ const colorOptions = [
 const form = reactive({
   name: props.category?.name ?? '',
   type: props.category?.type ?? 'expense',
-  icon: props.category?.icon ?? 'wallet',
+  icon: props.category?.icon ?? 'hugeicons:wallet-01',
   color: props.category?.color ?? '#3b82f6',
 });
 
