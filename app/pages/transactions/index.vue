@@ -30,7 +30,12 @@
           @input="debouncedFetch"
         />
       </div>
-      <Button variant="outline" size="icon" class="size-12 !rounded-2xl" @click="showFilters = !showFilters">
+      <Button
+        variant="outline"
+        size="icon"
+        class="size-12 !rounded-2xl"
+        @click="showFilters = !showFilters"
+      >
         <Icon name="hugeicons:filter" :size="20" />
       </Button>
     </div>

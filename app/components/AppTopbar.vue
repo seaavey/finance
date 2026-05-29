@@ -45,11 +45,7 @@
           class="h-10 w-60 cursor-pointer items-center rounded-2xl border-border/50 bg-card/30 pl-10 pr-12 text-sm text-muted-foreground/60 transition hover:bg-card/60 hover:text-muted-foreground lg:w-65"
           @click="showSearchDialog = true"
         >
-          <Icon
-            name="hugeicons:search-01"
-            :size="16"
-            class="shrink-0 text-muted-foreground/60"
-          />
+          <Icon name="hugeicons:search-01" :size="16" class="shrink-0 text-muted-foreground/60" />
           <span class="ml-2 flex-1 text-left">{{ $t('topbar.search') }}</span>
           <kbd
             class="rounded-md border border-border/50 bg-background/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50"

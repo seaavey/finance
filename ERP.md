@@ -7,26 +7,27 @@
 1. **Baca dulu, baru action** — sebelum mengimplementasi fitur atau memperbaiki bug, cari dulu bagian yang relevan di dokumen ini.
 2. **Jangan edit file ini** tanpa tujuan yang jelas — dokumen ini adalah referensi alur sistem, bukan kode.
 3. **Update ERP.md** jika kamu mengubah alur bisnis signifikan (relasi tabel baru, state baru, flow baru). Update section yang relevan, jangan tambah section duplikat.
-4. **Jangan hapus gotchas** — setiap gotcha di section 15 adalah hasil debugging susah payah.
+4. **Jangan hapus gotchas** — setiap gotcha di section 24 adalah hasil debugging susah payah.
 5. **Gunakan diagram alur** di dokumen ini sebagai acuan sebelum nulis kode — pastikan kode kamu ngikutin flow yang udah ada.
 
 ## 1. Arsitektur Umum
 
 - **SSR di-skip** untuk auth check (semua client-side).
 - **Supabase client singleton** (`app/lib/supabase.ts`) — satu koneksi, dipakai ulang semua komposable.
-- **Semua query data via Supabase JS SDK langsung dari browser** — tidak ada Nitro API routes.
+- **Cache layer** (`app/lib/cache.ts`) — in-memory TTL store + request deduplication. Dipakai oleh 4 composable (categories, transactions, recurring, partner).
+- **Semua query data via Supabase JS SDK langsung dari browser** — tidak ada Nitro API routes (kecuali `/api/v1/rates` untuk currency).
 - **State management**: `useState` ref di masing-masing composable. Tidak ada Pinia/Vuex.
 
 ## 2. Alur Auth & Onboarding
 
-| Langkah             | File                                          | Detail                                                                                             |
-| ------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Landing page        | `app/pages/index.vue`                         | Layout `blank`, 6 komponen landing. `useSeoMeta` + `defineOgImage`                                 |
-| Login               | `app/pages/auth/login.vue`                   | Layout `blank`. Tombol Google OAuth via `signInWithGoogle()`                                       |
-| Auth plugin         | `app/plugins/auth.client.ts`                  | Client-only. Load session di mount, listen `onAuthStateChange`, redirect `/auth/login` → `/dashboard`   |
-| Auth middleware     | `app/middleware/auth.global.ts`               | Guard semua route. Skip SSR (`import.meta.server`), skip hash token routes. Panggil `getSession()` |
-| Profile auto-create | `supabase/migrations/20260523165600_init.sql` | Trigger `on_auth_user_created` → insert ke `profiles`                                              |
-| Currency init       | `app/composables/useCurrency.ts`              | `loadCurrency()` dipanggil dari middleware setelah auth                                            |
+| Langkah             | File                                          | Detail                                                                                                |
+| ------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Landing page        | `app/pages/index.vue`                         | Layout `blank`, 6 komponen landing. `useSeoMeta` + `defineOgImage`                                    |
+| Login               | `app/pages/auth/login.vue`                    | Layout `blank`. Tombol Google OAuth via `signInWithGoogle()`                                          |
+| Auth plugin         | `app/plugins/auth.client.ts`                  | Client-only. Load session di mount, listen `onAuthStateChange`, redirect `/auth/login` → `/dashboard` |
+| Auth middleware     | `app/middleware/auth.global.ts`               | Guard semua route. Skip SSR (`import.meta.server`), skip hash token routes. Panggil `getSession()`    |
+| Profile auto-create | `supabase/migrations/20260523165600_init.sql` | Trigger `on_auth_user_created` → insert ke `profiles`                                                 |
+| Currency init       | `app/composables/useCurrency.ts`              | `loadCurrency()` dipanggil dari middleware setelah auth                                               |
 
 **State**: `user` (ref User \| null) di `useAuth`, `defaultCurrency` (ref string) di `useCurrency`.
 
@@ -43,7 +44,7 @@
 | UI           | `CategoryForm.vue`                       | Dialog shadcn-vue, color picker, type selector (readonly on edit) |
 | Tab filter   | `categories.vue`                         | Income/Expense tabs, computed filter                              |
 
-**State**: `categories` (ref Category[]), `loading` di composable.
+**State**: `categories` (ref Category[]), `loading` di composable. Menggunakan `createCache()` dengan TTL 60s — cache di-invalidate tiap mutasi.
 **Layout**: `default` — `categories.vue` render dalam sidebar+topbar layout.
 
 ## 4. Alur Transaksi
@@ -62,7 +63,10 @@
 
 **Owner filter** (partner): Ketika `isPartnered`, filter `user_id` dilakukan **client-side** via computed, bukan query.
 
-**State**: `transactions` (ref Transaction[]), `loading` di `useTransactions`.
+**Extra methods**: `searchTransactions(term)` — ilike description, limit 10, dipakai oleh `SearchDialog.vue`.
+
+**Caching**: `createCache()` dengan TTL 30s per filter combination. Mutasi meng-invalidate prefix `transactions`.
+
 **Layout**: `default` — `transactions/index.vue`, `transactions/new.vue`, `transactions/[id]/edit.vue` semua render dalam sidebar+topbar layout.
 
 ## 5. Alur Transaksi Rutin (Recurring)
@@ -77,6 +81,7 @@
 | Monthly projection | Computed: daily×30, weekly×4, monthly×1, yearly÷12                       |
 
 **Table name gotcha**: Migrasi rename `recurring` → `recurring_transactions` (20260525000000). Composable pakai `recurring_transactions`.
+**Caching**: `createCache()` dengan TTL 30s, di-invalidate tiap mutasi.
 **State**: `recurring` (ref RecurringTransaction[]), `loading` di `useRecurring`.
 **Layout**: `default` — `recurring.vue` render dalam sidebar+topbar layout.
 
@@ -140,26 +145,61 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 **State**: `exporting` (ref boolean).
 **Layout**: `default` — trigger export ada di `settings.vue` dalam sidebar+topbar layout.
 
-## 9. Alur Mata Uang (Currency)
+## 9. Alur Goals (Target Tabungan)
 
-| Fitur                 | Detail                                                                                            |
-| --------------------- | ------------------------------------------------------------------------------------------------- |
-| Default               | `IDR` dari `profiles.currency`                                                                    |
-| Format                | `Intl.NumberFormat` dengan locale mapping per currency                                            |
-| No-decimal currencies | `['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK']` — fraction digits 0                           |
-| Parse                 | `parseLocalizedNumber()` — deteksi separator desimal/ribuan via `Intl.NumberFormat.formatToParts` |
-| Currency groups       | Southeast Asia (10), East Asia (5), South Asia (5) — 25 currencies total                          |
-| Locale mapping        | 16 explicit locale mappings, fallback `en-US`                                                     |
+| Flow           | File                                             | Detail                                                                                          |
+| -------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Fetch          | `useGoals.ts:24-35`                              | `fetchGoals()` — `supabase.from('goals').select('*').order('created_at', { ascending: false })` |
+| Create         | `addGoal()`                                      | Insert → refetch → toast. `current_amount` start 0                                              |
+| Update         | `updateGoal(id, updates)`                        | Partial update → refetch → toast                                                                |
+| Add funds      | `addFunds(goalId, amount)`                       | Increment `current_amount` → refetch → toast                                                    |
+| Delete         | `deleteGoal(id)`                                 | Hapus image dari storage dulu → delete by id → refetch → toast                                  |
+| Image upload   | `uploadGoalImage(file)` → `deleteGoalImage(url)` | Storage bucket `goal-images` (public, max 5MB, PNG/JPEG/WebP). Upload → get public URL          |
+| UI             | `goals.vue`                                      | Grid `md:grid-cols-2 lg:grid-cols-3` di page `/goals`                                           |
+| Goal Card      | `GoalCard.vue`                                   | Progress bar (shadcn `Progress`), image via `AspectRatio`, add funds/edit/delete actions        |
+| Add Funds      | `AddFundsDialog.vue`                             | Dialog sederhana input number → `addFunds()`                                                    |
+| Form Dialog    | `GoalForm.vue`                                   | shadcn `Dialog`. Name, target (locale-aware format), deadline (Calendar popover), image upload  |
+| Empty state    | `goals.vue:25-35`                                | Icon target + text, muncul saat `goals.length === 0`                                            |
+| Loading        | `goals.vue:19-21`                                | 3 skeleton `h-48 rounded-3xl`                                                                   |
+| Delete confirm | ConfirmDialog                                    | Sama seperti yang dipakai di recurring/categories                                               |
+| Sidebar nav    | `AppSidebar.vue:107`                             | Icon `hugeicons:target-02`, label `sidebar.goals`                                               |
 
-## 10. Alur Keamanan (Security Middleware)
+**Interface**: `Goal` — `id, user_id, name, target_amount, current_amount, deadline?, icon?, color, image_url?, created_at, updated_at`.
+
+**Color default**: `#ec4899` (pink).
+
+**RLS**: Standard user isolation — semua policy `auth.uid() = user_id`.
+
+**Storage**: Bucket `goal-images` (public) — policy: `auth.uid()::text = owner_id AND bucket_id = 'goal-images'`.
+
+**State**: `goals` (ref Goal[]), `loading` di `useGoals`.
+**Layout**: `default` — `goals.vue` render dalam sidebar+topbar layout.
+
+## 10. Alur Mata Uang (Currency)
+
+| Fitur                 | Detail                                                                                                                           |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Default               | `IDR` dari `profiles.currency`                                                                                                   |
+| Format                | `Intl.NumberFormat` dengan locale mapping per currency                                                                           |
+| No-decimal currencies | `['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK']` — fraction digits 0                                                          |
+| Parse                 | `parseLocalizedNumber()` — deteksi separator desimal/ribuan via `Intl.NumberFormat.formatToParts`                                |
+| Currency groups       | Southeast Asia (10), East Asia (5), South Asia (5) — 25 currencies total                                                         |
+| Locale mapping        | 16 explicit locale mappings, fallback `en-US`                                                                                    |
+| Exchange rates        | `exchangeRates` (ref), `fetchRates()` via `$fetch('/api/v1/rates')`, dipanggil dari plugin `currency.client.ts` di `onNuxtReady` |
+| Convert               | `convertTo(amount, targetCurrency)` — base rate dari IDR                                                                         |
+| `currencies`          | Computed flat list dari `currencyGroups`                                                                                         |
+
+**Plugin**: `app/plugins/currency.client.ts` — memanggil `fetchRates()` di `onNuxtReady` untuk mengambil nilai tukar.
+
+## 11. Alur Keamanan (Security Middleware)
 
 **`server/middleware/security.ts`**: Remove Server & x-powered-by headers. Set CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy. Block open redirects via query params (`to`, `url`, `redirect`, `next`, dll — absolute URL regex). Block XSS patterns in query strings (`<script`, `javascript:`, `onerror=`). Block SQLi patterns on `/sessions` and `/api/users` paths.
 
 **`server/plugins/error.ts`**: Strip stack trace. Scrub path reflection (404 → "Not Found"). Scrub local filesystem paths (`/Users/`, `/var/www/`).
 
-## 11. UI & Design System
+## 12. UI & Design System
 
-### 11.0 Aturan UI untuk Agent
+### 12.0 Aturan UI untuk Agent
 
 1. **Jangan buat komponen baru kalau yang existing bisa dipakai** — cek `app/components/ui/` (17 komponen shadcn) dan `app/components/` dulu.
 2. **Semua warna via CSS variables** — jangan pakai warna hardcoded Tailwind (kecuali alpha overlay seperti `bg-green-500/10`). `bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, dll.
@@ -170,12 +210,16 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 7. **Pendinginan animasi** = `transition-all duration-200` untuk interaksi kecil, `duration-300` untuk hover card, `duration-500` untuk page entry.
 8. **Ikon** = `@nuxt/icon` + `<Icon name="hugeicons:icon-name" :size="18" />`.
 
-### 11.1 Design Tokens & Theme
+### 12.1 Design Tokens & Theme
 
 ```css
 /* app/styles/global.css — Tailwind CSS v4 + CSS Variables */
+/* Imports: DM Sans + JetBrains Mono (Google Fonts), tailwindcss, tw-animate-css, shadcn-vue/tailwind.css */
 /* Color mode: system/light/dark  (nuxtjs/color-mode) */
 /* Class suffix: '' (none) — prefers .dark, not .dark-mode */
+
+/* @theme inline block — Tailwind v4 theme reference, mendefinisikan --color-* dan --font-* */
+/* Chart vars: --chart-1 through --chart-5 (oklch, pink-rose spectrum) */
 
 /* Primary: warm pink/rose (#e11d48 area) */
 --primary: oklch(0.514 0.222 16.935); /* light */
@@ -189,6 +233,10 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 --radius-xl: calc(0.625rem + 4px); /* ~0.875rem */
 ```
 
+**Extra CSS**: `@layer base` menyembunyikan spinner `input[type=number]` (webkit + moz).
+
+**Chart CSS variables** (`--chart-1` s.d. `--chart-5`): oklch values di root dan .dark — dipakai oleh ExpenseDonut dan MonthlyBar.
+
 - **Color space**: `oklch` — semua warna di :root dan .dark.
 - **Font body**: `'Inter', sans-serif` (dari `--font-sans`).
 - **Font heading**: `'Inter', sans-serif` (dari `--font-heading`). DM Sans dan JetBrains Mono di-import Google Fonts tapi TIDAK dipakai sebagai variable font — hanya fallback.
@@ -197,7 +245,7 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 - **Noise texture**: SVG fractal noise overlay di landing hero (`Hero.vue`).
 - **Animasi custom**: `fade-up`, `fade-in`, `noise`, `bounce-x`, `float`, `animate-pulse`.
 
-### 11.2 Komponen UI (shadcn-vue style)
+### 12.2 Komponen UI (shadcn-vue style)
 
 | Package          | Detail                                                  |
 | ---------------- | ------------------------------------------------------- |
@@ -209,7 +257,7 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 **60 komponen ui/** (shadcn-vue):
 `accordion`, `alert`, `alert-dialog`, `aspect-ratio`, `avatar`, `badge`, `breadcrumb`, `button`, `button-group`, `calendar`, `card`, `carousel`, `chart`, `checkbox`, `collapsible`, `combobox`, `command`, `context-menu`, `dialog`, `drawer`, `dropdown-menu`, `empty`, `field`, `form`, `hover-card`, `input`, `input-group`, `input-otp`, `item`, `kbd`, `label`, `menubar`, `native-select`, `navigation-menu`, `number-field`, `pagination`, `pin-input`, `popover`, `progress`, `radio-group`, `range-calendar`, `resizable`, `scroll-area`, `select`, `separator`, `sheet`, `sidebar`, `skeleton`, `slider`, `sonner`, `spinner`, `stepper`, `switch`, `table`, `tabs`, `tags-input`, `textarea`, `toggle`, `toggle-group`, `tooltip`
 
-### 11.3 Responsive Breakpoint Strategy
+### 12.3 Responsive Breakpoint Strategy
 
 | Breakpoint         | Usage                                                                                     |
 | ------------------ | ----------------------------------------------------------------------------------------- |
@@ -224,7 +272,7 @@ Edge function config: `RESEND_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 - Overlay klik di mobile saat sidebar terbuka: `fixed inset-0 z-40 md:hidden`.
 - Tidak ada `xl:` atau `2xl:` breakpoints yang dipakai secara signifikan.
 
-### 11.4 Layout Structure
+### 12.4 Layout Structure
 
 Dua layout:
 
@@ -237,18 +285,19 @@ Sidebar: Logo (`rounded-lg bg-sidebar-primary`), nav links (`rounded-xl px-3 py-
 
 Topbar: Hamburger (`lg:hidden`, `size-9 rounded-xl border`), Breadcrumb (`hidden md:block`), Search bar (desktop, input functional, debounced 300ms `fetchTransactions`, ⌘K badge hides while typing), Notification bell (decorative, red dot), Theme toggle (rounded-2xl border), CTA "+" pink gradient → `/transactions/new`.
 
-### 11.5 Layout CSS Detail
+### 12.5 Layout CSS Detail
 
 - **Page container**: inline di setiap page — tidak ada wrapper global.
   - Dashboard: `space-y-5 pb-6`
   - Transactions: `mx-auto max-w-7xl space-y-6`
   - Categories: `mx-auto max-w-6xl space-y-8`
+  - Goals: `mx-auto max-w-6xl space-y-8 pb-20`
   - Settings: `mx-auto w-full max-w-2xl space-y-8 overflow-hidden px-4 pb-24 md:px-0 md:pb-8 lg:space-y-10`
   - Recurring: `mx-auto max-w-6xl space-y-8`
 - **Padding inkonsisten**: `pb-24 md:pb-8` di settings (space for mobile nav bar?).
 - **Overflow behavior**: `overflow-hidden` di beberapa page container + `overflow-y-auto` di main layout.
 
-### 11.6 Theme: Color Mode Toggle
+### 12.6 Theme: Color Mode Toggle
 
 3 mode: `system` → `light` → `dark` (cycle).
 
@@ -271,7 +320,7 @@ Topbar: Hamburger (`lg:hidden`, `size-9 rounded-xl border`), Breadcrumb (`hidden
 | `--sidebar`    | `oklch(0.985 0 0)` (near white)    | `oklch(0.21 0.006 285.885)`               |
 | `--radius`     | `0.625rem`                         | same                                      |
 
-### 11.7 Typography
+### 12.7 Typography
 
 | Usage                   | Class                                                                                       | Font                  |
 | ----------------------- | ------------------------------------------------------------------------------------------- | --------------------- |
@@ -302,7 +351,7 @@ Topbar: Hamburger (`lg:hidden`, `size-9 rounded-xl border`), Breadcrumb (`hidden
 
 Konfigurasi shadcn ini TIDAK konsisten dengan CSS (yang pake Inter). Ini adalah legacy/artifact.
 
-### 11.8 Spacing & Sizing
+### 12.8 Spacing & Sizing
 
 | Scale             | Example                                                                      |
 | ----------------- | ---------------------------------------------------------------------------- |
@@ -318,7 +367,7 @@ Konfigurasi shadcn ini TIDAK konsisten dengan CSS (yang pake Inter). Ini adalah 
 | Sidebar width     | `w-60` (240px)                                                               |
 | Max content       | `max-w-6xl`, `max-w-7xl`, `max-w-3xl`                                        |
 
-### 11.9 Component Spesifik
+### 12.9 Component Spesifik
 
 | Komponen        | Container                                                                                                         | Warna Ikon                                                                                                                                                            | Kelas Penting                                                                                                                                                                        |
 | --------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -340,7 +389,7 @@ Konfigurasi shadcn ini TIDAK konsisten dengan CSS (yang pake Inter). Ini adalah 
 | CTA          | `rounded-[3rem] border bg-background/40 p-8 md:p-20 backdrop-blur-xl`, inner glow `from-primary/5`, button `hover:scale-105`                                                                  |
 | Footer       | 4-col grid, gradient logo text, newsletter input, `pt-8 border-t`                                                                                                                             |
 
-### 11.10 Transitions & Animations
+### 12.10 Transitions & Animations
 
 | Elemen                   | Animasi                                                                   | CSS                            |
 | ------------------------ | ------------------------------------------------------------------------- | ------------------------------ |
@@ -360,7 +409,7 @@ Konfigurasi shadcn ini TIDAK konsisten dengan CSS (yang pake Inter). Ini adalah 
 | Noise                    | `@keyframes noise` — translate random                                     | Duration pendek, hanya overlay |
 | Settings avatar          | `group-hover:scale-105`                                                   | Duration `300`                 |
 
-### 11.11 Skeleton/Loading States
+### 12.11 Skeleton/Loading States
 
 Semua page punya skeleton loading state yang dirender saat `loading = true`:
 
@@ -369,18 +418,19 @@ Semua page punya skeleton loading state yang dirender saat `loading = true`:
 | Dashboard        | 3 pulse cards (`h-28 animate-pulse rounded-2xl bg-card`) + chart placeholder (`h-64`, `h-52`) |
 | Transactions     | 3 skeleton items (`Skeleton h-20 rounded-3xl`)                                                |
 | Categories       | Tab skeleton + grid 6 skeleton (`Skeleton h-22 rounded-3xl`)                                  |
+| Goals            | 3 skeleton (`Skeleton h-48 rounded-3xl`)                                                      |
 | Recurring        | 3 skeleton (`Skeleton h-[104px] rounded-3xl`)                                                 |
 | Settings         | Profile card (`Skeleton size-20 md:size-24 rounded-full` + text lines) + 3 setting rows       |
 | Edit transaction | 4 skeleton rows (`Skeleton h-10/h-12/h-48`)                                                   |
 
 Pattern: `<Skeleton>` dari shadcn (untuk bentuk tidak beraturan) atau `animate-pulse bg-card rounded-2xl` (untuk card placeholder).
 
-### 11.12 Animasi Loading Global
+### 12.12 Animasi Loading Global
 
 - `NuxtLoadingIndicator` di `app.vue` — bar tipis di atas pas navigasi antar page.
 - `ClientOnly` + `<template #fallback>` — skeleton atau div kosong untuk komponen yang bergantung DOM (avatar fallback, theme icon, sidebar user section).
 
-### 11.13 Komponen shadcn yang Dipakai
+### 12.13 Komponen shadcn yang Dipakai
 
 Semua ada di `app/components/ui/` + langsung import dari `@/components/ui/`:
 
@@ -406,7 +456,7 @@ Semua ada di `app/components/ui/` + langsung import dari `@/components/ui/`:
 
 Semua komponen shadcn prefix kosong (`''`), jadi import `Button` bukan `UiButton`.
 
-### 11.14 Icon Library Detail
+### 12.14 Icon Library Detail
 
 - **Module**: `@nuxt/icon` v2 (Iconify-based, 200k+ icons)
 - **Usage**: `<Icon name="hugeicons:icon-name" :size="18" />`
@@ -438,7 +488,7 @@ Semua komponen shadcn prefix kosong (`''`), jadi import `Button` bukan `UiButton
 
 - **Installed packages** (removed): ~~`@hugeicons/core-free-icons`~~, ~~`@hugeicons/vue`~~
 
-### 11.15 Chart.js Configuration
+### 12.15 Chart.js Configuration
 
 Registered modules:
 
@@ -452,7 +502,7 @@ Registered modules:
 
 Library: `vue-chartjs` + `chart.js`.
 
-### 11.16 Form Patterns
+### 12.16 Form Patterns
 
 **TransactionForm** (full page, bukan dialog):
 
@@ -484,7 +534,7 @@ Library: `vue-chartjs` + `chart.js`.
   - Colors: `#22c55e, #3b82f6, #8b5cf6, #f97316, #06b6d4, #ec4899, #ef4444, #a855f7, #14b8a6, #6b7280, #eab308, #f43f5e`
 - Validasi: `!form.name || !form.type`
 
-### 11.17 Color Palette (Non-CSS-Variable)
+### 12.17 Color Palette (Non-CSS-Variable)
 
 Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline style atau class Tailwind langsung):
 
@@ -501,7 +551,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 | Purple (feature)      | `bg-purple-500/10 text-purple-500`      | Landing features (recurring)             |
 | Yellow                | `text-yellow-500 fill-yellow-500`       | Testimonials stars                       |
 
-### 11.18 Catatan Penting (UI Gotchas)
+### 12.18 Catatan Penting (UI Gotchas)
 
 1. **Font DM Sans di-import tapi var font pakai Inter** — `--font-sans` dan `--font-heading` diset ke `'Inter', sans-serif`, bukan DM Sans.
 2. **Tidak ada typecheck atau CSS lint** — `bun run lint` cuma ESLint, tidak ada stylelint atau Tailwind linter.
@@ -512,12 +562,14 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 7. **Semua button action pakai transition** — `transition-all duration-200` atau `duration-300`.
 8. **Spasi horizontal inkonsisten** — `p-3 md:p-4` di main layout, tapi beberapa page pakai `px-4` manual. Page container: `mx-auto w-full max-w-6xl` atau `max-w-7xl`.
 
-## 12. i18n (Internasionalisasi)
+## 13. i18n (Internasionalisasi)
 
 ### 12.1 Konfigurasi
 
 **Module**: `@nuxtjs/i18n` v10. **Strategy**: `prefix_except_default` — `en` dapat prefix `/en/`, `id` tanpa prefix. **Default**/**Fallback**: `id`.
-**Files**: `i18n/locales/id.json` + `en.json` — 386 key identik, 19 namespaces, ICU interpolation `{value}`. Ada array translation (`landing.testimonials_items`).
+**Files**: `i18n/locales/id.json` + `en.json` — 388 key identik, 24 namespaces, ICU interpolation `{value}`. Ada array translation (`landing.testimonials_items`).
+
+**24 namespaces**: `nav, dashboard, transactions, transaction_form, transaction_edit, categories, category_form, recurring, recurring_form, goals, goal_form, funds_form, settings, theme, sidebar, topbar, landing, auth, confirm, common, toast, error, chart, export`.
 
 ### 12.2 Pola Pemakaian
 
@@ -530,16 +582,16 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 | `<NuxtLinkLocale>`             | 14 instances                            | Locale-aware link     |
 | `tm()` + `rt()`                | `Testimonials.vue:84,98`                | Array translation     |
 
-### 12.3 Date Formatting (Inconsistency)
+### 13.3 Date Formatting (Inconsistency)
 
-- **Hardcoded `'id-ID'`**: `transactions/index.vue:244,302`, `recurring.vue:237`, `TransactionItem.vue:66`
-- **Ternary reaktif**: `dashboard.vue:352,372,496` — `currentLocale === 'id' ? 'id-ID' : 'en-US'`
+- **Hardcoded `'id-ID'`**: `transactions/index.vue`, `recurring.vue`, `TransactionItem.vue`
+- **Ternary reaktif**: `dashboard.vue`, `GoalForm.vue:138` — `locale.value === 'id' ? 'id-ID' : 'en-US'`
 
-### 12.4 Currency Formatting (Terpisah)
+### 13.4 Currency Formatting (Terpisah)
 
 `useCurrency.ts` punya `getLocale()` sendiri (16 mapping, fallback `en-US`), **tidak** pakai locale dari i18n. Semua composable mutasi lain pakai `useI18n()` untuk toast — kecuali `useCurrency`.
 
-## 13. SEO & Meta
+## 14. SEO & Meta
 
 **Module**: `@nuxtjs/seo` v5. `site` config di nuxt.config: url, name, description, defaultLocale `id`. OG image + sitemap `zeroRuntime: true` (build-time).
 
@@ -549,7 +601,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 **Error page** (`app/error.vue`): Nuxt error page, hardcoded ID strings, no i18n/SEO. Action: "Kembali ke Beranda" (clearError → `/`) + "Lihat Transaksi".
 
-## 14. Nuxt Config & Package
+## 15. Nuxt Config & Package
 
 **Modules** (7): `shadcn-nuxt`, `@nuxtjs/color-mode`, `@nuxtjs/seo`, `@nuxtjs/i18n`, `@nuxt/fonts`, `@nuxt/eslint`, `@nuxt/icon`.
 
@@ -571,23 +623,25 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 | `typescript`                        | ^6.0.3 (dev)     | Types           |
 | `prettier`                          | ^3.5.0 (dev)     | Formatter       |
 
-## 15. TypeScript Types & Interfaces
+## 16. TypeScript Types & Interfaces
 
 **No `.d.ts` files, no `app/types/`, no Supabase `Database` type generation.** Semua type inline di composable sebagai exported interface. DB responses di-cast manual (`as Transaction[]`).
 
-| Interface               | File                       | Fields                                                                                                                                                         |
-| ----------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Transaction`           | `useTransactions.ts:3-13`  | `id, user_id, type('income'\|'expense'), amount: number, currency, category_id?, description?, date, created_at`                                               |
-| `TransactionFilters`    | `useTransactions.ts:15-21` | `type?, category_id?, search?, dateFrom?, dateTo?`                                                                                                             |
-| `Category`              | `useCategories.ts:3-11`    | `id, user_id, name, type, icon, color, created_at`                                                                                                             |
-| `RecurringTransaction`  | `useRecurring.ts:3-15`     | `id, user_id, type, amount, currency, category_id?, description?, frequency('daily'\|'weekly'\|'monthly'\|'yearly'), next_date, active: bool, created_at`      |
-| `CoupleInvitation`      | `usePartner.ts:2-14`       | `id, sender_id, recipient_email, status('pending'\|'accepted'\|'rejected'\|'cancelled'), token, created_at, updated_at, sender?: { display_name, avatar_url }` |
-| `PartnerProfile`        | `usePartner.ts:16-21`      | `id, display_name?, avatar_url?, currency`                                                                                                                     |
-| `ToastType` / `ToastFn` | `useToast.ts:1-2`          | `'success'\|'error'\|'info'` / `(message: string, type?: ToastType) => void`                                                                                   |
+| Interface               | File                       | Fields                                                                                                                                                                         |
+| ----------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Transaction`           | `useTransactions.ts:4-14`  | `id, user_id, type('income'\|'expense'), amount: number, currency, category_id?, description?, date, created_at` **(DB juga punya `receipt_image` tapi tipe TS belum update)** |
+| `TransactionFilters`    | `useTransactions.ts:15-21` | `type?, category_id?, search?, dateFrom?, dateTo?`                                                                                                                             |
+| `Category`              | `useCategories.ts:3-11`    | `id, user_id, name, type, icon, color, created_at`                                                                                                                             |
+| `RecurringTransaction`  | `useRecurring.ts:3-15`     | `id, user_id, type, amount, currency, category_id?, description?, frequency('daily'\|'weekly'\|'monthly'\|'yearly'), next_date, active: bool, created_at`                      |
+| `CoupleInvitation`      | `usePartner.ts:2-14`       | `id, sender_id, recipient_email, status('pending'\|'accepted'\|'rejected'\|'cancelled'), token, created_at, updated_at, sender?: { display_name, avatar_url }`                 |
+| `PartnerProfile`        | `usePartner.ts:16-21`      | `id, display_name?, avatar_url?, currency`                                                                                                                                     |
+| `ToastType` / `ToastFn` | `useToast.ts:1-2`          | `'success'\|'error'\|'info'` / `(message: string, type?: ToastType) => void`                                                                                                   |
+
+| `Goal` | `useGoals.ts:3-15` | `id, user_id, name, target_amount, current_amount, deadline?, icon?, color, image_url?, created_at, updated_at` |
 
 **Tambahan**: `User` dan `SupabaseClient` dari `@supabase/supabase-js`. `error.vue` props **untyped** (`defineProps({ error: Object })`).
 
-## 16. Error Handling Patterns
+## 17. Error Handling Patterns
 
 **Pola mutasi** (add/update/delete) di semua composable: `await supabase.from('tbl').action()` → if `!error`: refresh state + `toast.success(t(...))`, else: `toast.error(t(...))`. Return `{ error }`.
 
@@ -599,7 +653,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 - `seedDefaults()` (useCategories): zero error handling
 - `signInWithGoogle()` (useAuth): **throws** (satu-satunya yang throw)
 - `signOut()` / `getSession()`: no error handling
-- `addCategory()`: return `undefined` silently if `!user.value` (vs addTransaction return `{ error }`)
+- `addCategory()`: return `{ error }` di akhir fungsi, tapi `return` silently jika `!user.value` (line 71-73)
 - Network errors: **unhandled** jika Supabase throw (bukan return `{ error }`) — semua composable cuma check `{ error }` object
 
 **Auth guard** — 3 pola: (A) `return { error }` (useTransaction), (B) `return` silently (useCategories), (C) `toast.error` + return error (usePartner).
@@ -608,7 +662,7 @@ Warna-warna yang dipakai langsung (bukan via CSS variable — biasanya di inline
 
 **Recurring**: **Tidak ada auto-generation** — tidak ada cron/edge function yang bikin transaksi dari recurring. Ini murni scheduler template, monthly projection dihitung client-side.
 
-## 17. Search Implementation
+## 18. Search Implementation
 
 ### 17.1 Topbar Search (Functional)
 
@@ -634,17 +688,18 @@ Karena transaksi disimpan di `useState` global, search dari topbar otomatis memf
 - Query: `supabase.from('transactions').select('*').ilike('description', '%{search}%')`
 - Styling: `rounded-2xl border h-12 pl-12`, focus `border-pink-500/20`
 
-## 18. Routing Map
+## 19. Routing Map
 
 | Route                    | Layout    | Auth                                       | File                                   |
 | ------------------------ | --------- | ------------------------------------------ | -------------------------------------- |
 | `/`                      | `blank`   | No                                         | `app/pages/index.vue`                  |
-| `/auth/login`           | `blank`   | No (redirect to dashboard if already auth) | `app/pages/auth/login.vue`             |
+| `/auth/login`            | `blank`   | No (redirect to dashboard if already auth) | `app/pages/auth/login.vue`             |
 | `/dashboard`             | `default` | Yes                                        | `app/pages/dashboard.vue`              |
 | `/transactions`          | `default` | Yes                                        | `app/pages/transactions/index.vue`     |
 | `/transactions/new`      | `default` | Yes                                        | `app/pages/transactions/new.vue`       |
 | `/transactions/:id/edit` | `default` | Yes                                        | `app/pages/transactions/[id]/edit.vue` |
 | `/categories`            | `default` | Yes                                        | `app/pages/categories.vue`             |
+| `/goals`                 | `default` | Yes                                        | `app/pages/goals.vue`                  |
 | `/recurring`             | `default` | Yes                                        | `app/pages/recurring.vue`              |
 | `/settings`              | `default` | Yes                                        | `app/pages/settings.vue`               |
 
@@ -659,7 +714,7 @@ Semua page authenticated (kecuali `/` dan `/auth/login`) dilindungi `app/middlew
 5. Authenticated + on `/auth/login` → redirect to `/dashboard`
 6. After auth: `loadCurrency()` background
 
-## 19. Komponen Utama
+## 20. Komponen Utama
 
 | Komponen                | Parent                                               | Deskripsi                                                                  |
 | ----------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -677,9 +732,15 @@ Semua page authenticated (kecuali `/` dan `/auth/login`) dilindungi `app/middlew
 | `ChartsExpenseDonut`    | `dashboard.vue`                                      | Donut chart per kategori (chart.js, current month)                         |
 | `ChartsMonthlyBar`      | `dashboard.vue`                                      | Bar chart 6 bulan (chart.js, income vs expense)                            |
 | `SettingsItem`          | `settings.vue`                                       | Row item (icon + label + value + arrow right)                              |
+| `GoalCard`              | `goals.vue`                                          | Progress bar, image preview, add funds/edit/delete                         |
+| `GoalForm`              | `goals.vue`                                          | Dialog CRUD goal (name, target, deadline calendar, image upload)           |
+| `AddFundsDialog`        | `goals.vue`                                          | Dialog tambah dana ke goal                                                 |
+| `TransactionItem`       | `TransactionList`, `RecentTransactions`              | Single transaction row (refactored dari inline)                            |
+| `TransactionList`       | `transactions/index.vue`                             | Reusable wrapper loop TransactionItem via NuxtLinkLocale                   |
+| `SearchDialog`          | `AppTopbar` (⌘K trigger)                             | Command + K dialog, cari transaksi, navigasi halaman                       |
 | `Landing*` (6 komponen) | `index.vue`                                          | Navbar, Hero, Features, Testimonials, Faq, Cta, Footer                     |
 
-## 20. Database Schema (Ringkasan)
+## 21. Database Schema (Ringkasan)
 
 ```
 profiles
@@ -709,6 +770,7 @@ transactions
   currency          text, default 'IDR'
   description       text
   date              date
+  receipt_image     text, nullable       -- from migration 13 (receipt_image)
   created_at        timestamptz
   updated_at        timestamptz
   INDEX: (user_id, date desc), (user_id, type)
@@ -738,41 +800,63 @@ couple_invitations
   updated_at        timestamptz
   INDEX: (sender_id), (recipient_email), (token)
 
+goals
+  id                uuid PK
+  user_id           uuid → auth.users
+  name              text
+  target_amount     numeric
+  current_amount    numeric, default 0
+  deadline          date, nullable
+  icon              text, nullable
+  color             text, default '#ec4899'
+  image_url         text, nullable       -- from migration 17 (goal_images)
+  created_at        timestamptz
+  updated_at        timestamptz
+  INDEX: (user_id)
+
 ```
 
-## 21. Migration History
+## 22. Migration History
 
-| #   | File                                         | Isi                                                                             |
-| --- | -------------------------------------------- | ------------------------------------------------------------------------------- |
-| 1   | `20260523165600_init.sql`                    | Core schema (profiles/categories/transactions/recurring), trigger, RLS, indexes |
-| 2   | `20260524000000_todos.sql`                   | Table `todos` (unused — no UI)                                                  |
-| 3   | `20260524000001_todos_due_date.sql`          | Add `due_date` to todos                                                         |
-| 4   | `20260525000000_recurring_rename.sql`        | Rename recurring→recurring_transactions, migrate name→description               |
-| 5   | `20260525000001_recurring_fix.sql`           | Idempotent fix: handle partial failure                                          |
-| 6   | `20260526000000_couple_invitations.sql`      | couple_invitations table, RLS, indexes                                          |
-| 7   | `20260526000001_couple_partner_id.sql`       | partner_id on profiles, is_my_partner(), update SELECT policy                   |
-| 8   | `20260526000002_couple_rls.sql`              | Partner SELECT policy on all data tables                                        |
-| 9   | `20260526000003_fix_profiles_rls.sql`        | Fix infinite recursion: `auth.uid() = id OR partner_id = auth.uid()`            |
-| 10  | `20260526000004_invitation_profiles_rls.sql` | Sender↔recipient profile visibility via invitations join                        |
-| 11  | `20260526000005_fix_invitation_fk.sql`       | sender_id FK: auth.users → public.profiles                                      |
-| 12  | `20260526000006_accept_invitation_rpc.sql`   | RPC accept_couple_invitation, security definer, row lock                        |
-| 13  | `20260527000000_receipt_image.sql`           | Add `receipt_image` to transactions, create storage bucket `receipts`           |
-| 14  | `20260527000001_drop_todos.sql`              | Drop `todos` table (unused feature)                                             |
+**Total: 19 migrations** (14 original + 5 baru: drop_budgets, goals, goal_images, 2 index).
 
-## 22. Ringkasan State Management
+| #   | File                                          | Isi                                                                             |
+| --- | --------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1   | `20260523165600_init.sql`                     | Core schema (profiles/categories/transactions/recurring), trigger, RLS, indexes |
+| 2   | `20260524000000_todos.sql`                    | Table `todos` (unused — no UI)                                                  |
+| 3   | `20260524000001_todos_due_date.sql`           | Add `due_date` to todos                                                         |
+| 4   | `20260525000000_recurring_rename.sql`         | Rename recurring→recurring_transactions, migrate name→description               |
+| 5   | `20260525000001_recurring_fix.sql`            | Idempotent fix: handle partial failure                                          |
+| 6   | `20260526000000_couple_invitations.sql`       | couple_invitations table, RLS, indexes                                          |
+| 7   | `20260526000001_couple_partner_id.sql`        | partner_id on profiles, is_my_partner(), update SELECT policy                   |
+| 8   | `20260526000002_couple_rls.sql`               | Partner SELECT policy on all data tables                                        |
+| 9   | `20260526000003_fix_profiles_rls.sql`         | Fix infinite recursion: `auth.uid() = id OR partner_id = auth.uid()`            |
+| 10  | `20260526000004_invitation_profiles_rls.sql`  | Sender↔recipient profile visibility via invitations join                        |
+| 11  | `20260526000005_fix_invitation_fk.sql`        | sender_id FK: auth.users → public.profiles                                      |
+| 12  | `20260526000006_accept_invitation_rpc.sql`    | RPC accept_couple_invitation, security definer, row lock                        |
+| 13  | `20260527000000_receipt_image.sql`            | Add `receipt_image` to transactions, create storage bucket `receipts`           |
+| 14  | `20260527000001_drop_todos.sql`               | Drop `todos` table (unused feature)                                             |
+| 15  | `20260527000002_drop_budgets.sql`             | Drop `budgets` table (unused — created outside migrations)                      |
+| 16  | `20260527000003_goals.sql`                    | Create `goals` table, RLS, trigger `handle_updated_at()`                        |
+| 17  | `20260527000004_goal_images.sql`              | Storage bucket `goal-images` (public, 5MB, PNG/JPEG/WebP), `image_url` column   |
+| 18  | `20260528000001_index_categories_user_id.sql` | Index `categories(user_id)`                                                     |
+| 19  | `20260528000002_index_goals_user_id.sql`      | Index `goals(user_id)`                                                          |
 
-8 composables via `useState` ref (no Pinia/Vuex). Semua singleton — key unik menjamin state reusable.
+## 23. Ringkasan State Management
 
-| Composable          | File                          | State                                                                                                    | Methods                                                                                            |
-| ------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **useAuth**         | `useAuth.ts`                  | `user`, `loading`                                                                                        | `signInWithGoogle()`, `signOut()`, `getSession()`                                                  |
-| **useCategories**   | `useCategories.ts`            | `categories`, `loading`, computed `income/expenseCategories`                                             | `fetchCategories()`, `seedDefaults()`, `add/update/deleteCategory()`                               |
-| **useTransactions** | `useTransactions.ts`          | `transactions`, `loading`, computed `monthlySummary`                                                     | `fetchTransactions(filters?)`, `add/update/deleteTransaction()`, `getTransaction()`                |
-| **useRecurring**    | `useRecurring.ts`             | `recurring`, `loading`                                                                                   | `fetchRecurring()`, `add/update/deleteRecurring()`, `toggleActive()`                               |
-| **useCurrency**     | `useCurrency.ts`              | `defaultCurrency`                                                                                        | `loadCurrency()`, `formatCurrency()`, `formatNumberOnly()`, `parseLocalizedNumber()`               |
-| **usePartner**      | `usePartner.ts`               | `partner`, `sent/receivedInvitations`, `loading`, `sending`, computed `isPartnered`/`partnerDisplayName` | `fetchPartner()`, `fetchInvitations()`, `send/accept/reject/cancelInvite()`, `disconnectPartner()` |
-| **useExport**       | `useExport.ts`                | `exporting`                                                                                              | `exportAllData()`                                                                                  |
-| **useToast**        | `app/composables/useToast.ts` | Module-level ref via `register(fn)`                                                                      | `toast.success()`, `toast.error()`, `toast.info()`                                                 |
+9 composables via `useState` ref (no Pinia/Vuex). Semua singleton — key unik menjamin state reusable.
+
+| Composable          | File                          | State                                                                                                    | Methods                                                                                                             |
+| ------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **useAuth**         | `useAuth.ts`                  | `user`, `loading`                                                                                        | `signInWithGoogle()`, `signOut()`, `getSession()`                                                                   |
+| **useCategories**   | `useCategories.ts`            | `categories`, `loading`, computed `income/expenseCategories`                                             | `fetchCategories()`, `seedDefaults()`, `add/update/deleteCategory()`                                                |
+| **useTransactions** | `useTransactions.ts`          | `transactions`, `loading`, computed `monthlySummary`                                                     | `fetchTransactions(filters?)`, `searchTransactions(term)`, `add/update/deleteTransaction()`, `getTransaction()`     |
+| **useRecurring**    | `useRecurring.ts`             | `recurring`, `loading`                                                                                   | `fetchRecurring()`, `add/update/deleteRecurring()`, `toggleActive()`                                                |
+| **useCurrency**     | `useCurrency.ts`              | `defaultCurrency`, `exchangeRates`, `isRatesLoading`                                                     | `loadCurrency()`, `formatCurrency()`, `formatNumberOnly()`, `parseLocalizedNumber()`, `fetchRates()`, `convertTo()` |
+| **usePartner**      | `usePartner.ts`               | `partner`, `sent/receivedInvitations`, `loading`, `sending`, computed `isPartnered`/`partnerDisplayName` | `fetchPartner()`, `fetchInvitations()`, `send/accept/reject/cancelInvite()`, `disconnectPartner()`                  |
+| **useGoals**        | `useGoals.ts`                 | `goals`, `loading`                                                                                       | `fetchGoals()`, `addGoal()`, `updateGoal()`, `addFunds()`, `uploadGoalImage()`, `deleteGoalImage()`, `deleteGoal()` |
+| **useExport**       | `useExport.ts`                | `exporting`                                                                                              | `exportAllData()`                                                                                                   |
+| **useToast**        | `app/composables/useToast.ts` | Module-level ref via `register(fn)`                                                                      | `toast.success()`, `toast.error()`, `toast.info()`                                                                  |
 
 Semua composable menggunakan **singleton pattern**: `useState` dengan key unik memastikan state yang sama dipakai ulang di semua komponen yang meng-import composable yang sama.
 
@@ -782,9 +866,10 @@ Semua composable menggunakan **singleton pattern**: `useState` dengan key unik m
 2. `useSupabase()` untuk Supabase client (manual import dari `~/lib/supabase`)
 3. `useI18n()` untuk `t()` — toast messages
 4. `useToast()` untuk `toast.success`/`toast.error`
-5. Mutation functions mengikuti pola: call Supabase → if (!error) refresh + toast.success else toast.error
+5. Mutation functions mengikuti pola: call Supabase → if (!error) cache.invalidate → refresh + toast.success else toast.error
+6. 4 composable menggunakan `createCache()`: useCategories, useTransactions, useRecurring, usePartner. Cache di-invalidate setelah mutasi dengan prefix key.
 
-## 23. Catatan Penting (Gotchas)
+## 24. Catatan Penting (Gotchas)
 
 1. **`useSupabase()` tidak auto-import** — harus `import { useSupabase } from '~/lib/supabase'`
 2. **Nama tabel recurring** — di kode pakai `recurring_transactions`, bukan `recurring`
@@ -804,3 +889,8 @@ Semua composable menggunakan **singleton pattern**: `useState` dengan key unik m
 16. **Font DM Sans di-import tapi var font pakai Inter** — `--font-sans` dan `--font-heading` diset ke `'Inter', sans-serif`, bukan DM Sans
 17. **Tidak ada typecheck** — `bun run lint` cuma ESLint, tidak ada vue-tsc atau stylelint
 18. **Tidak ada Supabase Database types** — Semua response di-cast manual (`as Transaction[]`). Tidak ada `supabase gen types`
+19. **Caching layer** — `app/lib/cache.ts` menyediakan `createCache()` dengan in-memory TTL store + request deduplication (`inflight` map). Dipakai oleh `useCategories` (60s), `useTransactions` (30s), `useRecurring` (30s), `usePartner` (60s). Mutasi meng-invalidate via prefix.
+20. **Currency plugin** — `app/plugins/currency.client.ts` memanggil `fetchRates()` di `onNuxtReady`. Endpoint: `/api/v1/rates` (Nitro, bukan Supabase).
+21. **Goals feature** — Fitur target tabungan dengan page `/goals`, composable `useGoals`, 3 komponen (`GoalForm`, `GoalCard`, `AddFundsDialog`), 3 migrations, storage bucket `goal-images`.
+22. **Transaction interface missing `receipt_image`** — DB punya kolom `receipt_image` (migration 13), tapi TypeScript interface `Transaction` di `useTransactions.ts:4-14` belum mencakup field ini. Ini bisa menyebabkan type error jika kode mengakses `receipt_image`.
+23. **`addCategory()`** — return `{ error }` di akhir fungsi, tapi return silently jika `!user.value` (line 71-73) — tidak konsisten dengan komposable lain yang return `{ error: { message: 'Not authenticated' } }`.

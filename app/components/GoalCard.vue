@@ -8,16 +8,8 @@
           class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           :style="!goal.image_url ? { backgroundColor: (goal.color || '#ec4899') + '20' } : {}"
         >
-          <AspectRatio
-            v-if="goal.image_url"
-            :ratio="16 / 9"
-            class="overflow-hidden rounded-xl"
-          >
-            <img
-              :src="goal.image_url"
-              :alt="goal.name"
-              class="h-full w-full object-cover"
-            >
+          <AspectRatio v-if="goal.image_url" :ratio="16 / 9" class="overflow-hidden rounded-xl">
+            <img :src="goal.image_url" :alt="goal.name" class="h-full w-full object-cover" />
           </AspectRatio>
           <div
             v-else

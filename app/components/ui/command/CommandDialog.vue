@@ -35,7 +35,9 @@ const forwarded = useForwardPropsEmits(props, emits);
 <template>
   <Dialog v-slot="slotProps" v-bind="forwarded">
     <DialogContent
-      :class="cn('rounded-xl! top-[8vh] translate-y-0 overflow-hidden p-0 sm:max-w-lg', props.class)"
+      :class="
+        cn('rounded-xl! top-[8vh] translate-y-0 overflow-hidden p-0 sm:max-w-lg', props.class)
+      "
       :show-close-button="showCloseButton"
     >
       <DialogHeader class="sr-only">

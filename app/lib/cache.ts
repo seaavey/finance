@@ -19,14 +19,16 @@ export function createCache() {
       return pending as Promise<T>;
     }
 
-    const promise = fetcher().then((data) => {
-      store.set(key, { data, expiresAt: now + ttlMs });
-      inflight.delete(key);
-      return data;
-    }).catch((err) => {
-      inflight.delete(key);
-      throw err;
-    });
+    const promise = fetcher()
+      .then((data) => {
+        store.set(key, { data, expiresAt: now + ttlMs });
+        inflight.delete(key);
+        return data;
+      })
+      .catch((err) => {
+        inflight.delete(key);
+        throw err;
+      });
 
     inflight.set(key, promise);
     return promise;

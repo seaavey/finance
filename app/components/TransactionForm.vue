@@ -44,7 +44,7 @@
           :placeholder="$t('transaction_form.amount_placeholder')"
           class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
-        >
+        />
       </div>
     </div>
 
@@ -141,10 +141,7 @@
 
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3">
-      <Button
-        variant="outline"
-        @click="$emit('cancel')"
-      >
+      <Button variant="outline" @click="$emit('cancel')">
         {{ $t('transaction_form.cancel') }}
       </Button>
       <Button

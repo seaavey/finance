@@ -180,11 +180,7 @@
             class="flex flex-col items-center gap-3 py-8 text-center"
           >
             <div class="flex size-12 items-center justify-center rounded-full bg-muted">
-              <Icon
-                name="hugeicons:arrow-left-right"
-                :size="24"
-                class="text-muted-foreground/40"
-              />
+              <Icon name="hugeicons:arrow-left-right" :size="24" class="text-muted-foreground/40" />
             </div>
             <div>
               <p class="text-sm font-medium text-foreground">{{ $t('dashboard.empty_title') }}</p>
@@ -508,11 +504,7 @@ const monthlyData = computed(() => {
 onMounted(async () => {
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-  await Promise.all([
-    fetchTransactions({ dateFrom: firstDay }),
-    fetchCategories(),
-    fetchPartner(),
-  ]);
+  await Promise.all([fetchTransactions({ dateFrom: firstDay }), fetchCategories(), fetchPartner()]);
   loading.value = false;
 });
 </script>

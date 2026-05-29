@@ -79,7 +79,11 @@
                 <h3 class="font-medium">{{ cat.name }}</h3>
                 <p class="text-sm text-muted-foreground">
                   {{ (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count }} transaksi · Rp
-                  {{ (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total.toLocaleString('id-ID') }}
+                  {{
+                    (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total.toLocaleString(
+                      'id-ID',
+                    )
+                  }}
                 </p>
               </div>
             </div>

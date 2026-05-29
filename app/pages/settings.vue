@@ -310,11 +310,7 @@
             </div>
           </div>
 
-          <Button
-            variant="destructive"
-            :disabled="partnerLoading"
-            @click="onDisconnect"
-          >
+          <Button variant="destructive" :disabled="partnerLoading" @click="onDisconnect">
             <div class="flex items-center gap-4">
               <div
                 class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"
@@ -347,10 +343,7 @@
         <div
           class="rounded-3xl border border-red-500/20 bg-red-500/[0.02] p-1.5 backdrop-blur-sm transition-all duration-300 hover:bg-red-500/[0.05]"
         >
-          <Button
-            variant="outline"
-            @click="onSignOut"
-          >
+          <Button variant="outline" @click="onSignOut">
             <div class="flex items-center gap-4">
               <div
                 class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"

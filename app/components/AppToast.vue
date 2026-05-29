@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 type ToastType = 'success' | 'error' | 'info';
 
 interface Toast {

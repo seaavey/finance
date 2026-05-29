@@ -27,7 +27,8 @@ export const useRecurring = () => {
     loading.value = true;
     const { data, error } = await cache.fetch(
       'recurring',
-      () => supabase.from('recurring_transactions').select('*').order('next_date', { ascending: true }),
+      () =>
+        supabase.from('recurring_transactions').select('*').order('next_date', { ascending: true }),
       30_000,
     );
     if (!error && data) {

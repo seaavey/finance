@@ -38,9 +38,7 @@
                   :key="n"
                   name="material-symbols:star"
                   :size="14"
-                  :class="
-                    n <= t.rating ? 'text-yellow-500' : 'text-muted-foreground/30'
-                  "
+                  :class="n <= t.rating ? 'text-yellow-500' : 'text-muted-foreground/30'"
                 />
               </div>
               <!-- Quote -->
@@ -53,10 +51,7 @@
             <div class="mt-6 flex items-center gap-3">
               <Avatar class="h-10 w-10 shrink-0">
                 <AvatarImage :src="rt(t.avatar)" :alt="rt(t.name)" />
-                <AvatarFallback
-                  class="text-xs font-bold"
-                  :class="getColorClasses(t.color)"
-                >
+                <AvatarFallback class="text-xs font-bold" :class="getColorClasses(t.color)">
                   {{ rt(t.initials) }}
                 </AvatarFallback>
               </Avatar>
@@ -81,7 +76,6 @@
 </template>
 
 <script setup lang="ts">
-
 const { tm, rt } = useI18n();
 
 interface Testimonial {

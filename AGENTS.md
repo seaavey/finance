@@ -32,18 +32,18 @@ No test infrastructure exists.
 
 ## Key Directories
 
-| Path                   | Purpose                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------ |
+| Path                   | Purpose                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------- |
 | `app/pages/`           | Page routes (dashboard, transactions/, categories, recurring, settings, auth/login) |
-| `app/components/`      | Shared SFCs (landing/, charts/, ui/ via shadcn, AppSidebar, etc.)              |
-| `app/composables/`     | 8 composables — single-file, import from `~/composables/`                      |
-| `app/lib/`             | supabase.ts (client), utils.ts (cn helper)                                     |
-| `app/middleware/`      | `auth.global.ts`                                                               |
-| `app/plugins/`         | `auth.client.ts`                                                               |
-| `server/middleware/`   | Security headers, open redirect protection, injection detection                |
-| `server/plugins/`      | Error stack trace scrubbing (pentest finding)                                  |
-| `supabase/migrations/` | 12 SQL migrations for schema and RLS                                           |
-| `supabase/functions/`  | Edge function `send-couple-invite`                                             |
+| `app/components/`      | Shared SFCs (landing/, charts/, ui/ via shadcn, AppSidebar, etc.)                   |
+| `app/composables/`     | 8 composables — single-file, import from `~/composables/`                           |
+| `app/lib/`             | supabase.ts (client), utils.ts (cn helper)                                          |
+| `app/middleware/`      | `auth.global.ts`                                                                    |
+| `app/plugins/`         | `auth.client.ts`                                                                    |
+| `server/middleware/`   | Security headers, open redirect protection, injection detection                     |
+| `server/plugins/`      | Error stack trace scrubbing (pentest finding)                                       |
+| `supabase/migrations/` | 12 SQL migrations for schema and RLS                                                |
+| `supabase/functions/`  | Edge function `send-couple-invite`                                                  |
 
 ## Couple/Partner Feature
 

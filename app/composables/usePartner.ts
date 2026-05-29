@@ -79,12 +79,23 @@ export const usePartner = () => {
     const [sentResult, receivedResult] = await Promise.all([
       cache.fetch(
         `invitations:sent:${user.value.id}`,
-        () => supabase.from('couple_invitations').select('*').eq('sender_id', user.value.id).order('created_at', { ascending: false }),
+        () =>
+          supabase
+            .from('couple_invitations')
+            .select('*')
+            .eq('sender_id', user.value.id)
+            .order('created_at', { ascending: false }),
         60_000,
       ),
       cache.fetch(
         `invitations:received:${user.value.email}`,
-        () => supabase.from('couple_invitations').select('*, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value.email).eq('status', 'pending').order('created_at', { ascending: false }),
+        () =>
+          supabase
+            .from('couple_invitations')
+            .select('*, sender:profiles(display_name, avatar_url)')
+            .eq('recipient_email', user.value.email)
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false }),
         60_000,
       ),
     ]);

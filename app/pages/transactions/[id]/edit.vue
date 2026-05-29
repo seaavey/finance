@@ -79,7 +79,11 @@
               :class="transaction.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
             >
               <Icon
-                :name="transaction.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
+                :name="
+                  transaction.type === 'income'
+                    ? 'hugeicons:arrow-down-01'
+                    : 'hugeicons:arrow-up-01'
+                "
                 :size="22"
                 :class="transaction.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
               />
