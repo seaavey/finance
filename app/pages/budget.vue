@@ -4,7 +4,7 @@ import type { BudgetWithProgress } from '~/composables/useBudgets';
 definePageMeta({});
 
 const { t } = useI18n();
-const seoTitle = computed(() => `${t('budget.title')} | Finance`);
+const seoTitle = computed(() => t('budget.title'));
 useSeoMeta({
   title: seoTitle,
   ogTitle: seoTitle,
