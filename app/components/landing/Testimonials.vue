@@ -36,10 +36,10 @@
                 <Icon
                   v-for="n in 5"
                   :key="n"
-                  name="hugeicons:star"
+                  name="material-symbols:star"
                   :size="14"
                   :class="
-                    n <= t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'
+                    n <= t.rating ? 'text-yellow-500' : 'text-muted-foreground/30'
                   "
                 />
               </div>
@@ -51,12 +51,15 @@
 
             <!-- Author -->
             <div class="mt-6 flex items-center gap-3">
-              <div
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                :class="getColorClasses(t.color)"
-              >
-                {{ rt(t.initials) }}
-              </div>
+              <Avatar class="h-10 w-10 shrink-0">
+                <AvatarImage :src="rt(t.avatar)" :alt="rt(t.name)" />
+                <AvatarFallback
+                  class="text-xs font-bold"
+                  :class="getColorClasses(t.color)"
+                >
+                  {{ rt(t.initials) }}
+                </AvatarFallback>
+              </Avatar>
               <div class="min-w-0">
                 <p class="truncate text-sm font-semibold">{{ rt(t.name) }}</p>
                 <p class="truncate text-xs text-muted-foreground">{{ rt(t.role) }}</p>
@@ -88,6 +91,7 @@ interface Testimonial {
   initials: string | object;
   color: string | object;
   rating: number | object;
+  avatar: string | object;
 }
 
 const rawTestimonials = tm('landing.testimonials_items') as any[];
