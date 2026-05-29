@@ -105,6 +105,7 @@ const mainNavItems = computed(() => [
   { to: '/categories', label: t('sidebar.categories'), icon: 'hugeicons:grid-view' },
   { to: '/recurring', label: t('sidebar.recurring'), icon: 'hugeicons:repeat' },
   { to: '/goals', label: t('sidebar.goals'), icon: 'hugeicons:target-02' },
+  { to: '/budget', label: t('sidebar.budget'), icon: 'hugeicons:wallet-03' },
 ]);
 
 const bottomNavItems = computed(() => [
