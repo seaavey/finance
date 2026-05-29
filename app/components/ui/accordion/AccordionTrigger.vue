@@ -29,13 +29,7 @@ const delegatedProps = reactiveOmit(props, 'class');
           name="hugeicons:arrow-down-01"
           :size="16"
           data-slot="accordion-trigger-icon"
-          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
-        />
-        <Icon
-          name="hugeicons:arrow-up-01"
-          :size="16"
-          data-slot="accordion-trigger-icon"
-          class="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+          class="pointer-events-none shrink-0 transition-transform duration-200 group-data-[state=open]/accordion-trigger:rotate-180"
         />
       </slot>
     </AccordionTrigger>
