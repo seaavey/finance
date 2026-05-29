@@ -63,59 +63,66 @@ export const useBudgets = () => {
       return [];
     }
 
-    const { data: budgetData } = await supabase
-      .from('budgets')
-      .select('*')
-      .eq('user_id', user.value.id)
-      .eq('month', month);
+    const result = await cache.fetch(
+      `budgets:with-progress:${month}`,
+      async () => {
+        const { data: budgetData } = await supabase
+          .from('budgets')
+          .select('*')
+          .eq('user_id', user.value!.id)
+          .eq('month', month);
 
-    const budgetsList = (budgetData as Budget[]) || [];
+        const budgetsList = (budgetData as Budget[]) || [];
 
-    if (budgetsList.length === 0) {
-      return [];
-    }
+        if (budgetsList.length === 0) {
+          return [];
+        }
 
-    const categoryIds = budgetsList.map((b) => b.category_id);
+        const categoryIds = budgetsList.map((b) => b.category_id);
 
-    const { data: categoriesData } = await supabase
-      .from('categories')
-      .select('id, name, color, icon')
-      .in('id', categoryIds);
+        const { data: categoriesData } = await supabase
+          .from('categories')
+          .select('id, name, color, icon')
+          .in('id', categoryIds);
 
-    const categoryMap = new Map(
-      (categoriesData || []).map((c: { id: string; name: string; color: string; icon: string }) => [
-        c.id,
-        c,
-      ]),
+        const categoryMap = new Map(
+          (categoriesData || []).map(
+            (c: { id: string; name: string; color: string; icon: string }) => [c.id, c],
+          ),
+        );
+
+        const [year, mon] = month.split('-').map(Number);
+        const nextMonth = new Date(year, mon, 1).toISOString().slice(0, 10);
+
+        const { data: txData } = await supabase
+          .from('transactions')
+          .select('category_id, amount')
+          .eq('user_id', user.value!.id)
+          .eq('type', 'expense')
+          .gte('date', month)
+          .lt('date', nextMonth)
+          .in('category_id', categoryIds);
+
+        const spentMap = new Map<string, number>();
+        for (const tx of (txData || []) as { category_id: string; amount: number }[]) {
+          spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount));
+        }
+
+        return budgetsList.map((b) => {
+          const cat = categoryMap.get(b.category_id);
+          return {
+            ...b,
+            category_name: cat?.name || '-',
+            category_color: cat?.color || '#6b7280',
+            category_icon: cat?.icon || '',
+            spent: spentMap.get(b.category_id) || 0,
+          };
+        });
+      },
+      30_000,
     );
 
-    const [year, mon] = month.split('-').map(Number);
-    const nextMonth = new Date(year, mon, 1).toISOString().slice(0, 10);
-
-    const { data: txData } = await supabase
-      .from('transactions')
-      .select('category_id, amount')
-      .eq('user_id', user.value.id)
-      .eq('type', 'expense')
-      .gte('date', month)
-      .lt('date', nextMonth)
-      .in('category_id', categoryIds);
-
-    const spentMap = new Map<string, number>();
-    for (const tx of (txData || []) as { category_id: string; amount: number }[]) {
-      spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount));
-    }
-
-    return budgetsList.map((b) => {
-      const cat = categoryMap.get(b.category_id);
-      return {
-        ...b,
-        category_name: cat?.name || '-',
-        category_color: cat?.color || '#6b7280',
-        category_icon: cat?.icon || '',
-        spent: spentMap.get(b.category_id) || 0,
-      };
-    });
+    return result || [];
   };
 
   const setBudget = async (categoryId: string, month: string, amount: number) => {
@@ -150,6 +157,7 @@ export const useBudgets = () => {
 
     if (!error) {
       cache.invalidate(`budgets:${month}`);
+      cache.invalidate(`budgets:with-progress:${month}`);
       await fetchBudgets(month);
       toast.success(t('budget.saved'));
     } else {
@@ -165,6 +173,7 @@ export const useBudgets = () => {
 
     if (!error) {
       cache.invalidate(`budgets:${month}`);
+      cache.invalidate(`budgets:with-progress:${month}`);
       await fetchBudgets(month);
       toast.success(t('budget.deleted'));
     } else {
