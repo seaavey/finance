@@ -206,6 +206,39 @@
         </div>
       </div>
 
+      <!-- Accounts Section -->
+      <div v-if="accountBalances.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold tracking-tight">{{ $t('dashboard.accounts_title') }}</h2>
+          <NuxtLinkLocale to="/accounts" class="text-xs font-medium text-primary hover:underline">
+            {{ $t('dashboard.view_all') }}
+          </NuxtLinkLocale>
+        </div>
+        <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          <div
+            v-for="acct in accountBalances"
+            :key="acct.id"
+            class="flex items-center gap-3 rounded-2xl border border-border/50 bg-card/30 p-3 transition-all hover:border-border"
+          >
+            <div
+              class="flex size-9 shrink-0 items-center justify-center rounded-xl"
+              :style="{ backgroundColor: acct.color + '20' }"
+            >
+              <Icon
+                v-if="acct.icon?.startsWith('hugeicons:')"
+                :name="acct.icon"
+                :size="16"
+                :style="{ color: acct.color }"
+              />
+            </div>
+            <div class="min-w-0">
+              <p class="truncate text-xs text-muted-foreground">{{ acct.name }}</p>
+              <p class="text-sm font-semibold">{{ formatCurrency(acct.balance, acct.currency) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="rounded-2xl border border-border bg-card">
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.recent') }}</h3>
@@ -332,6 +365,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import type { BudgetWithProgress } from '~/composables/useBudgets';
+import type { AccountWithBalance } from '~/composables/useAccounts';
 
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
@@ -340,11 +374,13 @@ const { formatCurrency } = useCurrency();
 const { t, locale } = useI18n();
 const { partner, isPartnered, fetchPartner } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
+const { fetchAccounts, getAccountBalances } = useAccounts();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
 const budgetSummaries = ref<BudgetWithProgress[]>([]);
+const accountBalances = ref<AccountWithBalance[]>([]);
 
 const chartPeriods = ['7d', '30d', '90d'];
 
@@ -552,6 +588,8 @@ onMounted(async () => {
   await Promise.all([fetchTransactions({ dateFrom: firstDay }), fetchCategories(), fetchPartner()]);
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
+  await fetchAccounts();
+  accountBalances.value = await getAccountBalances();
   loading.value = false;
 });
 </script>
