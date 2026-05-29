@@ -165,7 +165,8 @@
     "yearly": "Tahunan",
     "next_date": "Tanggal Berikutnya",
     "select_date": "Pilih tanggal",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "save": "Simpan"
   },
   "goals": {
     "title": "Target Tabungan",
@@ -451,7 +452,8 @@
     "confirm": "Konfirmasi",
     "confirm_desc": "Apakah kamu yakin?",
     "delete": "Hapus",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "saving": "Menyimpan..."
   },
   "toast": {
     "transaction_added": "Transaksi berhasil ditambahkan",

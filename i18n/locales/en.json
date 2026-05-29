@@ -165,7 +165,8 @@
     "yearly": "Yearly",
     "next_date": "Next Date",
     "select_date": "Select date",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "goals": {
     "title": "Savings Goals",
@@ -451,7 +452,8 @@
     "confirm": "Confirm",
     "confirm_desc": "Are you sure?",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "saving": "Saving..."
   },
   "toast": {
     "transaction_added": "Transaction added successfully",
