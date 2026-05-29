@@ -8,18 +8,18 @@ Add multiple account support (bank, e-wallet, cash) with per-account balance tra
 
 ### New table: `accounts`
 
-| Column          | Type        | Notes                                         |
-| --------------- | ----------- | --------------------------------------------- |
-| id              | uuid        | PK, default uuid_generate_v4()                |
-| user_id         | uuid        | FK → profiles.id, NOT NULL                    |
-| name            | text        | NOT NULL                                      |
+| Column          | Type        | Notes                                           |
+| --------------- | ----------- | ----------------------------------------------- |
+| id              | uuid        | PK, default uuid_generate_v4()                  |
+| user_id         | uuid        | FK → profiles.id, NOT NULL                      |
+| name            | text        | NOT NULL                                        |
 | type            | text        | NOT NULL, CHECK IN ('bank', 'e-wallet', 'cash') |
-| currency        | text        | DEFAULT 'IDR'                                 |
-| color           | text        | DEFAULT '#3b82f6'                             |
-| icon            | text        | DEFAULT 'hugeicons:bank'                      |
-| initial_balance | numeric     | DEFAULT 0                                     |
-| created_at      | timestamptz | DEFAULT now()                                  |
-| updated_at      | timestamptz | DEFAULT now()                                  |
+| currency        | text        | DEFAULT 'IDR'                                   |
+| color           | text        | DEFAULT '#3b82f6'                               |
+| icon            | text        | DEFAULT 'hugeicons:bank'                        |
+| initial_balance | numeric     | DEFAULT 0                                       |
+| created_at      | timestamptz | DEFAULT now()                                   |
+| updated_at      | timestamptz | DEFAULT now()                                   |
 
 Index: `idx_accounts_user_id` ON accounts(user_id).
 
@@ -97,6 +97,7 @@ Add "Akun" section below budget summary:
 Single file: `supabase/migrations/20260530000000_accounts.sql`
 
 Contents:
+
 1. CREATE TABLE accounts
 2. CREATE INDEX idx_accounts_user_id
 3. CREATE TRIGGER on_accounts_updated
@@ -107,6 +108,7 @@ Contents:
 ## i18n Keys
 
 New namespace `accounts`:
+
 ```
 accounts.title, accounts.subtitle, accounts.add, accounts.edit, accounts.delete,
 accounts.name, accounts.type, accounts.bank, accounts.e-wallet, accounts.cash,
@@ -117,6 +119,7 @@ accounts.saved, accounts.save_error, accounts.deleted, accounts.delete_error
 ```
 
 Plus:
+
 - `sidebar.accounts` — nav label
 - `transaction_form.select_account` — account picker label
 - `dashboard.accounts_title` — dashboard section header
@@ -125,18 +128,18 @@ All keys in both id.json and en.json.
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
+| File                                              | Change                                          |
+| ------------------------------------------------- | ----------------------------------------------- |
 | `supabase/migrations/20260530000000_accounts.sql` | New — accounts table + RLS + alter transactions |
-| `app/composables/useAccounts.ts` | New — accounts CRUD composable |
-| `app/pages/accounts.vue` | New — accounts management page |
-| `app/components/AccountForm.vue` | New — add/edit account dialog |
-| `app/components/AccountCard.vue` | New — account display card |
-| `app/components/DashboardSummary.vue` | Modified — add account balances section |
-| `app/components/TransactionForm.vue` | Modified — add account selector |
-| `app/components/AppSidebar.vue` | Modified — add /accounts link |
-| `i18n/locales/id.json` | Modified — add accounts keys |
-| `i18n/locales/en.json` | Modified — add accounts keys |
+| `app/composables/useAccounts.ts`                  | New — accounts CRUD composable                  |
+| `app/pages/accounts.vue`                          | New — accounts management page                  |
+| `app/components/AccountForm.vue`                  | New — add/edit account dialog                   |
+| `app/components/AccountCard.vue`                  | New — account display card                      |
+| `app/components/DashboardSummary.vue`             | Modified — add account balances section         |
+| `app/components/TransactionForm.vue`              | Modified — add account selector                 |
+| `app/components/AppSidebar.vue`                   | Modified — add /accounts link                   |
+| `i18n/locales/id.json`                            | Modified — add accounts keys                    |
+| `i18n/locales/en.json`                            | Modified — add accounts keys                    |
 
 ## Out of Scope
 
