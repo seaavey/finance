@@ -36,7 +36,9 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "other": "Other",
-    "new": "New"
+    "new": "New",
+    "user": "User",
+    "days_ago": "{days} days ago"
   },
   "transactions": {
     "title": "Transactions",
@@ -57,7 +59,10 @@
     "type": "Type",
     "category": "Category",
     "reset_filter": "Reset Filters",
-    "all": "All"
+    "all": "All",
+    "owner_filter_all": "All",
+    "owner_filter_mine": "Mine",
+    "owner_filter_partner": "Partner"
   },
   "transaction_form": {
     "title_new": "Add Transaction",
@@ -102,7 +107,9 @@
     "delete_title": "Delete Category",
     "delete_confirm": "Are you sure you want to delete this category?",
     "delete_action": "Delete",
-    "transaction": "transaction"
+    "transaction": "transaction",
+    "transaction_count": "{count} transaction",
+    "delete_confirm_suffix": "This action cannot be undone."
   },
   "category_form": {
     "title_edit": "Edit Category",
@@ -174,7 +181,27 @@
     "delete_action": "Delete",
     "saved": "Saved",
     "remaining": "Remaining",
-    "completed": "Reached!"
+    "completed": "Reached!",
+    "upload_error": "Failed to upload image",
+    "max_size_error": "Max 5MB"
+  },
+  "budget": {
+    "title": "Budget",
+    "subtitle": "Set monthly budgets per category",
+    "no_budgets": "No budgets yet",
+    "set_budget": "Set Budget",
+    "edit_budget": "Edit Budget",
+    "delete_budget": "Delete Budget",
+    "monthly_limit": "Monthly Limit",
+    "spent": "Spent",
+    "remaining": "Remaining",
+    "overspent": "Over budget!",
+    "saved": "Budget saved successfully",
+    "save_error": "Failed to save budget",
+    "deleted": "Budget deleted successfully",
+    "delete_error": "Failed to delete budget",
+    "dashboard_title": "This Month's Budget",
+    "no_limit": "No budget set"
   },
   "goal_form": {
     "title_new": "Add Goal",
@@ -234,7 +261,18 @@
     "toast_saved": "Profile saved successfully",
     "toast_save_error": "Failed to save profile",
     "toast_currency_updated": "Currency updated",
-    "toast_currency_error": "Failed to update currency"
+    "toast_currency_error": "Failed to update currency",
+    "couple_mode": "Couple Mode",
+    "personal_mode": "Personal Mode",
+    "cancel_invite": "Cancel",
+    "someone": "Someone",
+    "reject": "Reject",
+    "accept": "Accept",
+    "dialog_name_desc": "Update your display name",
+    "dialog_currency_desc": "Select your preferred currency",
+    "locale_id": "Indonesian",
+    "locale_en": "English",
+    "disconnect_confirm": "Press again to confirm"
   },
   "theme": {
     "light": "Light",
@@ -248,6 +286,7 @@
     "categories": "Categories",
     "recurring": "Recurring",
     "goals": "Goals",
+    "budget": "Budget",
     "settings": "Settings",
     "logout": "Logout",
     "partner": "Partner"
@@ -321,6 +360,9 @@
     "footer_subscribe_desc": "Get the latest updates and tips on managing your finances.",
     "footer_subscribe_placeholder": "Enter your email",
     "footer_subscribe_button": "Subscribe",
+    "footer_github": "GitHub",
+    "footer_twitter": "Twitter",
+    "footer_linkedin": "LinkedIn",
     "footer_copyright": "© {year} Finance. All rights reserved.",
     "hero_preview": {
       "balance": "Balance This Month",
@@ -404,7 +446,11 @@
   },
   "common": {
     "close": "Close",
-    "more": "More"
+    "more": "More",
+    "confirm": "Confirm",
+    "confirm_desc": "Are you sure?",
+    "delete": "Delete",
+    "cancel": "Cancel"
   },
   "toast": {
     "transaction_added": "Transaction added successfully",
@@ -435,7 +481,20 @@
     "category_delete_error": "Failed to delete category",
     "export_success": "Data exported successfully",
     "export_error": "Failed to export data",
-    "login_required": "You must be logged in"
+    "login_required": "You must be logged in",
+    "partner_invite_self": "Cannot invite yourself",
+    "partner_already_connected": "Already connected with a partner",
+    "partner_invite_exists": "Invitation already sent to this email",
+    "partner_invite_sent": "Invitation sent successfully",
+    "partner_invite_error": "Failed to send invitation",
+    "partner_accept_error": "Failed to accept invitation",
+    "partner_connected": "Successfully connected with partner!",
+    "partner_rejected": "Invitation rejected",
+    "partner_reject_error": "Failed to reject invitation",
+    "partner_cancelled": "Invitation cancelled",
+    "partner_cancel_error": "Failed to cancel invitation",
+    "partner_disconnect_error": "Failed to disconnect",
+    "partner_disconnected": "Disconnected from partner"
   },
   "error": {
     "title_404": "Page not found",
@@ -446,7 +505,9 @@
     "view_transactions": "View Transactions"
   },
   "chart": {
-    "no_data": "No data yet"
+    "no_data": "No data yet",
+    "million": "M",
+    "thousand": "k"
   },
   "export": {
     "sheet_transactions": "Transactions",
@@ -465,6 +526,13 @@
     "col_name": "Name",
     "col_color": "Color",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "type_income": "Income",
+    "type_expense": "Expense",
+    "frequency_daily": "Daily",
+    "frequency_weekly": "Weekly",
+    "frequency_monthly": "Monthly",
+    "frequency_yearly": "Yearly",
+    "creator": "Finansiil"
   }
 }

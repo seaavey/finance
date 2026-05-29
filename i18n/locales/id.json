@@ -36,7 +36,9 @@
     "today": "Hari ini",
     "yesterday": "Kemarin",
     "other": "Lainnya",
-    "new": "Baru"
+    "new": "Baru",
+    "user": "User",
+    "days_ago": "{days} hari lalu"
   },
   "transactions": {
     "title": "Transaksi",
@@ -57,7 +59,10 @@
     "type": "Tipe",
     "category": "Kategori",
     "reset_filter": "Reset Filter",
-    "all": "Semua"
+    "all": "Semua",
+    "owner_filter_all": "Semua",
+    "owner_filter_mine": "Saya",
+    "owner_filter_partner": "Pasangan"
   },
   "transaction_form": {
     "title_new": "Tambah Transaksi",
@@ -102,7 +107,9 @@
     "delete_title": "Hapus Kategori",
     "delete_confirm": "Yakin hapus kategori",
     "delete_action": "Hapus",
-    "transaction": "transaksi"
+    "transaction": "transaksi",
+    "transaction_count": "{count} transaksi",
+    "delete_confirm_suffix": "Tindakan ini tidak bisa dibatalkan."
   },
   "category_form": {
     "title_edit": "Edit Kategori",
@@ -174,7 +181,27 @@
     "delete_action": "Hapus",
     "saved": "Tersimpan",
     "remaining": "Kurang",
-    "completed": "Tercapai!"
+    "completed": "Tercapai!",
+    "upload_error": "Gagal upload gambar",
+    "max_size_error": "Max 5MB"
+  },
+  "budget": {
+    "title": "Budget",
+    "subtitle": "Atur budget bulanan per kategori",
+    "no_budgets": "Belum ada budget",
+    "set_budget": "Atur Budget",
+    "edit_budget": "Edit Budget",
+    "delete_budget": "Hapus Budget",
+    "monthly_limit": "Batas Bulanan",
+    "spent": "Terpakai",
+    "remaining": "Sisa",
+    "overspent": "Over budget!",
+    "saved": "Budget berhasil disimpan",
+    "save_error": "Gagal menyimpan budget",
+    "deleted": "Budget berhasil dihapus",
+    "delete_error": "Gagal menghapus budget",
+    "dashboard_title": "Budget Bulan Ini",
+    "no_limit": "Tidak ada budget"
   },
   "goal_form": {
     "title_new": "Tambah Target",
@@ -234,7 +261,18 @@
     "toast_saved": "Profil berhasil disimpan",
     "toast_save_error": "Gagal menyimpan profil",
     "toast_currency_updated": "Mata uang diperbarui",
-    "toast_currency_error": "Gagal memperbarui mata uang"
+    "toast_currency_error": "Gagal memperbarui mata uang",
+    "couple_mode": "Couple Mode",
+    "personal_mode": "Personal Mode",
+    "cancel_invite": "Batal",
+    "someone": "Seseorang",
+    "reject": "Tolak",
+    "accept": "Terima",
+    "dialog_name_desc": "Perbarui nama tampilan kamu",
+    "dialog_currency_desc": "Pilih mata uang yang kamu inginkan",
+    "locale_id": "Indonesia",
+    "locale_en": "English",
+    "disconnect_confirm": "Tekan sekali lagi untuk konfirmasi"
   },
   "theme": {
     "light": "Terang",
@@ -248,6 +286,7 @@
     "categories": "Kategori",
     "recurring": "Rutin",
     "goals": "Target",
+    "budget": "Budget",
     "settings": "Setelan",
     "logout": "Logout",
     "partner": "Pasangan"
@@ -321,6 +360,9 @@
     "footer_subscribe_desc": "Dapatkan update terbaru dan tips mengelola keuanganmu.",
     "footer_subscribe_placeholder": "Masukkan email kamu",
     "footer_subscribe_button": "Langganan",
+    "footer_github": "GitHub",
+    "footer_twitter": "Twitter",
+    "footer_linkedin": "LinkedIn",
     "footer_copyright": "© {year} Finance. Hak cipta dilindungi undang-undang.",
     "hero_preview": {
       "balance": "Saldo Bulan Ini",
@@ -404,7 +446,11 @@
   },
   "common": {
     "close": "Tutup",
-    "more": "Lainnya"
+    "more": "Lainnya",
+    "confirm": "Konfirmasi",
+    "confirm_desc": "Apakah kamu yakin?",
+    "delete": "Hapus",
+    "cancel": "Batal"
   },
   "toast": {
     "transaction_added": "Transaksi berhasil ditambahkan",
@@ -435,7 +481,20 @@
     "category_delete_error": "Gagal menghapus kategori",
     "export_success": "Data berhasil diexport",
     "export_error": "Gagal mengexport data",
-    "login_required": "Kamu harus login dulu"
+    "login_required": "Kamu harus login dulu",
+    "partner_invite_self": "Tidak bisa mengundang diri sendiri",
+    "partner_already_connected": "Kamu sudah terhubung dengan pasangan",
+    "partner_invite_exists": "Undangan sudah dikirim ke email ini",
+    "partner_invite_sent": "Undangan berhasil dikirim",
+    "partner_invite_error": "Gagal mengirim undangan",
+    "partner_accept_error": "Gagal menerima undangan",
+    "partner_connected": "Berhasil terhubung dengan pasangan!",
+    "partner_rejected": "Undangan ditolak",
+    "partner_reject_error": "Gagal menolak undangan",
+    "partner_cancelled": "Undangan dibatalkan",
+    "partner_cancel_error": "Gagal membatalkan undangan",
+    "partner_disconnect_error": "Gagal memutuskan hubungan",
+    "partner_disconnected": "Hubungan dengan pasangan diputuskan"
   },
   "error": {
     "title_404": "Halaman tidak ditemukan",
@@ -446,7 +505,9 @@
     "view_transactions": "Lihat Transaksi"
   },
   "chart": {
-    "no_data": "Belum ada data"
+    "no_data": "Belum ada data",
+    "million": "jt",
+    "thousand": "rb"
   },
   "export": {
     "sheet_transactions": "Transaksi",
@@ -465,6 +526,13 @@
     "col_name": "Nama",
     "col_color": "Warna",
     "yes": "Ya",
-    "no": "Tidak"
+    "no": "Tidak",
+    "type_income": "Pemasukan",
+    "type_expense": "Pengeluaran",
+    "frequency_daily": "Harian",
+    "frequency_weekly": "Mingguan",
+    "frequency_monthly": "Bulanan",
+    "frequency_yearly": "Tahunan",
+    "creator": "Finansiil"
   }
 }
