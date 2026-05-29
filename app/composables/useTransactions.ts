@@ -10,6 +10,7 @@ export interface Transaction {
   category_id: string | null;
   description: string | null;
   date: string;
+  account_id: string | null;
   created_at: string;
 }
 

@@ -44,7 +44,7 @@
           :placeholder="$t('transaction_form.amount_placeholder')"
           class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
-        />
+        >
       </div>
     </div>
 
@@ -58,6 +58,38 @@
             :type="form.type"
             :placeholder="$t('transaction_form.select_category')"
           />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 px-5 py-4">
+        <Icon name="hugeicons:bank" :size="18" class="text-muted-foreground" />
+        <div class="flex-1">
+          <Select v-model="form.account_id">
+            <SelectTrigger class="border-none shadow-none">
+              <SelectValue :placeholder="$t('transaction_form.select_account')" />
+            </SelectTrigger>
+            <SelectContent
+              class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2"
+            >
+              <SelectItem
+                value=""
+                class="rounded-xl px-3 py-2.5 text-sm text-muted-foreground"
+              >
+                {{ $t('transaction_form.select_account') }}
+              </SelectItem>
+              <SelectItem
+                v-for="acct in accounts"
+                :key="acct.id"
+                :value="acct.id"
+                class="rounded-xl px-3 py-2.5 text-sm text-foreground hover:bg-accent cursor-pointer"
+              >
+                <div class="flex items-center gap-2">
+                  <div class="size-2 rounded-full" :style="{ backgroundColor: acct.color }" />
+                  <span>{{ acct.name }}</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -178,6 +210,11 @@ const emit = defineEmits<{
 const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
 
 const { addTransaction, updateTransaction } = useTransactions();
+const { accounts, fetchAccounts } = useAccounts();
+
+onMounted(() => {
+  fetchAccounts();
+});
 
 const isEdit = computed(() => !!props.transaction);
 
@@ -204,6 +241,7 @@ const form = reactive({
   amount: props.transaction?.amount ?? 0,
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
+  account_id: props.transaction?.account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
 });
@@ -236,6 +274,7 @@ watch(
       Number(newForm.amount) !== Number(initial.amount) ||
       newForm.currency !== initial.currency ||
       newForm.category_id !== (initial.category_id ?? '') ||
+      newForm.account_id !== (initial.account_id ?? '') ||
       newForm.description !== (initial.description ?? '') ||
       newForm.date !== initial.date;
     emit('dirty', changed);
@@ -278,6 +317,7 @@ const onSubmit = async () => {
     amount: Number(form.amount),
     currency: form.currency,
     category_id: form.category_id || null,
+    account_id: form.account_id || null,
     description: form.description || null,
     date: form.date!,
   };

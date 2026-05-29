@@ -22,6 +22,9 @@
           {{ transaction.description || categoryName || $t('transactions.no_description') }}
         </h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
+        <p v-if="accountName" class="mt-1 text-xs text-muted-foreground/60">
+          {{ accountName }}
+        </p>
       </div>
     </div>
     <div class="ml-3 shrink-0 text-right md:ml-0">
@@ -48,6 +51,7 @@ const props = defineProps<{
 const { formatCurrency } = useCurrency();
 const { locale } = useI18n();
 const { categories } = useCategories();
+const { accounts } = useAccounts();
 const { partner, isPartnered, partnerDisplayName } = usePartner();
 const { user } = useAuth();
 
@@ -59,6 +63,10 @@ const category = computed(() =>
 );
 const categoryName = computed(() => category.value?.name ?? '');
 const categoryColor = computed(() => category.value?.color);
+const accountName = computed(() => {
+  if (!props.transaction.account_id) { return ''; }
+  return accounts.value.find((a) => a.id === props.transaction.account_id)?.name ?? '';
+});
 const formatted = computed(() =>
   formatCurrency(Number(props.transaction.amount), props.transaction.currency),
 );
