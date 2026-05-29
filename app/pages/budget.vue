@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { BudgetWithProgress } from '~/composables/useBudgets';
 
-definePageMeta({
-  title: 'budget.title',
-});
+definePageMeta({});
 
 const { t } = useI18n();
+const seoTitle = computed(() => `${t('budget.title')} | Finance`);
+useSeoMeta({
+  title: seoTitle,
+  ogTitle: seoTitle,
+});
 const { categories, fetchCategories } = useCategories();
 
 const now = new Date();
