@@ -36,7 +36,7 @@
           <Accordion type="single" collapsible class="w-full">
             <AccordionItem :value="item.value" class="border-0">
               <AccordionTrigger
-                class="px-6 py-5 text-base md:text-lg font-semibold hover:no-underline text-left transition-all data-[state=open]:text-primary [&[data-state=open]>svg]:rotate-180"
+                class="px-6 py-5 text-base md:text-lg font-semibold hover:no-underline text-left transition-all data-[state=open]:text-primary"
               >
                 <div class="flex items-center gap-4">
                   <div
