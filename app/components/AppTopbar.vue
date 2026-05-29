@@ -144,6 +144,21 @@ const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
     return items;
   }
 
+  if (path.startsWith('/goals')) {
+    items.push({ label: t('topbar.goals') });
+    return items;
+  }
+
+  if (path.startsWith('/budget')) {
+    items.push({ label: t('topbar.budget') });
+    return items;
+  }
+
+  if (path.startsWith('/accounts')) {
+    items.push({ label: t('topbar.accounts') });
+    return items;
+  }
+
   if (path.startsWith('/settings')) {
     items.push({ label: t('topbar.settings') });
     return items;

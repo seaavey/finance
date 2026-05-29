@@ -331,6 +331,8 @@
     "categories": "Categories",
     "recurring": "Recurring Transactions",
     "goals": "Savings Goals",
+    "budget": "Budget",
+    "accounts": "Accounts",
     "settings": "Settings",
     "searching": "Searching...",
     "no_results": "No results found",
