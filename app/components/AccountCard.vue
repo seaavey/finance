@@ -47,7 +47,12 @@ const typeLabels: Record<string, string> = {
       <Button variant="ghost" size="icon" class="size-8 rounded-xl" @click="emit('edit', account)">
         <Icon name="hugeicons:pencil-edit-01" :size="16" />
       </Button>
-      <Button variant="ghost" size="icon" class="size-8 rounded-xl text-red-400" @click="emit('delete', account)">
+      <Button
+        variant="ghost"
+        size="icon"
+        class="size-8 rounded-xl text-red-400"
+        @click="emit('delete', account)"
+      >
         <Icon name="hugeicons:delete-01" :size="16" />
       </Button>
     </div>

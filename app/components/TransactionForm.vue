@@ -44,7 +44,7 @@
           :placeholder="$t('transaction_form.amount_placeholder')"
           class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
-        >
+        />
       </div>
     </div>
 
@@ -71,10 +71,7 @@
             <SelectContent
               class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2"
             >
-              <SelectItem
-                value=""
-                class="rounded-xl px-3 py-2.5 text-sm text-muted-foreground"
-              >
+              <SelectItem value="" class="rounded-xl px-3 py-2.5 text-sm text-muted-foreground">
                 {{ $t('transaction_form.select_account') }}
               </SelectItem>
               <SelectItem

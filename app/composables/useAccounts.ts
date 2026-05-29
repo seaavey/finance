@@ -55,7 +55,9 @@ export const useAccounts = () => {
     }
   };
 
-  const addAccount = async (data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addAccount = async (
+    data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+  ) => {
     if (!user.value) {
       return { error: new Error('Not authenticated') };
     }
@@ -70,7 +72,12 @@ export const useAccounts = () => {
     return { error };
   };
 
-  const updateAccount = async (id: string, updates: Partial<Pick<Account, 'name' | 'type' | 'currency' | 'color' | 'icon' | 'initial_balance'>>) => {
+  const updateAccount = async (
+    id: string,
+    updates: Partial<
+      Pick<Account, 'name' | 'type' | 'currency' | 'color' | 'icon' | 'initial_balance'>
+    >,
+  ) => {
     const { error } = await supabase.from('accounts').update(updates).eq('id', id);
     if (!error) {
       cache.invalidate('accounts');
@@ -130,13 +137,19 @@ export const useAccounts = () => {
       .from('transactions')
       .select('account_id, type, amount')
       .eq('user_id', user.value.id)
-      .in('account_id', accts.map((a) => a.id))
+      .in(
+        'account_id',
+        accts.map((a) => a.id),
+      )
       .not('account_id', 'is', null);
 
     const netMap = new Map<string, number>();
     for (const tx of (data || []) as { account_id: string; type: string; amount: number }[]) {
       const current = netMap.get(tx.account_id) || 0;
-      netMap.set(tx.account_id, tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount));
+      netMap.set(
+        tx.account_id,
+        tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount),
+      );
     }
 
     return accts.map((a) => ({

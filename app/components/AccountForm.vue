@@ -26,7 +26,9 @@ const form = reactive({
 
 const balanceDisplay = computed({
   get: () => {
-    if (form.initial_balance === 0 && !props.account) return '';
+    if (form.initial_balance === 0 && !props.account) {
+      return '';
+    }
     return formatNumberOnly(form.initial_balance, form.currency);
   },
   set: (val: string) => {
@@ -66,26 +68,61 @@ watchEffect(() => {
   }
 });
 
-watch(() => form.type, (type) => {
-  form.icon = typeIcons[type] || 'hugeicons:bank';
-});
+watch(
+  () => form.type,
+  (type) => {
+    form.icon = typeIcons[type] || 'hugeicons:bank';
+  },
+);
 
 const colorOptions = [
-  '#22c55e', '#3b82f6', '#8b5cf6', '#f97316', '#06b6d4',
-  '#ec4899', '#ef4444', '#a855f7', '#14b8a6', '#eab308', '#f43f5e', '#6b7280',
+  '#22c55e',
+  '#3b82f6',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#ec4899',
+  '#ef4444',
+  '#a855f7',
+  '#14b8a6',
+  '#eab308',
+  '#f43f5e',
+  '#6b7280',
 ];
 
 const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
-  if (allowed.includes(e.key)) { return; }
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) { return; }
-  if (/^[0-9]$/.test(e.key)) { return; }
-  if (e.key === ',' || e.key === '.') { return; }
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  if (e.key === ',' || e.key === '.') {
+    return;
+  }
   e.preventDefault();
 };
 
 const onSubmit = async () => {
-  if (!form.name) { return; }
+  if (!form.name) {
+    return;
+  }
   let result;
   if (props.account) {
     result = await updateAccount(props.account.id, {
@@ -118,7 +155,9 @@ const onSubmit = async () => {
     <DialogContent class="w-[calc(100vw-32px)] sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ account ? t('accounts.edit') : t('accounts.add') }}</DialogTitle>
-        <DialogDescription class="sr-only">{{ account ? t('accounts.edit') : t('accounts.add') }}</DialogDescription>
+        <DialogDescription class="sr-only">{{
+          account ? t('accounts.edit') : t('accounts.add')
+        }}</DialogDescription>
       </DialogHeader>
       <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="space-y-2">

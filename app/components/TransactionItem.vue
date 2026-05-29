@@ -64,7 +64,9 @@ const category = computed(() =>
 const categoryName = computed(() => category.value?.name ?? '');
 const categoryColor = computed(() => category.value?.color);
 const accountName = computed(() => {
-  if (!props.transaction.account_id) { return ''; }
+  if (!props.transaction.account_id) {
+    return '';
+  }
   return accounts.value.find((a) => a.id === props.transaction.account_id)?.name ?? '';
 });
 const formatted = computed(() =>

@@ -1,6 +1,6 @@
 -- Create accounts table
 CREATE TABLE accounts (
-  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
   name text NOT NULL,
   type text NOT NULL CHECK (type IN ('bank', 'e-wallet', 'cash')),

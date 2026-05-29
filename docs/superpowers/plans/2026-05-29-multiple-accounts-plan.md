@@ -13,6 +13,7 @@
 ### Task 1: Database Migration
 
 **Files:**
+
 - Create: `supabase/migrations/20260530000000_accounts.sql`
 
 - [ ] **Step 1: Write migration file**
@@ -86,6 +87,7 @@ git commit -m "feat: add accounts table with RLS and transaction account_id"
 ### Task 2: i18n Keys
 
 **Files:**
+
 - Modify: `i18n/locales/id.json`
 - Modify: `i18n/locales/en.json`
 
@@ -171,6 +173,7 @@ git commit -m "feat(i18n): add accounts translation keys"
 ### Task 3: Composable — `useAccounts`
 
 **Files:**
+
 - Create: `app/composables/useAccounts.ts`
 
 - [ ] **Step 1: Write composable**
@@ -229,7 +232,9 @@ export const useAccounts = () => {
     }
   };
 
-  const addAccount = async (data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addAccount = async (
+    data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+  ) => {
     if (!user.value) return { error: new Error('Not authenticated') };
     const { error } = await supabase.from('accounts').insert({ ...data, user_id: user.value.id });
     if (!error) {
@@ -242,7 +247,12 @@ export const useAccounts = () => {
     return { error };
   };
 
-  const updateAccount = async (id: string, updates: Partial<Pick<Account, 'name' | 'type' | 'currency' | 'color' | 'icon' | 'initial_balance'>>) => {
+  const updateAccount = async (
+    id: string,
+    updates: Partial<
+      Pick<Account, 'name' | 'type' | 'currency' | 'color' | 'icon' | 'initial_balance'>
+    >,
+  ) => {
     const { error } = await supabase.from('accounts').update(updates).eq('id', id);
     if (!error) {
       cache.invalidate('accounts');
@@ -294,13 +304,19 @@ export const useAccounts = () => {
       .from('transactions')
       .select('account_id, type, amount')
       .eq('user_id', user.value.id)
-      .in('account_id', accts.map((a) => a.id))
+      .in(
+        'account_id',
+        accts.map((a) => a.id),
+      )
       .not('account_id', 'is', null);
 
     const netMap = new Map<string, number>();
     for (const tx of (data || []) as { account_id: string; type: string; amount: number }[]) {
       const current = netMap.get(tx.account_id) || 0;
-      netMap.set(tx.account_id, tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount));
+      netMap.set(
+        tx.account_id,
+        tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount),
+      );
     }
 
     return accts.map((a) => ({
@@ -341,6 +357,7 @@ git commit -m "feat: add useAccounts composable with CRUD and balance computatio
 ### Task 4: AccountCard Component
 
 **Files:**
+
 - Create: `app/components/AccountCard.vue`
 
 - [ ] **Step 1: Write component**
@@ -395,7 +412,12 @@ const typeLabels: Record<string, string> = {
       <Button variant="ghost" size="icon" class="size-8 rounded-xl" @click="emit('edit', account)">
         <Icon name="hugeicons:pencil-edit-01" :size="16" />
       </Button>
-      <Button variant="ghost" size="icon" class="size-8 rounded-xl text-red-400" @click="emit('delete', account)">
+      <Button
+        variant="ghost"
+        size="icon"
+        class="size-8 rounded-xl text-red-400"
+        @click="emit('delete', account)"
+      >
         <Icon name="hugeicons:delete-01" :size="16" />
       </Button>
     </div>
@@ -415,6 +437,7 @@ git commit -m "feat: add AccountCard component"
 ### Task 5: AccountForm Component
 
 **Files:**
+
 - Create: `app/components/AccountForm.vue`
 
 - [ ] **Step 1: Write component**
@@ -434,7 +457,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-  const { addAccount, updateAccount, loading } = useAccounts();
+const { addAccount, updateAccount, loading } = useAccounts();
 const { formatNumberOnly, parseLocalizedNumber, defaultCurrency, currencies } = useCurrency();
 
 const form = reactive({
@@ -488,26 +511,61 @@ watchEffect(() => {
   }
 });
 
-watch(() => form.type, (type) => {
-  form.icon = typeIcons[type] || 'hugeicons:bank';
-});
+watch(
+  () => form.type,
+  (type) => {
+    form.icon = typeIcons[type] || 'hugeicons:bank';
+  },
+);
 
 const colorOptions = [
-  '#22c55e', '#3b82f6', '#8b5cf6', '#f97316', '#06b6d4',
-  '#ec4899', '#ef4444', '#a855f7', '#14b8a6', '#eab308', '#f43f5e', '#6b7280',
+  '#22c55e',
+  '#3b82f6',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#ec4899',
+  '#ef4444',
+  '#a855f7',
+  '#14b8a6',
+  '#eab308',
+  '#f43f5e',
+  '#6b7280',
 ];
 
 const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
-  if (allowed.includes(e.key)) { return; }
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) { return; }
-  if (/^[0-9]$/.test(e.key)) { return; }
-  if (e.key === ',' || e.key === '.') { return; }
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  if (e.key === ',' || e.key === '.') {
+    return;
+  }
   e.preventDefault();
 };
 
 const onSubmit = async () => {
-  if (!form.name) { return; }
+  if (!form.name) {
+    return;
+  }
   let result;
   if (props.account) {
     result = await updateAccount(props.account.id, {
@@ -540,7 +598,9 @@ const onSubmit = async () => {
     <DialogContent class="w-[calc(100vw-32px)] sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ account ? t('accounts.edit') : t('accounts.add') }}</DialogTitle>
-        <DialogDescription class="sr-only">{{ account ? t('accounts.edit') : t('accounts.add') }}</DialogDescription>
+        <DialogDescription class="sr-only">{{
+          account ? t('accounts.edit') : t('accounts.add')
+        }}</DialogDescription>
       </DialogHeader>
       <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="space-y-2">
@@ -616,6 +676,7 @@ const onSubmit = async () => {
 Wait, `$currencies` won't work in the template. I need to import `currencies` from `useCurrency`. Let me fix this:
 
 In script, add:
+
 ```ts
 const { formatNumberOnly, parseLocalizedNumber, defaultCurrency, currencies } = useCurrency();
 ```
@@ -634,6 +695,7 @@ git commit -m "feat: add AccountForm component"
 ### Task 6: Accounts Page
 
 **Files:**
+
 - Create: `app/pages/accounts.vue`
 
 - [ ] **Step 1: Write page**
@@ -742,11 +804,7 @@ const onFormSaved = async () => {
       />
     </div>
 
-    <AccountForm
-      v-model:open="showForm"
-      :account="editingAccount"
-      @saved="onFormSaved"
-    />
+    <AccountForm v-model:open="showForm" :account="editingAccount" @saved="onFormSaved" />
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"
@@ -771,6 +829,7 @@ git commit -m "feat: add accounts management page"
 ### Task 7: Sidebar Link
 
 **Files:**
+
 - Modify: `app/components/AppSidebar.vue`
 
 - [ ] **Step 1: Add accounts link**
@@ -807,6 +866,7 @@ git commit -m "feat: add accounts link to sidebar"
 ### Task 8: Transaction Account Selector
 
 **Files:**
+
 - Modify: `app/components/TransactionForm.vue`
 - Modify: `app/components/TransactionItem.vue`
 
@@ -844,6 +904,7 @@ In the detail form section, after the category picker row, add:
 ```
 
 In script:
+
 - Import `useAccounts` and call `fetchAccounts` on mount
 - Add `account_id` to the form reactive object
 - Add `accounts` from useAccounts
@@ -864,6 +925,7 @@ git commit -m "feat: add account selector to transaction form and account indica
 ### Task 9: Dashboard Account Section
 
 **Files:**
+
 - Modify: `app/pages/dashboard.vue`
 
 - [ ] **Step 1: Add accounts section**
