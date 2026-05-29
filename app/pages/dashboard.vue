@@ -164,6 +164,43 @@
         </div>
       </div>
 
+      <!-- Budget Summary -->
+      <div v-if="budgetSummaries.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold tracking-tight">{{ $t('budget.dashboard_title') }}</h2>
+          <NuxtLinkLocale
+            to="/budget"
+            class="text-xs font-medium text-primary hover:underline"
+          >
+            {{ $t('dashboard.view_all') }}
+          </NuxtLinkLocale>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div
+            v-for="sbudget in budgetSummaries"
+            :key="sbudget.id"
+            class="rounded-2xl border border-border/50 bg-card/20 p-4 backdrop-blur-sm"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-medium text-muted-foreground truncate">{{ sbudget.category_name }}</p>
+              <span
+                class="text-[11px] font-semibold"
+                :class="sbudget.spent > sbudget.amount ? 'text-red-500' : 'text-muted-foreground'"
+              >
+                {{ formatCurrency(sbudget.spent) }} / {{ formatCurrency(sbudget.amount) }}
+              </span>
+            </div>
+            <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                class="h-full rounded-full transition-all"
+                :class="sbudget.spent > sbudget.amount ? 'bg-red-500' : sbudget.spent / sbudget.amount >= 0.8 ? 'bg-amber-500' : 'bg-primary'"
+                :style="{ width: `${Math.min((sbudget.spent / sbudget.amount) * 100, 100)}%` }"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="rounded-2xl border border-border bg-card">
         <div class="flex items-center justify-between p-4 pb-0">
           <h3 class="text-sm font-semibold text-foreground">{{ $t('dashboard.recent') }}</h3>
@@ -289,6 +326,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import type { BudgetWithProgress } from '~/composables/useBudgets';
 
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
@@ -296,10 +334,12 @@ const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
 const { t, locale } = useI18n();
 const { partner, isPartnered, fetchPartner } = usePartner();
+const { fetchBudgetWithProgress } = useBudgets();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
+const budgetSummaries = ref<BudgetWithProgress[]>([]);
 
 const chartPeriods = ['7d', '30d', '90d'];
 
@@ -326,12 +366,12 @@ const filteredTransactions = computed(() => {
 
 const displayName = computed(() => {
   const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || '';
-  return name.split(' ')[0] || 'User';
+  return name.split(' ')[0] || t('dashboard.user');
 });
 
 const monthLabel = computed(() => {
   const d = new Date();
-  return d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
+  return d.toLocaleDateString(locale.value, {
     month: 'long',
     year: 'numeric',
   });
@@ -349,9 +389,9 @@ const formatRelativeDate = (date: string) => {
     return t('dashboard.yesterday');
   }
   if (diffDays < 7) {
-    return locale.value === 'id' ? `${diffDays} hari lalu` : `${diffDays} days ago`;
+    return t('dashboard.days_ago', { days: diffDays });
   }
-  return d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
+  return d.toLocaleDateString(locale.value, {
     day: 'numeric',
     month: 'short',
   });
@@ -483,7 +523,7 @@ const monthlyData = computed(() => {
   const months: { label: string; income: number; expense: number }[] = [];
   for (let i = 5; i >= 0; i--) {
     const d = new Date(currentYear, currentMonth - i, 1);
-    const label = d.toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
+    const label = d.toLocaleDateString(locale.value, {
       month: 'short',
     });
     const m = d.getMonth();
@@ -505,6 +545,8 @@ onMounted(async () => {
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
   await Promise.all([fetchTransactions({ dateFrom: firstDay }), fetchCategories(), fetchPartner()]);
+  const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+  budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
   loading.value = false;
 });
 </script>
