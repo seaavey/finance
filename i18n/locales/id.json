@@ -36,6 +36,7 @@
     "today": "Hari ini",
     "yesterday": "Kemarin",
     "other": "Lainnya",
+    "accounts_title": "Akun",
     "new": "Baru",
     "user": "User",
     "days_ago": "{days} hari lalu"
@@ -76,6 +77,7 @@
     "select_category": "Pilih kategori",
     "note_optional": "Catatan (opsional)",
     "select_date": "Pilih tanggal",
+    "select_account": "Pilih akun",
     "delete": "Hapus",
     "cancel": "Batal",
     "save": "Simpan Transaksi"
@@ -205,6 +207,31 @@
     "dashboard_title": "Budget Bulan Ini",
     "no_limit": "Tidak ada budget"
   },
+  "accounts": {
+    "title": "Akun",
+    "subtitle": "Kelola rekening, e-wallet, dan dompet",
+    "add": "Tambah Akun",
+    "edit": "Edit Akun",
+    "delete": "Hapus Akun",
+    "name": "Nama Akun",
+    "type": "Tipe",
+    "bank": "Rekening Bank",
+    "e-wallet": "E-Wallet",
+    "cash": "Uang Tunai",
+    "currency": "Mata Uang",
+    "color": "Warna",
+    "initial_balance": "Saldo Awal",
+    "empty": "Belum ada akun",
+    "empty_desc": "Tambah rekening bank, e-wallet, atau uang tunai",
+    "balance": "Saldo",
+    "delete_title": "Hapus Akun",
+    "delete_confirm": "Yakin hapus akun",
+    "delete_confirm_suffix": "Transaksi dengan akun ini tidak akan terhapus",
+    "saved": "Akun berhasil disimpan",
+    "save_error": "Gagal menyimpan akun",
+    "deleted": "Akun berhasil dihapus",
+    "delete_error": "Gagal menghapus akun"
+  },
   "goal_form": {
     "title_new": "Tambah Target",
     "title_edit": "Edit Target",
@@ -289,6 +316,7 @@
     "recurring": "Rutin",
     "goals": "Target",
     "budget": "Budget",
+    "accounts": "Akun",
     "settings": "Setelan",
     "logout": "Logout",
     "partner": "Pasangan"
