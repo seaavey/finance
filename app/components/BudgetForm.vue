@@ -63,7 +63,12 @@ const availableCategories = computed(() => props.categories.filter((c) => c.type
             <SelectContent>
               <SelectItem v-for="cat in availableCategories" :key="cat.id" :value="cat.id">
                 <div class="flex items-center gap-2">
-                  <Icon :name="cat.icon" :size="16" :style="{ color: cat.color }" />
+                  <Icon
+                    v-if="cat.icon?.startsWith('hugeicons:')"
+                    :name="cat.icon"
+                    :size="16"
+                    :style="{ color: cat.color }"
+                  />
                   {{ cat.name }}
                 </div>
               </SelectItem>

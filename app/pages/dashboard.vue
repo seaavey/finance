@@ -550,7 +550,7 @@ onMounted(async () => {
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
   await Promise.all([fetchTransactions({ dateFrom: firstDay }), fetchCategories(), fetchPartner()]);
-  const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+  const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
   loading.value = false;
 });

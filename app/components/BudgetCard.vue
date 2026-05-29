@@ -16,6 +16,10 @@ const { formatCurrency: fmtCurrency } = useCurrency();
 
 const progress = computed(() => getProgress(props.budget));
 
+const hasValidIcon = computed(
+  () => props.budget.category_icon && props.budget.category_icon.startsWith('hugeicons:'),
+);
+
 const progressColor = computed(() => {
   if (progress.value.overspent > 0) {
     return 'bg-red-500';
@@ -38,7 +42,7 @@ const progressColor = computed(() => {
           :style="{ backgroundColor: budget.category_color + '20' }"
         >
           <Icon
-            v-if="budget.category_icon"
+            v-if="hasValidIcon"
             :name="budget.category_icon"
             :size="20"
             :style="{ color: budget.category_color }"
