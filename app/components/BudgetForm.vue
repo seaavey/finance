@@ -52,6 +52,9 @@ const availableCategories = computed(() => props.categories.filter((c) => c.type
     <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
       <DialogHeader>
         <DialogTitle>{{ budget ? t('budget.edit_budget') : t('budget.set_budget') }}</DialogTitle>
+        <DialogDescription class="sr-only">{{
+          budget ? t('budget.edit_budget') : t('budget.set_budget')
+        }}</DialogDescription>
       </DialogHeader>
       <div class="space-y-4 py-2">
         <div class="space-y-2">

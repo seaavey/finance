@@ -109,6 +109,7 @@
     "delete_action": "Hapus",
     "transaction": "transaksi",
     "transaction_count": "{count} transaksi",
+    "type_name": "Kategori",
     "delete_confirm_suffix": "Tindakan ini tidak bisa dibatalkan."
   },
   "category_form": {

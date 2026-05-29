@@ -487,6 +487,7 @@ Semua komponen shadcn prefix kosong (`''`), jadi import `Button` bukan `UiButton
 | `sun-01` / `moon-01` | `Sun01Icon` / `Moon01Icon` | Theme toggle                                                         |
 
 - **Installed packages** (removed): ~~`@hugeicons/core-free-icons`~~, ~~`@hugeicons/vue`~~
+- **Local collections**: Nuxt Icon discovered `hugeicons` and `material-symbols` from local `@iconify-json/*` packages at build time
 
 ### 12.15 Chart.js Configuration
 

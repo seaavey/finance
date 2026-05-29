@@ -109,6 +109,7 @@
     "delete_action": "Delete",
     "transaction": "transaction",
     "transaction_count": "{count} transaction",
+    "type_name": "Category",
     "delete_confirm_suffix": "This action cannot be undone."
   },
   "category_form": {
