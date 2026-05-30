@@ -36,15 +36,17 @@
           />
 
           <Button
-            v-for="item in navItems"
+            v-for="(item, index) in navItems"
             :key="item.href"
-            ref="navRefs"
+            :ref="(el) => { if (el) navRefs[index] = el as any }"
             variant="ghost"
             class="relative z-10 px-6 py-2 text-xs font-black uppercase tracking-widest whitespace-nowrap rounded-full transition-all duration-300"
             :class="[
               activeSection === item.href.replace('#', '')
                 ? 'text-white'
                 : 'text-muted-foreground/60 hover:text-foreground',
+              // Fallback for better visibility if the reddish pill is not yet visible
+              activeSection === item.href.replace('#', '') && !pillStyle.opacity ? 'text-primary' : '',
             ]"
             @click="scrollToSection(item.href)"
           >
@@ -67,7 +69,7 @@
           >
             <ClientOnly>
               <Icon
-                :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
+                :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-02'"
                 :size="20"
                 class="text-muted-foreground group-hover:text-foreground"
               />
@@ -86,7 +88,7 @@
                 size="icon"
                 class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
               >
-                <Icon name="hugeicons:language-skill" :size="20" class="text-muted-foreground" />
+                <Icon name="hugeicons:globe-02" :size="20" class="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
