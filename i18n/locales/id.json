@@ -37,6 +37,7 @@
     "yesterday": "Kemarin",
     "other": "Lainnya",
     "accounts_title": "Akun",
+    "upcoming_bills": "Tagihan Mendatang",
     "net_worth": "Kekayaan Bersih",
     "net_worth_chart": "Grafik Kekayaan Bersih",
     "assets": "Aset",
@@ -175,6 +176,10 @@
     "select_date": "Pilih tanggal",
     "cancel": "Batal",
     "save": "Simpan"
+  },
+  "reminders": {
+    "dismiss": "Abaikan",
+    "new_alerts": "Kamu punya {count} tagihan mendatang"
   },
   "goals": {
     "title": "Target Tabungan",

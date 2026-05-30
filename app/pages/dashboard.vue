@@ -178,6 +178,47 @@
         </div>
       </div>
 
+      <!-- Upcoming Bills -->
+      <div v-if="activeReminders.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold tracking-tight">{{ $t('dashboard.upcoming_bills') }}</h2>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            v-for="reminder in activeReminders"
+            :key="reminder.id"
+            class="flex items-center justify-between rounded-2xl border border-border/50 bg-card/20 p-4 backdrop-blur-sm"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <div
+                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10"
+              >
+                <Icon name="hugeicons:calendar-03" :size="20" class="text-red-500" />
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-foreground">{{ reminder.name }}</p>
+                <p class="text-xs text-muted-foreground">
+                  {{
+                    reminder.days_left === 1
+                      ? $t('recurring.due_tomorrow')
+                      : $t('recurring.due_in_7_days')
+                  }}
+                  • {{ formatCurrency(reminder.amount, reminder.currency) }}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="h-8 rounded-lg px-2 text-xs hover:bg-red-500/10 hover:text-red-500"
+              @click="dismissReminder(reminder.id)"
+            >
+              {{ $t('reminders.dismiss') }}
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <!-- Budget Summary -->
       <div v-if="budgetSummaries.length > 0" class="space-y-3">
         <div class="flex items-center justify-between">
@@ -390,6 +431,7 @@ const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
 const { fetchAccounts, getAccountBalances } = useAccounts();
 const { history, currentNetWorth, fetchNetWorthHistory } = useNetWorth();
+const { activeReminders, dismissReminder } = useReminders();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');

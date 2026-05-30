@@ -37,6 +37,7 @@
     "yesterday": "Yesterday",
     "other": "Other",
     "accounts_title": "Accounts",
+    "upcoming_bills": "Upcoming Bills",
     "net_worth": "Net Worth",
     "net_worth_chart": "Net Worth Chart",
     "assets": "Assets",
@@ -175,6 +176,10 @@
     "select_date": "Select date",
     "cancel": "Cancel",
     "save": "Save"
+  },
+  "reminders": {
+    "dismiss": "Dismiss",
+    "new_alerts": "You have {count} upcoming bills"
   },
   "goals": {
     "title": "Savings Goals",
