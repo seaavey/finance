@@ -3,7 +3,9 @@
     <!-- Header -->
     <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
-        <h2 class="text-4xl font-bold tracking-tighter text-foreground">{{ $t('transactions.title') }}</h2>
+        <h2 class="text-4xl font-bold tracking-tighter text-foreground">
+          {{ $t('transactions.title') }}
+        </h2>
         <p class="mt-1 font-medium text-muted-foreground">
           {{ filteredTransactions.length }} {{ $t('transactions.title').toLowerCase() }}
         </p>
@@ -41,7 +43,11 @@
             variant="outline"
             size="icon"
             class="size-14 rounded-2xl border-border/50 transition-all"
-            :class="showFilters ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted/30'"
+            :class="
+              showFilters
+                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                : 'bg-muted/30'
+            "
             @click="showFilters = !showFilters"
           >
             <Icon name="hugeicons:filter" :size="20" />
@@ -100,7 +106,10 @@
               </PopoverContent>
             </Popover>
 
-            <div v-if="isPartnered" class="flex items-center gap-1 rounded-xl bg-muted/50 p-1 sm:col-span-2 lg:col-span-3">
+            <div
+              v-if="isPartnered"
+              class="flex items-center gap-1 rounded-xl bg-muted/50 p-1 sm:col-span-2 lg:col-span-3"
+            >
               <Button
                 v-for="opt in ownerOptions"
                 :key="opt.value"
@@ -120,12 +129,18 @@
       </div>
 
       <!-- Quick Summary Cards (Side-by-side on md, 1 col each on lg) -->
-      <div class="flex flex-col justify-between rounded-4xl border border-border/50 bg-emerald-500/5 p-6 shadow-sm transition-all hover:bg-emerald-500/10 animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1 lg:col-span-1">
-        <div class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm">
+      <div
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-emerald-500/5 p-6 shadow-sm transition-all hover:bg-emerald-500/10 animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1 lg:col-span-1"
+      >
+        <div
+          class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
+        >
           <Icon name="hugeicons:arrow-down-01" :size="24" />
         </div>
         <div class="mt-4">
-          <p class="text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase">
+          <p
+            class="text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase"
+          >
             {{ $t('transactions.income') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground truncate">
@@ -134,12 +149,18 @@
         </div>
       </div>
 
-      <div class="flex flex-col justify-between rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm transition-all hover:bg-rose-500/10 animate-in fade-in slide-in-from-bottom-6 delay-150 duration-700 fill-mode-both md:col-span-1 lg:col-span-1">
-        <div class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm">
+      <div
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm transition-all hover:bg-rose-500/10 animate-in fade-in slide-in-from-bottom-6 delay-150 duration-700 fill-mode-both md:col-span-1 lg:col-span-1"
+      >
+        <div
+          class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
+        >
           <Icon name="hugeicons:arrow-up-01" :size="24" />
         </div>
         <div class="mt-4">
-          <p class="text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase">
+          <p
+            class="text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
+          >
             {{ $t('transactions.expense') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground truncate">
@@ -157,11 +178,22 @@
             <h3 class="text-xl font-black tracking-tighter text-foreground">
               {{ $t('transactions.title') }}
             </h3>
-            <p class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.latest_activity') }}</p>
+            <p class="text-sm font-medium text-muted-foreground">
+              {{ $t('dashboard.latest_activity') }}
+            </p>
           </div>
           <div class="text-right">
-            <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">{{ $t('transactions.difference') }}</p>
-            <p class="text-lg font-black tracking-tighter" :class="monthIncome - monthExpense >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+            <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
+              {{ $t('transactions.difference') }}
+            </p>
+            <p
+              class="text-lg font-black tracking-tighter"
+              :class="
+                monthIncome - monthExpense >= 0
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-rose-600 dark:text-rose-400'
+              "
+            >
               {{ formatCurrency(monthIncome - monthExpense) }}
             </p>
           </div>
@@ -185,7 +217,9 @@
               <p class="text-base font-black text-foreground tracking-tight">
                 {{ $t('transactions.empty') }}
               </p>
-              <p class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.empty_desc') }}</p>
+              <p class="text-sm font-medium text-muted-foreground">
+                {{ $t('dashboard.empty_desc') }}
+              </p>
             </div>
           </div>
 
@@ -193,7 +227,9 @@
           <div v-else class="space-y-8">
             <div v-for="(group, date) in groupedTransactions" :key="date" class="space-y-3">
               <div class="flex items-center gap-4 px-2">
-                <span class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 whitespace-nowrap">
+                <span
+                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 whitespace-nowrap"
+                >
                   {{ formatGroupDate(date as string) }}
                 </span>
                 <div class="h-px w-full bg-border/40" />

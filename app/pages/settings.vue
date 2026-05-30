@@ -59,7 +59,9 @@
 
       <!-- PREFERENCES -->
       <section>
-        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+        <h3
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+        >
           {{ $t('settings.preferences') }}
         </h3>
         <div
@@ -97,7 +99,9 @@
 
       <!-- COUPLE -->
       <section>
-        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+        <h3
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+        >
           {{ $t('sidebar.partner') }}
         </h3>
 
@@ -115,7 +119,7 @@
             }}</span>
           </div>
         </div>
-        
+
         <!-- NOT CONNECTED -->
         <div v-else-if="!isPartnered" class="space-y-4">
           <!-- Kirim Undangan -->
@@ -161,7 +165,9 @@
             v-if="sentInvitations.length > 0"
             class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
-            <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+            <p
+              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+            >
               {{ $t('settings.sent_invitations_title') }}
             </p>
             <div class="space-y-3">
@@ -203,7 +209,9 @@
             v-if="receivedInvitations.length > 0"
             class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
-            <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+            <p
+              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+            >
               {{ $t('settings.received_invitations_title') }}
             </p>
             <div class="space-y-3">
@@ -276,7 +284,9 @@
                   {{ partnerDisplayName }}
                 </p>
                 <div class="mt-1 flex items-center gap-2">
-                  <div class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <div
+                    class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                  />
                   <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">
                     {{ $t('settings.connected_status') }}
                   </p>
@@ -285,8 +295,8 @@
             </div>
           </div>
 
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             class="group w-full h-auto rounded-4xl border border-rose-500/20 bg-rose-500/[0.02] p-4 transition-all hover:bg-rose-500/5 hover:border-rose-500/40"
             @click="onDisconnect"
           >
@@ -318,7 +328,9 @@
 
       <!-- EXPORT DATA -->
       <section>
-        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+        <h3
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+        >
           {{ $t('settings.data') }}
         </h3>
         <div
@@ -335,14 +347,16 @@
 
       <!-- DANGER ZONE -->
       <section>
-        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-rose-500/60">
+        <h3
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-rose-500/60"
+        >
           {{ $t('settings.account') }}
         </h3>
         <div
           class="rounded-4xl border border-border/50 bg-card p-1.5 shadow-sm transition-all hover:shadow-md"
         >
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             class="group w-full h-auto rounded-3xl p-4 transition-all hover:bg-rose-500/5"
             @click="onSignOut"
           >
@@ -386,8 +400,12 @@
     <Dialog v-model:open="editName">
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm rounded-4xl">
         <DialogHeader>
-          <DialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_name_title') }}</DialogTitle>
-          <DialogDescription class="sr-only">{{ $t('settings.dialog_name_desc') }}</DialogDescription>
+          <DialogTitle class="font-black tracking-tight">{{
+            $t('settings.dialog_name_title')
+          }}</DialogTitle>
+          <DialogDescription class="sr-only">{{
+            $t('settings.dialog_name_desc')
+          }}</DialogDescription>
         </DialogHeader>
         <div class="space-y-3 py-4">
           <Input
@@ -401,7 +419,11 @@
           <Button variant="ghost" class="rounded-xl font-bold" @click="editName = false">
             {{ $t('settings.cancel') }}
           </Button>
-          <Button class="rounded-xl bg-primary px-6 font-bold text-white shadow-lg shadow-primary/20" :disabled="saving" @click="saveProfile">
+          <Button
+            class="rounded-xl bg-primary px-6 font-bold text-white shadow-lg shadow-primary/20"
+            :disabled="saving"
+            @click="saveProfile"
+          >
             {{ saving ? $t('settings.saving') : $t('settings.save') }}
           </Button>
         </div>
@@ -411,12 +433,18 @@
     <Dialog v-model:open="editCurrency">
       <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm rounded-4xl">
         <DialogHeader>
-          <DialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_currency_title') }}</DialogTitle>
-          <DialogDescription class="sr-only">{{ $t('settings.dialog_currency_desc') }}</DialogDescription>
+          <DialogTitle class="font-black tracking-tight">{{
+            $t('settings.dialog_currency_title')
+          }}</DialogTitle>
+          <DialogDescription class="sr-only">{{
+            $t('settings.dialog_currency_desc')
+          }}</DialogDescription>
         </DialogHeader>
         <div class="max-h-80 overflow-y-auto py-2 space-y-4">
           <div v-for="group in currencyGroups" :key="group.label">
-            <p class="sticky top-0 bg-background/80 backdrop-blur-sm z-10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+            <p
+              class="sticky top-0 bg-background/80 backdrop-blur-sm z-10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+            >
               {{ group.label }}
             </p>
             <div class="mt-2 space-y-1 px-1">
@@ -425,15 +453,15 @@
                 :key="c.value"
                 variant="ghost"
                 class="w-full justify-between rounded-xl h-11 px-3 transition-all"
-                :class="profile.currency === c.value ? 'bg-primary/10 text-primary font-bold' : 'text-foreground/80'"
+                :class="
+                  profile.currency === c.value
+                    ? 'bg-primary/10 text-primary font-bold'
+                    : 'text-foreground/80'
+                "
                 @click="selectCurrency(c.value)"
               >
                 <span class="text-sm">{{ c.label }}</span>
-                <Icon
-                  v-if="profile.currency === c.value"
-                  name="hugeicons:tick-01"
-                  :size="18"
-                />
+                <Icon v-if="profile.currency === c.value" name="hugeicons:tick-01" :size="18" />
               </Button>
             </div>
           </div>
@@ -447,7 +475,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useSupabase } from '~/lib/supabase';
 import type { CoupleInvitation } from '~/composables/usePartner';
 

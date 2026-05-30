@@ -49,20 +49,13 @@ const x = (d: Record<string, unknown>) => d[props.index];
           />
         </template>
 
-        <VisAxis
-          v-if="showXAxis"
-          type="x"
-          :grid-line="false"
-          :tick-format="(d: unknown) => d"
-        />
-        <VisAxis
-          v-if="showYAxis"
-          type="y"
-          :grid-line="showGridLine"
-          :tick-format="yFormatter"
-        />
+        <VisAxis v-if="showXAxis" type="x" :grid-line="false" :tick-format="(d: unknown) => d" />
+        <VisAxis v-if="showYAxis" type="y" :grid-line="showGridLine" :tick-format="yFormatter" />
 
-        <VisCrosshair v-if="showTooltip" :template="componentToString(config, ChartTooltipContent)" />
+        <VisCrosshair
+          v-if="showTooltip"
+          :template="componentToString(config, ChartTooltipContent)"
+        />
         <VisTooltip v-if="showTooltip" />
       </VisXYContainer>
     </ChartContainer>

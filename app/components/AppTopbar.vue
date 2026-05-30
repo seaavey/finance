@@ -18,7 +18,9 @@
           <template v-for="(item, i) in breadcrumbItems" :key="i">
             <template v-if="i === breadcrumbItems.length - 1">
               <BreadcrumbItem>
-                <BreadcrumbPage class="text-xs font-black uppercase tracking-widest text-foreground">
+                <BreadcrumbPage
+                  class="text-xs font-black uppercase tracking-widest text-foreground"
+                >
                   {{ item.label }}
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -60,7 +62,11 @@
           class="h-9 w-64 justify-start rounded-xl border-border/50 bg-muted/50 pl-9 pr-12 text-xs font-bold text-muted-foreground transition-all hover:bg-muted"
           @click="showSearchDialog = true"
         >
-          <Icon name="hugeicons:search-01" :size="14" class="absolute left-3 text-muted-foreground/60" />
+          <Icon
+            name="hugeicons:search-01"
+            :size="14"
+            class="absolute left-3 text-muted-foreground/60"
+          />
           <span>{{ $t('topbar.search') }}</span>
           <kbd
             class="absolute right-3 rounded bg-muted-foreground/10 px-1.5 py-0.5 text-[10px] font-black text-muted-foreground"
@@ -86,7 +92,10 @@
             </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-80 rounded-2xl border-border/50 p-0 shadow-2xl backdrop-blur-xl" align="end">
+        <PopoverContent
+          class="w-80 rounded-2xl border-border/50 p-0 shadow-2xl backdrop-blur-xl"
+          align="end"
+        >
           <div class="border-b border-border/50 p-4">
             <h4 class="text-xs font-black uppercase tracking-widest text-foreground">
               {{ $t('topbar.notifications') }}

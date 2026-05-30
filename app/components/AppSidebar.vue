@@ -16,9 +16,7 @@
 
     <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
       <div v-for="section in navSections" :key="section.label" class="space-y-1">
-        <h4
-          class="px-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
-        >
+        <h4 class="px-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
           {{ section.label }}
         </h4>
         <div class="space-y-0.5">

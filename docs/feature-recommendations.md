@@ -6,12 +6,12 @@
 
 ## High Impact
 
-| #   | Fitur                        | Deskripsi                                                                      |
-| --- | ---------------------------- | ------------------------------------------------------------------------------ |
-| 1   | **Import CSV/OFX**           | Import mutasi bank langsung ke transaksi                                       |
-| 2   | **Bill reminders**           | Notifikasi H-1/H-7 buat recurring bills yang akan jatuh tempo                  |
-| 3   | **Edit partner transaction** | Transaksi pasangan bisa diedit/dihapus (setelah connect)                       |
-| 4   | **Split transaction**        | Satu transaksi dibagi ke beberapa kategori                                     |
+| #   | Fitur                        | Deskripsi                                                     |
+| --- | ---------------------------- | ------------------------------------------------------------- |
+| 1   | **Import CSV/OFX**           | Import mutasi bank langsung ke transaksi                      |
+| 2   | **Bill reminders**           | Notifikasi H-1/H-7 buat recurring bills yang akan jatuh tempo |
+| 3   | **Edit partner transaction** | Transaksi pasangan bisa diedit/dihapus (setelah connect)      |
+| 4   | **Split transaction**        | Satu transaksi dibagi ke beberapa kategori                    |
 
 ## Medium Impact
 
@@ -25,10 +25,10 @@
 
 ## Low Impact
 
-| #   | Fitur                       | Deskripsi                                               |
-| --- | --------------------------- | ------------------------------------------------------- |
-| 10  | **Recurring dari template** | Duplikat recurring dari transaksi existing              |
-| 11  | **Export PDF**              | Laporan siap cetak                                      |
-| 12  | **Widget/home screen**      | Quick-add transaksi dari luar app                       |
-| 13  | **Goal auto-fund**          | Sisihkan otomatis sekian % tiap ada pemasukan           |
-| 14  | **Push notifications**      | Service worker buat reminder + weekly summary           |
+| #   | Fitur                       | Deskripsi                                     |
+| --- | --------------------------- | --------------------------------------------- |
+| 10  | **Recurring dari template** | Duplikat recurring dari transaksi existing    |
+| 11  | **Export PDF**              | Laporan siap cetak                            |
+| 12  | **Widget/home screen**      | Quick-add transaksi dari luar app             |
+| 13  | **Goal auto-fund**          | Sisihkan otomatis sekian % tiap ada pemasukan |
+| 14  | **Push notifications**      | Service worker buat reminder + weekly summary |

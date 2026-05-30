@@ -9,10 +9,12 @@ const props = defineProps<{
 const { t } = useI18n();
 
 // Transform data to use numeric index for Unovis stability
-const chartData = computed(() => props.data.map((item, index) => ({
-  ...item,
-  xIndex: index
-})));
+const chartData = computed(() =>
+  props.data.map((item, index) => ({
+    ...item,
+    xIndex: index,
+  })),
+);
 
 const chartConfig = computed<ChartConfig>(() => ({
   income: {

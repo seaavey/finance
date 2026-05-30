@@ -147,7 +147,9 @@
               <div
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                <p
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                >
                   {{ $t('landing.hero_preview.balance') }}
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
@@ -163,12 +165,18 @@
               <div
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                <p
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                >
                   {{ $t('landing.hero_preview.income') }}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">Rp 18.200.000</p>
+                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">
+                  Rp 18.200.000
+                </p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-emerald-500/10">
-                  <div class="h-full w-3/4 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <div
+                    class="h-full w-3/4 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                  />
                 </div>
               </div>
 
@@ -176,12 +184,16 @@
               <div
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                <p
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                >
                   {{ $t('landing.hero_preview.expense') }}
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500">Rp 5.750.000</p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-rose-500/10">
-                  <div class="h-full w-1/3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+                  <div
+                    class="h-full w-1/3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
+                  />
                 </div>
               </div>
             </div>
@@ -190,8 +202,12 @@
             <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6 md:mt-8">
               <div class="md:col-span-3 rounded-3xl border border-border/50 bg-muted/20 p-6">
                 <div class="flex items-center justify-between mb-8">
-                  <p class="text-sm font-black uppercase tracking-widest text-foreground/80">{{ $t('landing.hero_preview.chart_title') }}</p>
-                  <div class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shadow-sm border border-border/40">
+                  <p class="text-sm font-black uppercase tracking-widest text-foreground/80">
+                    {{ $t('landing.hero_preview.chart_title') }}
+                  </p>
+                  <div
+                    class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shadow-sm border border-border/40"
+                  >
                     {{ $t('landing.hero_preview.chart_period') }}
                   </div>
                 </div>
@@ -245,9 +261,15 @@
                       >
                         {{ $t(tx.title) }}
                       </p>
-                      <p class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/40">{{ $t(tx.date) }}</p>
+                      <p
+                        class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/40"
+                      >
+                        {{ $t(tx.date) }}
+                      </p>
                     </div>
-                    <span class="text-sm font-black tracking-tighter" :class="tx.amountColor">{{ tx.amount }}</span>
+                    <span class="text-sm font-black tracking-tighter" :class="tx.amountColor">{{
+                      tx.amount
+                    }}</span>
                   </div>
                 </div>
               </div>

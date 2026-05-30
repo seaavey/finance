@@ -1,6 +1,9 @@
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
   compatibilityDate: '2025-07-15',
   ssr: process.env.NODE_ENV !== 'development',
   devtools: { enabled: false },
@@ -13,15 +16,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    server: {
-      warmup: {
-        clientFiles: [
-          './app/app.vue',
-          './app/layouts/default.vue',
-          './app/pages/dashboard.vue',
-        ],
-      },
-    },
     optimizeDeps: {
       include: [
         '@internationalized/date',

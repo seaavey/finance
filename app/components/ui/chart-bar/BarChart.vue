@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue';
 import type { ChartConfig } from '../chart';
-import { VisAxis, VisCrosshair, VisGroupedBar, VisStackedBar, VisTooltip, VisXYContainer } from '@unovis/vue';
+import {
+  VisAxis,
+  VisCrosshair,
+  VisGroupedBar,
+  VisStackedBar,
+  VisTooltip,
+  VisXYContainer,
+} from '@unovis/vue';
 import { ChartContainer, ChartTooltipContent } from '../chart';
 import { componentToString } from '../chart/utils';
 import { cn } from '@/lib/utils';
@@ -54,28 +61,15 @@ const color = (_d: Record<string, unknown>, i: number) => {
           :color="color"
           :rounded-corners="roundedCorners"
         />
-        <VisStackedBar
-          v-else
-          :x="x"
-          :y="y"
-          :color="color"
-          :rounded-corners="roundedCorners"
-        />
+        <VisStackedBar v-else :x="x" :y="y" :color="color" :rounded-corners="roundedCorners" />
 
-        <VisAxis
-          v-if="showXAxis"
-          type="x"
-          :grid-line="false"
-          :tick-format="xFormatter"
-        />
-        <VisAxis
-          v-if="showYAxis"
-          type="y"
-          :grid-line="showGridLine"
-          :tick-format="yFormatter"
-        />
+        <VisAxis v-if="showXAxis" type="x" :grid-line="false" :tick-format="xFormatter" />
+        <VisAxis v-if="showYAxis" type="y" :grid-line="showGridLine" :tick-format="yFormatter" />
 
-        <VisCrosshair v-if="showTooltip" :template="componentToString(config, ChartTooltipContent)" />
+        <VisCrosshair
+          v-if="showTooltip"
+          :template="componentToString(config, ChartTooltipContent)"
+        />
         <VisTooltip v-if="showTooltip" />
       </VisXYContainer>
     </ChartContainer>

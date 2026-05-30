@@ -13,15 +13,11 @@
     <div
       class="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
     >
-      <span
-        class="truncate text-sm font-bold text-foreground transition-colors duration-200"
-      >
+      <span class="truncate text-sm font-bold text-foreground transition-colors duration-200">
         {{ label }}
       </span>
 
-      <div
-        class="flex min-w-0 items-center gap-2 transition-colors duration-200"
-      >
+      <div class="flex min-w-0 items-center gap-2 transition-colors duration-200">
         <span
           class="truncate text-left text-xs font-bold uppercase tracking-tight text-muted-foreground/60 transition-colors sm:text-right group-hover:text-muted-foreground"
         >
@@ -38,7 +34,6 @@
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps<{
   icon: 'user' | 'currency' | 'palette' | 'download' | 'language';
   label: string;

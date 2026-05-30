@@ -1,5 +1,4 @@
 <template>
-
   <div class="pb-10 pt-4">
     <!-- Header with Greeting -->
     <div class="mb-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
@@ -14,7 +13,9 @@
             </h2>
           </template>
         </ClientOnly>
-        <p class="mt-2 font-bold uppercase tracking-widest text-muted-foreground/60">{{ monthLabel }}</p>
+        <p class="mt-2 font-bold uppercase tracking-widest text-muted-foreground/60">
+          {{ monthLabel }}
+        </p>
       </div>
       <div class="flex flex-wrap items-center gap-3">
         <div
@@ -34,7 +35,9 @@
           </Button>
         </div>
 
-        <div class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md">
+        <div
+          class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md"
+        >
           <Button
             v-for="p in periodOptions"
             :key="p.value"
@@ -80,15 +83,19 @@
             }}</span>
           </div>
           <div class="mt-4">
-            <h1 class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl">
+            <h1
+              class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl"
+            >
               {{ formatCurrency(balance) }}
             </h1>
             <div class="mt-4 flex items-center gap-2">
               <div
                 class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
                 :class="
-                  balance >= 0 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-               "
+                  balance >= 0
+                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                "
               >
                 <Icon
                   :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
@@ -182,11 +189,15 @@
               <span
                 class="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
               />
-              <span class="text-xs font-bold text-muted-foreground">{{ $t('dashboard.income') }}</span>
+              <span class="text-xs font-bold text-muted-foreground">{{
+                $t('dashboard.income')
+              }}</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="size-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)]" />
-              <span class="text-xs font-bold text-muted-foreground">{{ $t('dashboard.expense') }}</span>
+              <span class="text-xs font-bold text-muted-foreground">{{
+                $t('dashboard.expense')
+              }}</span>
             </div>
           </div>
         </div>
@@ -209,7 +220,9 @@
           v-if="activeReminders.length > 0"
           class="rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-500/10 flex-1"
         >
-          <h3 class="mb-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase">
+          <h3
+            class="mb-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
+          >
             {{ $t('dashboard.upcoming_bills') }}
           </h3>
           <div class="space-y-3">
@@ -259,7 +272,11 @@
           </div>
           <div class="flex h-full flex-col justify-center pb-4">
             <template v-if="budgetSummaries.length > 0">
-              <div v-for="sbudget in budgetSummaries.slice(0, 3)" :key="sbudget.id" class="mb-4 last:mb-0">
+              <div
+                v-for="sbudget in budgetSummaries.slice(0, 3)"
+                :key="sbudget.id"
+                class="mb-4 last:mb-0"
+              >
                 <div class="flex items-center justify-between">
                   <p class="text-xs font-bold text-foreground truncate pr-2">
                     {{ sbudget.category_name }}
@@ -312,7 +329,9 @@
                   class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
                 >
                   <div class="flex items-center gap-2 min-w-0">
-                    <div class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50">
+                    <div
+                      class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50"
+                    >
                       <Icon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
                     </div>
                     <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
@@ -344,7 +363,9 @@
             <h3 class="text-xl font-black tracking-tighter text-foreground">
               {{ $t('dashboard.recent') }}
             </h3>
-            <p class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.latest_activity') }}</p>
+            <p class="text-sm font-medium text-muted-foreground">
+              {{ $t('dashboard.latest_activity') }}
+            </p>
           </div>
           <NuxtLinkLocale
             to="/transactions"
@@ -366,7 +387,9 @@
               <p class="text-base font-black text-foreground tracking-tight">
                 {{ $t('dashboard.empty_title') }}
               </p>
-              <p class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.empty_desc') }}</p>
+              <p class="text-sm font-medium text-muted-foreground">
+                {{ $t('dashboard.empty_desc') }}
+              </p>
             </div>
           </div>
           <div v-else class="grid grid-cols-1 gap-1">
@@ -382,7 +405,7 @@
                   tx.type === 'income'
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                     : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-               "
+                "
               >
                 <Icon
                   :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -405,11 +428,17 @@
                     {{ getCategoryName(tx.category_id) }}
                   </span>
                 </div>
-                <p class="text-xs font-bold text-muted-foreground/60">{{ formatRelativeDate(tx.date) }}</p>
+                <p class="text-xs font-bold text-muted-foreground/60">
+                  {{ formatRelativeDate(tx.date) }}
+                </p>
               </div>
               <p
                 class="shrink-0 text-lg font-black tracking-tighter"
-                :class="tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'"
+                :class="
+                  tx.type === 'income'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-foreground'
+                "
               >
                 {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
               </p>

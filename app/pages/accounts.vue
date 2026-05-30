@@ -46,7 +46,9 @@ const onDeleteRequest = (account: AccountWithBalance) => {
 };
 
 const onDeleteConfirm = async () => {
-  if (!deletingAccount.value) { return; }
+  if (!deletingAccount.value) {
+    return;
+  }
   await deleteAccount(deletingAccount.value.id);
   accountList.value = await getAccountBalances();
   showDeleteDialog.value = false;
@@ -87,7 +89,9 @@ const onFormSaved = async () => {
       v-else-if="accountList.length === 0"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <Icon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ t('accounts.empty') }}</h3>

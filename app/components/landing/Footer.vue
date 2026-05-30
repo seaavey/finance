@@ -35,7 +35,9 @@
 
         <!-- Column 2: Product -->
         <div>
-          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60">
+          <h4
+            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60"
+          >
             {{ $t('landing.footer_product') }}
           </h4>
           <ul class="space-y-4">
@@ -53,7 +55,9 @@
 
         <!-- Column 3: Company & Legal -->
         <div>
-          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60">
+          <h4
+            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60"
+          >
             {{ $t('landing.footer_company') }}
           </h4>
           <ul class="space-y-4">
@@ -89,7 +93,10 @@
                 class="h-11 w-full pl-10 pr-3 rounded-2xl border border-border/50 bg-muted/30 text-sm font-bold focus:border-primary/50 transition-all"
               />
             </div>
-            <Button size="sm" class="h-11 rounded-2xl bg-primary px-6 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all">
+            <Button
+              size="sm"
+              class="h-11 rounded-2xl bg-primary px-6 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all"
+            >
               {{ $t('landing.footer_subscribe_button') }}
             </Button>
           </div>
@@ -123,9 +130,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const socialLinks = [
-  { labelKey: 'footer_github', href: '#', icon: 'hugeicons:github' },
-  { labelKey: 'footer_twitter', href: '#', icon: 'hugeicons:twitter' },
-  { labelKey: 'footer_linkedin', href: '#', icon: 'hugeicons:linkedin-01' },
+  { labelKey: 'footer_github', href: 'https://github.com/seaavey', icon: 'hugeicons:github' },
 ];
 
 const productLinks = [
@@ -135,14 +140,13 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { labelKey: 'landing.footer_about', href: '#' },
-  { labelKey: 'landing.footer_blog', href: '#' },
-  { labelKey: 'landing.footer_contact', href: '#' },
+  { labelKey: 'landing.footer_about', href: '/about' },
+  { labelKey: 'landing.footer_contact', href: '/contact' },
 ];
 
 const legalLinks = [
-  { labelKey: 'landing.footer_privacy', href: '#' },
-  { labelKey: 'landing.footer_terms', href: '#' },
+  { labelKey: 'landing.footer_privacy', href: '/privacy-policy' },
+  { labelKey: 'landing.footer_terms', href: '/terms-of-service' },
 ];
 
 const scrollToSection = (href: string) => {

@@ -56,7 +56,9 @@
       <!-- Right Actions -->
       <div class="flex flex-1 items-center justify-end gap-2 sm:gap-3">
         <!-- Utilitas Group (Desktop) -->
-        <div class="hidden sm:flex items-center p-1 bg-card/50 rounded-2xl border border-border/40 shadow-sm">
+        <div
+          class="hidden sm:flex items-center p-1 bg-card/50 rounded-2xl border border-border/40 shadow-sm"
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -87,14 +89,20 @@
                 <Icon name="hugeicons:language-skill" :size="20" class="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-40 rounded-3xl p-2 border-border/40 bg-card/80 backdrop-blur-xl">
+            <DropdownMenuContent
+              align="end"
+              class="w-40 rounded-3xl p-2 border-border/40 bg-card/80 backdrop-blur-xl"
+            >
               <DropdownMenuItem
                 v-for="locale in availableLocales"
                 :key="locale.code"
                 class="cursor-pointer rounded-2xl px-4 py-2.5 transition-all focus:bg-primary/10 focus:text-primary"
                 @click="setLocale(locale.code)"
               >
-                <span class="text-xs font-bold uppercase tracking-widest" :class="{ 'text-primary': currentLocale === locale.code }">
+                <span
+                  class="text-xs font-bold uppercase tracking-widest"
+                  :class="{ 'text-primary': currentLocale === locale.code }"
+                >
                   {{ locale.name }}
                 </span>
               </DropdownMenuItem>
@@ -132,7 +140,10 @@
               <Icon name="hugeicons:menu-01" :size="26" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" class="w-80 sm:w-100 flex flex-col border-l-border/40 bg-card/80 backdrop-blur-xl">
+          <SheetContent
+            side="right"
+            class="w-80 sm:w-100 flex flex-col border-l-border/40 bg-card/80 backdrop-blur-xl"
+          >
             <SheetHeader class="text-left pb-8">
               <SheetTitle class="text-2xl font-black tracking-tighter flex items-center gap-3">
                 <div
@@ -173,18 +184,30 @@
                 >
                   {{ $t('settings.preferences') }}
                 </p>
-                <div class="flex items-center justify-between px-5 py-4 rounded-4xl bg-muted/30 border border-border/50">
+                <div
+                  class="flex items-center justify-between px-5 py-4 rounded-4xl bg-muted/30 border border-border/50"
+                >
                   <div class="flex items-center gap-3">
-                    <div class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm">
-                      <Icon :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'" :size="18" class="text-primary" />
+                    <div
+                      class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm"
+                    >
+                      <Icon
+                        :name="
+                          colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'
+                        "
+                        :size="18"
+                        class="text-primary"
+                      />
                     </div>
                     <span class="text-sm font-bold">{{ $t('settings.theme') }}</span>
                   </div>
                   <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleColorMode" />
                 </div>
-                
+
                 <div class="flex flex-col gap-3 px-1">
-                  <p class="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">
+                  <p
+                    class="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest"
+                  >
                     {{ $t('settings.language') }}
                   </p>
                   <div class="flex gap-2">
@@ -195,9 +218,9 @@
                       size="sm"
                       class="flex-1 h-11 rounded-2xl font-bold transition-all"
                       :class="[
-                        currentLocale === locale.code 
-                          ? 'border-primary/50 bg-primary/10 text-primary shadow-sm' 
-                          : 'border-border/50 bg-transparent text-muted-foreground hover:bg-muted/50'
+                        currentLocale === locale.code
+                          ? 'border-primary/50 bg-primary/10 text-primary shadow-sm'
+                          : 'border-border/50 bg-transparent text-muted-foreground hover:bg-muted/50',
                       ]"
                       @click="setLocale(locale.code)"
                     >

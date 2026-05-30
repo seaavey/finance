@@ -20,9 +20,7 @@
         >
           {{ $t('landing.features_heading') }}
         </h2>
-        <p
-          class="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl"
-        >
+        <p class="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl">
           {{ $t('landing.features_desc') }}
         </p>
       </div>

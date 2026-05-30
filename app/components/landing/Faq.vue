@@ -68,7 +68,9 @@
           <p class="mb-2 text-lg font-black tracking-tight text-foreground">
             {{ $t('landing.faq_support_title') }}
           </p>
-          <p class="mb-8 text-sm font-medium text-muted-foreground">{{ $t('landing.faq_support_desc') }}</p>
+          <p class="mb-8 text-sm font-medium text-muted-foreground">
+            {{ $t('landing.faq_support_desc') }}
+          </p>
           <Button
             variant="default"
             class="h-12 gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"

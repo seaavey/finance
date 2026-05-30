@@ -1,5 +1,7 @@
 <template>
-  <div class="flex min-h-screen flex-col bg-background text-foreground transition-colors duration-300">
+  <div
+    class="flex min-h-screen flex-col bg-background text-foreground transition-colors duration-300"
+  >
     <LandingNavbar />
 
     <main class="flex-1">

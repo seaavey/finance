@@ -56,8 +56,14 @@
                 </AvatarFallback>
               </Avatar>
               <div class="min-w-0">
-                <p class="truncate text-sm font-black tracking-tight text-foreground">{{ rt(t.name) }}</p>
-                <p class="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{{ rt(t.role) }}</p>
+                <p class="truncate text-sm font-black tracking-tight text-foreground">
+                  {{ rt(t.name) }}
+                </p>
+                <p
+                  class="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                >
+                  {{ rt(t.role) }}
+                </p>
               </div>
             </div>
           </div>
@@ -91,7 +97,8 @@ interface Testimonial {
 const rawTestimonials = tm('landing.testimonials_items') as Record<string, unknown>[];
 const testimonials = rawTestimonials.map((t) => ({
   ...t,
-  rating: typeof t.rating === 'number' ? t.rating : parseInt(rt(t.rating as unknown as string)) || 5,
+  rating:
+    typeof t.rating === 'number' ? t.rating : parseInt(rt(t.rating as unknown as string)) || 5,
 })) as unknown as Testimonial[];
 
 const getColorClasses = (color: string | object) => {

@@ -34,12 +34,7 @@ const color = (_d: Record<string, unknown>, i: number) => {
   <div :class="props.class">
     <ChartContainer :config="config">
       <VisSingleContainer :data="data">
-        <VisDonut
-          :value="value"
-          :color="color"
-          :arc-width="0.3"
-          :show-labels="false"
-        />
+        <VisDonut :value="value" :color="color" :arc-width="0.3" :show-labels="false" />
 
         <VisTooltip v-if="showTooltip" :template="componentToString(config, ChartTooltipContent)" />
       </VisSingleContainer>

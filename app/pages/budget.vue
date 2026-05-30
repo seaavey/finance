@@ -71,7 +71,9 @@ const onDeleteRequest = (budget: BudgetWithProgress) => {
 };
 
 const onDeleteConfirm = async () => {
-  if (!deletingBudget.value) { return; }
+  if (!deletingBudget.value) {
+    return;
+  }
   await deleteBudget(deletingBudget.value.id, currentMonthStr.value);
   await loadBudget();
   showDeleteDialog.value = false;
@@ -105,7 +107,9 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
     </div>
 
     <!-- MONTH SELECTOR -->
-    <div class="flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-2 shadow-sm backdrop-blur-md">
+    <div
+      class="flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-2 shadow-sm backdrop-blur-md"
+    >
       <Button variant="ghost" size="icon" class="rounded-2xl" @click="changeMonth(-1)">
         <Icon name="hugeicons:arrow-left-01" :size="20" />
       </Button>
@@ -127,10 +131,14 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
       v-else-if="budgetList.length === 0"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <Icon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
       </div>
-      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('budget.no_budgets') }}</h3>
+      <h3 class="text-xl font-black tracking-tight text-foreground">
+        {{ $t('budget.no_budgets') }}
+      </h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
         {{ $t('budget.empty') }}
       </p>

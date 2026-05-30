@@ -80,9 +80,15 @@ const formatNextDate = (date: string) => {
   const today = new Date();
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diff === 0) { return t('recurring.today'); }
-  if (diff === 1) { return t('recurring.tomorrow'); }
-  if (diff < 7) { return `${diff} ${t('recurring.days_left')}`; }
+  if (diff === 0) {
+    return t('recurring.today');
+  }
+  if (diff === 1) {
+    return t('recurring.tomorrow');
+  }
+  if (diff < 7) {
+    return `${diff} ${t('recurring.days_left')}`;
+  }
   return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 
@@ -151,7 +157,9 @@ const onSaved = () => {
           <h3 class="mt-2 text-3xl font-black tracking-tighter text-rose-500">
             {{ formatCurrency(monthlyExpense) }}
           </h3>
-          <p class="mt-1 text-[10px] font-bold text-rose-500/40 uppercase tracking-tight">Est. Per Bulan</p>
+          <p class="mt-1 text-[10px] font-bold text-rose-500/40 uppercase tracking-tight">
+            Est. Per Bulan
+          </p>
         </div>
         <Icon
           name="hugeicons:arrow-up-01"
@@ -168,7 +176,9 @@ const onSaved = () => {
           <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">
             {{ formatCurrency(monthlyIncome) }}
           </h3>
-          <p class="mt-1 text-[10px] font-bold text-emerald-500/40 uppercase tracking-tight">Est. Per Bulan</p>
+          <p class="mt-1 text-[10px] font-bold text-emerald-500/40 uppercase tracking-tight">
+            Est. Per Bulan
+          </p>
         </div>
         <Icon
           name="hugeicons:arrow-down-01"
@@ -187,7 +197,9 @@ const onSaved = () => {
       v-else-if="recurring.length === 0"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <Icon name="hugeicons:repeat" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty') }}</h3>
@@ -215,7 +227,11 @@ const onSaved = () => {
           <div class="flex items-center gap-4">
             <div
               class="flex size-12 items-center justify-center rounded-2xl shadow-sm transition-transform group-hover:scale-110"
-              :class="item.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'"
+              :class="
+                item.type === 'income'
+                  ? 'bg-emerald-500/10 text-emerald-500'
+                  : 'bg-rose-500/10 text-rose-500'
+              "
             >
               <Icon
                 :name="item.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -225,11 +241,15 @@ const onSaved = () => {
             <div>
               <h3 class="font-bold text-foreground">
                 {{
-                  item.description || categoryName(item.category_id) || $t('recurring.no_description')
+                  item.description ||
+                  categoryName(item.category_id) ||
+                  $t('recurring.no_description')
                 }}
               </h3>
               <div class="mt-1 flex items-center gap-2">
-                <span class="rounded-lg bg-muted px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                <span
+                  class="rounded-lg bg-muted px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-muted-foreground"
+                >
                   {{ frequencyLabel(item.frequency) }}
                 </span>
                 <span class="text-[10px] font-bold text-muted-foreground/60">
@@ -243,10 +263,20 @@ const onSaved = () => {
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
           <div class="flex gap-1">
-            <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-muted" @click="editItem(item)">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-9 rounded-xl hover:bg-muted"
+              @click="editItem(item)"
+            >
               <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
             </Button>
-            <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500" @click="onDelete(item)">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
+              @click="onDelete(item)"
+            >
               <Icon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
@@ -258,7 +288,8 @@ const onSaved = () => {
               class="text-xl font-black tracking-tighter"
               :class="item.type === 'income' ? 'text-emerald-500' : 'text-foreground'"
             >
-              {{ item.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(item.amount), item.currency) }}
+              {{ item.type === 'income' ? '+' : '-'
+              }}{{ formatCurrency(Number(item.amount), item.currency) }}
             </p>
           </div>
         </div>

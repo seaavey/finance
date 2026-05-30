@@ -18,7 +18,9 @@
     </div>
 
     <!-- TABS -->
-    <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md">
+    <div
+      class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md"
+    >
       <Button
         v-for="tab in tabs"
         :key="tab.value"
@@ -43,10 +45,14 @@
         v-if="filteredCategories.length === 0"
         class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
       >
-        <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+        <div
+          class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+        >
           <Icon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
         </div>
-        <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('categories.empty') }}</h3>
+        <h3 class="text-xl font-black tracking-tight text-foreground">
+          {{ $t('categories.empty') }}
+        </h3>
         <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
           {{ $t('categories.empty_desc') }}
         </p>
@@ -77,7 +83,10 @@
                 class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing transition-transform group-hover:scale-105"
                 :style="{ backgroundColor: cat.color + '15' }"
               >
-                <div class="size-3.5 rounded-full shadow-sm" :style="{ backgroundColor: cat.color }" />
+                <div
+                  class="size-3.5 rounded-full shadow-sm"
+                  :style="{ backgroundColor: cat.color }"
+                />
               </div>
               <div>
                 <h3 class="font-bold text-foreground">{{ cat.name }}</h3>
@@ -96,13 +105,21 @@
                 </p>
               </div>
             </div>
-            <div
-              class="flex gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100"
-            >
-              <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-muted" @click="editCategory(cat)">
+            <div class="flex gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
+              <Button
+                variant="ghost"
+                size="icon"
+                class="size-9 rounded-xl hover:bg-muted"
+                @click="editCategory(cat)"
+              >
                 <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500" @click="confirmDelete(cat)">
+              <Button
+                variant="ghost"
+                size="icon"
+                class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
+                @click="confirmDelete(cat)"
+              >
                 <Icon name="hugeicons:delete-01" :size="16" />
               </Button>
             </div>
