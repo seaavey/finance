@@ -1,13 +1,13 @@
 <template>
   <header
-    class="sticky top-0 z-40 flex h-16 items-center border-b border-border/50 bg-white/70 px-6 backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/70"
+    class="sticky top-0 z-40 flex h-16 items-center border-b border-border/40 bg-background/80 px-6 backdrop-blur-xl"
   >
     <!-- LEFT: Breadcrumbs & Mobile Toggle -->
     <div class="flex items-center gap-3">
       <Button
         variant="ghost"
         size="icon"
-        class="size-9 rounded-xl border border-border/50 bg-white/50 dark:border-zinc-800/50 dark:bg-zinc-950/50 lg:hidden"
+        class="size-9 rounded-xl border border-border/50 bg-card/50 lg:hidden"
         @click="$emit('toggleSidebar')"
       >
         <Icon name="hugeicons:menu-02" :size="18" />
@@ -18,7 +18,7 @@
           <template v-for="(item, i) in breadcrumbItems" :key="i">
             <template v-if="i === breadcrumbItems.length - 1">
               <BreadcrumbItem>
-                <BreadcrumbPage class="text-xs font-black uppercase tracking-widest text-foreground dark:text-zinc-50">
+                <BreadcrumbPage class="text-xs font-black uppercase tracking-widest text-foreground">
                   {{ item.label }}
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -27,13 +27,13 @@
               <BreadcrumbItem class="hidden md:flex">
                 <BreadcrumbLink
                   :to="item.to!"
-                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 transition-colors hover:text-foreground dark:text-muted-foreground dark:hover:text-zinc-50"
+                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 transition-colors hover:text-foreground"
                 >
                   {{ item.label }}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator class="hidden md:flex">
-                <Icon name="hugeicons:arrow-right-01" :size="10" class="text-zinc-300" />
+                <Icon name="hugeicons:arrow-right-01" :size="10" class="text-muted-foreground/30" />
               </BreadcrumbSeparator>
             </template>
           </template>
@@ -47,7 +47,7 @@
       <Button
         variant="ghost"
         size="icon"
-        class="size-9 rounded-xl border border-border/50 bg-white/50 dark:border-zinc-800/50 dark:bg-zinc-950/50 md:hidden"
+        class="size-9 rounded-xl border border-border/50 bg-card/50 md:hidden"
         @click="showSearchDialog = true"
       >
         <Icon name="hugeicons:search-01" :size="18" />
@@ -57,13 +57,13 @@
       <div class="relative hidden md:block">
         <Button
           variant="outline"
-          class="h-9 w-64 justify-start rounded-xl border-border/50 bg-zinc-100/50 pl-9 pr-12 text-xs font-bold text-muted-foreground transition-all hover:bg-zinc-100 dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:hover:bg-zinc-900"
+          class="h-9 w-64 justify-start rounded-xl border-border/50 bg-muted/50 pl-9 pr-12 text-xs font-bold text-muted-foreground transition-all hover:bg-muted"
           @click="showSearchDialog = true"
         >
           <Icon name="hugeicons:search-01" :size="14" class="absolute left-3 text-muted-foreground/60" />
           <span>{{ $t('topbar.search') }}</span>
           <kbd
-            class="absolute right-3 rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] font-black text-muted-foreground dark:bg-zinc-800 dark:text-muted-foreground/60"
+            class="absolute right-3 rounded bg-muted-foreground/10 px-1.5 py-0.5 text-[10px] font-black text-muted-foreground"
             >⌘K</kbd
           >
         </Button>
@@ -75,20 +75,20 @@
           <Button
             variant="ghost"
             size="icon"
-            class="relative size-9 rounded-xl border border-border/50 bg-white/50 dark:border-zinc-800/50 dark:bg-zinc-950/50"
+            class="relative size-9 rounded-xl border border-border/50 bg-card/50"
           >
             <Icon name="hugeicons:notification-03" :size="18" />
             <span
               v-if="activeReminders.length > 0"
-              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-pink-500 text-[10px] font-black text-white ring-2 ring-white dark:ring-zinc-950"
+              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground ring-2 ring-background"
             >
               {{ activeReminders.length }}
             </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-80 rounded-2xl border-border/50 p-0 shadow-2xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/90" align="end">
-          <div class="border-b border-border/50 p-4 dark:border-zinc-800/50">
-            <h4 class="text-xs font-black uppercase tracking-widest text-foreground dark:text-zinc-50">
+        <PopoverContent class="w-80 rounded-2xl border-border/50 p-0 shadow-2xl backdrop-blur-xl" align="end">
+          <div class="border-b border-border/50 p-4">
+            <h4 class="text-xs font-black uppercase tracking-widest text-foreground">
               {{ $t('topbar.notifications') }}
             </h4>
           </div>
@@ -97,15 +97,15 @@
               <div
                 v-for="reminder in activeReminders"
                 :key="reminder.id"
-                class="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-zinc-100/50 dark:hover:bg-zinc-900/50"
+                class="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-muted/50"
               >
                 <div
-                  class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-pink-500/10 text-pink-500"
+                  class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
                 >
                   <Icon name="hugeicons:alert-01" :size="14" />
                 </div>
                 <div class="flex-1 space-y-0.5">
-                  <p class="text-sm font-bold text-foreground dark:text-zinc-50">
+                  <p class="text-sm font-bold text-foreground">
                     {{ reminder.name }}
                   </p>
                   <p class="text-xs font-medium text-muted-foreground">
@@ -122,7 +122,7 @@
                 <Button
                   variant="ghost"
                   size="icon"
-                  class="size-7 rounded-lg text-muted-foreground/60 hover:bg-zinc-100 hover:text-foreground dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+                  class="size-7 rounded-lg text-muted-foreground/60 hover:bg-muted hover:text-foreground"
                   @click="dismissReminder(reminder.id)"
                 >
                   <Icon name="hugeicons:cancel-01" :size="14" />
@@ -130,7 +130,7 @@
               </div>
             </template>
             <div v-else class="flex h-32 flex-col items-center justify-center space-y-2">
-              <Icon name="hugeicons:notification-03" :size="24" class="text-zinc-200 dark:text-zinc-800" />
+              <Icon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/30" />
               <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                 {{ $t('topbar.no_notifications') }}
               </p>
@@ -143,7 +143,7 @@
       <Button
         variant="ghost"
         size="icon"
-        class="size-9 rounded-xl border border-border/50 bg-white/50 dark:border-zinc-800/50 dark:bg-zinc-950/50"
+        class="size-9 rounded-xl border border-border/50 bg-card/50"
         @click="cycleColorMode"
       >
         <ClientOnly>
@@ -158,7 +158,7 @@
       <!-- PREMIUM CTA -->
       <Button
         v-if="route.path !== '/settings'"
-        class="h-9 gap-2 rounded-xl bg-zinc-900 px-4 text-xs font-bold text-white shadow-lg shadow-zinc-900/10 transition-all hover:bg-zinc-800 dark:bg-muted dark:text-zinc-950 dark:shadow-none dark:hover:bg-zinc-200"
+        class="h-9 gap-2 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
         @click="navigateTo('/transactions/new')"
       >
         <Icon name="hugeicons:add-01" :size="16" />
