@@ -63,7 +63,7 @@
             variant="ghost"
             size="icon"
             class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
-            @click="toggleColorMode"
+            @click="toggleTheme"
           >
             <ClientOnly>
               <Icon
@@ -191,17 +191,25 @@
                     <div
                       class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm"
                     >
-                      <Icon
-                        :name="
-                          colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'
-                        "
-                        :size="18"
-                        class="text-primary"
-                      />
+                      <ClientOnly>
+                        <Icon
+                          :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
+                          :size="18"
+                          class="text-primary"
+                        />
+                        <template #fallback>
+                          <div class="size-4 rounded-full border-2 border-primary/20 animate-pulse" />
+                        </template>
+                      </ClientOnly>
                     </div>
                     <span class="text-sm font-bold">{{ $t('settings.theme') }}</span>
                   </div>
-                  <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleColorMode" />
+                  <ClientOnly>
+                    <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleTheme" />
+                    <template #fallback>
+                      <div class="h-5 w-8 rounded-full bg-muted animate-pulse" />
+                    </template>
+                  </ClientOnly>
                 </div>
 
                 <div class="flex flex-col gap-3 px-1">
@@ -310,6 +318,10 @@ const availableLocales = computed(() => {
   );
 });
 
+const toggleTheme = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+};
+
 const pillStyle = computed(() => {
   const activeIndex = navItems.findIndex(
     (item) => item.href.replace('#', '') === activeSection.value,
@@ -325,10 +337,6 @@ const pillStyle = computed(() => {
     opacity: 1,
   };
 });
-
-const toggleColorMode = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
-};
 
 const scrollToSection = (href: string) => {
   const id = href.replace('#', '');
@@ -366,3 +374,4 @@ onMounted(() => {
   });
 });
 </script>
+
