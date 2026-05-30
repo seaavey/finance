@@ -2,24 +2,24 @@
 
   <div class="pb-10 pt-4">
     <!-- Header with Greeting -->
-    <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    <div class="mb-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
       <div>
         <ClientOnly>
-          <h2 class="text-4xl font-bold tracking-tighter text-foreground">
+          <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
             {{ $t('dashboard.greeting') }}, {{ displayName }}
           </h2>
           <template #fallback>
-            <h2 class="text-4xl font-bold tracking-tighter text-foreground">
+            <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
               {{ $t('dashboard.greeting_loading') }}
             </h2>
           </template>
         </ClientOnly>
-        <p class="mt-1 text-muted-foreground font-medium">{{ monthLabel }}</p>
+        <p class="mt-2 font-bold uppercase tracking-widest text-muted-foreground/60">{{ monthLabel }}</p>
       </div>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap items-center gap-3">
         <div
           v-if="isPartnered"
-          class="flex gap-1 rounded-2xl border border-border/50 bg-card/50 p-1 shadow-sm backdrop-blur-md"
+          class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md"
         >
           <Button
             v-for="mode in viewModes"
@@ -34,13 +34,13 @@
           </Button>
         </div>
 
-        <div class="flex gap-1 rounded-2xl border border-border/50 bg-card/50 p-1 shadow-sm backdrop-blur-md">
+        <div class="flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md">
           <Button
             v-for="p in periodOptions"
             :key="p.value"
             :variant="period === p.value ? 'default' : 'ghost'"
             size="sm"
-            class="rounded-xl px-3 transition-all duration-300 h-8 text-[10px] font-black uppercase tracking-wider"
+            class="h-8 rounded-xl px-3 text-[10px] font-black uppercase tracking-wider transition-all duration-300"
             :class="period === p.value ? 'shadow-sm' : 'text-muted-foreground'"
             @click="period = p.value"
           >
@@ -51,22 +51,22 @@
     </div>
 
     <!-- Skeleton Loading -->
-    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-6">
-      <div class="h-64 animate-pulse rounded-4xl bg-muted md:col-span-3" />
+    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+      <div class="h-64 animate-pulse rounded-4xl bg-muted/50 md:col-span-2 lg:col-span-3" />
       <div
         v-for="i in 3"
         :key="i"
-        class="h-64 animate-pulse rounded-4xl bg-muted md:col-span-1"
+        class="h-64 animate-pulse rounded-4xl bg-muted/50 md:col-span-1 lg:col-span-1"
       />
-      <div class="h-96 animate-pulse rounded-4xl bg-muted md:col-span-4" />
-      <div class="h-96 animate-pulse rounded-4xl bg-muted md:col-span-2" />
+      <div class="h-96 animate-pulse rounded-4xl bg-muted/50 md:col-span-2 lg:col-span-4" />
+      <div class="h-96 animate-pulse rounded-4xl bg-muted/50 md:col-span-2 lg:col-span-2" />
     </div>
 
     <!-- Bento Grid Content -->
-    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6">
+    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
       <!-- Main Balance Hero Card (3 cols) -->
       <div
-        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-3"
+        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-6 lg:col-span-3"
       >
         <div class="relative z-10">
           <div class="flex items-center gap-3">
@@ -79,8 +79,8 @@
               $t('dashboard.balance_this_month')
             }}</span>
           </div>
-          <div class="mt-8">
-            <h1 class="text-6xl font-black tracking-tighter text-foreground leading-none">
+          <div class="mt-4">
+            <h1 class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl">
               {{ formatCurrency(balance) }}
             </h1>
             <div class="mt-4 flex items-center gap-2">
@@ -109,7 +109,7 @@
 
       <!-- Income Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
@@ -128,7 +128,7 @@
 
       <!-- Expense Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
@@ -147,7 +147,7 @@
 
       <!-- Net Worth Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-sm"
@@ -166,9 +166,9 @@
 
       <!-- Analytics Area: Monthly Bar Chart (4 cols) -->
       <div
-        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-4"
+        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-6 lg:col-span-4"
       >
-        <div class="mb-8 flex items-center justify-between">
+        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h3 class="text-xl font-black tracking-tighter text-foreground">
               {{ $t('dashboard.expense_chart') }}
@@ -203,7 +203,7 @@
       </div>
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
-      <div class="flex flex-col gap-4 md:col-span-2">
+      <div class="flex flex-col gap-4 md:col-span-6 lg:col-span-2">
         <!-- Upcoming Bills / Reminders -->
         <div
           v-if="activeReminders.length > 0"
