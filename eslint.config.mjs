@@ -6,6 +6,7 @@ export default withNuxt({
   rules: {
     curly: 'error',
     'no-template-curly-in-string': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
 })
   .override('nuxt/typescript/rules', {
@@ -16,7 +17,7 @@ export default withNuxt({
   })
   .override('nuxt/vue/rules', {
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'warn',
       'vue/require-default-prop': 'off',
       'vue/html-self-closing': 'off',
     },

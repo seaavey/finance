@@ -241,7 +241,7 @@ import { Switch } from '@/components/ui/switch';
 import { useRouter } from '#imports';
 import { useWindowScroll } from '@vueuse/core';
 
-const { t, locale: currentLocale, locales, setLocale } = useI18n();
+const { locale: currentLocale, locales, setLocale } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
 const colorMode = useColorMode();

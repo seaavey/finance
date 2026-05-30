@@ -57,8 +57,6 @@
 <script setup lang="ts">
 import type { TransactionFilters } from '~/composables/useTransactions';
 
-const { t } = useI18n();
-
 const emit = defineEmits<{
   filter: [filters: TransactionFilters];
 }>();

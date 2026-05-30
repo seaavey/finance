@@ -53,7 +53,6 @@ const { locale } = useI18n();
 const { categories } = useCategories();
 const { accounts } = useAccounts();
 const { partner, isPartnered, partnerDisplayName } = usePartner();
-const { user } = useAuth();
 
 const isPartnerOwned = computed(() => partner.value?.id === props.transaction.user_id);
 const partnerInitial = computed(() => partnerDisplayName.value?.charAt(0)?.toUpperCase() || 'P');

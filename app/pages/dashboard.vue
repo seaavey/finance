@@ -331,17 +331,14 @@ const { t, locale } = useI18n();
 const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
 const { fetchAccounts, getAccountBalances } = useAccounts();
-const { history, currentNetWorth, fetchNetWorthHistory } = useNetWorth();
-const { recurring, fetchRecurring } = useRecurring();
-const { activeReminders, dismissReminder } = useReminders();
+const { currentNetWorth, fetchNetWorthHistory } = useNetWorth();
+const { fetchRecurring } = useRecurring();
+const { activeReminders } = useReminders();
 
 const loading = ref(true);
-const selectedPeriod = ref('30d');
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
 const budgetSummaries = ref<BudgetWithProgress[]>([]);
 const accountBalances = ref<AccountWithBalance[]>([]);
-
-const chartPeriods = ['7d', '30d', '90d'];
 
 const viewModes = computed(() => [
   { value: 'all' as const, label: t('transactions.all') },
@@ -411,12 +408,6 @@ const getCategoryName = (id: string | null) => {
   }
   return categoryMap.value.get(id)?.name || '';
 };
-const getCategoryColor = (id: string | null) => {
-  if (!id) {
-    return '#6b7280';
-  }
-  return categoryMap.value.get(id)?.color || '#6b7280';
-};
 
 const now = new Date();
 const currentMonth = now.getMonth();
@@ -438,36 +429,6 @@ const totalExpense = computed(() =>
 );
 
 const balance = computed(() => totalIncome.value - totalExpense.value);
-
-const trendIncome = computed(() => {
-  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = filteredTransactions.value
-    .filter((tx) => {
-      const d = new Date(tx.date);
-      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
-    })
-    .reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) {
-    return totalIncome.value > 0 ? null : 0;
-  }
-  return Math.round(((totalIncome.value - prev) / prev) * 100);
-});
-
-const trendExpense = computed(() => {
-  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prev = filteredTransactions.value
-    .filter((tx) => {
-      const d = new Date(tx.date);
-      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
-    })
-    .reduce((s, t) => s + t.amount, 0);
-  if (prev === 0) {
-    return totalExpense.value > 0 ? null : 0;
-  }
-  return Math.round(((totalExpense.value - prev) / prev) * 100);
-});
 
 const trendBalance = computed(() => {
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
@@ -496,28 +457,6 @@ const recentTransactions = computed(() =>
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5),
 );
-
-const expenseByCategory = computed(() => {
-  const map = new Map<string, { name: string; color: string; total: number }>();
-  for (const tx of thisMonthTransactions.value) {
-    if (tx.type !== 'expense') {
-      continue;
-    }
-    const cat = tx.category_id ? categoryMap.value.get(tx.category_id) : undefined;
-    const key = cat ? tx.category_id : 'uncategorized';
-    const existing = map.get(key!);
-    if (existing) {
-      existing.total += tx.amount;
-    } else {
-      map.set(key!, {
-        name: cat?.name || t('dashboard.other'),
-        color: cat?.color || '#6b7280',
-        total: tx.amount,
-      });
-    }
-  }
-  return [...map.values()].sort((a, b) => b.total - a.total);
-});
 
 const monthlyData = computed(() => {
   const months: { label: string; income: number; expense: number }[] = [];

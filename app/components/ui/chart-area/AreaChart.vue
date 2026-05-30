@@ -29,7 +29,6 @@ const props = withDefaults(
 );
 
 const x = (d: Record<string, unknown>) => d[props.index];
-const y = props.categories.map((category) => (d: Record<string, unknown>) => d[category]);
 </script>
 
 <template>

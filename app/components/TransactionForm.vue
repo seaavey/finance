@@ -192,7 +192,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
 const props = defineProps<{
   transaction?: Transaction;

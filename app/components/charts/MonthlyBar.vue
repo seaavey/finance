@@ -2,7 +2,7 @@
 import { BarChart } from '@/app/components/ui/chart-bar';
 import type { ChartConfig } from '@/app/components/ui/chart';
 
-const props = defineProps<{
+defineProps<{
   data: { label: string; income: number; expense: number }[];
 }>();
 

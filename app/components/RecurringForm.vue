@@ -156,7 +156,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 const { currencies, defaultCurrency } = useCurrency();
 const { addRecurring, updateRecurring } = useRecurring();
 

@@ -10,7 +10,7 @@ useSeoMeta({
   ogTitle: seoTitle,
 });
 
-const { accounts, loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts();
+const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts();
 const { fetchCategories } = useCategories();
 
 const accountList = ref<AccountWithBalance[]>([]);

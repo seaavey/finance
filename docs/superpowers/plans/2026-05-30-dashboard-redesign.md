@@ -222,7 +222,7 @@ git commit -m "design: update topbar with glassmorphism and premium search"
     <div class="grid grid-cols-1 gap-4 md:grid-cols-6">
       <!-- Main Balance Card (Span 3) -->
       <div
-        class="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-3"
+        class="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-4xl border border-zinc-200/50 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-3"
       >
         <div class="flex items-start justify-between">
           <div>
@@ -263,7 +263,7 @@ git commit -m "design: update topbar with glassmorphism and premium search"
       <div
         v-for="stat in secondaryStats"
         :key="stat.label"
-        class="col-span-1 rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-1"
+        class="col-span-1 rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-1"
       >
         <div class="flex size-10 items-center justify-center rounded-xl" :class="stat.bgClass">
           <Icon :name="stat.icon" :size="20" :class="stat.iconClass" />
@@ -278,7 +278,7 @@ git commit -m "design: update topbar with glassmorphism and premium search"
 
       <!-- Main Chart (Span 4) -->
       <div
-        class="col-span-1 rounded-[2rem] border border-zinc-200/50 bg-white p-8 shadow-sm dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-4"
+        class="col-span-1 rounded-4xl border border-zinc-200/50 bg-white p-8 shadow-sm dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-4"
       >
         <div class="mb-6 flex items-center justify-between">
           <h3 class="text-sm font-bold uppercase tracking-widest text-zinc-400">
@@ -295,7 +295,7 @@ git commit -m "design: update topbar with glassmorphism and premium search"
 
       <!-- Transactions (Span 6) -->
       <div
-        class="col-span-1 overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white shadow-sm dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-6"
+        class="col-span-1 overflow-hidden rounded-4xl border border-zinc-200/50 bg-white shadow-sm dark:border-zinc-800/50 dark:bg-zinc-900 md:col-span-6"
       >
         <!-- Clean Transaction Table -->
       </div>
@@ -344,7 +344,7 @@ const chartData = computed(() =>
 </script>
 
 <template>
-  <div class="h-[300px] w-full">
+  <div class="h-75 w-full">
     <BarChart
       :data="chartData"
       index="name"

@@ -13,8 +13,6 @@ withDefaults(
     siteUrl: 'seaavey.site',
   },
 );
-
-const primary = '#c2410c';
 </script>
 
 <template>

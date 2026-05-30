@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AccountWithBalance } from '~/composables/useAccounts';
 
-const props = defineProps<{
+defineProps<{
   account: AccountWithBalance;
 }>();
 

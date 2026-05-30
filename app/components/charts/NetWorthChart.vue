@@ -2,7 +2,7 @@
 import { AreaChart } from '@/app/components/ui/chart-area';
 import type { ChartConfig } from '@/app/components/ui/chart';
 
-const props = defineProps<{
+defineProps<{
   data: { label: string; netWorth: number; assets: number; debts: number }[];
 }>();
 

@@ -143,7 +143,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import type { Transaction } from '~/composables/useTransactions';
 
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 const route = useRoute();
 const { getTransaction, deleteTransaction } = useTransactions();
 const { fetchCategories, categories } = useCategories();
