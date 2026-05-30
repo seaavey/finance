@@ -37,12 +37,12 @@
           <Label for="r-amount">{{ $t('recurring_form.amount') }}</Label>
           <Input
             id="r-amount"
-            v-model.number="form.amount"
-            type="number"
-            min="1"
-            step="any"
+            v-model="amountDisplay"
+            type="text"
+            inputmode="numeric"
             :placeholder="$t('transaction_form.amount_placeholder')"
             required
+            @keydown="onNumberKeydown"
           />
         </div>
 
@@ -157,7 +157,7 @@ const emit = defineEmits<{
 }>();
 
 const { locale } = useI18n();
-const { currencies, defaultCurrency } = useCurrency();
+const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency();
 const { addRecurring, updateRecurring } = useRecurring();
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
@@ -168,12 +168,24 @@ const todayDate = today(getLocalTimeZone()).toString();
 
 const form = reactive({
   type: props.item?.type ?? ('expense' as 'income' | 'expense'),
-  amount: props.item?.amount ?? ('' as unknown as number),
+  amount: props.item?.amount ?? 0,
   currency: props.item?.currency ?? defaultCurrency.value,
   category_id: props.item?.category_id ?? '',
   description: props.item?.description ?? '',
   frequency: props.item?.frequency ?? ('monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly'),
   next_date: props.item?.next_date ?? todayDate,
+});
+
+const amountDisplay = computed({
+  get: () => {
+    if (!form.amount) {
+      return '';
+    }
+    return formatNumberOnly(form.amount, form.currency);
+  },
+  set: (val: string) => {
+    form.amount = parseLocalizedNumber(val, form.currency);
+  },
 });
 
 const calendarDate = computed({
@@ -184,6 +196,37 @@ const calendarDate = computed({
     }
   },
 });
+
+const onNumberKeydown = (e: KeyboardEvent) => {
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  // Prevent decimal separators to reinforce digits-only entry
+  if (e.key === ',' || e.key === '.') {
+    e.preventDefault();
+    return;
+  }
+  e.preventDefault();
+};
 
 const onSubmit = async () => {
   const payload: Omit<RecurringTransaction, 'id' | 'user_id' | 'created_at'> = {

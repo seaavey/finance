@@ -1,4 +1,5 @@
 <template>
+
   <div class="pb-10 pt-4">
     <!-- Header with Greeting -->
     <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
@@ -15,21 +16,37 @@
         </ClientOnly>
         <p class="mt-1 text-muted-foreground font-medium">{{ monthLabel }}</p>
       </div>
-      <div
-        v-if="isPartnered"
-        class="flex gap-1 rounded-2xl border border-border/50 bg-card/50 p-1 shadow-sm backdrop-blur-md"
-      >
-        <Button
-          v-for="mode in viewModes"
-          :key="mode.value"
-          :variant="viewMode === mode.value ? 'default' : 'ghost'"
-          size="sm"
-          class="rounded-xl px-4 transition-all duration-300"
-          :class="viewMode === mode.value ? 'shadow-sm' : 'text-muted-foreground'"
-          @click="viewMode = mode.value"
+      <div class="flex flex-wrap gap-2">
+        <div
+          v-if="isPartnered"
+          class="flex gap-1 rounded-2xl border border-border/50 bg-card/50 p-1 shadow-sm backdrop-blur-md"
         >
-          {{ mode.label }}
-        </Button>
+          <Button
+            v-for="mode in viewModes"
+            :key="mode.value"
+            :variant="viewMode === mode.value ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-4 transition-all duration-300"
+            :class="viewMode === mode.value ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="viewMode = mode.value"
+          >
+            {{ mode.label }}
+          </Button>
+        </div>
+
+        <div class="flex gap-1 rounded-2xl border border-border/50 bg-card/50 p-1 shadow-sm backdrop-blur-md">
+          <Button
+            v-for="p in periodOptions"
+            :key="p.value"
+            :variant="period === p.value ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-3 transition-all duration-300 h-8 text-[10px] font-black uppercase tracking-wider"
+            :class="period === p.value ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="period = p.value"
+          >
+            {{ p.label }}
+          </Button>
+        </div>
       </div>
     </div>
 
@@ -49,7 +66,7 @@
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6">
       <!-- Main Balance Hero Card (3 cols) -->
       <div
-        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-3"
+        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-3"
       >
         <div class="relative z-10">
           <div class="flex items-center gap-3">
@@ -71,7 +88,7 @@
                 class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
                 :class="
                   balance >= 0 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                "
+               "
               >
                 <Icon
                   :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
@@ -92,7 +109,7 @@
 
       <!-- Income Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
@@ -111,7 +128,7 @@
 
       <!-- Expense Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-200 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
@@ -130,7 +147,7 @@
 
       <!-- Net Worth Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-300 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-1"
       >
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-sm"
@@ -149,7 +166,7 @@
 
       <!-- Analytics Area: Monthly Bar Chart (4 cols) -->
       <div
-        class="rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-400 duration-700 fill-mode-both md:col-span-4"
+        class="rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-4"
       >
         <div class="mb-8 flex items-center justify-between">
           <div>
@@ -173,15 +190,20 @@
             </div>
           </div>
         </div>
-        <div class="h-64">
-          <ChartsMonthlyBar :data="monthlyData" />
+        <div class="h-80">
+          <ClientOnly>
+            <ChartsMonthlyBar :data="monthlyData" />
+            <template #fallback>
+              <div class="flex h-full items-center justify-center">
+                <Skeleton class="h-full w-full rounded-xl" />
+              </div>
+            </template>
+          </ClientOnly>
         </div>
       </div>
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
-      <div
-        class="space-y-4 animate-in fade-in slide-in-from-bottom-6 delay-500 duration-700 fill-mode-both md:col-span-2"
-      >
+      <div class="space-y-4 md:col-span-2">
         <!-- Upcoming Bills / Reminders -->
         <div
           v-if="activeReminders.length > 0"
@@ -313,7 +335,7 @@
 
       <!-- Recent Transactions (Full Width - 6 cols) -->
       <div
-        class="rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-700 duration-700 fill-mode-both md:col-span-6"
+        class="rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-lg md:col-span-6"
       >
         <div class="flex items-center justify-between border-b border-border/50 p-8">
           <div>
@@ -358,7 +380,7 @@
                   tx.type === 'income'
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                     : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                "
+               "
               >
                 <Icon
                   :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -395,9 +417,7 @@
       </div>
 
       <!-- Quick Actions -->
-      <div
-        class="animate-in fade-in slide-in-from-bottom-6 delay-1000 duration-700 fill-mode-both md:col-span-3"
-      >
+      <div class="md:col-span-3">
         <button
           class="flex w-full items-center gap-6 rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-none"
           @click="navigateTo('/transactions/new')"
@@ -417,9 +437,7 @@
           </div>
         </button>
       </div>
-      <div
-        class="animate-in fade-in slide-in-from-bottom-6 delay-1000 duration-700 fill-mode-both md:col-span-3"
-      >
+      <div class="md:col-span-3">
         <button
           class="flex w-full items-center gap-6 rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-none"
           @click="navigateTo('/categories')"
@@ -462,8 +480,16 @@ const { activeReminders } = useReminders();
 
 const loading = ref(true);
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
+const period = ref<'1d' | '7d' | '30d' | 'all'>('30d');
 const budgetSummaries = ref<BudgetWithProgress[]>([]);
 const accountBalances = ref<AccountWithBalance[]>([]);
+
+const periodOptions = [
+  { value: '1d' as const, label: '1D' },
+  { value: '7d' as const, label: '7D' },
+  { value: '30d' as const, label: '30D' },
+  { value: 'all' as const, label: 'ALL' },
+];
 
 const viewModes = computed(() => [
   { value: 'all' as const, label: t('transactions.all') },
@@ -475,15 +501,25 @@ const viewModes = computed(() => [
 ]);
 
 const filteredTransactions = computed(() => {
-  const all = transactions.value;
-  if (!isPartnered.value || viewMode.value === 'all') {
-    return all;
+  let list = transactions.value;
+
+  // 1. View Mode Filter (Self/Partner)
+  if (isPartnered.value && viewMode.value !== 'all') {
+    const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
+    if (targetUserId) {
+      list = list.filter((tx) => tx.user_id === targetUserId);
+    }
   }
-  const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
-  if (!targetUserId) {
-    return all;
+
+  // 2. Period Filter
+  if (period.value !== 'all') {
+    const now = new Date();
+    const daysMap = { '1d': 1, '7d': 7, '30d': 30 };
+    const cutoff = new Date(now.getTime() - daysMap[period.value] * 24 * 60 * 60 * 1000);
+    list = list.filter((tx) => new Date(tx.date) >= cutoff);
   }
-  return all.filter((tx) => tx.user_id === targetUserId);
+
+  return list;
 });
 
 const displayName = computed(() => {
@@ -492,11 +528,10 @@ const displayName = computed(() => {
 });
 
 const monthLabel = computed(() => {
-  const d = new Date();
-  return d.toLocaleDateString(locale.value, {
-    month: 'long',
-    year: 'numeric',
-  });
+  if (period.value === '1d') return t('dashboard.today');
+  if (period.value === '7d') return t('dashboard.last_7_days');
+  if (period.value === '30d') return t('dashboard.last_30_days');
+  return t('dashboard.all_time');
 });
 
 const formatRelativeDate = (date: string) => {
@@ -534,42 +569,38 @@ const getCategoryName = (id: string | null) => {
   return categoryMap.value.get(id)?.name || '';
 };
 
-const now = new Date();
-const currentMonth = now.getMonth();
-const currentYear = now.getFullYear();
-
-const thisMonthTransactions = computed(() =>
-  filteredTransactions.value.filter((tx) => {
-    const d = new Date(tx.date);
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-  }),
-);
-
 const totalIncome = computed(() =>
-  thisMonthTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
 );
 
 const totalExpense = computed(() =>
-  thisMonthTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
 );
 
 const balance = computed(() => totalIncome.value - totalExpense.value);
 
 const trendBalance = computed(() => {
-  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-  const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const prevIncome = filteredTransactions.value
-    .filter((tx) => {
-      const d = new Date(tx.date);
-      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'income';
-    })
+  if (period.value === 'all') return 0;
+
+  const now = new Date();
+  const daysMap = { '1d': 1, '7d': 7, '30d': 30 };
+  const days = daysMap[period.value];
+
+  const currentCutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+  const prevCutoff = new Date(now.getTime() - days * 2 * 24 * 60 * 60 * 1000);
+
+  const prevTransactions = transactions.value.filter((tx) => {
+    const d = new Date(tx.date);
+    return d >= prevCutoff && d < currentCutoff;
+  });
+
+  const prevIncome = prevTransactions
+    .filter((tx) => tx.type === 'income')
     .reduce((s, t) => s + t.amount, 0);
-  const prevExpense = filteredTransactions.value
-    .filter((tx) => {
-      const d = new Date(tx.date);
-      return d.getMonth() === prevMonth && d.getFullYear() === prevYear && tx.type === 'expense';
-    })
+  const prevExpense = prevTransactions
+    .filter((tx) => tx.type === 'expense')
     .reduce((s, t) => s + t.amount, 0);
+
   const prevBalance = prevIncome - prevExpense;
   if (prevBalance === 0) {
     return balance.value !== 0 ? null : 0;
@@ -584,18 +615,44 @@ const recentTransactions = computed(() =>
 );
 
 const monthlyData = computed(() => {
+  // If viewing 1D or 7D, show daily granularity. If 30D or ALL, show monthly.
+  if (period.value === '1d' || period.value === '7d') {
+    const days = period.value === '1d' ? 1 : 7;
+    const data: { label: string; income: number; expense: number }[] = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const label = d.toLocaleDateString(locale.value, { weekday: 'short', day: 'numeric' });
+      const dateStr = d.toISOString().split('T')[0];
+
+      const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr);
+      data.push({
+        label,
+        income: dayTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+        expense: dayTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+      });
+    }
+    return data;
+  }
+
+  // Monthly logic for 30D and ALL
   const months: { label: string; income: number; expense: number }[] = [];
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
   for (let i = 5; i >= 0; i--) {
     const d = new Date(currentYear, currentMonth - i, 1);
-    const label = d.toLocaleDateString(locale.value, {
-      month: 'short',
-    });
+    const label = d.toLocaleDateString(locale.value, { month: 'short' });
     const m = d.getMonth();
     const y = d.getFullYear();
-    const monthTx = filteredTransactions.value.filter((tx) => {
+
+    const monthTx = transactions.value.filter((tx) => {
       const td = new Date(tx.date);
       return td.getMonth() === m && td.getFullYear() === y;
     });
+
     months.push({
       label,
       income: monthTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
@@ -607,9 +664,9 @@ const monthlyData = computed(() => {
 
 onMounted(async () => {
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1).toISOString().split('T')[0];
   await Promise.all([
-    fetchTransactions({ dateFrom: firstDay }),
+    fetchTransactions({ dateFrom: sixMonthsAgo }),
     fetchCategories(),
     fetchPartner(),
     fetchNetWorthHistory(),

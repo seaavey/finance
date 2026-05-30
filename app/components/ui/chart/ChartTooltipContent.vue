@@ -16,7 +16,7 @@ const props = withDefaults(
     config?: ChartConfig;
     class?: HTMLAttributes['class'];
     color?: string;
-    x?: number | Date;
+    x?: number | Date | string;
   }>(),
   {
     payload: () => ({}),

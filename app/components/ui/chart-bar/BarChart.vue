@@ -4,6 +4,7 @@ import type { ChartConfig } from '../chart';
 import { VisAxis, VisCrosshair, VisGroupedBar, VisStackedBar, VisTooltip, VisXYContainer } from '@unovis/vue';
 import { ChartContainer, ChartTooltipContent } from '../chart';
 import { componentToString } from '../chart/utils';
+import { cn } from '@/lib/utils';
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +21,7 @@ const props = withDefaults(
     showLegend?: boolean;
     xFormatter?: (tick: string | number) => string;
     yFormatter?: (tick: string | number) => string;
+    roundedCorners?: number;
   }>(),
   {
     type: 'grouped',
@@ -28,6 +30,7 @@ const props = withDefaults(
     showGridLine: true,
     showTooltip: true,
     showLegend: true,
+    roundedCorners: 0,
   },
 );
 
@@ -36,27 +39,27 @@ const y = props.categories.map((category) => (d: Record<string, unknown>) => d[c
 
 const color = (_d: Record<string, unknown>, i: number) => {
   const category = props.categories[i];
-  return props.config[category]?.color || `var(--vis-color${i})`;
+  return `var(--color-${category})`;
 };
 </script>
 
 <template>
-  <div :class="props.class">
+  <div :class="cn('w-full h-full', props.class)">
     <ChartContainer :config="config">
-      <VisXYContainer :data="data">
+      <VisXYContainer :data="data" :style="{ height: '100%', width: '100%' }">
         <VisGroupedBar
           v-if="type === 'grouped'"
           :x="x"
           :y="y"
           :color="color"
-          :rounded-corners="4"
+          :rounded-corners="roundedCorners"
         />
         <VisStackedBar
           v-else
           :x="x"
           :y="y"
           :color="color"
-          :rounded-corners="4"
+          :rounded-corners="roundedCorners"
         />
 
         <VisAxis

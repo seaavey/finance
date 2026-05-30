@@ -7,7 +7,7 @@
         <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-primary/20 transition hover:from-primary/80 hover:to-primary/90"
         @click="showForm = true"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -32,15 +32,18 @@
 
     <template v-else>
       <!-- TABS -->
-      <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1">
+      <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm">
         <Button
           v-for="tab in tabs"
           :key="tab.value"
-          :variant="activeTab === tab.value ? 'default' : 'outline'"
+          :variant="activeTab === tab.value ? 'default' : 'ghost'"
           size="sm"
+          class="rounded-xl px-6 transition-all duration-300"
+          :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
           @click="activeTab = tab.value"
         >
-          {{ tab.label }} ({{ tab.count }})
+          {{ tab.label }}
+          <span class="ml-1.5 opacity-60">({{ tab.count }})</span>
         </Button>
       </div>
 
@@ -128,6 +131,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
 

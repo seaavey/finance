@@ -32,6 +32,7 @@
                 inputmode="numeric"
                 placeholder="0"
                 required
+                @keydown="onNumberKeydown"
               />
             </div>
 
@@ -209,6 +210,37 @@ const calendarDate = computed({
     }
   },
 });
+
+const onNumberKeydown = (e: KeyboardEvent) => {
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ];
+  if (allowed.includes(e.key)) {
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) {
+    return;
+  }
+  // Prevent decimal separators to reinforce digits-only entry
+  if (e.key === ',' || e.key === '.') {
+    e.preventDefault();
+    return;
+  }
+  e.preventDefault();
+};
 
 const onSubmit = async () => {
   let imageUrl = form.image_url;

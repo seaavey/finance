@@ -32,7 +32,7 @@
                 ? 'bg-card text-foreground shadow-sm ring-1 ring-border/50'
                 : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
             "
-            @click="$emit('close')"
+            @click="onItemClick"
           >
             <Icon
               :name="item.icon"
@@ -85,6 +85,7 @@
           v-if="isPartnered"
           to="/settings"
           class="mt-3 flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2 text-[10px] font-bold text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+          @click="onItemClick"
         >
           <Icon name="hugeicons:user" :size="14" class="text-primary" />
           <span>{{ partnerDisplayName }}</span>
@@ -99,15 +100,17 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import { useMediaQuery } from '@vueuse/core';
 
 defineProps<{
   open: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   close: [];
 }>();
 
+const isDesktop = useMediaQuery('(min-width: 1024px)');
 const { user, signOut } = useAuth();
 const { isPartnered, partnerDisplayName, fetchPartner } = usePartner();
 const route = useRoute();
@@ -147,6 +150,12 @@ const isActive = (path: string) => {
     return route.path === '/';
   }
   return route.path.startsWith(path);
+};
+
+const onItemClick = () => {
+  if (!isDesktop.value) {
+    emit('close');
+  }
 };
 
 const onSignOut = async () => {

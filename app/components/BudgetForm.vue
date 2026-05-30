@@ -62,7 +62,9 @@ const onNumberKeydown = (e: KeyboardEvent) => {
   if (/^[0-9]$/.test(e.key)) {
     return;
   }
+  // Prevent decimal separators to reinforce digits-only entry
   if (e.key === ',' || e.key === '.') {
+    e.preventDefault();
     return;
   }
   e.preventDefault();
