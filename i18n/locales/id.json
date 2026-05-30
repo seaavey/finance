@@ -334,7 +334,13 @@
     "accounts": "Akun",
     "settings": "Setelan",
     "logout": "Logout",
-    "partner": "Pasangan"
+    "partner": "Pasangan",
+    "sections": {
+      "main": "Utama",
+      "finance": "Keuangan",
+      "personal": "Personal",
+      "system": "Sistem"
+    }
   },
   "topbar": {
     "search": "Cari transaksi...",

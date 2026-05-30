@@ -334,7 +334,13 @@
     "accounts": "Accounts",
     "settings": "Settings",
     "logout": "Logout",
-    "partner": "Partner"
+    "partner": "Partner",
+    "sections": {
+      "main": "Main",
+      "finance": "Finance",
+      "personal": "Personal",
+      "system": "System"
+    }
   },
   "topbar": {
     "search": "Search transactions...",
