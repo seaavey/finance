@@ -9,7 +9,7 @@
       >
         <Icon name="hugeicons:money-add-01" :size="18" class="text-white" />
       </div>
-      <span class="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{{
+      <span class="text-lg font-black tracking-tighter text-zinc-900 dark:text-zinc-50">{{
         $t('sidebar.finance')
       }}</span>
     </div>
@@ -17,7 +17,7 @@
     <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
       <div v-for="section in navSections" :key="section.label" class="space-y-1">
         <h4
-          class="px-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500"
+          class="px-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500"
         >
           {{ section.label }}
         </h4>

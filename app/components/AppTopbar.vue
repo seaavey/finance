@@ -18,7 +18,7 @@
           <template v-for="(item, i) in breadcrumbItems" :key="i">
             <template v-if="i === breadcrumbItems.length - 1">
               <BreadcrumbItem>
-                <BreadcrumbPage class="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-50">
+                <BreadcrumbPage class="text-xs font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50">
                   {{ item.label }}
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -27,7 +27,7 @@
               <BreadcrumbItem class="hidden md:flex">
                 <BreadcrumbLink
                   :to="item.to!"
-                  class="text-xs font-bold uppercase tracking-widest text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-50"
+                  class="text-xs font-black uppercase tracking-widest text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-50"
                 >
                   {{ item.label }}
                 </BreadcrumbLink>
@@ -57,13 +57,13 @@
       <div class="relative hidden md:block">
         <Button
           variant="outline"
-          class="h-9 w-64 justify-start rounded-xl border-zinc-200/50 bg-zinc-100/50 pl-9 pr-12 text-xs font-normal text-zinc-500 transition-all hover:bg-zinc-100 dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:hover:bg-zinc-900"
+          class="h-9 w-64 justify-start rounded-xl border-zinc-200/50 bg-zinc-100/50 pl-9 pr-12 text-xs font-bold text-zinc-500 transition-all hover:bg-zinc-100 dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:hover:bg-zinc-900"
           @click="showSearchDialog = true"
         >
           <Icon name="hugeicons:search-01" :size="14" class="absolute left-3 text-zinc-400" />
           <span>{{ $t('topbar.search') }}</span>
           <kbd
-            class="absolute right-3 rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] font-bold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+            class="absolute right-3 rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] font-black text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
             >⌘K</kbd
           >
         </Button>
@@ -80,7 +80,7 @@
             <Icon name="hugeicons:notification-03" :size="18" />
             <span
               v-if="activeReminders.length > 0"
-              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-pink-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-zinc-950"
+              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-pink-500 text-[10px] font-black text-white ring-2 ring-white dark:ring-zinc-950"
             >
               {{ activeReminders.length }}
             </span>
@@ -88,7 +88,7 @@
         </PopoverTrigger>
         <PopoverContent class="w-80 rounded-2xl border-zinc-200/50 p-0 shadow-2xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/90" align="end">
           <div class="border-b border-zinc-200/50 p-4 dark:border-zinc-800/50">
-            <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-50">
+            <h4 class="text-xs font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50">
               {{ $t('topbar.notifications') }}
             </h4>
           </div>
