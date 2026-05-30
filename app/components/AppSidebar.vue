@@ -1,7 +1,7 @@
 <template>
   <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border/40 bg-sidebar/50 backdrop-blur-xl transition-transform duration-200 md:sticky md:top-0 md:h-screen"
-    :class="open ? 'translate-x-0' : '-translate-x-full md:-ml-64'"
+    class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border/40 bg-sidebar/50 backdrop-blur-xl transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen"
+    :class="open ? 'translate-x-0' : '-translate-x-full lg:-ml-64'"
   >
     <div class="flex h-16 shrink-0 items-center gap-3 px-6">
       <div
