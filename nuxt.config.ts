@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+  ssr: process.env.NODE_ENV !== 'development',
   devtools: { enabled: false },
   css: ['~/styles/global.css'],
   runtimeConfig: {
@@ -12,6 +13,15 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    server: {
+      warmup: {
+        clientFiles: [
+          './app/app.vue',
+          './app/layouts/default.vue',
+          './app/pages/dashboard.vue',
+        ],
+      },
+    },
     optimizeDeps: {
       include: [
         '@internationalized/date',
@@ -49,6 +59,7 @@ export default defineNuxtConfig({
     ],
   },
   ogImage: {
+    enabled: process.env.NODE_ENV !== 'development',
     zeroRuntime: true,
   },
   site: {
@@ -58,6 +69,7 @@ export default defineNuxtConfig({
     defaultLocale: 'id',
   },
   sitemap: {
+    enabled: process.env.NODE_ENV !== 'development',
     zeroRuntime: true,
   },
   colorMode: {
