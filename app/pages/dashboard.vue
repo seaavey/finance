@@ -66,7 +66,7 @@
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6">
       <!-- Main Balance Hero Card (3 cols) -->
       <div
-        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-3"
+        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-3"
       >
         <div class="relative z-10">
           <div class="flex items-center gap-3">
@@ -166,7 +166,7 @@
 
       <!-- Analytics Area: Monthly Bar Chart (4 cols) -->
       <div
-        class="rounded-4xl border border-border/50 bg-card p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-4"
+        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-4"
       >
         <div class="mb-8 flex items-center justify-between">
           <div>
@@ -290,7 +290,7 @@
 
         <!-- Quick Accounts -->
         <div
-          class="rounded-4xl border border-border/50 bg-zinc-900 dark:bg-zinc-950 p-6 shadow-xl text-white transition-all hover:shadow-zinc-300 dark:hover:shadow-none"
+          class="rounded-4xl border border-border/50 bg-card p-6 shadow-xl text-white transition-all hover:shadow-lg"
         >
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -298,7 +298,7 @@
             </h3>
             <NuxtLinkLocale
               to="/accounts"
-              class="text-[10px] font-black text-muted-foreground hover:text-white uppercase tracking-widest transition-colors"
+              class="text-[10px] font-black text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
             >
               {{ $t('dashboard.view_all') }}
             </NuxtLinkLocale>
@@ -308,10 +308,10 @@
               <div
                 v-for="acct in accountBalances.slice(0, 3)"
                 :key="acct.id"
-                class="flex items-center justify-between rounded-xl bg-card/10 p-2 backdrop-blur-sm transition-all hover:bg-card/20"
+                class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
               >
                 <div class="flex items-center gap-2 min-w-0">
-                  <div class="flex size-7 items-center justify-center rounded-lg bg-card/20">
+                  <div class="flex size-7 items-center justify-center rounded-lg bg-muted/50">
                     <Icon v-if="acct.icon" :name="acct.icon" :size="14" />
                   </div>
                   <span class="truncate text-xs font-bold">{{ acct.name }}</span>
@@ -337,7 +337,7 @@
       <div
         class="rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-lg md:col-span-6"
       >
-        <div class="flex items-center justify-between border-b border-border/50 p-8">
+        <div class="flex items-center justify-between border-b border-border/50 p-6">
           <div>
             <h3 class="text-xl font-black tracking-tighter text-foreground">
               {{ $t('dashboard.recent') }}
