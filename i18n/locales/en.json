@@ -422,7 +422,73 @@
     "footer_subscribe_placeholder": "Enter your email",
     "footer_subscribe_button": "Subscribe",
     "footer_github": "GitHub",
-    "footer_copyright": "© {year} Aemy Finance. All rights reserved."
+    "footer_copyright": "© {year} Aemy Finance. All rights reserved.",
+    "hero_preview": {
+      "balance": "Balance This Month",
+      "trend": "+12.5% from last month",
+      "income": "Income",
+      "expense": "Expense",
+      "chart_title": "Expense Chart",
+      "chart_period": "Week",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "recent_title": "Recent Transactions",
+      "item_shopping": "Monthly Shopping",
+      "item_salary": "Salary",
+      "item_bill": "Electricity Bill",
+      "today": "Today",
+      "days_ago_2": "2 days ago",
+      "days_ago_3": "3 days ago",
+      "savings": "Savings this month"
+    },
+    "testimonials_items": [
+      {
+        "name": "Rani Sutrisno",
+        "role": "Freelance Designer",
+        "quote": "Now I can track monthly expenses without Excel. Simple and clear.",
+        "initials": "RS",
+        "color": "pink",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        "name": "Dimas Pratama",
+        "role": "Software Engineer",
+        "quote": "The recurring transactions feature is really helpful. No more late electricity & internet payments.",
+        "initials": "DP",
+        "color": "blue",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        "name": "Aisyah Putri",
+        "role": "Housewife",
+        "quote": "Managing finances together with my husband has become more transparent. No more mystery spending!",
+        "initials": "AP",
+        "color": "purple",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80"
+      }
+    ],
+    "faq_q_free": "Is this app free?",
+    "faq_a_free": "Yes, Finance is free to use forever. There are no hidden subscription fees.",
+    "faq_q_couple": "Can I use it with my partner?",
+    "faq_a_couple": "Of course! You can connect your account with your partner to see each other's transactions and manage finances together.",
+    "faq_q_security": "Is my data secure?",
+    "faq_a_security": "Your data is encrypted and secure. We use Supabase as a trusted backend with Row Level Security (RLS) on every table.",
+    "faq_q_mobile": "Can I access it on my phone?",
+    "faq_a_mobile": "Yes. Finance is a responsive web app that can be accessed from any mobile browser — no installation required.",
+    "faq_q_export": "Can I export data to Excel?",
+    "faq_a_export": "Yes. You can download monthly transaction reports in CSV/Excel format for your own analysis.",
+    "faq_q_category": "Can I create custom categories?",
+    "faq_a_category": "Yes, you can create, edit, and color-code your own categories for both income and expenses."
   },
   "about": {
     "title": "About Us",
@@ -536,72 +602,6 @@
     "contact_title": "Questions?",
     "contact_desc": "If you have any questions about these Terms of Service, please reach out to us."
   },
-  "hero_preview": {
-    "balance": "Balance This Month",
-    "trend": "+12.5% from last month",
-    "income": "Income",
-    "expense": "Expense",
-    "chart_title": "Expense Chart",
-    "chart_period": "Week",
-    "days": {
-      "mon": "Mon",
-      "tue": "Tue",
-      "wed": "Wed",
-      "thu": "Thu",
-      "fri": "Fri",
-      "sat": "Sat",
-      "sun": "Sun"
-    },
-    "recent_title": "Recent Transactions",
-    "item_shopping": "Monthly Shopping",
-    "item_salary": "Salary",
-    "item_bill": "Electricity Bill",
-    "today": "Today",
-    "days_ago_2": "2 days ago",
-    "days_ago_3": "3 days ago",
-    "savings": "Savings this month"
-  },
-  "testimonials_items": [
-    {
-      "name": "Rani Sutrisno",
-      "role": "Freelance Designer",
-      "quote": "Now I can track monthly expenses without Excel. Simple and clear.",
-      "initials": "RS",
-      "color": "pink",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      "name": "Dimas Pratama",
-      "role": "Software Engineer",
-      "quote": "The recurring transactions feature is really helpful. No more late electricity & internet payments.",
-      "initials": "DP",
-      "color": "blue",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      "name": "Aisyah Putri",
-      "role": "Housewife",
-      "quote": "Managing finances together with my husband has become more transparent. No more mystery spending!",
-      "initials": "AP",
-      "color": "purple",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80"
-    }
-  ],
-  "faq_q_free": "Is this app free?",
-  "faq_a_free": "Yes, Finance is free to use forever. There are no hidden subscription fees.",
-  "faq_q_couple": "Can I use it with my partner?",
-  "faq_a_couple": "Of course! You can connect your account with your partner to see each other's transactions and manage finances together.",
-  "faq_q_security": "Is my data secure?",
-  "faq_a_security": "Your data is encrypted and secure. We use Supabase as a trusted backend with Row Level Security (RLS) on every table.",
-  "faq_q_mobile": "Can I access it on my phone?",
-  "faq_a_mobile": "Yes. Finance is a responsive web app that can be accessed from any mobile browser — no installation required.",
-  "faq_q_export": "Can I export data to Excel?",
-  "faq_a_export": "Yes. You can download monthly transaction reports in CSV/Excel format for your own analysis.",
-  "faq_q_category": "Can I create custom categories?",
-  "faq_a_category": "Yes, you can create, edit, and color-code your own categories for both income and expenses.",
   "auth": {
     "login_title": "Sign In",
     "login_subtitle": "Track your finances solo or together",

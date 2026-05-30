@@ -422,7 +422,73 @@
     "footer_subscribe_placeholder": "Masukkan email kamu",
     "footer_subscribe_button": "Langganan",
     "footer_github": "GitHub",
-    "footer_copyright": "© {year} Aemy Finance. Hak cipta dilindungi undang-undang."
+    "footer_copyright": "© {year} Aemy Finance. Hak cipta dilindungi undang-undang.",
+    "hero_preview": {
+      "balance": "Saldo Bulan Ini",
+      "trend": "+12.5% dari bulan lalu",
+      "income": "Pemasukan",
+      "expense": "Pengeluaran",
+      "chart_title": "Grafik Pengeluaran",
+      "chart_period": "Minggu",
+      "days": {
+        "mon": "Sen",
+        "tue": "Sel",
+        "wed": "Rab",
+        "thu": "Kam",
+        "fri": "Jum",
+        "sat": "Sab",
+        "sun": "Min"
+      },
+      "recent_title": "Transaksi Terakhir",
+      "item_shopping": "Belanja Bulanan",
+      "item_salary": "Gaji",
+      "item_bill": "Tagihan Listrik",
+      "today": "Hari ini",
+      "days_ago_2": "2 hari lalu",
+      "days_ago_3": "3 hari lalu",
+      "savings": "Hemat bulan ini"
+    },
+    "testimonials_items": [
+      {
+        "name": "Rani Sutrisno",
+        "role": "Freelance Designer",
+        "quote": "Sekarang gue bisa tracking pengeluaran bulanan tanpa Excel lagi. Simpel dan jelas.",
+        "initials": "RS",
+        "color": "pink",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        "name": "Dimas Pratama",
+        "role": "Software Engineer",
+        "quote": "Fitur transaksi rutin ngebantu banget. Gak pernah telat bayar listrik & internet lagi.",
+        "initials": "DP",
+        "color": "blue",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        "name": "Aisyah Putri",
+        "role": "Ibu Rumah Tangga",
+        "quote": "Bareng suami kelola keuangan jadi lebih transparan. No more mystery spending!",
+        "initials": "AP",
+        "color": "purple",
+        "rating": 5,
+        "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80"
+      }
+    ],
+    "faq_q_free": "Apakah aplikasi ini gratis?",
+    "faq_a_free": "Ya, Finance gratis digunakan selamanya. Tidak ada biaya berlangganan tersembunyi.",
+    "faq_q_couple": "Bisa dipakai bareng pasangan?",
+    "faq_a_couple": "Tentu! Kamu bisa menghubungkan akun dengan pasangan untuk saling lihat transaksi dan kelola keuangan bersama.",
+    "faq_q_security": "Apakah data saya aman?",
+    "faq_a_security": "Data kamu terenkripsi dan aman. Kami menggunakan Supabase sebagai backend yang sudah terpercaya dengan RLS di setiap tabel.",
+    "faq_q_mobile": "Bisa diakses dari HP?",
+    "faq_a_mobile": "Bisa. Finance adalah web app responsif yang bisa diakses dari browser HP mana pun — tanpa perlu install.",
+    "faq_q_export": "Bisa export data ke Excel?",
+    "faq_a_export": "Bisa. Kamu bisa download laporan transaksi bulanan dalam format CSV/Excel untuk analisis mandiri.",
+    "faq_q_category": "Bisa buat kategori sendiri?",
+    "faq_a_category": "Tentu, kamu bebas membuat, mengedit, dan memberi warna pada kategori pemasukan maupun pengeluaranmu sendiri."
   },
   "about": {
     "title": "Tentang Kami",
@@ -536,72 +602,6 @@
     "contact_title": "Pertanyaan?",
     "contact_desc": "Jika Anda memiliki pertanyaan tentang Ketentuan Layanan ini, silakan hubungi kami."
   },
-  "hero_preview": {
-    "balance": "Saldo Bulan Ini",
-    "trend": "+12.5% dari bulan lalu",
-    "income": "Pemasukan",
-    "expense": "Pengeluaran",
-    "chart_title": "Grafik Pengeluaran",
-    "chart_period": "Minggu",
-    "days": {
-      "mon": "Sen",
-      "tue": "Sel",
-      "wed": "Rab",
-      "thu": "Kam",
-      "fri": "Jum",
-      "sat": "Sab",
-      "sun": "Min"
-    },
-    "recent_title": "Transaksi Terakhir",
-    "item_shopping": "Belanja Bulanan",
-    "item_salary": "Gaji",
-    "item_bill": "Tagihan Listrik",
-    "today": "Hari ini",
-    "days_ago_2": "2 hari lalu",
-    "days_ago_3": "3 hari lalu",
-    "savings": "Hemat bulan ini"
-  },
-  "testimonials_items": [
-    {
-      "name": "Rani Sutrisno",
-      "role": "Freelance Designer",
-      "quote": "Sekarang gue bisa tracking pengeluaran bulanan tanpa Excel lagi. Simpel dan jelas.",
-      "initials": "RS",
-      "color": "pink",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      "name": "Dimas Pratama",
-      "role": "Software Engineer",
-      "quote": "Fitur transaksi rutin ngebantu banget. Gak pernah telat bayar listrik & internet lagi.",
-      "initials": "DP",
-      "color": "blue",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      "name": "Aisyah Putri",
-      "role": "Ibu Rumah Tangga",
-      "quote": "Bareng suami kelola keuangan jadi lebih transparan. No more mystery spending!",
-      "initials": "AP",
-      "color": "purple",
-      "rating": 5,
-      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80"
-    }
-  ],
-  "faq_q_free": "Apakah aplikasi ini gratis?",
-  "faq_a_free": "Ya, Finance gratis digunakan selamanya. Tidak ada biaya berlangganan tersembunyi.",
-  "faq_q_couple": "Bisa dipakai bareng pasangan?",
-  "faq_a_couple": "Tentu! Kamu bisa menghubungkan akun dengan pasangan untuk saling lihat transaksi dan kelola keuangan bersama.",
-  "faq_q_security": "Apakah data saya aman?",
-  "faq_a_security": "Data kamu terenkripsi dan aman. Kami menggunakan Supabase sebagai backend yang sudah terpercaya dengan RLS di setiap tabel.",
-  "faq_q_mobile": "Bisa diakses dari HP?",
-  "faq_a_mobile": "Bisa. Finance adalah web app responsif yang bisa diakses dari browser HP mana pun — tanpa perlu install.",
-  "faq_q_export": "Bisa export data ke Excel?",
-  "faq_a_export": "Bisa. Kamu bisa download laporan transaksi bulanan dalam format CSV/Excel untuk analisis mandiri.",
-  "faq_q_category": "Bisa buat kategori sendiri?",
-  "faq_a_category": "Tentu, kamu bebas membuat, mengedit, dan memberi warna pada kategori pemasukan maupun pengeluaranmu sendiri.",
   "auth": {
     "login_title": "Masuk",
     "login_subtitle": "Catat keuangan sendiri atau bareng",
