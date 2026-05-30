@@ -7,7 +7,7 @@
         <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
         @click="showForm = true"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -21,12 +21,12 @@
         <Skeleton class="h-9 w-28 rounded-xl" />
       </div>
       <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-        <Skeleton class="h-22 rounded-3xl" />
-        <Skeleton class="h-22 rounded-3xl" />
-        <Skeleton class="h-22 rounded-3xl" />
-        <Skeleton class="h-22 rounded-3xl" />
-        <Skeleton class="h-22 rounded-3xl" />
-        <Skeleton class="h-22 rounded-3xl" />
+        <Skeleton class="h-22 rounded-4xl" />
+        <Skeleton class="h-22 rounded-4xl" />
+        <Skeleton class="h-22 rounded-4xl" />
+        <Skeleton class="h-22 rounded-4xl" />
+        <Skeleton class="h-22 rounded-4xl" />
+        <Skeleton class="h-22 rounded-4xl" />
       </div>
     </div>
 
@@ -66,7 +66,7 @@
       >
         <template #item="{ element: cat }">
           <div
-            class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-4 transition-all duration-200 hover:border-border/80 hover:bg-card/60"
+            class="group flex items-center justify-between rounded-4xl border border-border/50 bg-card/30 p-4 transition-all duration-200 hover:border-border/80 hover:bg-card/60"
           >
             <div class="flex items-center gap-4">
               <div

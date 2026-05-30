@@ -9,7 +9,7 @@
         </p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
         @click="showForm = true"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -19,11 +19,11 @@
 
     <!-- STATS -->
     <div v-if="!loading && recurring.length > 0" class="grid grid-cols-2 gap-4">
-      <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-5">
+      <div class="rounded-4xl border border-red-500/10 bg-red-500/[0.07] p-5">
         <p class="text-sm text-red-400/70">{{ $t('recurring.expense') }}</p>
         <h3 class="mt-2 text-2xl font-bold text-red-400">{{ formatCurrency(monthlyExpense) }}</h3>
       </div>
-      <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
+      <div class="rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
         <p class="text-sm text-emerald-400/70">{{ $t('recurring.income') }}</p>
         <h3 class="mt-2 text-2xl font-bold text-emerald-400">
           {{ formatCurrency(monthlyIncome) }}
@@ -33,15 +33,15 @@
 
     <!-- LOADING -->
     <div v-if="loading" class="space-y-3">
-      <Skeleton class="h-[104px] rounded-3xl" />
-      <Skeleton class="h-[104px] rounded-3xl" />
-      <Skeleton class="h-[104px] rounded-3xl" />
+      <Skeleton class="h-[104px] rounded-4xl" />
+      <Skeleton class="h-[104px] rounded-4xl" />
+      <Skeleton class="h-[104px] rounded-4xl" />
     </div>
 
     <!-- EMPTY STATE -->
     <div
       v-else-if="recurring.length === 0"
-      class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 px-6 py-16"
+      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 px-6 py-16"
     >
       <div class="flex size-16 items-center justify-center rounded-full bg-card/30">
         <Icon name="hugeicons:repeat" :size="28" class="text-muted-foreground/60" />
@@ -60,7 +60,7 @@
       <div
         v-for="item in recurring"
         :key="item.id"
-        class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-5 transition-all duration-200"
+        class="group flex items-center justify-between rounded-4xl border border-border/50 bg-card/30 p-5 transition-all duration-200"
         :class="item.active ? 'hover:border-border/80 hover:bg-card/60' : 'opacity-50'"
       >
         <div class="flex items-center gap-4">

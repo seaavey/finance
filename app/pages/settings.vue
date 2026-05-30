@@ -5,7 +5,7 @@
     <!-- LOADING STATE -->
     <div v-if="loading" class="space-y-8">
       <div
-        class="flex flex-col items-center gap-4 rounded-3xl border border-border/50 bg-card/10 p-6 backdrop-blur-sm md:flex-row md:items-start md:gap-6 md:p-8"
+        class="flex flex-col items-center gap-4 rounded-4xl border border-border/50 bg-card/10 p-6 backdrop-blur-sm md:flex-row md:items-start md:gap-6 md:p-8"
       >
         <Skeleton class="size-20 rounded-full md:size-24" />
         <div class="space-y-3 text-center md:text-left">
@@ -73,7 +73,7 @@
           {{ $t('settings.preferences') }}
         </h2>
         <div
-          class="overflow-hidden rounded-3xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+          class="overflow-hidden rounded-4xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
         >
           <SettingsItem
             icon="user"
@@ -111,7 +111,7 @@
           {{ $t('settings.data') }}
         </h2>
         <div
-          class="overflow-hidden rounded-3xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+          class="overflow-hidden rounded-4xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
         >
           <SettingsItem
             icon="download"
@@ -131,7 +131,7 @@
         <!-- LOADING: PASANGAN -->
         <div
           v-if="partnerLoading"
-          class="flex w-full items-center justify-center rounded-3xl border border-border/50 bg-card/10 py-10 backdrop-blur-sm"
+          class="flex w-full items-center justify-center rounded-4xl border border-border/50 bg-card/10 py-10 backdrop-blur-sm"
         >
           <div class="flex flex-col items-center gap-3">
             <div
@@ -146,7 +146,7 @@
         <div v-else-if="!isPartnered" class="space-y-4">
           <!-- Kirim Undangan -->
           <div
-            class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 md:p-6"
+            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 md:p-6"
           >
             <div class="mb-4 flex items-center gap-3">
               <div
@@ -185,7 +185,7 @@
           <!-- Undangan Terkirim -->
           <div
             v-if="sentInvitations.length > 0"
-            class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
           >
             <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
               {{ $t('settings.sent_invitations_title') }}
@@ -226,7 +226,7 @@
           <!-- Undangan Masuk -->
           <div
             v-if="receivedInvitations.length > 0"
-            class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
           >
             <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
               {{ $t('settings.received_invitations_title') }}
@@ -282,7 +282,7 @@
         <!-- CONNECTED -->
         <div v-else class="space-y-4">
           <div
-            class="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5 backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/[0.06] md:p-6"
+            class="relative overflow-hidden rounded-4xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5 backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/[0.06] md:p-6"
           >
             <div class="absolute -right-8 -top-8 size-32 rounded-full bg-emerald-500/10 blur-2xl" />
             <div class="relative flex items-center gap-4">
@@ -341,7 +341,7 @@
           {{ $t('settings.account') }}
         </h2>
         <div
-          class="rounded-3xl border border-red-500/20 bg-red-500/[0.02] p-1.5 backdrop-blur-sm transition-all duration-300 hover:bg-red-500/[0.05]"
+          class="rounded-4xl border border-red-500/20 bg-red-500/[0.02] p-1.5 backdrop-blur-sm transition-all duration-300 hover:bg-red-500/[0.05]"
         >
           <Button variant="outline" @click="onSignOut">
             <div class="flex items-center gap-4">

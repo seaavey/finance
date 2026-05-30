@@ -31,7 +31,7 @@
     </div>
 
     <!-- AMOUNT CARD -->
-    <div class="rounded-3xl border border-border/50 bg-card/40 p-8">
+    <div class="rounded-4xl border border-border/50 bg-card/40 p-8">
       <p class="text-sm font-medium text-muted-foreground">{{ $t('transaction_form.amount') }}</p>
       <div class="mt-4 flex items-start gap-2">
         <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{
@@ -49,7 +49,7 @@
     </div>
 
     <!-- DETAIL FORM -->
-    <div class="space-y-px overflow-hidden rounded-3xl border border-border/50 bg-card/20">
+    <div class="space-y-px overflow-hidden rounded-4xl border border-border/50 bg-card/20">
       <div class="flex items-center gap-3 px-5 py-4">
         <Icon name="hugeicons:wallet-01" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
@@ -174,7 +174,7 @@
         {{ $t('transaction_form.cancel') }}
       </Button>
       <Button
-        class="rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-pink-500/25 transition hover:from-pink-400 hover:to-pink-500"
+        class="rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-primary/20 transition hover:from-primary/80 hover:to-primary/90"
         :disabled="!form.amount || !form.date"
         @click="onSubmit"
       >

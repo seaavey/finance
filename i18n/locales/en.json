@@ -44,7 +44,10 @@
     "debts": "Debts",
     "new": "New",
     "user": "User",
-    "days_ago": "{days} days ago"
+    "days_ago": "{days} days ago",
+    "vs_last_month_short": "vs last month",
+    "monthly_performance": "Your monthly performance",
+    "latest_activity": "Latest activity"
   },
   "transactions": {
     "title": "Transactions",
@@ -218,7 +221,8 @@
     "deleted": "Budget deleted successfully",
     "delete_error": "Failed to delete budget",
     "dashboard_title": "This Month's Budget",
-    "no_limit": "No budget set"
+    "no_limit": "No budget set",
+    "empty": "No budgets set yet"
   },
   "accounts": {
     "title": "Accounts",

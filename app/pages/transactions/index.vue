@@ -8,7 +8,7 @@
         </p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
         @click="navigateTo($localePath('/transactions/new'))"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -16,7 +16,7 @@
       </Button>
     </div>
 
-    <div class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/30 p-3">
+    <div class="flex items-center gap-3 rounded-4xl border border-border/50 bg-card/30 p-3">
       <div class="relative flex-1">
         <Icon
           name="hugeicons:search-01"
@@ -40,7 +40,7 @@
       </Button>
     </div>
 
-    <div v-if="showFilters" class="space-y-3 rounded-3xl border border-border/50 bg-card/30 p-4">
+    <div v-if="showFilters" class="space-y-3 rounded-4xl border border-border/50 bg-card/30 p-4">
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Select v-model="filters.type" @update:model-value="applyFilters">
           <SelectTrigger>
@@ -101,19 +101,19 @@
     </div>
 
     <div v-if="!loading" class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-      <div class="rounded-3xl border border-emerald-500/10 bg-emerald-500/[0.07] p-4 md:p-5">
+      <div class="rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-emerald-400/70">{{ $t('transactions.income') }}</p>
         <h3 class="mt-2 text-lg font-bold text-emerald-400 md:text-2xl">
           {{ formatCurrency(monthIncome) }}
         </h3>
       </div>
-      <div class="rounded-3xl border border-red-500/10 bg-red-500/[0.07] p-4 md:p-5">
+      <div class="rounded-4xl border border-red-500/10 bg-red-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-red-400/70">{{ $t('transactions.expense') }}</p>
         <h3 class="mt-2 text-lg font-bold text-red-400 md:text-2xl">
           {{ formatCurrency(monthExpense) }}
         </h3>
       </div>
-      <div class="rounded-3xl border border-blue-500/10 bg-blue-500/[0.07] p-4 md:p-5">
+      <div class="rounded-4xl border border-blue-500/10 bg-blue-500/[0.07] p-4 md:p-5">
         <p class="text-sm text-blue-400/70">{{ $t('transactions.difference') }}</p>
         <h3 class="mt-2 text-lg font-bold text-blue-400 md:text-2xl">
           {{ formatCurrency(monthIncome - monthExpense) }}
@@ -122,15 +122,15 @@
     </div>
 
     <div v-if="loading" class="space-y-3">
-      <Skeleton class="h-20 rounded-3xl" />
-      <Skeleton class="h-20 rounded-3xl" />
-      <Skeleton class="h-20 rounded-3xl" />
-      <Skeleton class="h-20 rounded-3xl" />
+      <Skeleton class="h-20 rounded-4xl" />
+      <Skeleton class="h-20 rounded-4xl" />
+      <Skeleton class="h-20 rounded-4xl" />
+      <Skeleton class="h-20 rounded-4xl" />
     </div>
 
     <div
       v-else-if="transactions.length === 0"
-      class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20"
+      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-12 md:py-20"
     >
       <div class="flex size-12 items-center justify-center rounded-full bg-muted">
         <Icon name="hugeicons:inbox" :size="24" class="text-muted-foreground" />

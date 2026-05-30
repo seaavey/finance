@@ -7,7 +7,7 @@
         <p class="mt-1 text-sm text-muted-foreground">{{ $t('goals.subtitle') }}</p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
         @click="showForm = true"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -17,7 +17,7 @@
 
     <!-- LOADING STATE -->
     <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Skeleton v-for="i in 3" :key="i" class="h-48 rounded-3xl" />
+      <Skeleton v-for="i in 3" :key="i" class="h-48 rounded-4xl" />
     </div>
 
     <template v-else>

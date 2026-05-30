@@ -44,7 +44,10 @@
     "debts": "Hutang",
     "new": "Baru",
     "user": "User",
-    "days_ago": "{days} hari lalu"
+    "days_ago": "{days} hari lalu",
+    "vs_last_month_short": "vs bulan lalu",
+    "monthly_performance": "Performa bulanan kamu",
+    "latest_activity": "Aktivitas terbaru"
   },
   "transactions": {
     "title": "Transaksi",
@@ -218,7 +221,8 @@
     "deleted": "Budget berhasil dihapus",
     "delete_error": "Gagal menghapus budget",
     "dashboard_title": "Budget Bulan Ini",
-    "no_limit": "Tidak ada budget"
+    "no_limit": "Tidak ada budget",
+    "empty": "Belum ada budget yang diatur"
   },
   "accounts": {
     "title": "Akun",

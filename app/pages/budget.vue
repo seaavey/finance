@@ -75,7 +75,7 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
         <p class="mt-1 text-sm text-muted-foreground">{{ $t('budget.subtitle') }}</p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-pink-500 to-pink-600 px-4 text-sm font-medium text-white transition hover:from-pink-400 hover:to-pink-500"
+        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
         @click="onAddBudget"
       >
         <Icon name="hugeicons:add-01" :size="18" />
@@ -85,9 +85,9 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
 
     <!-- Loading -->
     <div v-if="loading" class="space-y-4">
-      <Skeleton class="h-28 w-full rounded-3xl" />
-      <Skeleton class="h-28 w-full rounded-3xl" />
-      <Skeleton class="h-28 w-full rounded-3xl" />
+      <Skeleton class="h-28 w-full rounded-4xl" />
+      <Skeleton class="h-28 w-full rounded-4xl" />
+      <Skeleton class="h-28 w-full rounded-4xl" />
     </div>
 
     <!-- Empty State -->
