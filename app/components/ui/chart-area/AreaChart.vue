@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue';
-import type { ChartConfig } from '@/app/components/ui/chart';
+import type { ChartConfig } from '@/components/ui/chart';
 import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue';
-import { ChartContainer, ChartTooltipContent } from '@/app/components/ui/chart';
-import { componentToString } from '@/app/components/ui/chart/utils';
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { componentToString } from '@/components/ui/chart/utils';
 
 const props = withDefaults(
   defineProps<{

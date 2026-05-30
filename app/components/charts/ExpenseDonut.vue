@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { DonutChart } from '@/app/components/ui/chart-donut';
-import type { ChartConfig } from '@/app/components/ui/chart';
+import { DonutChart } from '@/components/ui/chart-donut';
+import type { ChartConfig } from '@/components/ui/chart';
 
 const props = defineProps<{
   categories: { name: string; color: string; total: number }[];

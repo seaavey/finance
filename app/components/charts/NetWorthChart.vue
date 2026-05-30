@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AreaChart } from '@/app/components/ui/chart-area';
-import type { ChartConfig } from '@/app/components/ui/chart';
+import { AreaChart } from '@/components/ui/chart-area';
+import type { ChartConfig } from '@/components/ui/chart';
 
 defineProps<{
   data: { label: string; netWorth: number; assets: number; debts: number }[];

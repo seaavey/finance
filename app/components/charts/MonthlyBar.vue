@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { BarChart } from '@/app/components/ui/chart-bar';
-import type { ChartConfig } from '@/app/components/ui/chart';
+import { BarChart } from '@/components/ui/chart-bar';
+import type { ChartConfig } from '@/components/ui/chart';
 
 defineProps<{
   data: { label: string; income: number; expense: number }[];
