@@ -40,16 +40,16 @@ const typeOptions = [
   { value: 'bank', label: t('accounts.bank'), icon: 'hugeicons:bank' },
   { value: 'e-wallet', label: t('accounts.e-wallet'), icon: 'hugeicons:wallet-03' },
   { value: 'cash', label: t('accounts.cash'), icon: 'hugeicons:cash-01' },
-  { value: 'investment', label: t('accounts.investment'), icon: 'hugeicons:chart-line-up-01' },
-  { value: 'liability', label: t('accounts.liability'), icon: 'hugeicons:credit-card-validation' },
+  { value: 'investment', label: t('accounts.investment'), icon: 'hugeicons:chart-line-data-01' },
+  { value: 'liability', label: t('accounts.liability'), icon: 'hugeicons:credit-card-change' },
 ];
 
 const typeIcons: Record<string, string> = {
   bank: 'hugeicons:bank',
   'e-wallet': 'hugeicons:wallet-03',
   cash: 'hugeicons:cash-01',
-  investment: 'hugeicons:chart-line-up-01',
-  liability: 'hugeicons:credit-card-validation',
+  investment: 'hugeicons:chart-line-data-01',
+  liability: 'hugeicons:credit-card-change',
 };
 
 watchEffect(() => {

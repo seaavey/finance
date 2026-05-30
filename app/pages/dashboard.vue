@@ -110,7 +110,7 @@
         >
           <div class="flex items-start justify-between">
             <div class="flex size-9 items-center justify-center rounded-xl bg-amber-500/10">
-              <Icon name="hugeicons:chart-line-up-01" :size="18" class="text-amber-500" />
+              <Icon name="hugeicons:chart-line-data-01" :size="18" class="text-amber-500" />
             </div>
           </div>
           <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.net_worth') }}</p>
