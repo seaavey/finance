@@ -10,12 +10,23 @@
 
 <script setup lang="ts">
 const toastRef = ref();
-const { register } = useToast();
+const { register, toast } = useToast();
+const { activeReminders } = useReminders();
+const { fetchRecurring } = useRecurring();
+const { t } = useI18n();
+const { user } = useAuth();
 
-onMounted(() => {
+onMounted(async () => {
   register((msg: string, type?: 'success' | 'error' | 'info') => {
     toastRef.value?.addToast(msg, type || 'info');
   });
+
+  if (user.value) {
+    await fetchRecurring();
+    if (activeReminders.value.length > 0) {
+      toast.info(t('reminders.new_alerts', { count: activeReminders.value.length }));
+    }
+  }
 });
 
 defineOgImage('Default', {

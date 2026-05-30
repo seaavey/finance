@@ -19,21 +19,6 @@ export const useReminders = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const formatDate = (date: Date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    const tomorrowStr = formatDate(tomorrow);
-
-    const nextWeek = new Date(today);
-    nextWeek.setDate(today.getDate() + 7);
-    const nextWeekStr = formatDate(nextWeek);
-
     return recurring.value
       .filter((tx) => {
         if (!tx.active || tx.type !== 'expense') {
