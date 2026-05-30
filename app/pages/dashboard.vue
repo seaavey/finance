@@ -203,11 +203,11 @@
       </div>
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
-      <div class="space-y-4 md:col-span-2">
+      <div class="flex flex-col gap-4 md:col-span-2">
         <!-- Upcoming Bills / Reminders -->
         <div
           v-if="activeReminders.length > 0"
-          class="rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-500/10"
+          class="rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-500/10 flex-1"
         >
           <h3 class="mb-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase">
             {{ $t('dashboard.upcoming_bills') }}
@@ -244,7 +244,7 @@
 
         <!-- Budget Progress -->
         <div
-          class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md"
+          class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md flex-1"
         >
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -257,9 +257,9 @@
               {{ $t('dashboard.view_all') }}
             </NuxtLinkLocale>
           </div>
-          <div class="space-y-4">
+          <div class="flex h-full flex-col justify-center pb-4">
             <template v-if="budgetSummaries.length > 0">
-              <div v-for="sbudget in budgetSummaries.slice(0, 3)" :key="sbudget.id">
+              <div v-for="sbudget in budgetSummaries.slice(0, 3)" :key="sbudget.id" class="mb-4 last:mb-0">
                 <div class="flex items-center justify-between">
                   <p class="text-xs font-bold text-foreground truncate pr-2">
                     {{ sbudget.category_name }}
@@ -290,7 +290,7 @@
 
         <!-- Quick Accounts -->
         <div
-          class="rounded-4xl border border-border/50 bg-card p-6 shadow-xl text-white transition-all hover:shadow-lg"
+          class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-lg flex-1"
         >
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -303,27 +303,29 @@
               {{ $t('dashboard.view_all') }}
             </NuxtLinkLocale>
           </div>
-          <div class="grid grid-cols-1 gap-2">
+          <div class="flex h-full flex-col justify-center pb-4">
             <template v-if="accountBalances.length > 0">
-              <div
-                v-for="acct in accountBalances.slice(0, 3)"
-                :key="acct.id"
-                class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
-              >
-                <div class="flex items-center gap-2 min-w-0">
-                  <div class="flex size-7 items-center justify-center rounded-lg bg-muted/50">
-                    <Icon v-if="acct.icon" :name="acct.icon" :size="14" />
+              <div class="grid grid-cols-1 gap-2">
+                <div
+                  v-for="acct in accountBalances.slice(0, 3)"
+                  :key="acct.id"
+                  class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
+                >
+                  <div class="flex items-center gap-2 min-w-0">
+                    <div class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50">
+                      <Icon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
+                    </div>
+                    <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
                   </div>
-                  <span class="truncate text-xs font-bold">{{ acct.name }}</span>
+                  <span class="text-xs font-black tracking-tighter text-foreground">{{
+                    formatCurrency(acct.balance, acct.currency)
+                  }}</span>
                 </div>
-                <span class="text-xs font-black tracking-tighter">{{
-                  formatCurrency(acct.balance, acct.currency)
-                }}</span>
               </div>
             </template>
             <div v-else class="flex flex-col items-center justify-center py-4 text-center">
-              <div class="mb-2 flex size-10 items-center justify-center rounded-xl bg-card/5">
-                <Icon name="hugeicons:bank" :size="18" class="text-white/20" />
+              <div class="mb-2 flex size-10 items-center justify-center rounded-xl bg-muted/50">
+                <Icon name="hugeicons:bank" :size="18" class="text-muted-foreground/40" />
               </div>
               <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">
                 {{ $t('accounts.empty') }}
