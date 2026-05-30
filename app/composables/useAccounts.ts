@@ -5,7 +5,7 @@ export interface Account {
   id: string;
   user_id: string;
   name: string;
-  type: 'bank' | 'e-wallet' | 'cash';
+  type: 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability';
   currency: string;
   color: string;
   icon: string;
@@ -161,6 +161,8 @@ export const useAccounts = () => {
   const bankAccounts = computed(() => accounts.value.filter((a) => a.type === 'bank'));
   const ewalletAccounts = computed(() => accounts.value.filter((a) => a.type === 'e-wallet'));
   const cashAccounts = computed(() => accounts.value.filter((a) => a.type === 'cash'));
+  const investmentAccounts = computed(() => accounts.value.filter((a) => a.type === 'investment'));
+  const liabilityAccounts = computed(() => accounts.value.filter((a) => a.type === 'liability'));
 
   return {
     accounts,
@@ -174,5 +176,7 @@ export const useAccounts = () => {
     bankAccounts,
     ewalletAccounts,
     cashAccounts,
+    investmentAccounts,
+    liabilityAccounts,
   };
 };

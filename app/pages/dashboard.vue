@@ -37,7 +37,7 @@
     </div>
 
     <template v-else>
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-5">
         <div
           class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
         >
@@ -104,26 +104,28 @@
             {{ formatCurrency(totalIncome - totalExpense > 0 ? totalIncome - totalExpense : 0) }}
           </p>
         </div>
+
+        <div
+          class="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg md:col-span-1"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex size-9 items-center justify-center rounded-xl bg-amber-500/10">
+              <Icon name="hugeicons:chart-line-up-01" :size="18" class="text-amber-500" />
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-muted-foreground">{{ $t('dashboard.net_worth') }}</p>
+          <p class="mt-1 text-xl font-bold text-foreground">
+            {{ formatCurrency(currentNetWorth?.netWorth || 0) }}
+          </p>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="rounded-2xl border border-border bg-card p-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="rounded-2xl border border-border bg-card p-4 md:col-span-1">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-foreground">
               {{ $t('dashboard.per_category') }}
             </h3>
-            <div class="flex gap-1">
-              <Button
-                v-for="period in chartPeriods"
-                :key="period"
-                :variant="selectedPeriod === period ? 'default' : 'ghost'"
-                size="sm"
-                class="rounded-md"
-                @click="selectedPeriod = period"
-              >
-                {{ period }}
-              </Button>
-            </div>
           </div>
           <ChartsExpenseDonut :categories="expenseByCategory" />
           <div v-if="expenseByCategory.length > 0" class="mt-4 space-y-2">
@@ -134,21 +136,18 @@
             >
               <div class="flex items-center gap-2">
                 <span class="size-2 rounded-full" :style="{ backgroundColor: cat.color }" />
-                <span class="text-muted-foreground">{{ cat.name }}</span>
+                <span class="text-muted-foreground truncate max-w-[120px]">{{ cat.name }}</span>
               </div>
               <span class="font-medium text-foreground">{{ formatCurrency(cat.total) }}</span>
             </div>
           </div>
         </div>
 
-        <div class="rounded-2xl border border-border bg-card p-4">
+        <div class="rounded-2xl border border-border bg-card p-4 md:col-span-1">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-foreground">
               {{ $t('dashboard.expense_chart') }}
             </h3>
-            <span class="text-xs text-muted-foreground/60">{{
-              $t('dashboard.income_vs_expense')
-            }}</span>
           </div>
           <ChartsMonthlyBar :data="monthlyData" />
           <div class="mt-3 flex justify-center gap-4">
@@ -159,6 +158,21 @@
             <div class="flex items-center gap-1.5 text-xs">
               <span class="size-2.5 rounded-sm bg-red-500/70" />
               <span class="text-muted-foreground">{{ $t('dashboard.expense') }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-border bg-card p-4 md:col-span-1">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ $t('dashboard.net_worth_chart') }}
+            </h3>
+          </div>
+          <ChartsNetWorthChart :data="history" />
+          <div class="mt-3 flex justify-center gap-4">
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="size-2.5 rounded-full border-2 border-primary bg-primary/10" />
+              <span class="text-muted-foreground">{{ $t('dashboard.net_worth') }}</span>
             </div>
           </div>
         </div>
@@ -372,9 +386,10 @@ const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
 const { t, locale } = useI18n();
-const { partner, isPartnered, fetchPartner } = usePartner();
+const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
 const { fetchAccounts, getAccountBalances } = useAccounts();
+const { history, currentNetWorth, fetchNetWorthHistory } = useNetWorth();
 
 const loading = ref(true);
 const selectedPeriod = ref('30d');
@@ -585,7 +600,12 @@ const monthlyData = computed(() => {
 onMounted(async () => {
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-  await Promise.all([fetchTransactions({ dateFrom: firstDay }), fetchCategories(), fetchPartner()]);
+  await Promise.all([
+    fetchTransactions({ dateFrom: firstDay }),
+    fetchCategories(),
+    fetchPartner(),
+    fetchNetWorthHistory(),
+  ]);
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
   await fetchAccounts();
