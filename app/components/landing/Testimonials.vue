@@ -1,17 +1,17 @@
 <template>
   <section id="testimonials" class="relative overflow-hidden py-24 md:py-40">
     <div class="mx-auto max-w-5xl px-6">
-      <div class="text-center max-w-2xl mx-auto mb-16 md:mb-24">
+      <div class="mx-auto mb-16 max-w-2xl text-center md:mb-24">
         <div
-          class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6"
+          class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <Icon name="hugeicons:comment-01" :size="14" />
           {{ $t('landing.testimonials_title') }}
         </div>
-        <h2 class="font-heading text-4xl font-bold tracking-tight md:text-5xl">
+        <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
           {{ $t('landing.testimonials_heading') }}
         </h2>
-        <p class="mt-4 text-lg text-muted-foreground font-medium">
+        <p class="mt-4 text-lg font-medium text-muted-foreground">
           {{ $t('landing.testimonials_desc') }}
         </p>
       </div>
@@ -27,37 +27,37 @@
           <div
             v-for="(t, index) in testimonials"
             :key="`t${set}-${index}`"
-            class="flex w-[320px] shrink-0 flex-col justify-between rounded-2xl border border-border/40 bg-background/40 p-6 backdrop-blur-sm transition-colors hover:bg-background/60"
+            class="flex w-[340px] shrink-0 flex-col justify-between rounded-4xl border border-border/50 bg-card p-8 transition-all duration-300 hover:border-border hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none"
             :style="{ marginRight: 'var(--gap)' }"
           >
             <div>
               <!-- Stars -->
-              <div class="flex gap-0.5">
+              <div class="flex gap-1">
                 <Icon
                   v-for="n in 5"
                   :key="n"
                   name="material-symbols:star"
-                  :size="14"
-                  :class="n <= t.rating ? 'text-yellow-500' : 'text-muted-foreground/30'"
+                  :size="16"
+                  :class="n <= t.rating ? 'text-amber-400' : 'text-muted-foreground/20'"
                 />
               </div>
               <!-- Quote -->
-              <p class="mt-4 text-sm text-muted-foreground leading-relaxed italic">
+              <p class="mt-6 text-sm font-medium italic leading-relaxed text-muted-foreground">
                 "{{ rt(t.quote) }}"
               </p>
             </div>
 
             <!-- Author -->
-            <div class="mt-6 flex items-center gap-3">
-              <Avatar class="h-10 w-10 shrink-0">
+            <div class="mt-8 flex items-center gap-4">
+              <Avatar class="size-11 shrink-0 border-2 border-background shadow-sm">
                 <AvatarImage :src="rt(t.avatar)" :alt="rt(t.name)" />
-                <AvatarFallback class="text-xs font-bold" :class="getColorClasses(t.color)">
+                <AvatarFallback class="text-xs font-black" :class="getColorClasses(t.color)">
                   {{ rt(t.initials) }}
                 </AvatarFallback>
               </Avatar>
               <div class="min-w-0">
-                <p class="truncate text-sm font-semibold">{{ rt(t.name) }}</p>
-                <p class="truncate text-xs text-muted-foreground">{{ rt(t.role) }}</p>
+                <p class="truncate text-sm font-black tracking-tight text-foreground">{{ rt(t.name) }}</p>
+                <p class="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{{ rt(t.role) }}</p>
               </div>
             </div>
           </div>

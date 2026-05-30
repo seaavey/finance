@@ -71,7 +71,7 @@ const onDeleteRequest = (budget: BudgetWithProgress) => {
 };
 
 const onDeleteConfirm = async () => {
-  if (!deletingBudget.value) return;
+  if (!deletingBudget.value) { return; }
   await deleteBudget(deletingBudget.value.id, currentMonthStr.value);
   await loadBudget();
   showDeleteDialog.value = false;

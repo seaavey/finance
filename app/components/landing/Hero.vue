@@ -4,34 +4,27 @@
   >
     <!-- Premium Dynamic Background -->
     <div class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full opacity-30">
+      <div class="absolute top-0 left-1/2 h-full w-full max-w-7xl -translate-x-1/2 opacity-20">
         <div
-          class="absolute top-[-10%] left-[-10%] size-[500px] rounded-full bg-primary/20 blur-[120px] animate-pulse"
+          class="absolute left-[-10%] top-[-10%] size-[500px] animate-pulse rounded-full bg-primary/20 blur-[120px]"
         />
         <div
-          class="absolute bottom-[-10%] right-[-10%] size-[400px] rounded-full bg-blue-500/10 blur-[100px] animate-pulse [animation-delay:3s]"
+          class="absolute bottom-[-10%] right-[-10%] size-[400px] animate-pulse rounded-full bg-blue-500/10 blur-[100px] [animation-delay:3s]"
         />
       </div>
-      <!-- Grid Overlay -->
-      <div
-        class="absolute inset-0 opacity-20 brightness-100 contrast-150"
-        style="
-          background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');
-        "
-      />
     </div>
 
-    <div class="relative z-10 mx-auto max-w-6xl w-full">
+    <div class="relative z-10 w-full max-w-6xl mx-auto">
       <!-- Animated Badge -->
-      <div class="flex justify-center mb-10">
+      <div class="mb-10 flex justify-center">
         <div
-          class="group inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/60 px-4 py-1.5 text-sm font-medium backdrop-blur-md transition-all hover:border-primary/40 hover:bg-background/80 shadow-sm"
+          class="group inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <span class="relative flex h-2 w-2">
             <span
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"
+              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"
             />
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
           <span class="text-muted-foreground group-hover:text-foreground transition-colors">{{
             $t('landing.hero_badge')
@@ -45,57 +38,57 @@
       </div>
 
       <!-- Main Headline -->
-      <div class="text-center max-w-4xl mx-auto">
+      <div class="mx-auto max-w-4xl text-center">
         <h1
-          class="font-heading text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1]"
+          class="text-5xl font-black tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1] text-foreground"
         >
           {{ heroTitleStart }}
           <span class="relative inline-block mt-2 sm:mt-0">
             <span
-              class="relative z-10 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent"
+              class="relative z-10 bg-linear-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent"
             >
               {{ heroTitleHighlight }}
             </span>
             <div
-              class="absolute -bottom-2 left-0 w-full h-3 bg-primary/10 -rotate-1 -z-10 rounded-full blur-[2px]"
+              class="absolute -bottom-2 left-0 w-full h-4 bg-primary/10 -rotate-1 -z-10 rounded-full blur-[4px]"
             />
           </span>
         </h1>
         <p
-          class="mt-8 text-lg text-muted-foreground md:text-xl lg:text-2xl max-w-2xl mx-auto leading-relaxed font-medium"
+          class="mx-auto mt-8 max-w-2xl text-lg font-medium leading-relaxed text-muted-foreground md:text-xl lg:text-2xl"
         >
           {{ $t('landing.hero_desc') }}
         </p>
       </div>
 
       <!-- Enhanced CTA -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
+      <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
         <Button
-          class="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all gap-3"
+          class="h-14 w-full gap-3 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 text-lg font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] sm:w-auto"
           size="lg"
           @click="goToLogin"
         >
           {{ $t('landing.hero_cta') }}
-          <Icon name="hugeicons:arrow-right-01" :size="20" class="animate-bounce-x" />
+          <Icon name="hugeicons:arrow-right-01" :size="22" class="animate-bounce-x" />
         </Button>
         <Button
-          variant="outline"
-          class="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-bold backdrop-blur-sm hover:bg-muted/50 transition-all border-border/60 gap-3"
+          variant="ghost"
+          class="h-14 w-full gap-3 rounded-2xl border border-border/50 bg-card/30 px-10 text-lg font-bold backdrop-blur-sm transition-all hover:bg-muted/50 sm:w-auto"
           size="lg"
           @click="scrollToFeatures"
         >
-          <Icon name="hugeicons:play-circle" :size="20" />
+          <Icon name="hugeicons:play-circle" :size="22" />
           {{ $t('landing.hero_demo') }}
         </Button>
       </div>
 
       <!-- Micro-Trust Badges -->
       <div
-        class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mt-12 text-xs md:text-sm font-semibold text-muted-foreground"
+        class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
       >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -103,7 +96,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -111,7 +104,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-full p-1 bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <Icon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -121,115 +114,103 @@
 
       <!-- Premium Dashboard Preview -->
       <div class="relative mt-20 md:mt-28 perspective-1000 group">
-        <!-- Floating Glows around the card -->
+        <!-- Floating Glows -->
         <div
-          class="absolute -top-10 -left-10 size-40 bg-primary/20 blur-[80px] rounded-full animate-float"
-        />
-        <div
-          class="absolute -bottom-10 -right-10 size-40 bg-blue-500/20 blur-[80px] rounded-full animate-float [animation-delay:2s]"
+          class="absolute -top-10 -left-10 size-40 bg-primary/10 blur-[80px] rounded-full animate-float"
         />
 
-        <!-- Main Card with 3D-like hover -->
+        <!-- Main Card -->
         <div
-          class="relative rounded-3xl border border-border/40 bg-background/60 shadow-2xl shadow-primary/10 backdrop-blur-xl overflow-hidden transition-all duration-700 group-hover:shadow-primary/20 group-hover:border-primary/20 group-hover:-rotate-x-1 group-hover:rotate-y-1"
+          class="relative overflow-hidden rounded-4xl border border-border/50 bg-card shadow-2xl transition-all duration-700 group-hover:shadow-primary/5 hover:border-border"
         >
           <!-- Browser-like Top bar -->
-          <div class="flex items-center gap-3 border-b border-border/40 px-6 py-4 bg-muted/20">
+          <div class="flex items-center gap-3 border-b border-border/50 px-6 py-4 bg-muted/30">
             <div class="flex gap-2">
-              <div class="h-3.5 w-3.5 rounded-full bg-[#FF5F57] shadow-inner" />
-              <div class="h-3.5 w-3.5 rounded-full bg-[#FFBD2E] shadow-inner" />
-              <div class="h-3.5 w-3.5 rounded-full bg-[#28C840] shadow-inner" />
+              <div class="h-3 w-3 rounded-full bg-rose-500/40 border border-rose-500/20" />
+              <div class="h-3 w-3 rounded-full bg-amber-500/40 border border-amber-500/20" />
+              <div class="h-3 w-3 rounded-full bg-emerald-500/40 border border-emerald-500/20" />
             </div>
             <div class="flex-1 flex justify-center">
               <div
-                class="rounded-full bg-muted/40 px-6 py-1.5 text-[11px] font-medium text-muted-foreground border border-border/20 flex items-center gap-2"
+                class="rounded-full bg-background/50 px-6 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 border border-border/40 flex items-center gap-2"
               >
                 <Icon name="hugeicons:shield-01" :size="10" />
-                seaavey.site/dashboard
+                finansiil.app/dashboard
               </div>
             </div>
           </div>
 
           <!-- Dashboard Mockup Content -->
-          <div class="p-6 md:p-10">
+          <div class="p-6 md:p-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <!-- Cards with inner glow -->
+              <!-- Bento Card 1 -->
               <div
-                class="rounded-2xl border border-border/40 bg-muted/20 p-6 relative overflow-hidden group/card transition-all hover:bg-muted/30 hover:border-primary/20"
+                class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <div
-                  class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"
-                />
-                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                   {{ $t('landing.hero_preview.balance') }}
                 </p>
-                <p class="mt-2 text-3xl font-bold font-heading">Rp 12.450.000</p>
+                <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
                 <div
-                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500"
+                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest"
                 >
                   <Icon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend') }}</span>
                 </div>
               </div>
 
+              <!-- Bento Card 2 -->
               <div
-                class="rounded-2xl border border-border/40 bg-muted/20 p-6 transition-all hover:bg-muted/30"
+                class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                   {{ $t('landing.hero_preview.income') }}
                 </p>
-                <p class="mt-2 text-3xl font-bold font-heading text-green-500">Rp 18.200.000</p>
-                <div class="mt-5 flex gap-1">
-                  <div class="h-2 flex-1 rounded-full bg-green-500/20">
-                    <div
-                      class="h-full w-3/4 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"
-                    />
-                  </div>
+                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">Rp 18.200.000</p>
+                <div class="mt-6 h-1.5 w-full rounded-full bg-emerald-500/10">
+                  <div class="h-full w-3/4 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                 </div>
               </div>
 
+              <!-- Bento Card 3 -->
               <div
-                class="rounded-2xl border border-border/40 bg-muted/20 p-6 transition-all hover:bg-muted/30"
+                class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
-                <p class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                   {{ $t('landing.hero_preview.expense') }}
                 </p>
-                <p class="mt-2 text-3xl font-bold font-heading text-red-400">Rp 5.750.000</p>
-                <div class="mt-5 flex gap-1">
-                  <div class="h-2 flex-1 rounded-full bg-red-500/20">
-                    <div
-                      class="h-full w-1/3 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]"
-                    />
-                  </div>
+                <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500">Rp 5.750.000</p>
+                <div class="mt-6 h-1.5 w-full rounded-full bg-rose-500/10">
+                  <div class="h-full w-1/3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
                 </div>
               </div>
             </div>
 
             <!-- Enhanced Chart row -->
             <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6 md:mt-8">
-              <div class="md:col-span-3 rounded-2xl border border-border/40 bg-muted/20 p-6">
-                <div class="flex items-center justify-between mb-6">
-                  <p class="text-base font-bold">{{ $t('landing.hero_preview.chart_title') }}</p>
-                  <div class="rounded-lg bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+              <div class="md:col-span-3 rounded-3xl border border-border/50 bg-muted/20 p-6">
+                <div class="flex items-center justify-between mb-8">
+                  <p class="text-sm font-black uppercase tracking-widest text-foreground/80">{{ $t('landing.hero_preview.chart_title') }}</p>
+                  <div class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shadow-sm border border-border/40">
                     {{ $t('landing.hero_preview.chart_period') }}
                   </div>
                 </div>
-                <div class="flex items-end gap-3 h-32">
+                <div class="flex items-end gap-3 h-32 px-2">
                   <div
                     v-for="(h, i) in [40, 65, 45, 80, 55, 70, 50]"
                     :key="i"
-                    class="flex-1 rounded-t-lg bg-primary/30 relative group/bar hover:bg-primary/50 transition-all duration-300"
+                    class="flex-1 rounded-t-xl bg-primary/20 relative group/bar hover:bg-primary/40 transition-all duration-500"
                     :style="{ height: `${h}%` }"
                   >
                     <div
-                      class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity"
+                      class="absolute -top-10 left-1/2 -translate-x-1/2 bg-card border border-border/50 shadow-xl text-foreground font-black text-[10px] px-3 py-1.5 rounded-xl opacity-0 group-hover/bar:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100 whitespace-nowrap"
                     >
                       Rp {{ h }}0k
                     </div>
                   </div>
                 </div>
                 <div
-                  class="flex justify-between mt-4 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest"
+                  class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest px-1"
                 >
                   <span>{{ $t('landing.hero_preview.days.mon') }}</span>
                   <span>{{ $t('landing.hero_preview.days.tue') }}</span>
@@ -242,8 +223,8 @@
               </div>
 
               <!-- Simplified Transaction List -->
-              <div class="md:col-span-2 rounded-2xl border border-border/40 bg-muted/20 p-6">
-                <p class="text-base font-bold mb-5">
+              <div class="md:col-span-2 rounded-3xl border border-border/50 bg-muted/20 p-6">
+                <p class="text-sm font-black uppercase tracking-widest text-foreground/80 mb-6">
                   {{ $t('landing.hero_preview.recent_title') }}
                 </p>
                 <div class="space-y-4">
@@ -253,10 +234,10 @@
                     class="flex items-center gap-4 group/tx cursor-default"
                   >
                     <div
-                      class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all"
+                      class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all shadow-sm"
                       :class="tx.bg"
                     >
-                      <Icon :name="tx.icon" :size="18" :class="tx.color" />
+                      <Icon :name="tx.icon" :size="20" :class="tx.color" />
                     </div>
                     <div class="flex-1 min-w-0">
                       <p
@@ -264,9 +245,9 @@
                       >
                         {{ $t(tx.title) }}
                       </p>
-                      <p class="text-[11px] font-medium text-muted-foreground">{{ $t(tx.date) }}</p>
+                      <p class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/40">{{ $t(tx.date) }}</p>
                     </div>
-                    <span class="text-sm font-bold" :class="tx.amountColor">{{ tx.amount }}</span>
+                    <span class="text-sm font-black tracking-tighter" :class="tx.amountColor">{{ tx.amount }}</span>
                   </div>
                 </div>
               </div>
@@ -276,19 +257,19 @@
 
         <!-- Enhanced Floating stat card -->
         <div
-          class="absolute -right-4 -bottom-6 md:right-8 md:-bottom-8 rounded-3xl border border-primary/20 bg-background/95 p-5 shadow-2xl shadow-primary/20 backdrop-blur-xl hidden sm:block animate-float"
+          class="absolute -right-4 -bottom-6 md:right-8 md:-bottom-8 rounded-4xl border border-border/50 bg-card/95 p-6 shadow-2xl backdrop-blur-xl hidden sm:block animate-float"
         >
           <div class="flex items-center gap-4">
             <div
-              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10 text-green-500"
+              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 shadow-sm"
             >
               <Icon name="hugeicons:wallet-01" :size="24" />
             </div>
             <div>
-              <p class="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+              <p class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
                 {{ $t('landing.hero_preview.savings') }}
               </p>
-              <p class="text-xl font-black text-green-500">Rp 2.100.000</p>
+              <p class="text-2xl font-black tracking-tighter text-emerald-500">Rp 2.100.000</p>
             </div>
           </div>
         </div>

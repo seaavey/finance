@@ -1,18 +1,18 @@
 <template>
-  <footer class="border-t border-border/40 bg-background/95 pt-20 pb-10 px-6">
+  <footer class="border-t border-border/40 bg-card/50 backdrop-blur-xl pt-20 pb-10 px-6">
     <div class="mx-auto max-w-7xl">
       <!-- Top Section: Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <!-- Column 1: Brand -->
         <div class="space-y-6">
-          <NuxtLinkLocale to="/" class="flex items-center gap-2 group w-fit">
+          <NuxtLinkLocale to="/" class="flex items-center gap-3 group w-fit">
             <div
-              class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm"
+              class="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-b from-primary to-primary/90 text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg shadow-primary/20"
             >
-              <Icon name="hugeicons:wallet-01" :size="20" />
+              <Icon name="hugeicons:wallet-01" :size="22" />
             </div>
             <span
-              class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
+              class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
             >
               {{ $t('sidebar.finance') }}
             </span>
@@ -25,7 +25,7 @@
               v-for="social in socialLinks"
               :key="social.labelKey"
               :href="social.href"
-              class="h-9 w-9 flex items-center justify-center rounded-lg border border-border/40 bg-muted/20 text-muted-foreground transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+              class="h-10 w-10 flex items-center justify-center rounded-xl border border-border/50 bg-muted/30 text-muted-foreground transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary shadow-sm active:scale-90"
               :aria-label="$t(`landing.${social.labelKey}`)"
             >
               <Icon :name="social.icon" :size="18" />
@@ -35,14 +35,14 @@
 
         <!-- Column 2: Product -->
         <div>
-          <h4 class="text-sm font-bold uppercase tracking-wider mb-6 text-foreground">
+          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60">
             {{ $t('landing.footer_product') }}
           </h4>
           <ul class="space-y-4">
             <li v-for="link in productLinks" :key="link.labelKey">
               <Button
                 variant="link"
-                class="h-auto p-0 text-sm text-muted-foreground font-medium"
+                class="h-auto p-0 text-sm text-muted-foreground font-bold hover:text-primary hover:no-underline transition-colors"
                 @click="scrollToSection(link.href)"
               >
                 {{ $t(link.labelKey) }}
@@ -53,14 +53,14 @@
 
         <!-- Column 3: Company & Legal -->
         <div>
-          <h4 class="text-sm font-bold uppercase tracking-wider mb-6 text-foreground">
+          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60">
             {{ $t('landing.footer_company') }}
           </h4>
           <ul class="space-y-4">
             <li v-for="link in companyLinks" :key="link.labelKey">
               <a
                 :href="link.href"
-                class="text-sm text-muted-foreground font-medium transition-colors hover:text-primary"
+                class="text-sm text-muted-foreground font-bold transition-colors hover:text-primary"
               >
                 {{ $t(link.labelKey) }}
               </a>
@@ -70,26 +70,26 @@
 
         <!-- Column 4: Newsletter -->
         <div class="space-y-6">
-          <h4 class="text-sm font-bold uppercase tracking-wider text-foreground">
+          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
             {{ $t('landing.footer_subscribe_title') }}
           </h4>
           <p class="text-sm text-muted-foreground font-medium leading-relaxed">
             {{ $t('landing.footer_subscribe_desc') }}
           </p>
-          <div class="flex gap-2">
+          <div class="flex flex-col gap-2 sm:flex-row lg:flex-col xl:flex-row">
             <div class="relative flex-1">
               <Icon
                 name="hugeicons:mail-01"
                 :size="16"
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
               />
               <Input
                 type="email"
                 :placeholder="$t('landing.footer_subscribe_placeholder')"
-                class="w-full h-10 pl-10 pr-3 rounded-xl border border-border/40 bg-muted/20 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                class="h-11 w-full pl-10 pr-3 rounded-2xl border border-border/50 bg-muted/30 text-sm font-bold focus:border-primary/50 transition-all"
               />
             </div>
-            <Button size="sm" class="rounded-xl font-bold px-4">
+            <Button size="sm" class="h-11 rounded-2xl bg-primary px-6 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all">
               {{ $t('landing.footer_subscribe_button') }}
             </Button>
           </div>
@@ -98,17 +98,17 @@
 
       <!-- Bottom Section: Copyright -->
       <div
-        class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4"
+        class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-6"
       >
-        <p class="text-xs text-muted-foreground font-medium">
+        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
           {{ $t('landing.footer_copyright', { year: new Date().getFullYear() }) }}
         </p>
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-8">
           <a
             v-for="link in legalLinks"
             :key="link.labelKey"
             :href="link.href"
-            class="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60 transition-colors hover:text-primary"
+            class="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/60 transition-colors hover:text-primary"
           >
             {{ $t(link.labelKey) }}
           </a>

@@ -3,7 +3,7 @@
     class="sticky top-0 z-50 w-full transition-all duration-500"
     :class="[
       isScrolled
-        ? 'border-b border-border/40 bg-background/80 backdrop-blur-xl py-2'
+        ? 'border-b border-border/40 bg-card/80 backdrop-blur-xl py-2'
         : 'bg-transparent py-4',
     ]"
   >
@@ -12,12 +12,12 @@
       <div class="flex flex-1 justify-start">
         <NuxtLinkLocale to="/" class="group flex items-center gap-2 transition-all duration-300">
           <div
-            class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm"
+            class="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-b from-primary to-primary/90 text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg shadow-primary/20"
           >
-            <Icon name="hugeicons:wallet-01" :size="20" />
+            <Icon name="hugeicons:wallet-01" :size="22" />
           </div>
           <span
-            class="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/60 bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all duration-500"
+            class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
           >
             {{ $t('sidebar.finance') }}
           </span>
@@ -26,12 +26,12 @@
 
       <!-- Center Navigation (Desktop) - Sliding Pill Animation -->
       <nav
-        class="hidden md:flex items-center p-1 bg-muted/50 rounded-full border border-border/20 absolute left-1/2 -translate-x-1/2 backdrop-blur-sm"
+        class="hidden md:flex items-center p-1 bg-card/50 rounded-full border border-border/40 absolute left-1/2 -translate-x-1/2 backdrop-blur-md shadow-sm"
       >
         <div class="relative flex items-center">
           <!-- Sliding Background -->
           <div
-            class="absolute h-full transition-all duration-300 ease-out bg-primary rounded-full shadow-md shadow-primary/20"
+            class="absolute h-full transition-all duration-500 ease-out bg-linear-to-b from-primary to-primary/90 rounded-full shadow-lg shadow-primary/20"
             :style="pillStyle"
           />
 
@@ -40,11 +40,11 @@
             :key="item.href"
             ref="navRefs"
             variant="ghost"
-            class="relative z-10 px-5 py-1.5 text-sm font-medium whitespace-nowrap rounded-full"
+            class="relative z-10 px-6 py-2 text-xs font-black uppercase tracking-widest whitespace-nowrap rounded-full transition-all duration-300"
             :class="[
               activeSection === item.href.replace('#', '')
-                ? 'text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground',
+                ? 'text-white'
+                : 'text-muted-foreground/60 hover:text-foreground',
             ]"
             @click="scrollToSection(item.href)"
           >
@@ -56,44 +56,45 @@
       <!-- Right Actions -->
       <div class="flex flex-1 items-center justify-end gap-2 sm:gap-3">
         <!-- Utilitas Group (Desktop) -->
-        <div class="hidden sm:flex items-center p-1 bg-muted/30 rounded-lg border border-border/10">
+        <div class="hidden sm:flex items-center p-1 bg-card/50 rounded-2xl border border-border/40 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
-            class="h-8 w-8 rounded-md hover:bg-background shadow-none transition-transform active:scale-95"
+            class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
             @click="toggleColorMode"
           >
             <ClientOnly>
               <Icon
                 :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
-                :size="18"
+                :size="20"
+                class="text-muted-foreground group-hover:text-foreground"
               />
               <template #fallback>
-                <div class="size-4.5 rounded-full border border-border/40 animate-pulse" />
+                <div class="size-5 rounded-full border-2 border-border/40 animate-pulse" />
               </template>
             </ClientOnly>
           </Button>
 
-          <div class="w-px h-4 bg-border/30 mx-1" />
+          <div class="w-px h-5 bg-border/50 mx-1.5" />
 
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button
                 variant="ghost"
                 size="icon"
-                class="h-8 w-8 rounded-md hover:bg-background shadow-none transition-transform active:scale-95"
+                class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
               >
-                <Icon name="hugeicons:language-skill" :size="18" />
+                <Icon name="hugeicons:language-skill" :size="20" class="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-32">
+            <DropdownMenuContent align="end" class="w-40 rounded-3xl p-2 border-border/40 bg-card/80 backdrop-blur-xl">
               <DropdownMenuItem
                 v-for="locale in availableLocales"
                 :key="locale.code"
-                class="cursor-pointer"
+                class="cursor-pointer rounded-2xl px-4 py-2.5 transition-all focus:bg-primary/10 focus:text-primary"
                 @click="setLocale(locale.code)"
               >
-                <span :class="{ 'font-bold text-primary': currentLocale === locale.code }">
+                <span class="text-xs font-bold uppercase tracking-widest" :class="{ 'text-primary': currentLocale === locale.code }">
                   {{ locale.name }}
                 </span>
               </DropdownMenuItem>
@@ -102,18 +103,18 @@
         </div>
 
         <!-- Auth Buttons (Desktop) -->
-        <div class="hidden md:flex items-center gap-2">
+        <div class="hidden md:flex items-center gap-2 ml-2">
           <Button
             variant="ghost"
             size="sm"
-            class="font-medium hover:bg-primary/5 transition-colors"
+            class="rounded-2xl px-5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
             @click="goToLogin"
           >
             {{ $t('auth.login_title') }}
           </Button>
           <Button
             size="sm"
-            class="font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300"
+            class="rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all duration-300"
             @click="goToLogin"
           >
             {{ $t('auth.register') }}
@@ -126,58 +127,64 @@
             <Button
               variant="ghost"
               size="icon"
-              class="md:hidden h-10 w-10 rounded-xl hover:bg-muted transition-colors"
+              class="md:hidden h-11 w-11 rounded-2xl bg-card/50 border border-border/40 shadow-sm hover:bg-muted/50 transition-all"
             >
-              <Icon name="hugeicons:menu-01" :size="24" />
+              <Icon name="hugeicons:menu-01" :size="26" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" class="w-75 sm:w-100 flex flex-col">
-            <SheetHeader class="text-left pb-6 border-b">
-              <SheetTitle class="text-xl font-bold flex items-center gap-2">
+          <SheetContent side="right" class="w-80 sm:w-100 flex flex-col border-l-border/40 bg-card/80 backdrop-blur-xl">
+            <SheetHeader class="text-left pb-8">
+              <SheetTitle class="text-2xl font-black tracking-tighter flex items-center gap-3">
                 <div
-                  class="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground"
+                  class="h-10 w-10 rounded-2xl bg-linear-to-b from-primary to-primary/90 flex items-center justify-center text-white shadow-lg shadow-primary/20"
                 >
-                  <Icon name="hugeicons:wallet-01" :size="18" />
+                  <Icon name="hugeicons:wallet-01" :size="22" />
                 </div>
                 {{ $t('sidebar.finance') }}
               </SheetTitle>
             </SheetHeader>
 
-            <div class="flex-1 py-8 flex flex-col gap-6">
+            <div class="flex-1 py-8 flex flex-col gap-8">
               <div class="flex flex-col gap-2">
                 <p
-                  class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2"
+                  class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] px-2 mb-3"
                 >
                   {{ $t('landing.navigation') }}
                 </p>
                 <SheetClose v-for="item in navItems" :key="item.href" as-child>
                   <Button
                     variant="ghost"
-                    class="w-full justify-start"
+                    class="group w-full justify-between h-14 rounded-3xl px-4 hover:bg-muted/50 transition-all duration-300"
                     @click="scrollToSection(item.href)"
                   >
-                    {{ $t(item.label) }}
+                    <span class="text-sm font-bold">{{ $t(item.label) }}</span>
                     <Icon
                       name="hugeicons:arrow-right-01"
-                      :size="18"
-                      class="opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0"
+                      :size="20"
+                      class="text-muted-foreground/20 transition-all group-hover:translate-x-1 group-hover:text-primary"
                     />
                   </Button>
                 </SheetClose>
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-4">
                 <p
-                  class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2"
+                  class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] px-2 mb-1"
                 >
                   {{ $t('settings.preferences') }}
                 </p>
-                <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-muted/50">
-                  <span class="text-sm font-medium">{{ $t('settings.theme') }}</span>
+                <div class="flex items-center justify-between px-5 py-4 rounded-4xl bg-muted/30 border border-border/50">
+                  <div class="flex items-center gap-3">
+                    <div class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm">
+                      <Icon :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'" :size="18" class="text-primary" />
+                    </div>
+                    <span class="text-sm font-bold">{{ $t('settings.theme') }}</span>
+                  </div>
                   <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleColorMode" />
                 </div>
-                <div class="flex flex-col gap-1 px-2 mt-2">
-                  <p class="text-xs font-medium text-muted-foreground mb-1">
+                
+                <div class="flex flex-col gap-3 px-1">
+                  <p class="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">
                     {{ $t('settings.language') }}
                   </p>
                   <div class="flex gap-2">
@@ -186,10 +193,12 @@
                       :key="locale.code"
                       variant="outline"
                       size="sm"
-                      class="flex-1 rounded-lg"
-                      :class="{
-                        'border-primary bg-primary/5 text-primary': currentLocale === locale.code,
-                      }"
+                      class="flex-1 h-11 rounded-2xl font-bold transition-all"
+                      :class="[
+                        currentLocale === locale.code 
+                          ? 'border-primary/50 bg-primary/10 text-primary shadow-sm' 
+                          : 'border-border/50 bg-transparent text-muted-foreground hover:bg-muted/50'
+                      ]"
                       @click="setLocale(locale.code)"
                     >
                       {{ locale.name }}
@@ -199,16 +208,16 @@
               </div>
             </div>
 
-            <div class="pt-6 border-t flex flex-col gap-3">
+            <div class="pt-8 flex flex-col gap-3">
               <Button
-                class="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20"
+                class="w-full h-14 rounded-3xl bg-linear-to-b from-primary to-primary/90 text-base font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]"
                 @click="goToLogin"
               >
                 {{ $t('auth.register') }}
               </Button>
               <Button
                 variant="ghost"
-                class="w-full h-12 rounded-xl text-base font-medium"
+                class="w-full h-14 rounded-3xl text-base font-bold text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
                 @click="goToLogin"
               >
                 {{ $t('auth.login_title') }}

@@ -16,9 +16,15 @@ const monthlyExpense = computed(() =>
   recurring.value
     .filter((r) => r.type === 'expense' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') return s + r.amount * 30;
-      if (r.frequency === 'weekly') return s + r.amount * 4;
-      if (r.frequency === 'yearly') return s + r.amount / 12;
+      if (r.frequency === 'daily') {
+        return s + r.amount * 30;
+      }
+      if (r.frequency === 'weekly') {
+        return s + r.amount * 4;
+      }
+      if (r.frequency === 'yearly') {
+        return s + r.amount / 12;
+      }
       return s + r.amount;
     }, 0),
 );
@@ -27,9 +33,15 @@ const monthlyIncome = computed(() =>
   recurring.value
     .filter((r) => r.type === 'income' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') return s + r.amount * 30;
-      if (r.frequency === 'weekly') return s + r.amount * 4;
-      if (r.frequency === 'yearly') return s + r.amount / 12;
+      if (r.frequency === 'daily') {
+        return s + r.amount * 30;
+      }
+      if (r.frequency === 'weekly') {
+        return s + r.amount * 4;
+      }
+      if (r.frequency === 'yearly') {
+        return s + r.amount / 12;
+      }
       return s + r.amount;
     }, 0),
 );
@@ -47,7 +59,9 @@ onMounted(async () => {
 });
 
 const categoryName = (id: string | null) => {
-  if (!id) return '';
+  if (!id) {
+    return '';
+  }
   return categoryMap.value.get(id) ?? '';
 };
 
@@ -66,9 +80,9 @@ const formatNextDate = (date: string) => {
   const today = new Date();
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diff === 0) return t('recurring.today');
-  if (diff === 1) return t('recurring.tomorrow');
-  if (diff < 7) return `${diff} ${t('recurring.days_left')}`;
+  if (diff === 0) { return t('recurring.today'); }
+  if (diff === 1) { return t('recurring.tomorrow'); }
+  if (diff < 7) { return `${diff} ${t('recurring.days_left')}`; }
   return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 

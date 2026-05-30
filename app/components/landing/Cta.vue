@@ -9,25 +9,25 @@
 
     <div class="mx-auto max-w-5xl px-6">
       <div
-        class="relative overflow-hidden rounded-[3rem] border border-border/40 bg-background/40 p-8 md:p-20 text-center backdrop-blur-xl"
+        class="relative overflow-hidden rounded-4xl border border-border/50 bg-card p-8 text-center shadow-xl md:p-20"
       >
         <!-- Inner glow -->
         <div
-          class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none"
+          class="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent"
         />
 
-        <div class="relative z-10 max-w-2xl mx-auto">
-          <h2 class="font-heading text-4xl font-bold tracking-tight md:text-6xl mb-6">
+        <div class="relative z-10 mx-auto max-w-2xl">
+          <h2 class="mb-6 text-4xl font-black tracking-tighter text-foreground md:text-6xl">
             {{ $t('landing.cta_title') }}
           </h2>
-          <p class="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed font-medium">
+          <p class="mb-10 text-lg font-medium leading-relaxed text-muted-foreground md:text-xl">
             {{ $t('landing.cta_desc') }}
           </p>
 
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          <div class="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               size="lg"
-              class="h-14 px-8 text-base font-bold rounded-2xl group transition-all duration-300 hover:scale-105"
+              class="h-14 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 text-base font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.05] active:scale-[0.95]"
               as-child
             >
               <NuxtLinkLocale to="/auth/login">
@@ -41,7 +41,7 @@
             </Button>
           </div>
 
-          <p class="text-sm text-muted-foreground/60 font-medium">
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
             {{ $t('landing.cta_footer') }}
           </p>
         </div>

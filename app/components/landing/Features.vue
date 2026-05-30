@@ -8,45 +8,45 @@
 
     <div class="mx-auto max-w-6xl">
       <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-20 md:mb-28">
+      <div class="mx-auto mb-20 max-w-3xl text-center md:mb-28">
         <div
-          class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700"
+          class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <Icon name="hugeicons:grid-view" :size="14" />
           {{ $t('landing.features_title') }}
         </div>
         <h2
-          class="font-heading text-4xl font-extrabold tracking-tighter md:text-5xl lg:text-6xl mb-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100"
+          class="mb-6 text-4xl font-black tracking-tighter text-foreground md:text-5xl lg:text-6xl"
         >
           {{ $t('landing.features_heading') }}
         </h2>
         <p
-          class="text-lg text-muted-foreground md:text-xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200"
+          class="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl"
         >
           {{ $t('landing.features_desc') }}
         </p>
       </div>
 
       <!-- Features Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <div
           v-for="(feature, index) in features"
           :key="feature.titleKey"
-          class="group relative rounded-[2.5rem] border border-border/40 bg-background/40 p-8 md:p-10 transition-all duration-500 hover:border-primary/30 hover:bg-background/80 shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2"
+          class="group relative overflow-hidden rounded-4xl border border-border/50 bg-card p-8 transition-all duration-500 hover:-translate-y-2 hover:border-border hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:p-10"
           :style="{ animationDelay: `${index * 100 + 400}ms` }"
         >
           <!-- Hover Glow Effect -->
           <div
-            class="absolute inset-0 rounded-[2.5rem] bg-linear-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           />
 
           <div
-            class="relative mb-8 flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm group-hover:shadow-lg group-hover:shadow-primary/20"
+            class="relative mb-8 flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-primary/20"
             :class="feature.iconBg"
           >
             <!-- Animated Icon Glow -->
             <div
-              class="absolute inset-0 rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity"
+              class="absolute inset-0 rounded-2xl opacity-0 blur-lg transition-opacity group-hover:opacity-50"
               :class="feature.iconBg"
             />
             <Icon
@@ -59,12 +59,12 @@
 
           <div class="relative z-10">
             <h3
-              class="font-heading text-xl font-bold mb-3 group-hover:text-primary transition-colors"
+              class="mb-3 text-xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors"
             >
               {{ $t(feature.titleKey) }}
             </h3>
             <p
-              class="text-muted-foreground leading-relaxed font-medium group-hover:text-foreground/80 transition-colors"
+              class="font-medium leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors"
             >
               {{ $t(feature.descKey) }}
             </p>
@@ -72,12 +72,12 @@
 
           <!-- Decorative Arrow on Hover -->
           <div
-            class="absolute bottom-8 right-8 opacity-0 translate-x-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0"
+            class="absolute bottom-8 right-8 translate-x-4 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
           >
             <div
-              class="h-8 w-8 rounded-full border border-primary/20 flex items-center justify-center text-primary bg-primary/5"
+              class="flex h-9 w-9 items-center justify-center rounded-xl border border-border/50 bg-muted/50 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
             >
-              <Icon name="hugeicons:arrow-right-01" :size="14" />
+              <Icon name="hugeicons:arrow-right-01" :size="16" />
             </div>
           </div>
         </div>

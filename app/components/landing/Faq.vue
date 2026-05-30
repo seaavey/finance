@@ -11,36 +11,36 @@
     </div>
 
     <div class="mx-auto max-w-3xl">
-      <div class="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div class="mb-16 text-center">
         <div
-          class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-6 shadow-sm"
+          class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <Icon name="hugeicons:help-circle" :size="14" />
           {{ $t('landing.nav_faq') }}
         </div>
-        <h2 class="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+        <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl lg:text-6xl">
           {{ $t('landing.faq_title') }}
         </h2>
-        <p class="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+        <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
           {{ $t('landing.faq_desc') }}
         </p>
       </div>
 
-      <div class="grid gap-4">
+      <div class="grid gap-3">
         <div
           v-for="(item, index) in faqItems"
           :key="item.value"
-          class="group rounded-2xl border border-border/40 bg-background/40 backdrop-blur-md transition-all duration-500 hover:border-primary/30 hover:bg-background/80 shadow-sm hover:shadow-xl hover:-translate-y-1"
+          class="group overflow-hidden rounded-3xl border border-border/50 bg-card shadow-sm transition-all duration-500 hover:border-border hover:shadow-lg md:rounded-4xl"
           :style="{ animationDelay: `${index * 100}ms`, animationDuration: '800ms' }"
         >
           <Accordion type="single" collapsible class="w-full">
             <AccordionItem :value="item.value" class="border-0">
               <AccordionTrigger
-                class="px-6 py-5 text-base md:text-lg font-semibold hover:no-underline text-left transition-all data-[state=open]:text-primary"
+                class="px-6 py-5 text-base font-bold text-left transition-all hover:no-underline data-[state=open]:text-primary md:px-8 md:text-lg"
               >
                 <div class="flex items-center gap-4">
                   <div
-                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors text-muted-foreground group-hover:text-primary"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary"
                   >
                     <Icon :name="item.icon" :size="20" />
                   </div>
@@ -48,7 +48,7 @@
                 </div>
               </AccordionTrigger>
               <AccordionContent
-                class="px-6 pb-6 text-sm md:text-base text-muted-foreground leading-relaxed pl-[4.5rem]"
+                class="px-6 pb-6 text-sm font-medium leading-relaxed text-muted-foreground md:px-8 md:pb-8 md:pl-[4.5rem] md:text-base"
               >
                 {{ $t(item.answerKey) }}
               </AccordionContent>
@@ -59,19 +59,19 @@
 
       <!-- Support CTA -->
       <div
-        class="mt-16 text-center p-10 rounded-[2.5rem] border border-dashed border-primary/30 bg-primary/5 relative overflow-hidden group"
+        class="relative mt-16 overflow-hidden rounded-4xl border border-dashed border-primary/40 bg-primary/5 p-8 text-center group md:p-12"
       >
         <div
-          class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         />
         <div class="relative z-10">
-          <p class="text-base font-medium text-foreground mb-2">
+          <p class="mb-2 text-lg font-black tracking-tight text-foreground">
             {{ $t('landing.faq_support_title') }}
           </p>
-          <p class="text-sm text-muted-foreground mb-6">{{ $t('landing.faq_support_desc') }}</p>
+          <p class="mb-8 text-sm font-medium text-muted-foreground">{{ $t('landing.faq_support_desc') }}</p>
           <Button
             variant="default"
-            class="rounded-full gap-2 px-8 py-6 h-auto text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all"
+            class="h-12 gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <Icon name="hugeicons:customer-service" :size="20" />
             {{ $t('landing.faq_support_button') }}

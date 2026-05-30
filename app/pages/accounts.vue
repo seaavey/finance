@@ -46,7 +46,7 @@ const onDeleteRequest = (account: AccountWithBalance) => {
 };
 
 const onDeleteConfirm = async () => {
-  if (!deletingAccount.value) return;
+  if (!deletingAccount.value) { return; }
   await deleteAccount(deletingAccount.value.id);
   accountList.value = await getAccountBalances();
   showDeleteDialog.value = false;
