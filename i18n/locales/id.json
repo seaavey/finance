@@ -150,7 +150,9 @@
     "yearly": "Tahunan",
     "today": "Hari ini",
     "tomorrow": "Besok",
-    "days_left": "hari lagi"
+    "days_left": "hari lagi",
+    "due_tomorrow": "Jatuh tempo besok",
+    "due_in_7_days": "Jatuh tempo dalam 7 hari"
   },
   "recurring_form": {
     "title_edit": "Edit Transaksi Rutin",
@@ -343,7 +345,9 @@
     "searching": "Mencari...",
     "no_results": "Tidak ada hasil ditemukan",
     "suggestions": "Saran",
-    "quick_actions": "Aksi Cepat"
+    "quick_actions": "Aksi Cepat",
+    "notifications": "Notifikasi",
+    "no_notifications": "Tidak ada notifikasi baru"
   },
   "landing": {
     "hero_badge": "100+ pengguna aktif",

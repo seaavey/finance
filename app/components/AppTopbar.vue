@@ -55,12 +55,57 @@
       </div>
 
       <!-- NOTIFICATION -->
-      <Button variant="ghost" size="icon" class="relative">
-        <Icon name="hugeicons:notification-03" :size="18" />
-        <span
-          class="absolute right-2.5 top-2.5 size-2 rounded-full bg-destructive ring-2 ring-background"
-        />
-      </Button>
+      <Popover>
+        <PopoverTrigger as-child>
+          <Button variant="ghost" size="icon" class="relative">
+            <Icon name="hugeicons:notification-03" :size="18" />
+            <span
+              v-if="activeReminders.length > 0"
+              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white ring-2 ring-background"
+            >
+              {{ activeReminders.length }}
+            </span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent class="w-80 p-0" align="end">
+          <div class="border-b border-border/50 p-4">
+            <h4 class="text-sm font-semibold">{{ $t('topbar.notifications') }}</h4>
+          </div>
+          <div class="max-h-[300px] overflow-y-auto">
+            <template v-if="activeReminders.length > 0">
+              <div
+                v-for="reminder in activeReminders"
+                :key="reminder.id"
+                class="flex items-start gap-3 border-b border-border/40 p-4 last:border-0 hover:bg-muted/50"
+              >
+                <div class="flex-1 space-y-1">
+                  <p class="text-sm font-medium leading-none">{{ reminder.name }}</p>
+                  <p class="text-xs text-muted-foreground">
+                    {{ formatCurrency(reminder.amount, reminder.currency) }} •
+                    {{
+                      reminder.days_left === 1
+                        ? $t('recurring.due_tomorrow')
+                        : $t('recurring.due_in_7_days')
+                    }}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="size-8 rounded-full"
+                  @click="dismissReminder(reminder.id)"
+                >
+                  <Icon name="hugeicons:cancel-01" :size="14" />
+                </Button>
+              </div>
+            </template>
+            <div v-else class="flex h-32 flex-col items-center justify-center space-y-2">
+              <Icon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/40" />
+              <p class="text-xs text-muted-foreground">{{ $t('topbar.no_notifications') }}</p>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
 
       <!-- THEME -->
       <Button variant="ghost" size="icon" @click="cycleColorMode">
@@ -90,6 +135,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 defineEmits<{
   toggleSidebar: [];
@@ -98,6 +144,8 @@ defineEmits<{
 const route = useRoute();
 const colorMode = useColorMode();
 const { t } = useI18n();
+const { activeReminders, dismissReminder } = useReminders();
+const { formatCurrency } = useCurrency();
 
 const showSearchDialog = ref(false);
 

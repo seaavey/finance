@@ -150,7 +150,9 @@
     "yearly": "Yearly",
     "today": "Today",
     "tomorrow": "Tomorrow",
-    "days_left": "days left"
+    "days_left": "days left",
+    "due_tomorrow": "Due tomorrow",
+    "due_in_7_days": "Due in 7 days"
   },
   "recurring_form": {
     "title_edit": "Edit Recurring Transaction",
@@ -343,7 +345,9 @@
     "searching": "Searching...",
     "no_results": "No results found",
     "suggestions": "Suggestions",
-    "quick_actions": "Quick Actions"
+    "quick_actions": "Quick Actions",
+    "notifications": "Notifications",
+    "no_notifications": "No new notifications"
   },
   "landing": {
     "hero_badge": "100+ active users",
