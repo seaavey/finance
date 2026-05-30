@@ -815,11 +815,34 @@ goals
   updated_at        timestamptz
   INDEX: (user_id)
 
+budgets
+  id                uuid PK
+  user_id           uuid → auth.users
+  category_id       uuid → categories
+  month             date
+  amount            numeric
+  created_at        timestamptz
+  updated_at        timestamptz
+  INDEX: (user_id, category_id, month) UNIQUE, (user_id, month), (category_id)
+
+accounts
+  id                uuid PK
+  user_id           uuid → profiles
+  name              text
+  type              'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
+  currency          text, default 'IDR'
+  color             text, default '#3b82f6'
+  icon              text, default 'hugeicons:bank'
+  initial_balance   numeric, default 0
+  created_at        timestamptz
+  updated_at        timestamptz
+  INDEX: (user_id)
+
 ```
 
 ## 22. Migration History
 
-**Total: 19 migrations** (14 original + 5 baru: drop_budgets, goals, goal_images, 2 index).
+**Total: 22 migrations** (14 original + 8 baru).
 
 | #   | File                                          | Isi                                                                             |
 | --- | --------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -842,6 +865,9 @@ goals
 | 17  | `20260527000004_goal_images.sql`              | Storage bucket `goal-images` (public, 5MB, PNG/JPEG/WebP), `image_url` column   |
 | 18  | `20260528000001_index_categories_user_id.sql` | Index `categories(user_id)`                                                     |
 | 19  | `20260528000002_index_goals_user_id.sql`      | Index `goals(user_id)`                                                          |
+| 20  | `20260529000000_budgets.sql`                  | Create `budgets` table, RLS, unique index per category & month                  |
+| 21  | `20260530000000_accounts.sql`                 | Create `accounts` table, RLS, add `account_id` to transactions                  |
+| 22  | `20260530000001_accounts_types.sql`           | Add 'investment' and 'liability' to accounts type enum constraint               |
 
 ## 23. Ringkasan State Management
 
@@ -856,6 +882,8 @@ goals
 | **useCurrency**     | `useCurrency.ts`              | `defaultCurrency`, `exchangeRates`, `isRatesLoading`                                                     | `loadCurrency()`, `formatCurrency()`, `formatNumberOnly()`, `parseLocalizedNumber()`, `fetchRates()`, `convertTo()` |
 | **usePartner**      | `usePartner.ts`               | `partner`, `sent/receivedInvitations`, `loading`, `sending`, computed `isPartnered`/`partnerDisplayName` | `fetchPartner()`, `fetchInvitations()`, `send/accept/reject/cancelInvite()`, `disconnectPartner()`                  |
 | **useGoals**        | `useGoals.ts`                 | `goals`, `loading`                                                                                       | `fetchGoals()`, `addGoal()`, `updateGoal()`, `addFunds()`, `uploadGoalImage()`, `deleteGoalImage()`, `deleteGoal()` |
+| **useBudgets**      | `useBudgets.ts`               | `budgets`, `loading`, computed `budgetsWithProgress`, `budgetSummary`                                    | `fetchBudgets()`, `setBudget()`, `deleteBudget()`                                                                   |
+| **useAccounts**     | `useAccounts.ts`              | `accounts`, `loading`, computed `accountsWithBalance`, `netWorth`                                        | `fetchAccounts()`, `saveAccount()`, `deleteAccount()`                                                               |
 | **useExport**       | `useExport.ts`                | `exporting`                                                                                              | `exportAllData()`                                                                                                   |
 | **useToast**        | `app/composables/useToast.ts` | Module-level ref via `register(fn)`                                                                      | `toast.success()`, `toast.error()`, `toast.info()`                                                                  |
 
