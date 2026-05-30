@@ -1,61 +1,62 @@
 <template>
-  <div class="mx-auto max-w-6xl space-y-8">
+  <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight">{{ $t('categories.title') }}</h1>
-        <p class="mt-1 text-sm text-muted-foreground">{{ $t('categories.subtitle') }}</p>
+        <h1 class="text-4xl font-black tracking-tighter text-foreground">
+          {{ $t('categories.title') }}
+        </h1>
+        <p class="mt-1 font-medium text-muted-foreground">{{ $t('categories.subtitle') }}</p>
       </div>
       <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-primary/20 transition hover:from-primary/80 hover:to-primary/90"
+        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="showForm = true"
       >
-        <Icon name="hugeicons:add-01" :size="18" />
-        <span class="hidden sm:inline">{{ $t('categories.add') }}</span>
+        <Icon name="hugeicons:add-01" :size="20" />
+        <span>{{ $t('categories.add') }}</span>
       </Button>
     </div>
 
-    <div v-if="loading" class="space-y-6">
-      <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1">
-        <Skeleton class="h-9 w-32 rounded-xl" />
-        <Skeleton class="h-9 w-28 rounded-xl" />
-      </div>
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-        <Skeleton class="h-22 rounded-4xl" />
-        <Skeleton class="h-22 rounded-4xl" />
-        <Skeleton class="h-22 rounded-4xl" />
-        <Skeleton class="h-22 rounded-4xl" />
-        <Skeleton class="h-22 rounded-4xl" />
-        <Skeleton class="h-22 rounded-4xl" />
-      </div>
+    <!-- TABS -->
+    <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md">
+      <Button
+        v-for="tab in tabs"
+        :key="tab.value"
+        :variant="activeTab === tab.value ? 'default' : 'ghost'"
+        size="sm"
+        class="rounded-xl px-6 transition-all duration-300"
+        :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
+        @click="activeTab = tab.value"
+      >
+        {{ tab.label }}
+        <span class="ml-1.5 opacity-60">({{ tab.count }})</span>
+      </Button>
+    </div>
+
+    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <Skeleton v-for="i in 6" :key="i" class="h-24 rounded-4xl bg-muted/50" />
     </div>
 
     <template v-else>
-      <!-- TABS -->
-      <div class="inline-flex rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm">
-        <Button
-          v-for="tab in tabs"
-          :key="tab.value"
-          :variant="activeTab === tab.value ? 'default' : 'ghost'"
-          size="sm"
-          class="rounded-xl px-6 transition-all duration-300"
-          :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
-          @click="activeTab = tab.value"
-        >
-          {{ tab.label }}
-          <span class="ml-1.5 opacity-60">({{ tab.count }})</span>
-        </Button>
-      </div>
-
       <!-- EMPTY STATE -->
-      <div v-if="filteredCategories.length === 0" class="flex flex-col items-center gap-4 py-16">
-        <div class="flex size-14 items-center justify-center rounded-2xl bg-card/30">
-          <Icon name="hugeicons:grid-view" :size="24" class="text-muted-foreground/60" />
+      <div
+        v-if="filteredCategories.length === 0"
+        class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
+      >
+        <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+          <Icon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
         </div>
-        <div class="text-center">
-          <p class="font-medium">{{ $t('categories.empty') }}</p>
-          <p class="mt-0.5 text-sm text-muted-foreground">{{ $t('categories.empty_desc') }}</p>
-        </div>
+        <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('categories.empty') }}</h3>
+        <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
+          {{ $t('categories.empty_desc') }}
+        </p>
+        <Button
+          variant="outline"
+          class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
+          @click="showForm = true"
+        >
+          {{ $t('categories.add') }}
+        </Button>
       </div>
 
       <!-- CATEGORY GRID -->
@@ -64,23 +65,23 @@
         :list="filteredCategories"
         item-key="id"
         :options="{ handle: '.drag-handle', ghostClass: 'opacity-20', animation: 250 }"
-        class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"
+        class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
         @end="onReorder"
       >
         <template #item="{ element: cat }">
           <div
-            class="group flex items-center justify-between rounded-4xl border border-border/50 bg-card/30 p-4 transition-all duration-200 hover:border-border/80 hover:bg-card/60"
+            class="group flex items-center justify-between rounded-4xl border border-border/50 bg-card p-4 transition-all duration-200 hover:border-border/80 hover:shadow-md"
           >
             <div class="flex items-center gap-4">
               <div
-                class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing"
+                class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing transition-transform group-hover:scale-105"
                 :style="{ backgroundColor: cat.color + '15' }"
               >
-                <div class="size-3.5 rounded-full" :style="{ backgroundColor: cat.color }" />
+                <div class="size-3.5 rounded-full shadow-sm" :style="{ backgroundColor: cat.color }" />
               </div>
               <div>
-                <h3 class="font-medium">{{ cat.name }}</h3>
-                <p class="text-sm text-muted-foreground">
+                <h3 class="font-bold text-foreground">{{ cat.name }}</h3>
+                <p class="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-tight">
                   {{
                     t('categories.transaction_count', {
                       count: (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count,
@@ -96,12 +97,12 @@
               </div>
             </div>
             <div
-              class="flex gap-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              class="flex gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100"
             >
-              <Button variant="ghost" size="icon" @click="editCategory(cat)">
-                <Icon name="hugeicons:pencil-edit-01" :size="16" />
+              <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-muted" @click="editCategory(cat)">
+                <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" @click="confirmDelete(cat)">
+              <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500" @click="confirmDelete(cat)">
                 <Icon name="hugeicons:delete-01" :size="16" />
               </Button>
             </div>
@@ -132,6 +133,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '~/composables/useCategories';
 
