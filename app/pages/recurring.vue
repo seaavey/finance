@@ -1,141 +1,7 @@
-<template>
-  <div class="mx-auto max-w-6xl space-y-8">
-    <!-- HEADER -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">{{ $t('recurring.title') }}</h1>
-        <p class="mt-1 text-sm text-muted-foreground">
-          {{ recurring.length }} {{ $t('recurring.schedule_active') }}
-        </p>
-      </div>
-      <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-4 text-sm font-medium text-white transition hover:from-primary/80 hover:to-primary/90"
-        @click="showForm = true"
-      >
-        <Icon name="hugeicons:add-01" :size="18" />
-        <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
-      </Button>
-    </div>
-
-    <!-- STATS -->
-    <div v-if="!loading && recurring.length > 0" class="grid grid-cols-2 gap-4">
-      <div class="rounded-4xl border border-red-500/10 bg-red-500/[0.07] p-5">
-        <p class="text-sm text-red-400/70">{{ $t('recurring.expense') }}</p>
-        <h3 class="mt-2 text-2xl font-bold text-red-400">{{ formatCurrency(monthlyExpense) }}</h3>
-      </div>
-      <div class="rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.07] p-5">
-        <p class="text-sm text-emerald-400/70">{{ $t('recurring.income') }}</p>
-        <h3 class="mt-2 text-2xl font-bold text-emerald-400">
-          {{ formatCurrency(monthlyIncome) }}
-        </h3>
-      </div>
-    </div>
-
-    <!-- LOADING -->
-    <div v-if="loading" class="space-y-3">
-      <Skeleton class="h-[104px] rounded-4xl" />
-      <Skeleton class="h-[104px] rounded-4xl" />
-      <Skeleton class="h-[104px] rounded-4xl" />
-    </div>
-
-    <!-- EMPTY STATE -->
-    <div
-      v-else-if="recurring.length === 0"
-      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 px-6 py-16"
-    >
-      <div class="flex size-16 items-center justify-center rounded-full bg-card/30">
-        <Icon name="hugeicons:repeat" :size="28" class="text-muted-foreground/60" />
-      </div>
-      <h3 class="mt-5 text-lg font-medium">{{ $t('recurring.empty') }}</h3>
-      <p class="mt-2 max-w-sm text-center text-sm text-muted-foreground">
-        {{ $t('recurring.empty_desc') }}
-      </p>
-      <Button variant="default" class="mt-6" @click="showForm = true">
-        {{ $t('recurring.add') }}
-      </Button>
-    </div>
-
-    <!-- LIST -->
-    <div v-else class="space-y-3">
-      <div
-        v-for="item in recurring"
-        :key="item.id"
-        class="group flex items-center justify-between rounded-4xl border border-border/50 bg-card/30 p-5 transition-all duration-200"
-        :class="item.active ? 'hover:border-border/80 hover:bg-card/60' : 'opacity-50'"
-      >
-        <div class="flex items-center gap-4">
-          <div
-            class="flex size-14 items-center justify-center rounded-2xl"
-            :class="item.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
-          >
-            <Icon
-              :name="item.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
-              :size="24"
-              :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
-            />
-          </div>
-          <div>
-            <h3 class="font-medium">
-              {{
-                item.description || categoryName(item.category_id) || $t('recurring.no_description')
-              }}
-            </h3>
-            <div class="mt-1.5 flex items-center gap-2">
-              <span class="rounded-lg bg-card/50 px-2 py-0.5 text-xs text-muted-foreground">
-                {{ frequencyLabel(item.frequency) }}
-              </span>
-              <span class="text-xs text-muted-foreground/60">
-                {{ formatNextDate(item.next_date) }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-6">
-          <div class="text-right">
-            <p class="text-xs text-muted-foreground/60">{{ $t('recurring.amount') }}</p>
-            <p
-              class="text-lg font-semibold"
-              :class="item.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
-            >
-              {{ item.type === 'income' ? '+' : '-'
-              }}{{ formatCurrency(Number(item.amount), item.currency) }}
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
-            <Button variant="ghost" size="icon" @click="editItem(item)">
-              <Icon name="hugeicons:pencil-edit-01" :size="16" />
-            </Button>
-            <Button variant="ghost" size="icon" @click="onDelete(item)">
-              <Icon name="hugeicons:delete-01" :size="16" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <RecurringForm
-      v-if="showForm"
-      :item="editingItem"
-      @close="
-        showForm = false;
-        editingItem = undefined;
-      "
-      @saved="onSaved"
-    />
-
-    <ConfirmDialog
-      v-model:open="showDeleteDialog"
-      :title="$t('recurring.delete_title')"
-      :description="deleteDescription"
-      :confirm-text="$t('confirm.delete')"
-      @confirm="confirmDelete"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
 import type { RecurringTransaction } from '~/composables/useRecurring';
 
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();
@@ -150,15 +16,9 @@ const monthlyExpense = computed(() =>
   recurring.value
     .filter((r) => r.type === 'expense' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') {
-        return s + r.amount * 30;
-      }
-      if (r.frequency === 'weekly') {
-        return s + r.amount * 4;
-      }
-      if (r.frequency === 'yearly') {
-        return s + r.amount / 12;
-      }
+      if (r.frequency === 'daily') return s + r.amount * 30;
+      if (r.frequency === 'weekly') return s + r.amount * 4;
+      if (r.frequency === 'yearly') return s + r.amount / 12;
       return s + r.amount;
     }, 0),
 );
@@ -167,15 +27,9 @@ const monthlyIncome = computed(() =>
   recurring.value
     .filter((r) => r.type === 'income' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') {
-        return s + r.amount * 30;
-      }
-      if (r.frequency === 'weekly') {
-        return s + r.amount * 4;
-      }
-      if (r.frequency === 'yearly') {
-        return s + r.amount / 12;
-      }
+      if (r.frequency === 'daily') return s + r.amount * 30;
+      if (r.frequency === 'weekly') return s + r.amount * 4;
+      if (r.frequency === 'yearly') return s + r.amount / 12;
       return s + r.amount;
     }, 0),
 );
@@ -193,9 +47,7 @@ onMounted(async () => {
 });
 
 const categoryName = (id: string | null) => {
-  if (!id) {
-    return '';
-  }
+  if (!id) return '';
   return categoryMap.value.get(id) ?? '';
 };
 
@@ -214,15 +66,9 @@ const formatNextDate = (date: string) => {
   const today = new Date();
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diff === 0) {
-    return t('recurring.today');
-  }
-  if (diff === 1) {
-    return t('recurring.tomorrow');
-  }
-  if (diff < 7) {
-    return `${diff} ${t('recurring.days_left')}`;
-  }
+  if (diff === 0) return t('recurring.today');
+  if (diff === 1) return t('recurring.tomorrow');
+  if (diff < 7) return `${diff} ${t('recurring.days_left')}`;
   return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 
@@ -257,3 +103,170 @@ const onSaved = () => {
   editingItem.value = undefined;
 };
 </script>
+
+<template>
+  <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
+    <!-- HEADER -->
+    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div>
+        <h1 class="text-4xl font-black tracking-tighter text-foreground">
+          {{ $t('recurring.title') }}
+        </h1>
+        <p class="mt-1 font-medium text-muted-foreground">
+          {{ recurring.length }} {{ $t('recurring.schedule_active') }}
+        </p>
+      </div>
+      <Button
+        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
+        @click="showForm = true"
+      >
+        <Icon name="hugeicons:add-01" :size="20" />
+        <span>{{ $t('topbar.add') }}</span>
+      </Button>
+    </div>
+
+    <!-- STATS -->
+    <div v-if="!loading && recurring.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div
+        class="group relative overflow-hidden rounded-4xl border border-rose-500/10 bg-rose-500/[0.03] p-6 transition-all hover:bg-rose-500/[0.06]"
+      >
+        <div class="relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-widest text-rose-500/70">
+            {{ $t('recurring.expense') }}
+          </p>
+          <h3 class="mt-2 text-3xl font-black tracking-tighter text-rose-500">
+            {{ formatCurrency(monthlyExpense) }}
+          </h3>
+          <p class="mt-1 text-[10px] font-bold text-rose-500/40 uppercase tracking-tight">Est. Per Bulan</p>
+        </div>
+        <Icon
+          name="hugeicons:arrow-up-01"
+          class="absolute -right-4 -top-4 size-24 rotate-12 opacity-5 transition-transform group-hover:scale-110"
+        />
+      </div>
+      <div
+        class="group relative overflow-hidden rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.03] p-6 transition-all hover:bg-emerald-500/[0.06]"
+      >
+        <div class="relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-widest text-emerald-500/70">
+            {{ $t('recurring.income') }}
+          </p>
+          <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">
+            {{ formatCurrency(monthlyIncome) }}
+          </h3>
+          <p class="mt-1 text-[10px] font-bold text-emerald-500/40 uppercase tracking-tight">Est. Per Bulan</p>
+        </div>
+        <Icon
+          name="hugeicons:arrow-down-01"
+          class="absolute -right-4 -top-4 size-24 -rotate-12 opacity-5 transition-transform group-hover:scale-110"
+        />
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <Skeleton v-for="i in 4" :key="i" class="h-28 rounded-4xl bg-muted/50" />
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div
+      v-else-if="recurring.length === 0"
+      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
+    >
+      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+        <Icon name="hugeicons:repeat" :size="40" class="text-muted-foreground/40" />
+      </div>
+      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty') }}</h3>
+      <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
+        {{ $t('recurring.empty_desc') }}
+      </p>
+      <Button
+        variant="outline"
+        class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
+        @click="showForm = true"
+      >
+        {{ $t('recurring.add') }}
+      </Button>
+    </div>
+
+    <!-- LIST -->
+    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div
+        v-for="item in recurring"
+        :key="item.id"
+        class="group flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:border-border/80 hover:shadow-md"
+        :class="{ 'opacity-50 grayscale-[0.5]': !item.active }"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div
+              class="flex size-12 items-center justify-center rounded-2xl shadow-sm transition-transform group-hover:scale-110"
+              :class="item.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'"
+            >
+              <Icon
+                :name="item.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
+                :size="24"
+              />
+            </div>
+            <div>
+              <h3 class="font-bold text-foreground">
+                {{
+                  item.description || categoryName(item.category_id) || $t('recurring.no_description')
+                }}
+              </h3>
+              <div class="mt-1 flex items-center gap-2">
+                <span class="rounded-lg bg-muted px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                  {{ frequencyLabel(item.frequency) }}
+                </span>
+                <span class="text-[10px] font-bold text-muted-foreground/60">
+                  {{ formatNextDate(item.next_date) }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
+        </div>
+
+        <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
+          <div class="flex gap-1">
+            <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-muted" @click="editItem(item)">
+              <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon" class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500" @click="onDelete(item)">
+              <Icon name="hugeicons:delete-01" :size="16" />
+            </Button>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+              {{ $t('recurring.amount') }}
+            </p>
+            <p
+              class="text-xl font-black tracking-tighter"
+              :class="item.type === 'income' ? 'text-emerald-500' : 'text-foreground'"
+            >
+              {{ item.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(item.amount), item.currency) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <RecurringForm
+      v-if="showForm"
+      :item="editingItem"
+      @close="
+        showForm = false;
+        editingItem = undefined;
+      "
+      @saved="onSaved"
+    />
+
+    <ConfirmDialog
+      v-model:open="showDeleteDialog"
+      :title="$t('recurring.delete_title')"
+      :description="deleteDescription"
+      :confirm-text="$t('confirm.delete')"
+      @confirm="confirmDelete"
+    />
+  </div>
+</template>
