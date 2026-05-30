@@ -10,15 +10,12 @@ export default withNuxt({
 })
   .override('nuxt/typescript/rules', {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-optional-chain': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
     },
   })
   .override('nuxt/vue/rules', {
     rules: {
-      'vue/no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'vue/require-default-prop': 'off',
       'vue/html-self-closing': 'off',

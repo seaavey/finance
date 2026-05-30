@@ -162,6 +162,7 @@
 
 <script setup lang="ts">
 import { Input } from '@/components/ui/input';
+import type { DateRange } from 'reka-ui';
 import type { TransactionFilters } from '~/composables/useTransactions';
 
 interface CalendarDateLike {
@@ -215,7 +216,7 @@ const filters = reactive({
   category_id: '',
 });
 
-const dateRange: any = ref({ start: undefined, end: undefined });
+const dateRange = ref<DateRange>({ start: undefined, end: undefined });
 
 let debounceTimer: ReturnType<typeof setTimeout>;
 

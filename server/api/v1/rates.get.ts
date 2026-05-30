@@ -1,8 +1,13 @@
 // server/api/v1/rates.get.ts
+interface ExchangeRatesData {
+  base: string;
+  rates: Record<string, number>;
+}
+
 export default defineCachedEventHandler(
-  async (event) => {
+  async (_event): Promise<ExchangeRatesData & { updated_at: number }> => {
     try {
-      const data = await $fetch<any>('https://api.exchangerate.fun/latest?base=IDR');
+      const data = await $fetch<ExchangeRatesData>('https://api.exchangerate.fun/latest?base=IDR');
 
       // Transform to slim format
       return {
@@ -10,7 +15,7 @@ export default defineCachedEventHandler(
         rates: data.rates,
         updated_at: Date.now(),
       };
-    } catch (error) {
+    } catch {
       throw createError({
         statusCode: 500,
         statusMessage: 'Failed to fetch exchange rates',

@@ -36,7 +36,7 @@
           />
 
           <Button
-            v-for="(item, index) in navItems"
+            v-for="item in navItems"
             :key="item.href"
             ref="navRefs"
             variant="ghost"

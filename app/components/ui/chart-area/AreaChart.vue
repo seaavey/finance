@@ -7,7 +7,7 @@ import { componentToString } from '@/app/components/ui/chart/utils';
 
 const props = withDefaults(
   defineProps<{
-    data: any[];
+    data: Record<string, unknown>[];
     config: ChartConfig;
     index: string;
     categories: string[];
@@ -28,8 +28,8 @@ const props = withDefaults(
   },
 );
 
-const x = (d: any) => d[props.index];
-const y = props.categories.map((category) => (d: any) => d[category]);
+const x = (d: Record<string, unknown>) => d[props.index];
+const y = props.categories.map((category) => (d: Record<string, unknown>) => d[category]);
 </script>
 
 <template>
@@ -39,13 +39,13 @@ const y = props.categories.map((category) => (d: any) => d[category]);
         <template v-for="(category, i) in categories" :key="category">
           <VisArea
             :x="x"
-            :y="(d: any) => d[category]"
+            :y="(d: Record<string, unknown>) => d[category]"
             :color="props.config[category]?.color || `var(--vis-color${i})`"
             :opacity="0.1"
           />
           <VisLine
             :x="x"
-            :y="(d: any) => d[category]"
+            :y="(d: Record<string, unknown>) => d[category]"
             :color="props.config[category]?.color || `var(--vis-color${i})`"
           />
         </template>
@@ -54,7 +54,7 @@ const y = props.categories.map((category) => (d: any) => d[category]);
           v-if="showXAxis"
           type="x"
           :grid-line="false"
-          :tick-format="(d: any) => d"
+          :tick-format="(d: unknown) => d"
         />
         <VisAxis
           v-if="showYAxis"

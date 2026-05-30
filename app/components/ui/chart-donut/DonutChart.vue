@@ -7,7 +7,7 @@ import { componentToString } from '@/app/components/ui/chart/utils';
 
 const props = withDefaults(
   defineProps<{
-    data: any[];
+    data: Record<string, unknown>[];
     config: ChartConfig;
     index: string;
     category: string;
@@ -21,11 +21,11 @@ const props = withDefaults(
   },
 );
 
-const value = (d: any) => d[props.category];
+const value = (d: Record<string, unknown>) => d[props.category] as number;
 
-const color = (d: any, i: number) => {
+const color = (_d: Record<string, unknown>, i: number) => {
   const item = props.data[i];
-  const key = item[props.index];
+  const key = item[props.index] as string;
   return props.config[key]?.color || `var(--vis-color${i})`;
 };
 </script>

@@ -444,6 +444,7 @@
 
 <script setup lang="ts">
 import { useSupabase } from '~/lib/supabase';
+import type { CoupleInvitation } from '~/composables/usePartner';
 
 const { toast } = useToast();
 const supabase = useSupabase();
@@ -596,15 +597,15 @@ const onSendInvite = async () => {
   }
 };
 
-const onAcceptInvite = async (inv: any) => {
+const onAcceptInvite = async (inv: CoupleInvitation) => {
   await acceptInvite(inv);
 };
 
-const onRejectInvite = async (inv: any) => {
+const onRejectInvite = async (inv: CoupleInvitation) => {
   await rejectInvite(inv);
 };
 
-const onCancelInvite = async (inv: any) => {
+const onCancelInvite = async (inv: CoupleInvitation) => {
   await cancelInvite(inv);
 };
 

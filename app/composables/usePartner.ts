@@ -193,8 +193,8 @@ export const usePartner = () => {
       invitation_id: invitation.id,
     });
 
-    if (error || (data as any)?.error) {
-      const errorMsg = error?.message || (data as any)?.error;
+    if (error || (data as Record<string, unknown>)?.error) {
+      const errorMsg = error?.message || ((data as Record<string, unknown>)?.error as string);
       toast.error(errorMsg || t('toast.partner_accept_error'));
       loading.value = false;
       return { error: new Error(errorMsg) };

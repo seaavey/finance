@@ -25,11 +25,11 @@ const chartConfig = computed<ChartConfig>(() => ({
 
 const yFormatter = (val: number | string) => {
   const v = Number(val);
-  if (v === 0) return '0';
+  if (v === 0) {return '0';}
   const absV = Math.abs(v);
   const suffix = v < 0 ? '-' : '';
-  if (absV >= 1000000) return `${suffix}${absV / 1000000}${t('chart.million')}`;
-  if (absV >= 1000) return `${suffix}${absV / 1000}${t('chart.thousand')}`;
+  if (absV >= 1000000) {return `${suffix}${absV / 1000000}${t('chart.million')}`;}
+  if (absV >= 1000) {return `${suffix}${absV / 1000}${t('chart.thousand')}`;}
   return `${suffix}${absV}`;
 };
 </script>

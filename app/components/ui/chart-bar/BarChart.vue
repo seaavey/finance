@@ -7,7 +7,7 @@ import { componentToString } from '../chart/utils';
 
 const props = withDefaults(
   defineProps<{
-    data: any[];
+    data: Record<string, unknown>[];
     config: ChartConfig;
     index: string;
     categories: string[];
@@ -31,10 +31,10 @@ const props = withDefaults(
   },
 );
 
-const x = (d: any) => d[props.index];
-const y = props.categories.map((category) => (d: any) => d[category]);
+const x = (d: Record<string, unknown>) => d[props.index];
+const y = props.categories.map((category) => (d: Record<string, unknown>) => d[category]);
 
-const color = (d: any, i: number) => {
+const color = (_d: Record<string, unknown>, i: number) => {
   const category = props.categories[i];
   return props.config[category]?.color || `var(--vis-color${i})`;
 };
