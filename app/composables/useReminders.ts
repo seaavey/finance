@@ -39,17 +39,25 @@ export const useReminders = () => {
         if (!tx.active || tx.type !== 'expense') {
           return false;
         }
-        return tx.next_date === tomorrowStr || tx.next_date === nextWeekStr;
+        const nextDate = new Date(tx.next_date);
+        nextDate.setHours(0, 0, 0, 0);
+        const diffDays = Math.round((nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 && diffDays <= 7;
       })
-      .map((tx) => ({
-        id: `${tx.id}-${tx.next_date}`,
-        transaction_id: tx.id,
-        name: tx.description || 'Recurring Bill',
-        amount: tx.amount,
-        currency: tx.currency,
-        next_date: tx.next_date,
-        days_left: tx.next_date === tomorrowStr ? 1 : 7,
-      }));
+      .map((tx) => {
+        const nextDate = new Date(tx.next_date);
+        nextDate.setHours(0, 0, 0, 0);
+        const diffDays = Math.round((nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        return {
+          id: `${tx.id}-${tx.next_date}`,
+          transaction_id: tx.id,
+          name: tx.description || 'Recurring Bill',
+          amount: tx.amount,
+          currency: tx.currency,
+          next_date: tx.next_date,
+          days_left: diffDays,
+        };
+      });
   });
 
   const activeReminders = computed(() => {

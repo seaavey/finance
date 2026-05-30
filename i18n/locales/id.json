@@ -152,8 +152,10 @@
     "today": "Hari ini",
     "tomorrow": "Besok",
     "days_left": "hari lagi",
+    "due_today": "Jatuh tempo hari ini",
     "due_tomorrow": "Jatuh tempo besok",
-    "due_in_7_days": "Jatuh tempo dalam 7 hari"
+    "due_in_7_days": "Jatuh tempo dalam 7 hari",
+    "due_in_n_days": "Jatuh tempo dalam {days} hari"
   },
   "recurring_form": {
     "title_edit": "Edit Transaksi Rutin",

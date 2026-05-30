@@ -152,8 +152,10 @@
     "today": "Today",
     "tomorrow": "Tomorrow",
     "days_left": "days left",
+    "due_today": "Due today",
     "due_tomorrow": "Due tomorrow",
-    "due_in_7_days": "Due in 7 days"
+    "due_in_7_days": "Due in 7 days",
+    "due_in_n_days": "Due in {days} days"
   },
   "recurring_form": {
     "title_edit": "Edit Recurring Transaction",

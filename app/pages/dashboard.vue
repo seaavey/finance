@@ -199,9 +199,11 @@
                 <p class="truncate text-sm font-semibold text-foreground">{{ reminder.name }}</p>
                 <p class="text-xs text-muted-foreground">
                   {{
-                    reminder.days_left === 1
-                      ? $t('recurring.due_tomorrow')
-                      : $t('recurring.due_in_7_days')
+                    reminder.days_left === 0
+                      ? $t('recurring.due_today')
+                      : reminder.days_left === 1
+                        ? $t('recurring.due_tomorrow')
+                        : $t('recurring.due_in_n_days', { days: reminder.days_left })
                   }}
                   • {{ formatCurrency(reminder.amount, reminder.currency) }}
                 </p>
@@ -431,6 +433,7 @@ const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
 const { fetchAccounts, getAccountBalances } = useAccounts();
 const { history, currentNetWorth, fetchNetWorthHistory } = useNetWorth();
+const { recurring, fetchRecurring } = useRecurring();
 const { activeReminders, dismissReminder } = useReminders();
 
 const loading = ref(true);
@@ -647,6 +650,7 @@ onMounted(async () => {
     fetchCategories(),
     fetchPartner(),
     fetchNetWorthHistory(),
+    fetchRecurring(),
   ]);
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   budgetSummaries.value = await fetchBudgetWithProgress(monthStr);

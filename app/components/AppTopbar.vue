@@ -83,9 +83,11 @@
                   <p class="text-xs text-muted-foreground">
                     {{ formatCurrency(reminder.amount, reminder.currency) }} •
                     {{
-                      reminder.days_left === 1
-                        ? $t('recurring.due_tomorrow')
-                        : $t('recurring.due_in_7_days')
+                      reminder.days_left === 0
+                        ? $t('recurring.due_today')
+                        : reminder.days_left === 1
+                          ? $t('recurring.due_tomorrow')
+                          : $t('recurring.due_in_n_days', { days: reminder.days_left })
                     }}
                   </p>
                 </div>
@@ -144,6 +146,7 @@ defineEmits<{
 const route = useRoute();
 const colorMode = useColorMode();
 const { t } = useI18n();
+const { fetchRecurring } = useRecurring();
 const { activeReminders, dismissReminder } = useReminders();
 const { formatCurrency } = useCurrency();
 
@@ -156,7 +159,10 @@ const searchKeydownHandler = (e: KeyboardEvent) => {
   }
 };
 
-onMounted(() => document.addEventListener('keydown', searchKeydownHandler));
+onMounted(() => {
+  document.addEventListener('keydown', searchKeydownHandler);
+  fetchRecurring();
+});
 onUnmounted(() => document.removeEventListener('keydown', searchKeydownHandler));
 
 interface BreadcrumbItemDef {
