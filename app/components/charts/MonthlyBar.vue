@@ -32,7 +32,9 @@ const xFormatter = (val: number | string) => {
 
 const yFormatter = (val: number | string) => {
   const v = Number(val);
-  if (v === 0) return '0';
+  if (v === 0) {
+    return '0';
+  }
   return v >= 1000000
     ? `${(v / 1000000).toFixed(1)}${t('chart.million')}`
     : v >= 1000

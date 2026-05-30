@@ -524,13 +524,22 @@ const filteredTransactions = computed(() => {
 
 const displayName = computed(() => {
   const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || '';
-  return name.split(' ')[0] || t('dashboard.user');
+  if (!name) {
+    return t('dashboard.user');
+  }
+  return name.split(' ')[0];
 });
 
 const monthLabel = computed(() => {
-  if (period.value === '1d') return t('dashboard.today');
-  if (period.value === '7d') return t('dashboard.last_7_days');
-  if (period.value === '30d') return t('dashboard.last_30_days');
+  if (period.value === '1d') {
+    return t('dashboard.today');
+  }
+  if (period.value === '7d') {
+    return t('dashboard.last_7_days');
+  }
+  if (period.value === '30d') {
+    return t('dashboard.last_30_days');
+  }
   return t('dashboard.all_time');
 });
 
@@ -580,7 +589,9 @@ const totalExpense = computed(() =>
 const balance = computed(() => totalIncome.value - totalExpense.value);
 
 const trendBalance = computed(() => {
-  if (period.value === 'all') return 0;
+  if (period.value === 'all') {
+    return 0;
+  }
 
   const now = new Date();
   const daysMap = { '1d': 1, '7d': 7, '30d': 30 };
@@ -664,7 +675,10 @@ const monthlyData = computed(() => {
 
 onMounted(async () => {
   const now = new Date();
-  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1).toISOString().split('T')[0];
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1).toISOString().split('T')[0];
+
   await Promise.all([
     fetchTransactions({ dateFrom: sixMonthsAgo }),
     fetchCategories(),
@@ -672,6 +686,7 @@ onMounted(async () => {
     fetchNetWorthHistory(),
     fetchRecurring(),
   ]);
+
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
   await fetchAccounts();
