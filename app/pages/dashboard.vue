@@ -32,17 +32,17 @@
 
     <!-- Skeleton Loading -->
     <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-6">
-      <div class="h-64 animate-pulse rounded-[2rem] bg-zinc-100 md:col-span-3" />
-      <div v-for="i in 3" :key="i" class="h-64 animate-pulse rounded-[2rem] bg-zinc-100 md:col-span-1" />
-      <div class="h-96 animate-pulse rounded-[2rem] bg-zinc-100 md:col-span-4" />
-      <div class="h-96 animate-pulse rounded-[2rem] bg-zinc-100 md:col-span-2" />
+      <div class="h-64 animate-pulse rounded-4xl bg-zinc-100 md:col-span-3" />
+      <div v-for="i in 3" :key="i" class="h-64 animate-pulse rounded-4xl bg-zinc-100 md:col-span-1" />
+      <div class="h-96 animate-pulse rounded-4xl bg-zinc-100 md:col-span-4" />
+      <div class="h-96 animate-pulse rounded-4xl bg-zinc-100 md:col-span-2" />
     </div>
 
     <!-- Bento Grid Content -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6">
       <!-- Main Balance Hero Card (3 cols) -->
       <div
-        class="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-200/50 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-3"
+        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-zinc-200/50 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-200/50 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-3"
       >
         <div class="relative z-10">
           <div class="flex items-center gap-3">
@@ -72,7 +72,7 @@
 
       <!-- Income Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1"
       >
         <div class="flex size-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shadow-sm">
           <Icon name="hugeicons:arrow-down-01" :size="24" />
@@ -85,7 +85,7 @@
 
       <!-- Expense Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-200 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-200 duration-700 fill-mode-both md:col-span-1"
       >
         <div class="flex size-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 shadow-sm">
           <Icon name="hugeicons:arrow-up-01" :size="24" />
@@ -98,7 +98,7 @@
 
       <!-- Net Worth Stats (1 col) -->
       <div
-        class="flex flex-col justify-between rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-300 duration-700 fill-mode-both md:col-span-1"
+        class="flex flex-col justify-between rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-300 duration-700 fill-mode-both md:col-span-1"
       >
         <div class="flex size-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
           <Icon name="hugeicons:chart-line-up-01" :size="24" />
@@ -111,7 +111,7 @@
 
       <!-- Analytics Area: Monthly Bar Chart (4 cols) -->
       <div
-        class="rounded-[2rem] border border-zinc-200/50 bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-400 duration-700 fill-mode-both md:col-span-4"
+        class="rounded-4xl border border-zinc-200/50 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-400 duration-700 fill-mode-both md:col-span-4"
       >
         <div class="mb-8 flex items-center justify-between">
           <div>
@@ -137,7 +137,7 @@
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
       <div class="space-y-4 animate-in fade-in slide-in-from-bottom-6 delay-500 duration-700 fill-mode-both md:col-span-2">
         <!-- Upcoming Bills / Reminders -->
-        <div v-if="activeReminders.length > 0" class="rounded-[2rem] border border-zinc-200/50 bg-rose-50/30 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-50/50">
+        <div v-if="activeReminders.length > 0" class="rounded-4xl border border-zinc-200/50 bg-rose-50/30 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-50/50">
           <h3 class="mb-4 text-[10px] font-black tracking-widest text-rose-600 uppercase">{{ $t('dashboard.upcoming_bills') }}</h3>
           <div class="space-y-3">
             <div
@@ -162,7 +162,7 @@
         </div>
 
         <!-- Budget Progress -->
-        <div class="rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+        <div class="rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:shadow-md">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-[10px] font-black tracking-widest text-zinc-400 uppercase">{{ $t('budget.dashboard_title') }}</h3>
             <NuxtLinkLocale to="/budget" class="text-[10px] font-black text-zinc-400 hover:text-zinc-900 uppercase tracking-widest transition-colors">
@@ -192,7 +192,7 @@
         </div>
 
         <!-- Quick Accounts -->
-        <div class="rounded-[2rem] border border-zinc-200/50 bg-zinc-900 p-6 shadow-xl text-white transition-all hover:shadow-zinc-300">
+        <div class="rounded-4xl border border-zinc-200/50 bg-zinc-900 p-6 shadow-xl text-white transition-all hover:shadow-zinc-300">
           <div class="mb-4 flex items-center justify-between">
             <h3 class="text-[10px] font-black tracking-widest text-zinc-500 uppercase">{{ $t('dashboard.accounts_title') }}</h3>
             <NuxtLinkLocale to="/accounts" class="text-[10px] font-black text-zinc-500 hover:text-white uppercase tracking-widest transition-colors">
@@ -219,7 +219,7 @@
 
       <!-- Recent Transactions (Full Width - 6 cols) -->
       <div
-        class="rounded-[2rem] border border-zinc-200/50 bg-white shadow-sm transition-all duration-500 hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-700 duration-700 fill-mode-both md:col-span-6"
+        class="rounded-4xl border border-zinc-200/50 bg-white shadow-sm transition-all hover:shadow-lg animate-in fade-in slide-in-from-bottom-6 delay-700 duration-700 fill-mode-both md:col-span-6"
       >
         <div class="flex items-center justify-between border-b border-zinc-100 p-8">
           <div>
@@ -249,7 +249,7 @@
               v-for="tx in recentTransactions"
               :key="tx.id"
               :to="`/transactions/${tx.id}/edit`"
-              class="group flex items-center gap-4 rounded-[1.5rem] p-4 transition-all hover:bg-zinc-50"
+              class="group flex items-center gap-4 rounded-3xl p-4 transition-all hover:bg-zinc-50"
             >
               <div
                 class="flex size-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-500 group-hover:scale-110 shadow-sm"
@@ -288,7 +288,7 @@
       <!-- Quick Actions -->
       <div class="animate-in fade-in slide-in-from-bottom-6 delay-1000 duration-700 fill-mode-both md:col-span-3">
         <button
-          class="flex w-full items-center gap-6 rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-100"
+          class="flex w-full items-center gap-6 rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-100"
           @click="navigateTo('/transactions/new')"
         >
           <div class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200 transition-all duration-500 hover:scale-110">
@@ -302,7 +302,7 @@
       </div>
       <div class="animate-in fade-in slide-in-from-bottom-6 delay-1000 duration-700 fill-mode-both md:col-span-3">
         <button
-          class="flex w-full items-center gap-6 rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-100"
+          class="flex w-full items-center gap-6 rounded-4xl border border-zinc-200/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-100"
           @click="navigateTo('/categories')"
         >
           <div class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-100 transition-all duration-500 hover:scale-110">
