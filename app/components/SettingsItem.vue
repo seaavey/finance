@@ -1,36 +1,36 @@
 <template>
   <div
-    class="group flex w-full items-center gap-4 overflow-hidden px-4 py-3.5 hover:bg-card/40 active:bg-card/60"
+    class="group flex w-full cursor-pointer items-center gap-4 overflow-hidden px-5 py-4 transition-all hover:bg-muted/30 active:bg-muted/50"
     @click="$emit('click')"
   >
     <div
-      class="flex size-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-active:scale-95"
+      class="flex size-10 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-active:scale-95"
       :class="iconBg"
     >
-      <Icon :name="iconComponent" :size="20" :class="iconColor" />
+      <Icon :name="iconComponent" :size="22" :class="iconColor" />
     </div>
 
     <div
       class="flex min-w-0 flex-1 flex-col items-start justify-center gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
     >
       <span
-        class="truncate text-sm font-semibold text-foreground/90 transition-colors duration-200 group-hover:text-foreground"
+        class="truncate text-sm font-bold text-foreground transition-colors duration-200"
       >
         {{ label }}
       </span>
 
       <div
-        class="flex min-w-0 items-center gap-1.5 transition-colors duration-200 group-hover:text-foreground/80"
+        class="flex min-w-0 items-center gap-2 transition-colors duration-200"
       >
         <span
-          class="truncate text-left text-xs text-muted-foreground transition-colors sm:text-right group-hover:text-muted-foreground/80"
+          class="truncate text-left text-xs font-bold uppercase tracking-tight text-muted-foreground/60 transition-colors sm:text-right group-hover:text-muted-foreground"
         >
           {{ value }}
         </span>
         <Icon
           name="hugeicons:arrow-right-01"
-          :size="14"
-          class="shrink-0 text-muted-foreground/30 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-muted-foreground/60"
+          :size="16"
+          class="shrink-0 text-muted-foreground/20 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-muted-foreground/40"
         />
       </div>
     </div>

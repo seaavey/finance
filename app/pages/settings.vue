@@ -1,37 +1,27 @@
 <template>
-  <div
-    class="mx-auto w-full max-w-2xl space-y-8 overflow-hidden px-4 pb-24 md:px-0 md:pb-8 lg:space-y-10 min-h-dvh"
-  >
-    <!-- LOADING STATE -->
-    <div v-if="loading" class="space-y-8">
-      <div
-        class="flex flex-col items-center gap-4 rounded-4xl border border-border/50 bg-card/10 p-6 backdrop-blur-sm md:flex-row md:items-start md:gap-6 md:p-8"
-      >
-        <Skeleton class="size-20 rounded-full md:size-24" />
-        <div class="space-y-3 text-center md:text-left">
-          <Skeleton class="h-6 w-48 md:w-56" />
-          <Skeleton class="h-4 w-36 md:w-44" />
-        </div>
-      </div>
-      <div class="space-y-4">
-        <Skeleton class="h-14 w-full rounded-2xl" />
-        <Skeleton class="h-14 w-full rounded-2xl" />
-        <Skeleton class="h-14 w-full rounded-2xl" />
-      </div>
+  <div class="mx-auto w-full max-w-2xl space-y-8 pb-12 pt-4">
+    <!-- HEADER -->
+    <div>
+      <h1 class="text-4xl font-black tracking-tighter text-foreground">
+        {{ t('settings.account') }}
+      </h1>
+      <p class="mt-1 font-medium text-muted-foreground">{{ $t('settings.preferences') }}</p>
     </div>
 
-    <div
-      v-else
-      class="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8 lg:space-y-10"
-    >
+    <!-- LOADING STATE -->
+    <div v-if="loading" class="space-y-6">
+      <div class="h-48 w-full animate-pulse rounded-4xl bg-muted/50" />
+      <div class="h-64 w-full animate-pulse rounded-4xl bg-muted/50" />
+    </div>
+
+    <div v-else class="space-y-8">
       <!-- PROFILE CARD -->
       <section
-        class="relative overflow-hidden rounded-[2.5rem] border border-border/50 bg-card/20 p-6 backdrop-blur-md md:p-8"
+        class="relative overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md md:p-8"
       >
         <div class="absolute -right-12 -top-12 size-48 rounded-full bg-primary/5 blur-3xl" />
-        <div class="absolute -left-12 -bottom-12 size-48 rounded-full bg-primary/5 blur-3xl" />
 
-        <div class="relative flex flex-col items-center gap-5 md:flex-row md:items-center md:gap-8">
+        <div class="relative flex flex-col items-center gap-6 md:flex-row md:gap-8">
           <Avatar class="size-20 border-2 border-background shadow-xl md:size-24">
             <AvatarImage
               v-if="user?.user_metadata?.avatar_url"
@@ -44,21 +34,21 @@
           </Avatar>
 
           <div class="min-w-0 flex-1 text-center md:text-left">
-            <h1 class="text-2xl font-black tracking-tight text-foreground md:text-3xl truncate">
+            <h2 class="text-2xl font-black tracking-tight text-foreground md:text-3xl truncate">
               {{ profile.display_name || user?.user_metadata?.full_name }}
-            </h1>
+            </h2>
             <p class="mt-1 text-sm font-medium text-muted-foreground/80 truncate">
               {{ user?.email }}
             </p>
             <div class="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">
               <span
-                class="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
+                class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-primary"
               >
                 {{ isPartnered ? $t('settings.couple_mode') : $t('settings.personal_mode') }}
               </span>
               <span
                 v-if="user?.app_metadata?.provider"
-                class="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                class="inline-flex items-center rounded-full bg-muted px-3 py-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground"
               >
                 {{ user.app_metadata.provider }}
               </span>
@@ -69,11 +59,11 @@
 
       <!-- PREFERENCES -->
       <section>
-        <h2 class="mb-4 px-1 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
           {{ $t('settings.preferences') }}
-        </h2>
+        </h3>
         <div
-          class="overflow-hidden rounded-4xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+          class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
         >
           <SettingsItem
             icon="user"
@@ -105,76 +95,60 @@
         </div>
       </section>
 
-      <!-- DATA -->
-      <section>
-        <h2 class="mb-4 px-1 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-          {{ $t('settings.data') }}
-        </h2>
-        <div
-          class="overflow-hidden rounded-4xl border border-border/50 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
-        >
-          <SettingsItem
-            icon="download"
-            :label="$t('settings.export')"
-            :value="exportLabel"
-            @click="exportData"
-          />
-        </div>
-      </section>
-
       <!-- COUPLE -->
       <section>
-        <h2 class="mb-4 px-1 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
           {{ $t('sidebar.partner') }}
-        </h2>
+        </h3>
 
         <!-- LOADING: PASANGAN -->
         <div
           v-if="partnerLoading"
-          class="flex w-full items-center justify-center rounded-4xl border border-border/50 bg-card/10 py-10 backdrop-blur-sm"
+          class="flex w-full items-center justify-center rounded-4xl border border-border/50 bg-card p-10 shadow-sm"
         >
           <div class="flex flex-col items-center gap-3">
             <div
               class="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
             />
-            <span class="text-sm font-medium text-muted-foreground">{{
+            <span class="text-xs font-bold uppercase tracking-tight text-muted-foreground">{{
               $t('settings.loading_partner')
             }}</span>
           </div>
         </div>
+        
         <!-- NOT CONNECTED -->
         <div v-else-if="!isPartnered" class="space-y-4">
           <!-- Kirim Undangan -->
           <div
-            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 md:p-6"
+            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md"
           >
-            <div class="mb-4 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-4">
               <div
-                class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
               >
-                <Icon name="hugeicons:mail-send-01" :size="20" />
+                <Icon name="hugeicons:mail-send-01" :size="24" />
               </div>
               <div>
-                <p class="text-sm font-bold text-foreground">
+                <p class="text-sm font-black text-foreground">
                   {{ $t('settings.invite_partner_title') }}
                 </p>
-                <p class="text-xs text-muted-foreground">
+                <p class="text-xs font-medium text-muted-foreground">
                   {{ $t('settings.invite_partner_desc') }}
                 </p>
               </div>
             </div>
-            <div class="flex flex-col gap-2 sm:flex-row">
+            <div class="flex flex-col gap-3 sm:flex-row">
               <Input
                 v-model="inviteEmail"
                 type="email"
                 :placeholder="$t('settings.invite_email_placeholder')"
-                class="h-11 flex-1 rounded-xl bg-background/50"
+                class="h-11 flex-1 rounded-2xl bg-muted/30 border-border/50 focus:border-primary/50"
                 @keyup.enter="onSendInvite"
               />
               <Button
                 size="lg"
                 :disabled="partnerSending || !inviteEmail"
-                class="h-11 rounded-xl shadow-lg shadow-primary/20"
+                class="h-11 rounded-2xl bg-linear-to-b from-primary to-primary/90 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 @click="onSendInvite"
               >
                 {{ partnerSending ? $t('settings.inviting') : $t('settings.invite_button') }}
@@ -185,36 +159,37 @@
           <!-- Undangan Terkirim -->
           <div
             v-if="sentInvitations.length > 0"
-            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
-            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+            <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
               {{ $t('settings.sent_invitations_title') }}
             </p>
             <div class="space-y-3">
               <div
                 v-for="inv in sentInvitations"
                 :key="inv.id"
-                class="flex items-center justify-between rounded-2xl bg-card/40 px-4 py-3 border border-border/30"
+                class="flex items-center justify-between rounded-3xl border border-border/30 bg-muted/20 px-4 py-3"
               >
                 <div class="flex min-w-0 items-center gap-3">
                   <div
-                    class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50"
+                    class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50"
                   >
                     <Icon name="hugeicons:mail-01" :size="18" class="text-muted-foreground" />
                   </div>
                   <div class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-foreground">
+                    <p class="truncate text-sm font-bold text-foreground">
                       {{ inv.recipient_email }}
                     </p>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-primary">
+                    <p class="text-[9px] font-black uppercase tracking-widest text-primary">
                       {{ inv.status }}
                     </p>
                   </div>
                 </div>
                 <Button
                   v-if="inv.status === 'pending'"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
+                  class="rounded-xl text-xs font-bold text-muted-foreground hover:bg-muted"
                   @click="onCancelInvite(inv)"
                 >
                   {{ $t('settings.cancel_invite') }}
@@ -226,19 +201,19 @@
           <!-- Undangan Masuk -->
           <div
             v-if="receivedInvitations.length > 0"
-            class="rounded-4xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25"
+            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
-            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+            <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
               {{ $t('settings.received_invitations_title') }}
             </p>
             <div class="space-y-3">
               <div
                 v-for="inv in receivedInvitations"
                 :key="inv.id"
-                class="flex items-center justify-between rounded-2xl bg-card/40 px-4 py-3 border border-border/30"
+                class="flex items-center justify-between rounded-3xl border border-border/30 bg-muted/20 px-4 py-3"
               >
                 <div class="flex min-w-0 items-center gap-3">
-                  <Avatar class="size-10 border border-border/30">
+                  <Avatar class="size-10 border-2 border-background shadow-sm">
                     <AvatarImage
                       v-if="inv.sender?.avatar_url"
                       :src="inv.sender.avatar_url"
@@ -249,7 +224,7 @@
                     </AvatarFallback>
                   </Avatar>
                   <div class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-foreground">
+                    <p class="truncate text-sm font-bold text-foreground">
                       {{ inv.sender?.display_name || $t('settings.someone') }}
                     </p>
                     <p class="text-[10px] font-medium text-muted-foreground">
@@ -261,14 +236,14 @@
                   <Button
                     size="sm"
                     variant="ghost"
-                    class="rounded-lg font-bold text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                    class="rounded-xl font-bold text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
                     @click="onRejectInvite(inv)"
                   >
                     {{ $t('settings.reject') }}
                   </Button>
                   <Button
                     size="sm"
-                    class="rounded-lg font-bold shadow-md shadow-primary/10"
+                    class="rounded-xl bg-primary px-4 font-bold text-white shadow-sm hover:bg-primary/90"
                     @click="onAcceptInvite(inv)"
                   >
                     {{ $t('settings.accept') }}
@@ -282,11 +257,11 @@
         <!-- CONNECTED -->
         <div v-else class="space-y-4">
           <div
-            class="relative overflow-hidden rounded-4xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5 backdrop-blur-sm transition-all duration-300 hover:bg-emerald-500/[0.06] md:p-6"
+            class="relative overflow-hidden rounded-4xl border border-emerald-500/20 bg-emerald-500/[0.03] p-6 shadow-sm transition-all hover:bg-emerald-500/[0.05] md:p-8"
           >
             <div class="absolute -right-8 -top-8 size-32 rounded-full bg-emerald-500/10 blur-2xl" />
-            <div class="relative flex items-center gap-4">
-              <Avatar class="size-14 border-2 border-emerald-500/20 shadow-lg md:size-16">
+            <div class="relative flex items-center gap-6">
+              <Avatar class="size-16 border-2 border-background shadow-xl">
                 <AvatarImage
                   v-if="partner?.avatar_url"
                   :src="partner.avatar_url"
@@ -297,12 +272,12 @@
                 </AvatarFallback>
               </Avatar>
               <div class="min-w-0">
-                <p class="truncate text-lg font-black text-emerald-600 md:text-xl">
+                <p class="truncate text-xl font-black tracking-tight text-emerald-600 md:text-2xl">
                   {{ partnerDisplayName }}
                 </p>
-                <div class="mt-0.5 flex items-center gap-1.5">
-                  <div class="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-                  <p class="text-xs font-bold uppercase tracking-wider text-emerald-600/70">
+                <div class="mt-1 flex items-center gap-2">
+                  <div class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">
                     {{ $t('settings.connected_status') }}
                   </p>
                 </div>
@@ -310,65 +285,94 @@
             </div>
           </div>
 
-          <Button variant="destructive" :disabled="partnerLoading" @click="onDisconnect">
-            <div class="flex items-center gap-4">
-              <div
-                class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"
-              >
-                <Icon name="hugeicons:unlink-01" :size="20" />
+          <Button 
+            variant="ghost" 
+            class="group w-full h-auto rounded-4xl border border-rose-500/20 bg-rose-500/[0.02] p-4 transition-all hover:bg-rose-500/5 hover:border-rose-500/40"
+            @click="onDisconnect"
+          >
+            <div class="flex w-full items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div
+                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
+                >
+                  <Icon name="hugeicons:unlink-01" :size="22" />
+                </div>
+                <div class="min-w-0 text-left">
+                  <p class="text-sm font-black text-rose-500 md:text-base">
+                    {{ $t('settings.disconnect_title') }}
+                  </p>
+                  <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60">
+                    {{ $t('settings.disconnect_desc') }}
+                  </p>
+                </div>
               </div>
-              <div class="min-w-0 text-left">
-                <p class="text-sm font-bold text-red-500 md:text-base">
-                  {{ $t('settings.disconnect_title') }}
-                </p>
-                <p class="text-xs font-medium text-red-500/60 md:text-sm">
-                  {{ $t('settings.disconnect_desc') }}
-                </p>
-              </div>
+              <Icon
+                name="hugeicons:arrow-right-01"
+                :size="20"
+                class="shrink-0 text-rose-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-rose-500/60"
+              />
             </div>
-            <Icon
-              name="hugeicons:arrow-right-01"
-              :size="18"
-              class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
-            />
           </Button>
+        </div>
+      </section>
+
+      <!-- EXPORT DATA -->
+      <section>
+        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+          {{ $t('settings.data') }}
+        </h3>
+        <div
+          class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
+        >
+          <SettingsItem
+            icon="download"
+            :label="$t('settings.export')"
+            :value="exportLabel"
+            @click="exportData"
+          />
         </div>
       </section>
 
       <!-- DANGER ZONE -->
       <section>
-        <h2 class="mb-4 px-1 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+        <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-rose-500/60">
           {{ $t('settings.account') }}
-        </h2>
+        </h3>
         <div
-          class="rounded-4xl border border-red-500/20 bg-red-500/[0.02] p-1.5 backdrop-blur-sm transition-all duration-300 hover:bg-red-500/[0.05]"
+          class="rounded-4xl border border-border/50 bg-card p-1.5 shadow-sm transition-all hover:shadow-md"
         >
-          <Button variant="outline" @click="onSignOut">
-            <div class="flex items-center gap-4">
-              <div
-                class="flex size-11 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 transition-transform duration-300 group-hover:scale-110"
-              >
-                <Icon name="hugeicons:logout-01" :size="20" />
+          <Button 
+            variant="ghost" 
+            class="group w-full h-auto rounded-3xl p-4 transition-all hover:bg-rose-500/5"
+            @click="onSignOut"
+          >
+            <div class="flex w-full items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div
+                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
+                >
+                  <Icon name="hugeicons:logout-01" :size="22" />
+                </div>
+                <div class="min-w-0 text-left">
+                  <p class="text-sm font-black text-foreground md:text-base">
+                    {{ $t('settings.logout') }}
+                  </p>
+                  <p class="text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
+                    {{ $t('settings.logout_desc') }}
+                  </p>
+                </div>
               </div>
-              <div class="min-w-0 text-left">
-                <p class="text-sm font-bold text-red-500 md:text-base">
-                  {{ $t('settings.logout') }}
-                </p>
-                <p class="text-xs font-medium text-red-500/60 md:text-sm">
-                  {{ $t('settings.logout_desc') }}
-                </p>
-              </div>
+              <Icon
+                name="hugeicons:arrow-right-01"
+                :size="20"
+                class="shrink-0 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-muted-foreground/60"
+              />
             </div>
-            <Icon
-              name="hugeicons:arrow-right-01"
-              :size="18"
-              class="shrink-0 text-red-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-red-500/60"
-            />
           </Button>
         </div>
       </section>
 
-      <div class="flex flex-col items-center gap-2 pb-8 opacity-40 md:pb-0">
+      <div class="flex flex-col items-center gap-2 pb-8 opacity-40">
         <p class="text-[10px] font-black uppercase tracking-[0.3em]">
           {{ $t('settings.version') }}
         </p>
@@ -378,26 +382,26 @@
       </div>
     </div>
 
+    <!-- DIALOGS -->
     <Dialog v-model:open="editName">
-      <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
+      <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm rounded-4xl">
         <DialogHeader>
-          <DialogTitle>{{ $t('settings.dialog_name_title') }}</DialogTitle>
-          <DialogDescription class="sr-only">{{
-            $t('settings.dialog_name_desc')
-          }}</DialogDescription>
+          <DialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_name_title') }}</DialogTitle>
+          <DialogDescription class="sr-only">{{ $t('settings.dialog_name_desc') }}</DialogDescription>
         </DialogHeader>
-        <div class="space-y-3 py-2">
+        <div class="space-y-3 py-4">
           <Input
             v-model="profile.display_name"
             :placeholder="$t('settings.name_placeholder')"
+            class="h-12 rounded-2xl bg-muted/30"
             autofocus
           />
         </div>
         <div class="flex justify-end gap-2">
-          <Button variant="outline" size="sm" @click="editName = false">{{
-            $t('settings.cancel')
-          }}</Button>
-          <Button size="sm" :disabled="saving" @click="saveProfile">
+          <Button variant="ghost" class="rounded-xl font-bold" @click="editName = false">
+            {{ $t('settings.cancel') }}
+          </Button>
+          <Button class="rounded-xl bg-primary px-6 font-bold text-white shadow-lg shadow-primary/20" :disabled="saving" @click="saveProfile">
             {{ saving ? $t('settings.saving') : $t('settings.save') }}
           </Button>
         </div>
@@ -405,36 +409,33 @@
     </Dialog>
 
     <Dialog v-model:open="editCurrency">
-      <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm">
+      <DialogContent class="w-[calc(100vw-32px)] sm:max-w-sm rounded-4xl">
         <DialogHeader>
-          <DialogTitle>{{ $t('settings.dialog_currency_title') }}</DialogTitle>
-          <DialogDescription class="sr-only">{{
-            $t('settings.dialog_currency_desc')
-          }}</DialogDescription>
+          <DialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_currency_title') }}</DialogTitle>
+          <DialogDescription class="sr-only">{{ $t('settings.dialog_currency_desc') }}</DialogDescription>
         </DialogHeader>
-        <div class="max-h-64 overflow-y-auto py-2">
-          <div v-for="group in currencyGroups" :key="group.label" class="mb-3 last:mb-0">
-            <p
-              class="sticky top-0 bg-background px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
-            >
+        <div class="max-h-80 overflow-y-auto py-2 space-y-4">
+          <div v-for="group in currencyGroups" :key="group.label">
+            <p class="sticky top-0 bg-background/80 backdrop-blur-sm z-10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
               {{ group.label }}
             </p>
-            <Button
-              v-for="c in group.currencies"
-              :key="c.value"
-              variant="ghost"
-              class="w-full justify-start"
-              :class="profile.currency === c.value && 'bg-accent font-medium'"
-              @click="selectCurrency(c.value)"
-            >
-              <span>{{ c.label }}</span>
-              <Icon
-                v-if="profile.currency === c.value"
-                name="hugeicons:tick-01"
-                :size="16"
-                class="text-primary"
-              />
-            </Button>
+            <div class="mt-2 space-y-1 px-1">
+              <Button
+                v-for="c in group.currencies"
+                :key="c.value"
+                variant="ghost"
+                class="w-full justify-between rounded-xl h-11 px-3 transition-all"
+                :class="profile.currency === c.value ? 'bg-primary/10 text-primary font-bold' : 'text-foreground/80'"
+                @click="selectCurrency(c.value)"
+              >
+                <span class="text-sm">{{ c.label }}</span>
+                <Icon
+                  v-if="profile.currency === c.value"
+                  name="hugeicons:tick-01"
+                  :size="18"
+                />
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
@@ -443,6 +444,11 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useSupabase } from '~/lib/supabase';
 import type { CoupleInvitation } from '~/composables/usePartner';
 
