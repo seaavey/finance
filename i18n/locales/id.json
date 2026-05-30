@@ -47,7 +47,10 @@
     "days_ago": "{days} hari lalu",
     "vs_last_month_short": "vs bulan lalu",
     "monthly_performance": "Performa bulanan kamu",
-    "latest_activity": "Aktivitas terbaru"
+    "latest_activity": "Aktivitas terbaru",
+    "last_7_days": "7 Hari Terakhir",
+    "last_30_days": "30 Hari Terakhir",
+    "all_time": "Semua Waktu"
   },
   "transactions": {
     "title": "Transaksi",

@@ -47,7 +47,10 @@
     "days_ago": "{days} days ago",
     "vs_last_month_short": "vs last month",
     "monthly_performance": "Your monthly performance",
-    "latest_activity": "Latest activity"
+    "latest_activity": "Latest activity",
+    "last_7_days": "Last 7 Days",
+    "last_30_days": "Last 30 Days",
+    "all_time": "All Time"
   },
   "transactions": {
     "title": "Transactions",
