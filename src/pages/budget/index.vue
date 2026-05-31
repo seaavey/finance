@@ -13,6 +13,17 @@ const budgetList = ref<BudgetWithProgress[]>([]);
 const showDeleteDialog = ref(false);
 const deletingBudget = ref<BudgetWithProgress | null>(null);
 
+const totals = computed(() => {
+  const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0);
+  const totalSpent = budgetList.value.reduce((s, b) => s + b.spent, 0);
+  return {
+    totalLimit,
+    totalSpent,
+    totalRemaining: Math.max(totalLimit - totalSpent, 0),
+    totalOverspent: Math.max(totalSpent - totalLimit, 0),
+  };
+});
+
 // Month Navigation
 const selectedDate = ref(new Date());
 const currentMonthStr = computed(() => {
@@ -110,8 +121,8 @@ const goToDetail = (budget: BudgetWithProgress) => {
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Skeleton v-for="i in 6" :key="i" class="h-40 w-full rounded-4xl bg-muted/50" />
+    <div v-if="loading" class="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+      <Skeleton v-for="i in 4" :key="i" class="h-48 w-full rounded-4xl bg-muted/50" />
     </div>
 
     <!-- Empty State -->
@@ -139,14 +150,54 @@ const goToDetail = (budget: BudgetWithProgress) => {
       </Button>
     </div>
 
-    <!-- Budget List -->
-    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="budget in budgetList"
-        :key="budget.id"
-        class="group rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 hover:shadow-md cursor-pointer"
-        @click="goToDetail(budget)"
-      >
+    <!-- Summary Bento (only if budgets exist) -->
+    <div v-else class="space-y-6">
+      <!-- Summary Cards Row -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div
+          class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm"
+        >
+          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
+            {{ $t('budget.monthly_limit') }}
+          </p>
+          <p class="text-2xl font-black tracking-tighter text-foreground">
+            {{ fmtCurrency(totals.totalLimit) }}
+          </p>
+        </div>
+        <div
+          class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm"
+        >
+          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
+            {{ $t('budget.spent') }}
+          </p>
+          <p class="text-2xl font-black tracking-tighter text-foreground">
+            {{ fmtCurrency(totals.totalSpent) }}
+          </p>
+        </div>
+        <div
+          class="rounded-3xl border border-border/50 p-5 backdrop-blur-sm"
+          :class="totals.totalOverspent > 0 ? 'bg-red-500/10 border-red-500/30' : 'bg-card/20'"
+        >
+          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
+            {{ totals.totalOverspent > 0 ? $t('budget.overspent') : $t('budget.remaining') }}
+          </p>
+          <p
+            class="text-2xl font-black tracking-tighter"
+            :class="totals.totalOverspent > 0 ? 'text-red-500' : 'text-foreground'"
+          >
+            {{ totals.totalOverspent > 0 ? fmtCurrency(totals.totalOverspent) : fmtCurrency(totals.totalRemaining) }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Budget Cards Grid (auto-fit) -->
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+        <div
+          v-for="budget in budgetList"
+          :key="budget.id"
+          class="group rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 hover:shadow-md cursor-pointer flex flex-col justify-between min-h-44"
+          @click="goToDetail(budget)"
+        >
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-3">
             <div
@@ -154,10 +205,15 @@ const goToDetail = (budget: BudgetWithProgress) => {
               :style="{ backgroundColor: budget.category_color + '20' }"
             >
               <Icon
-                v-if="budget.category_icon?.startsWith('hugeicons:')"
+                v-if="budget.category_icon && budget.category_icon.startsWith('hugeicons:')"
                 :name="budget.category_icon"
                 :size="20"
                 :style="{ color: budget.category_color }"
+              />
+              <div
+                v-else
+                class="size-5 rounded-md"
+                :style="{ backgroundColor: budget.category_color }"
               />
             </div>
             <div>
@@ -206,6 +262,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <!-- Delete Confirmation -->

@@ -4,27 +4,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import type { RecurringTransaction } from '@/composables/useRecurring';
 
+const router = useRouter();
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();
 const { categories, fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
 const { t, locale } = useI18n();
 
-const showForm = ref(false);
-const editingItem = ref<RecurringTransaction | undefined>();
-
 const monthlyExpense = computed(() =>
   recurring.value
     .filter((r) => r.type === 'expense' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') {
-        return s + r.amount * 30;
-      }
-      if (r.frequency === 'weekly') {
-        return s + r.amount * 4;
-      }
-      if (r.frequency === 'yearly') {
-        return s + r.amount / 12;
-      }
+      if (r.frequency === 'daily') return s + r.amount * 30;
+      if (r.frequency === 'weekly') return s + r.amount * 4;
+      if (r.frequency === 'yearly') return s + r.amount / 12;
       return s + r.amount;
     }, 0),
 );
@@ -33,24 +25,16 @@ const monthlyIncome = computed(() =>
   recurring.value
     .filter((r) => r.type === 'income' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') {
-        return s + r.amount * 30;
-      }
-      if (r.frequency === 'weekly') {
-        return s + r.amount * 4;
-      }
-      if (r.frequency === 'yearly') {
-        return s + r.amount / 12;
-      }
+      if (r.frequency === 'daily') return s + r.amount * 30;
+      if (r.frequency === 'weekly') return s + r.amount * 4;
+      if (r.frequency === 'yearly') return s + r.amount / 12;
       return s + r.amount;
     }, 0),
 );
 
 const categoryMap = computed(() => {
   const map = new Map<string, string>();
-  for (const cat of categories.value) {
-    map.set(cat.id, cat.name);
-  }
+  for (const cat of categories.value) map.set(cat.id, cat.name);
   return map;
 });
 
@@ -59,9 +43,7 @@ onMounted(async () => {
 });
 
 const categoryName = (id: string | null) => {
-  if (!id) {
-    return '';
-  }
+  if (!id) return '';
   return categoryMap.value.get(id) ?? '';
 };
 
@@ -80,15 +62,9 @@ const formatNextDate = (date: string) => {
   const today = new Date();
   const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diff === 0) {
-    return t('recurring.today');
-  }
-  if (diff === 1) {
-    return t('recurring.tomorrow');
-  }
-  if (diff < 7) {
-    return `${diff} ${t('recurring.days_left')}`;
-  }
+  if (diff === 0) return t('recurring.today');
+  if (diff === 1) return t('recurring.tomorrow');
+  if (diff < 7) return `${diff} ${t('recurring.days_left')}`;
   return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 
@@ -100,9 +76,10 @@ const deleteDescription = computed(() => {
   return `${t('recurring.delete_confirm')} "${name}"?`;
 });
 
-const editItem = (item: RecurringTransaction) => {
-  editingItem.value = item;
-  showForm.value = true;
+const goToNew = () => router.push('/recurring/new');
+
+const goToEdit = (item: RecurringTransaction) => {
+  router.push(`/recurring/${item.id}/edit`);
 };
 
 const onDelete = (item: RecurringTransaction) => {
@@ -116,11 +93,6 @@ const confirmDelete = async () => {
   }
   showDeleteDialog.value = false;
   deletingItem.value = undefined;
-};
-
-const onSaved = () => {
-  showForm.value = false;
-  editingItem.value = undefined;
 };
 </script>
 
@@ -138,7 +110,7 @@ const onSaved = () => {
       </div>
       <Button
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="showForm = true"
+        @click="goToNew"
       >
         <Icon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('topbar.add')}}</span>
@@ -209,7 +181,7 @@ const onSaved = () => {
       <Button
         variant="outline"
         class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-        @click="showForm = true"
+        @click="goToNew"
       >
         {{ $t('recurring.add')}}
       </Button>
@@ -267,7 +239,7 @@ const onSaved = () => {
               variant="ghost"
               size="icon"
               class="size-9 rounded-xl hover:bg-muted"
-              @click="editItem(item)"
+              @click="goToEdit(item)"
             >
               <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
             </Button>
@@ -295,16 +267,6 @@ const onSaved = () => {
         </div>
       </div>
     </div>
-
-    <RecurringForm
-      v-if="showForm"
-      :item="editingItem"
-      @close="
-        showForm = false;
-        editingItem = undefined;
-      "
-      @saved="onSaved"
-    />
 
     <ConfirmDialog
       v-model:open="showDeleteDialog"

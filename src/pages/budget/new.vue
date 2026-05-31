@@ -57,7 +57,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-lg space-y-8 pb-12 pt-4">
+  <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/budget')">
         <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />

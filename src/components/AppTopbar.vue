@@ -180,9 +180,6 @@
 </template>
 
 <script setup lang="ts">
-
-
-
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -190,92 +187,92 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from '@/components/ui/breadcrumb'
 
 defineEmits<{
-  toggleSidebar: [];
-}>();
+  toggleSidebar: []
+}>()
 
-const route = useRoute();
-const router = useRouter();
-const colorMode = useColorMode();
-const { t } = useI18n();
-const { fetchRecurring } = useRecurring();
-const { activeReminders, dismissReminder } = useReminders();
-const { formatCurrency } = useCurrency();
+const route = useRoute()
+const router = useRouter()
+const colorMode = useColorMode()
+const { t } = useI18n()
+const { fetchRecurring } = useRecurring()
+const { activeReminders, dismissReminder } = useReminders()
+const { formatCurrency } = useCurrency()
 
-const showSearchDialog = ref(false);
+const showSearchDialog = ref(false)
 
 const searchKeydownHandler = (e: KeyboardEvent) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault();
-    showSearchDialog.value = true;
+    e.preventDefault()
+    showSearchDialog.value = true
   }
-};
+}
 
 onMounted(() => {
-  document.addEventListener('keydown', searchKeydownHandler);
-  fetchRecurring();
-});
-onUnmounted(() => document.removeEventListener('keydown', searchKeydownHandler));
+  document.addEventListener('keydown', searchKeydownHandler)
+  fetchRecurring()
+})
+onUnmounted(() => document.removeEventListener('keydown', searchKeydownHandler))
 
 interface BreadcrumbItemDef {
-  label: string;
-  to?: string;
+  label: string
+  to?: string
 }
 
 const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
-  const path = route.path;
-  const items: BreadcrumbItemDef[] = [{ label: t('topbar.dashboard'), to: '/' }];
+  const path = route.path
+  const items: BreadcrumbItemDef[] = [{ label: t('topbar.dashboard'), to: '/dashboard' }]
 
-  if (path === '/') {
-    return items;
+  if (path === '/dashboard') {
+    return items
   }
 
   if (path.startsWith('/transactions')) {
-    items.push({ label: t('topbar.transactions'), to: '/transactions' });
+    items.push({ label: t('topbar.transactions'), to: '/transactions' })
     if (path === '/transactions/new') {
-      items.push({ label: t('topbar.add_title') });
+      items.push({ label: t('topbar.add_title') })
     } else if (path.includes('/edit')) {
-      items.push({ label: t('topbar.edit') });
+      items.push({ label: t('topbar.edit') })
     }
-    return items;
+    return items
   }
 
   if (path.startsWith('/categories')) {
-    items.push({ label: t('topbar.categories') });
-    return items;
+    items.push({ label: t('topbar.categories') })
+    return items
   }
 
   if (path.startsWith('/recurring')) {
-    items.push({ label: t('topbar.recurring') });
-    return items;
+    items.push({ label: t('topbar.recurring') })
+    return items
   }
 
   if (path.startsWith('/goals')) {
-    items.push({ label: t('topbar.goals') });
-    return items;
+    items.push({ label: t('topbar.goals') })
+    return items
   }
 
   if (path.startsWith('/budget')) {
-    items.push({ label: t('topbar.budget') });
-    return items;
+    items.push({ label: t('topbar.budget') })
+    return items
   }
 
   if (path.startsWith('/accounts')) {
-    items.push({ label: t('topbar.accounts') });
-    return items;
+    items.push({ label: t('topbar.accounts') })
+    return items
   }
 
   if (path.startsWith('/settings')) {
-    items.push({ label: t('topbar.settings') });
-    return items;
+    items.push({ label: t('topbar.settings') })
+    return items
   }
 
-  return items;
-});
+  return items
+})
 
 const cycleColorMode = () => {
-  colorMode.preference = colorMode.value === 'light' ? 'dark' : 'light';
-};
+  colorMode.preference = colorMode.value === 'light' ? 'dark' : 'light'
+}
 </script>
