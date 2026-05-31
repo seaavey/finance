@@ -122,6 +122,7 @@ export const useActivityLog = () => {
       }
     } catch {
       logs.value = []
+    } finally {
       loading.value = false
     }
   }
