@@ -40,6 +40,7 @@ declare module 'vue' {
     AvatarGroupCount: typeof import('./components/ui/avatar/AvatarGroupCount.vue')['default']
     AvatarImage: typeof import('./components/ui/avatar/AvatarImage.vue')['default']
     BarChart: typeof import('./components/ui/chart-bar/BarChart.vue')['default']
+    BillDashboardWidget: typeof import('./components/BillDashboardWidget.vue')['default']
     Breadcrumb: typeof import('./components/ui/breadcrumb/Breadcrumb.vue')['default']
     BreadcrumbEllipsis: typeof import('./components/ui/breadcrumb/BreadcrumbEllipsis.vue')['default']
     BreadcrumbItem: typeof import('./components/ui/breadcrumb/BreadcrumbItem.vue')['default']

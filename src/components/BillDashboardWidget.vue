@@ -57,6 +57,8 @@
 import { Button } from '@/components/ui/button';
 import type { Bill } from '@/composables/useBills';
 
+const { toast } = useToast();
+
 const { bills, fetchBills, markAsPaid } = useBills();
 const { formatCurrency } = useCurrency();
 

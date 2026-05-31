@@ -63,6 +63,7 @@ declare global {
   const useAccounts: typeof import('./composables/useAccounts').useAccounts
   const useAttrs: typeof import('vue').useAttrs
   const useAuth: typeof import('./composables/useAuth').useAuth
+  const useBills: typeof import('./composables/useBills').useBills
   const useBudgets: typeof import('./composables/useBudgets').useBudgets
   const useCategories: typeof import('./composables/useCategories').useCategories
   const useColorMode: typeof import('./composables/nuxt-compat').useColorMode
@@ -107,6 +108,9 @@ declare global {
   // @ts-ignore
   export type { Account, AccountWithBalance } from './composables/useAccounts'
   import('./composables/useAccounts')
+  // @ts-ignore
+  export type { Bill } from './composables/useBills'
+  import('./composables/useBills')
   // @ts-ignore
   export type { Budget, BudgetWithProgress } from './composables/useBudgets'
   import('./composables/useBudgets')
@@ -198,6 +202,7 @@ declare module 'vue' {
     readonly useAccounts: UnwrapRef<typeof import('./composables/useAccounts')['useAccounts']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useAuth: UnwrapRef<typeof import('./composables/useAuth')['useAuth']>
+    readonly useBills: UnwrapRef<typeof import('./composables/useBills')['useBills']>
     readonly useBudgets: UnwrapRef<typeof import('./composables/useBudgets')['useBudgets']>
     readonly useCategories: UnwrapRef<typeof import('./composables/useCategories')['useCategories']>
     readonly useColorMode: UnwrapRef<typeof import('./composables/nuxt-compat')['useColorMode']>

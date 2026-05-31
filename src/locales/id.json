@@ -237,7 +237,22 @@
     "mark_paid": "Tandai Lunas",
     "unpaid": "Belum Lunas",
     "paid": "Lunas",
-    "no_bills": "Belum ada tagihan"
+    "no_bills": "Belum ada tagihan",
+    "add_bill": "Tambah Tagihan",
+    "add_title": "Tambah Tagihan",
+    "add_desc": "Buat tagihan baru untuk dilacak",
+    "form_title": "Judul",
+    "form_amount": "Jumlah",
+    "form_due_date": "Jatuh Tempo",
+    "form_recurrence": "Pengulangan",
+    "recurrence_none": "Sekali",
+    "recurrence_monthly": "Bulanan",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "all": "Semua",
+    "overdue": "Terlambat!",
+    "due_today": "Jatuh tempo hari ini!",
+    "due_in_days": "Jatuh tempo dalam {days} hari"
   },
   "accounts": {
     "title": "Akun",

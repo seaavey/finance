@@ -53,14 +53,14 @@ export const useBills = () => {
   };
 
   const addBill = async (
-    data: Omit<Bill, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'is_paid' | 'recurrence'>,
+    data: Omit<Bill, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'is_paid'>,
   ) => {
     if (!user.value) {
       return { error: new Error('Not authenticated') };
     }
     const { error } = await supabase
       .from('bills')
-      .insert({ ...data, user_id: user.value.id, is_paid: false, recurrence: 'none' });
+      .insert({ ...data, user_id: user.value.id, is_paid: false });
     if (!error) {
       cache.invalidate('bills');
       await fetchBills();

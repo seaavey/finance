@@ -237,7 +237,22 @@
     "mark_paid": "Mark as Paid",
     "unpaid": "Unpaid",
     "paid": "Paid",
-    "no_bills": "No bills yet"
+    "no_bills": "No bills yet",
+    "add_bill": "Add Bill",
+    "add_title": "Add Bill",
+    "add_desc": "Create a new bill to track",
+    "form_title": "Title",
+    "form_amount": "Amount",
+    "form_due_date": "Due Date",
+    "form_recurrence": "Recurrence",
+    "recurrence_none": "One-time",
+    "recurrence_monthly": "Monthly",
+    "cancel": "Cancel",
+    "save": "Save",
+    "all": "All",
+    "overdue": "Overdue!",
+    "due_today": "Due today!",
+    "due_in_days": "Due in {days} days"
   },
   "accounts": {
     "title": "Accounts",
