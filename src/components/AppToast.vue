@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useToast } from '@/composables/useToast';
+
 type ToastType = 'success' | 'error' | 'info';
 
 interface Toast {
@@ -7,6 +9,7 @@ interface Toast {
   type: ToastType;
 }
 
+const { register } = useToast();
 const toasts = ref<Toast[]>([]);
 let counter = 0;
 
@@ -17,6 +20,10 @@ const addToast = (message: string, type: ToastType = 'info') => {
     toasts.value = toasts.value.filter((t) => t.id !== id);
   }, 3000);
 };
+
+onMounted(() => {
+  register(addToast);
+});
 
 const iconMap = {
   success: 'hugeicons:checkmark-circle-02',

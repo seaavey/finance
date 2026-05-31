@@ -31,4 +31,5 @@ const layout = computed(() => {
   <component :is="layout">
     <router-view />
   </component>
+  <AppToast />
 </template>
