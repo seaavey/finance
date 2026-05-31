@@ -1,0 +1,16 @@
+<template>
+  <TransactionForm @saved="onSaved" @cancel="router.push('/transactions')" />
+</template>
+
+<script setup lang="ts">
+const router = useRouter();
+const { fetchCategories } = useCategories();
+
+onMounted(async () => {
+  await fetchCategories();
+});
+
+const onSaved = () => {
+  router.push('/transactions');
+};
+</script>
