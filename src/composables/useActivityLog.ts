@@ -1,4 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
+import { user } from './useAuth'
 
 export type EntityType =
   | 'transaction'
@@ -42,7 +43,6 @@ export interface ActivityLogFilters {
 
 export const useActivityLog = () => {
   const supabase = useSupabase()
-  const { user } = useAuth()
 
   const logs = ref<ActivityLog[]>([])
   const loading = ref(false)
