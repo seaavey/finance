@@ -48,8 +48,6 @@ declare module 'vue' {
     BreadcrumbList: typeof import('./components/ui/breadcrumb/BreadcrumbList.vue')['default']
     BreadcrumbPage: typeof import('./components/ui/breadcrumb/BreadcrumbPage.vue')['default']
     BreadcrumbSeparator: typeof import('./components/ui/breadcrumb/BreadcrumbSeparator.vue')['default']
-    BudgetCard: typeof import('./components/BudgetCard.vue')['default']
-    BudgetForm: typeof import('./components/BudgetForm.vue')['default']
     Button: typeof import('./components/ui/button/Button.vue')['default']
     Calendar: typeof import('./components/ui/calendar/Calendar.vue')['default']
     CalendarCell: typeof import('./components/ui/calendar/CalendarCell.vue')['default']
