@@ -73,6 +73,7 @@ export const useActivityLog = () => {
     loading.value = true
 
     const { page = 1, limit = 50, entityType, action, startDate, endDate } = filters
+    const safePage = Math.max(1, page)
 
     try {
       let query = supabase
@@ -80,7 +81,7 @@ export const useActivityLog = () => {
         .select('*', { count: 'exact' })
         .eq('user_id', user.value.id)
         .order('created_at', { ascending: false })
-        .range((page - 1) * limit, page * limit - 1)
+        .range((safePage - 1) * limit, safePage * limit - 1)
 
       if (entityType) {
         if (Array.isArray(entityType)) {
@@ -107,11 +108,14 @@ export const useActivityLog = () => {
 
       if (data) {
         logs.value = data as ActivityLog[]
+      } else {
+        logs.value = []
       }
       if (count !== null) {
         total.value = count
       }
-    } finally {
+    } catch {
+      logs.value = []
       loading.value = false
     }
   }
@@ -119,14 +123,18 @@ export const useActivityLog = () => {
   const fetchRecent = async (limitCount = 5): Promise<ActivityLog[]> => {
     if (!user.value) return []
 
-    const { data } = await supabase
-      .from('activity_logs')
-      .select('*')
-      .eq('user_id', user.value.id)
-      .order('created_at', { ascending: false })
-      .limit(limitCount)
+    try {
+      const { data } = await supabase
+        .from('activity_logs')
+        .select('*')
+        .eq('user_id', user.value.id)
+        .order('created_at', { ascending: false })
+        .limit(limitCount)
 
-    return (data as ActivityLog[]) || []
+      return (data as ActivityLog[]) || []
+    } catch {
+      return []
+    }
   }
 
   return {
