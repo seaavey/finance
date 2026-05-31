@@ -36,6 +36,16 @@ export default defineConfig({
       dts: 'src/components.d.ts',
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('@unovis')) return 'vendor-unovis';
+          if (id.includes('node_modules')) return 'vendor';
+        },
+      },
+    },
+  },
   optimizeDeps: {
     include: ['@unovis/vue', '@unovis/ts'],
   },

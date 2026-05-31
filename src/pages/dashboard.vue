@@ -494,9 +494,10 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import ChartsMonthlyBar from "@/components/charts/MonthlyBar.vue";
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 import type { AccountWithBalance } from '@/composables/useAccounts';
+
+const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'));
 
 const router = useRouter();
 const { user } = useAuth();
