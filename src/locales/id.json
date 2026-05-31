@@ -754,5 +754,63 @@
     "frequency_monthly": "Bulanan",
     "frequency_yearly": "Tahunan",
     "creator": "Finansiil"
+  },
+  "activities": {
+    "title": "Riwayat Aktivitas",
+    "filter_entity": "Jenis",
+    "filter_action": "Aksi",
+    "filter_date": "Rentang Tanggal",
+    "empty": "Belum ada aktivitas",
+    "load_more": "Muat lebih banyak"
+  },
+  "activity": {
+    "auth": {
+      "login": "Login berhasil",
+      "logout": "Logout"
+    },
+    "transaction": {
+      "created": "Menambahkan transaksi \"{description}\"",
+      "updated": "Mengubah transaksi \"{description}\"",
+      "deleted": "Menghapus transaksi \"{description}\""
+    },
+    "category": {
+      "created": "Menambahkan kategori \"{name}\"",
+      "updated": "Mengubah kategori \"{name}\"",
+      "deleted": "Menghapus kategori \"{name}\""
+    },
+    "budget": {
+      "created": "Menambahkan budget untuk \"{category_name}\"",
+      "updated": "Mengubah budget untuk \"{category_name}\"",
+      "deleted": "Menghapus budget untuk \"{category_name}\""
+    },
+    "goal": {
+      "created": "Menambahkan goal \"{name}\"",
+      "updated": "Mengubah goal \"{name}\"",
+      "deleted": "Menghapus goal \"{name}\""
+    },
+    "bill": {
+      "created": "Menambahkan tagihan \"{name}\"",
+      "updated": "Mengubah tagihan \"{name}\"",
+      "deleted": "Menghapus tagihan \"{name}\""
+    },
+    "account": {
+      "created": "Menambahkan akun \"{name}\"",
+      "updated": "Mengubah akun \"{name}\"",
+      "deleted": "Menghapus akun \"{name}\""
+    },
+    "recurring": {
+      "created": "Menambahkan transaksi berulang \"{name}\"",
+      "updated": "Mengubah transaksi berulang \"{name}\"",
+      "deleted": "Menghapus transaksi berulang \"{name}\""
+    },
+    "todo": {
+      "created": "Menambahkan tugas \"{description}\"",
+      "updated": "Mengubah tugas \"{description}\"",
+      "deleted": "Menghapus tugas \"{description}\""
+    },
+    "partner": {
+      "connected": "Terhubung dengan pasangan",
+      "disconnected": "Putus koneksi dengan pasangan"
+    }
   }
 }

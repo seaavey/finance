@@ -754,5 +754,63 @@
     "frequency_monthly": "Monthly",
     "frequency_yearly": "Yearly",
     "creator": "Finansiil"
+  },
+  "activities": {
+    "title": "Activity History",
+    "filter_entity": "Type",
+    "filter_action": "Action",
+    "filter_date": "Date Range",
+    "empty": "No activity yet",
+    "load_more": "Load more"
+  },
+  "activity": {
+    "auth": {
+      "login": "Logged in",
+      "logout": "Logged out"
+    },
+    "transaction": {
+      "created": "Added transaction \"{description}\"",
+      "updated": "Updated transaction \"{description}\"",
+      "deleted": "Deleted transaction \"{description}\""
+    },
+    "category": {
+      "created": "Added category \"{name}\"",
+      "updated": "Updated category \"{name}\"",
+      "deleted": "Deleted category \"{name}\""
+    },
+    "budget": {
+      "created": "Added budget for \"{category_name}\"",
+      "updated": "Updated budget for \"{category_name}\"",
+      "deleted": "Deleted budget for \"{category_name}\""
+    },
+    "goal": {
+      "created": "Added goal \"{name}\"",
+      "updated": "Updated goal \"{name}\"",
+      "deleted": "Deleted goal \"{name}\""
+    },
+    "bill": {
+      "created": "Added bill \"{name}\"",
+      "updated": "Updated bill \"{name}\"",
+      "deleted": "Deleted bill \"{name}\""
+    },
+    "account": {
+      "created": "Added account \"{name}\"",
+      "updated": "Updated account \"{name}\"",
+      "deleted": "Deleted account \"{name}\""
+    },
+    "recurring": {
+      "created": "Added recurring \"{name}\"",
+      "updated": "Updated recurring \"{name}\"",
+      "deleted": "Deleted recurring \"{name}\""
+    },
+    "todo": {
+      "created": "Added task \"{description}\"",
+      "updated": "Updated task \"{description}\"",
+      "deleted": "Deleted task \"{description}\""
+    },
+    "partner": {
+      "connected": "Connected with partner",
+      "disconnected": "Disconnected from partner"
+    }
   }
 }
