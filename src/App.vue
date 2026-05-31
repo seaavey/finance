@@ -19,6 +19,22 @@ useHead({
   ]
 })
 
+const { user } = useAuth()
+const { bills, fetchBills } = useBills()
+const { toast } = useToast()
+
+watch(() => user.value, async (newUser) => {
+  if (newUser) {
+    await fetchBills()
+    const today = new Date().toISOString().split('T')[0]
+    const dueToday = bills.value.filter(b => b.due_date === today && !b.is_paid)
+
+    if (dueToday.length > 0) {
+      toast.info(`You have ${dueToday.length} bill(s) due today!`)
+    }
+  }
+}, { immediate: true })
+
 const layout = computed(() => {
   if (route.meta.layout === 'blank') {
     return BlankLayout
