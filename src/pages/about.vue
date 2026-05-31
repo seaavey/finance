@@ -86,4 +86,12 @@ const values = [
     icon: 'hugeicons:grid-view',
   },
 ];
+
+const { t: tSeo } = useI18n();
+useSeoMeta({
+  title: tSeo('about.title'),
+  ogTitle: tSeo('about.title'),
+  description: tSeo('about.mission_desc_1'),
+  ogDescription: tSeo('about.mission_desc_1'),
+});
 </script>

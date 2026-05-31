@@ -331,7 +331,7 @@
     "system": "System"
   },
   "sidebar": {
-    "finance": "Finance",
+    "finance": "Aemy Finance",
     "dashboard": "Dashboard",
     "transactions": "Transactions",
     "categories": "Categories",
@@ -344,7 +344,7 @@
     "partner": "Partner",
     "sections": {
       "main": "Main",
-      "finance": "Finance",
+      "finance": "Aemy Finance",
       "personal": "Personal",
       "system": "System"
     }
@@ -399,7 +399,7 @@
     "feature_category_desc": "Automatic categories based on transaction patterns — getting smarter over time.",
     "testimonials_title": "Testimonials",
     "testimonials_heading": "Loved by 100+ users",
-    "testimonials_desc": "See what others are saying about Finance.",
+    "testimonials_desc": "See what others are saying about Aemy Finance.",
     "faq_title": "FAQ",
     "faq_desc": "Have other questions? We have collected answers to the most frequently asked questions here.",
     "faq_support_title": "Still can't find the answer you're looking for?",
@@ -478,7 +478,7 @@
       }
     ],
     "faq_q_free": "Is this app free?",
-    "faq_a_free": "Yes, Finance is free to use forever. There are no hidden subscription fees.",
+    "faq_a_free": "Yes, Aemy Finance is free to use forever. There are no hidden subscription fees.",
     "faq_q_couple": "Can I use it with my partner?",
     "faq_a_couple": "Of course! You can connect your account with your partner to see each other's transactions and manage finances together.",
     "faq_q_security": "Is my data secure?",

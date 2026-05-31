@@ -134,4 +134,12 @@ const sections = [
     paragraphs: ['terms.changes_p1'],
   },
 ];
+
+const { t: tSeo } = useI18n();
+useSeoMeta({
+  title: tSeo('terms_of_service.title'),
+  ogTitle: tSeo('terms_of_service.title'),
+  description: tSeo('terms_of_service.intro_desc'),
+  ogDescription: tSeo('terms_of_service.intro_desc'),
+});
 </script>

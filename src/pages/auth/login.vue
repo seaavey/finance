@@ -38,4 +38,12 @@
 import { Button } from '@/components/ui/button';
 
 const { signInWithGoogle } = useAuth();
+
+const { t: tSeo } = useI18n();
+useSeoMeta({
+  title: tSeo('auth.login_title'),
+  ogTitle: tSeo('auth.login_title'),
+  description: tSeo('auth.login_subtitle'),
+  ogDescription: tSeo('auth.login_subtitle'),
+});
 </script>

@@ -139,4 +139,12 @@ const sections = [
     paragraphs: ['privacy.changes_p1'],
   },
 ];
+
+const { t: tSeo } = useI18n();
+useSeoMeta({
+  title: tSeo('privacy_policy.title'),
+  ogTitle: tSeo('privacy_policy.title'),
+  description: tSeo('privacy_policy.intro_desc'),
+  ogDescription: tSeo('privacy_policy.intro_desc'),
+});
 </script>

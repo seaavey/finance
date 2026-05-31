@@ -36,4 +36,9 @@ coverage
 __screenshots__/
 
 # Vite
-*.timestamp-*-*.mjs.env
+*.timestamp-*-*.mjs
+
+# Environment
+.env
+.env.*
+!.env.example

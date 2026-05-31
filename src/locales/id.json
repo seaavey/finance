@@ -331,7 +331,7 @@
     "system": "Sistem"
   },
   "sidebar": {
-    "finance": "Finance",
+    "finance": "Aemy Finance",
     "dashboard": "Dashboard",
     "transactions": "Transaksi",
     "categories": "Kategori",
@@ -399,7 +399,7 @@
     "feature_category_desc": "Kategori otomatis berdasarkan pola transaksi — semakin pintar seiring waktu.",
     "testimonials_title": "Testimoni",
     "testimonials_heading": "Dipakai 100+ orang",
-    "testimonials_desc": "Lihat apa kata mereka yang sudah pakai Finance sehari-hari.",
+    "testimonials_desc": "Lihat apa kata mereka yang sudah pakai Aemy Finance sehari-hari.",
     "faq_title": "Pertanyaan Umum",
     "faq_desc": "Punya pertanyaan lain? Kami mengumpulkan jawaban untuk pertanyaan yang paling sering ditanyakan di sini.",
     "faq_support_title": "Masih belum menemukan jawaban yang dicari?",
@@ -478,13 +478,13 @@
       }
     ],
     "faq_q_free": "Apakah aplikasi ini gratis?",
-    "faq_a_free": "Ya, Finance gratis digunakan selamanya. Tidak ada biaya berlangganan tersembunyi.",
+    "faq_a_free": "Ya, Aemy Finance gratis digunakan selamanya. Tidak ada biaya berlangganan tersembunyi.",
     "faq_q_couple": "Bisa dipakai bareng pasangan?",
     "faq_a_couple": "Tentu! Kamu bisa menghubungkan akun dengan pasangan untuk saling lihat transaksi dan kelola keuangan bersama.",
     "faq_q_security": "Apakah data saya aman?",
     "faq_a_security": "Data kamu terenkripsi dan aman. Kami menggunakan Supabase sebagai backend yang sudah terpercaya dengan RLS di setiap tabel.",
     "faq_q_mobile": "Bisa diakses dari HP?",
-    "faq_a_mobile": "Bisa. Finance adalah web app responsif yang bisa diakses dari browser HP mana pun — tanpa perlu install.",
+    "faq_a_mobile": "Bisa. Aemy Finance adalah web app responsif yang bisa diakses dari browser HP mana pun — tanpa perlu install.",
     "faq_q_export": "Bisa export data ke Excel?",
     "faq_a_export": "Bisa. Kamu bisa download laporan transaksi bulanan dalam format CSV/Excel untuk analisis mandiri.",
     "faq_q_category": "Bisa buat kategori sendiri?",

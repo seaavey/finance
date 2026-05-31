@@ -183,4 +183,11 @@ const handleSubmit = async () => {
   loading.value = false;
 toast.success(t('contact.success'));
 };
+
+useSeoMeta({
+  title: t('contact.title'),
+  ogTitle: t('contact.title'),
+  description: t('contact.subtitle'),
+  ogDescription: t('contact.subtitle'),
+});
 </script>
