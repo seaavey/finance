@@ -31,7 +31,6 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
-        'pinia',
         {
           '@unhead/vue': ['useHead', 'useSeoMeta'],
           '@vueuse/core': ['useWindowScroll', 'useStorage', 'useDark', 'useToggle'],
