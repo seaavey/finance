@@ -108,8 +108,6 @@ declare module 'vue' {
     Features: typeof import('./components/landing/Features.vue')['default']
     FilterBar: typeof import('./components/FilterBar.vue')['default']
     Footer: typeof import('./components/landing/Footer.vue')['default']
-    GoalCard: typeof import('./components/GoalCard.vue')['default']
-    GoalForm: typeof import('./components/GoalForm.vue')['default']
     Hero: typeof import('./components/landing/Hero.vue')['default']
     Icon: typeof import('./components/Icon.vue')['default']
     Input: typeof import('./components/ui/input/Input.vue')['default']

@@ -121,8 +121,17 @@ const goToDetail = (budget: BudgetWithProgress) => {
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-      <Skeleton v-for="i in 4" :key="i" class="h-48 w-full rounded-4xl bg-muted/50" />
+    <div v-if="loading" class="space-y-4">
+      <!-- Month selector skeleton -->
+      <Skeleton class="h-14 w-full rounded-3xl bg-muted/50" />
+      <!-- Summary row skeleton -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Skeleton v-for="i in 3" :key="i" class="h-24 rounded-3xl bg-muted/50" />
+      </div>
+      <!-- Cards grid -->
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+        <Skeleton v-for="i in 4" :key="i" class="h-44 w-full rounded-4xl bg-muted/50" />
+      </div>
     </div>
 
     <!-- Empty State -->

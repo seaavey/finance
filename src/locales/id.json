@@ -209,7 +209,11 @@
     "remaining": "Kurang",
     "completed": "Tercapai!",
     "upload_error": "Gagal upload gambar",
-    "max_size_error": "Max 5MB"
+    "max_size_error": "Max 5MB",
+    "total_goals": "Total Target",
+    "total_target": "Total Nominal",
+    "total_saved": "Total Terkumpul",
+    "featured": "Utama"
   },
   "budget": {
     "title": "Budget",

@@ -38,7 +38,12 @@ onMounted(async () => {
 
     <!-- Loading -->
     <div v-if="loading" class="space-y-6">
+      <Skeleton class="h-10 w-32 rounded-xl bg-muted/50" />
       <Skeleton class="h-48 w-full rounded-4xl bg-muted/50" />
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Skeleton class="h-28 rounded-3xl bg-muted/50" />
+        <Skeleton class="h-28 rounded-3xl bg-muted/50" />
+      </div>
     </div>
 
     <!-- Not Found -->

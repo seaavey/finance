@@ -10,7 +10,7 @@
       </div>
       <Button
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="showForm = true"
+        @click="router.push('/categories/new')"
       >
         <Icon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('categories.add')}}</span>
@@ -36,7 +36,18 @@
     </div>
 
     <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <Skeleton v-for="i in 6" :key="i" class="h-24 rounded-4xl bg-muted/50" />
+      <div
+        v-for="i in 6"
+        :key="i"
+        class="flex animate-pulse items-center gap-4 rounded-4xl border border-border/50 bg-card p-4"
+      >
+        <Skeleton class="size-12 shrink-0 rounded-2xl bg-muted/50" />
+        <div class="min-w-0 flex-1 space-y-2">
+          <Skeleton class="h-4 w-32 rounded-md bg-muted/50" />
+          <Skeleton class="h-3 w-48 rounded-md bg-muted/50" />
+        </div>
+        <Skeleton class="size-8 rounded-xl bg-muted/50" />
+      </div>
     </div>
 
     <template v-else>
@@ -59,7 +70,7 @@
         <Button
           variant="outline"
           class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-          @click="showForm = true"
+          @click="router.push('/categories/new')"
         >
           {{ $t('categories.add')}}
         </Button>
@@ -110,7 +121,7 @@
                 variant="ghost"
                 size="icon"
                 class="size-9 rounded-xl hover:bg-muted"
-                @click="editCategory(cat)"
+                @click="router.push(`/categories/${cat.id}/edit`)"
               >
                 <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
               </Button>
@@ -128,16 +139,6 @@
       </Sortable>
     </template>
 
-    <CategoryForm
-      v-if="showForm"
-      :category="editingCategory"
-      @close="
-        showForm = false;
-        editingCategory = undefined;
-      "
-      @saved="onSaved"
-    />
-
     <ConfirmDialog
       v-model:open="showDeleteDialog"
       :title="$t('categories.delete_title')"
@@ -154,6 +155,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sortable } from 'sortablejs-vue3';
 import type { Category } from '@/composables/useCategories';
 
+const router = useRouter();
 const { t, locale } = useI18n();
 
 const {
@@ -171,9 +173,7 @@ const { user } = useAuth();
 const categoryStats = computed(() => {
   const map = new Map<string, { count: number; total: number }>();
   for (const tx of transactions.value) {
-    if (!tx.category_id) {
-      continue;
-    }
+    if (!tx.category_id) continue;
     const existing = map.get(tx.category_id);
     if (existing) {
       existing.count++;
@@ -185,8 +185,6 @@ const categoryStats = computed(() => {
   return map;
 });
 
-const showForm = ref(false);
-const editingCategory = ref<Category | undefined>();
 const activeTab = ref<'income' | 'expense'>('expense');
 const showDeleteDialog = ref(false);
 const deletingCategory = ref<Category | undefined>();
@@ -207,9 +205,7 @@ const filteredCategories = computed(() =>
 const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
   const list = [...filteredCategories.value];
   const [moved] = list.splice(evt.oldIndex, 1);
-  if (!moved) {
-    return;
-  }
+  if (!moved) return;
   list.splice(evt.newIndex, 0, moved);
   const otherType = activeTab.value === 'income' ? expenseCategories.value : incomeCategories.value;
   categories.value =
@@ -223,11 +219,6 @@ onMounted(async () => {
   }
 });
 
-const editCategory = (cat: Category) => {
-  editingCategory.value = cat;
-  showForm.value = true;
-};
-
 const confirmDelete = (cat: Category) => {
   deletingCategory.value = cat;
   showDeleteDialog.value = true;
@@ -239,10 +230,5 @@ const onDelete = async () => {
   }
   showDeleteDialog.value = false;
   deletingCategory.value = undefined;
-};
-
-const onSaved = () => {
-  showForm.value = false;
-  editingCategory.value = undefined;
 };
 </script>

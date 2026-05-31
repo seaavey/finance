@@ -78,8 +78,13 @@ const totalBalance = computed(() =>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-      <Skeleton v-for="i in 4" :key="i" class="h-32 w-full rounded-4xl bg-muted/50" />
+    <div v-if="loading" class="space-y-4">
+      <!-- Balance bar skeleton -->
+      <Skeleton class="h-24 w-full rounded-3xl bg-muted/50" />
+      <!-- Account cards grid -->
+      <div class="grid gap-3 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
+        <Skeleton v-for="i in 4" :key="i" class="h-20 rounded-3xl bg-muted/50" />
+      </div>
     </div>
 
     <!-- Empty State -->

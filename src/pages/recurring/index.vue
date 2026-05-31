@@ -160,8 +160,15 @@ const confirmDelete = async () => {
     </div>
 
     <!-- LOADING -->
-    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <Skeleton v-for="i in 4" :key="i" class="h-28 rounded-4xl bg-muted/50" />
+    <div v-if="loading" class="space-y-4">
+      <!-- Stats row skeleton -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Skeleton v-for="i in 2" :key="i" class="h-32 rounded-4xl bg-muted/50" />
+      </div>
+      <!-- List grid skeleton -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Skeleton v-for="i in 4" :key="i" class="h-44 rounded-4xl bg-muted/50" />
+      </div>
     </div>
 
     <!-- EMPTY STATE -->

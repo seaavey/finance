@@ -12,7 +12,10 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="loading">
+    <div v-if="loading" class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
+      <Skeleton class="h-8 w-32 rounded-xl bg-muted/50" />
+      <Skeleton class="h-10 w-64 rounded-xl bg-muted/50" />
+      <Skeleton class="h-6 w-48 rounded-lg bg-muted/50" />
       <Skeleton class="h-96 w-full rounded-4xl bg-muted/50" />
     </div>
 

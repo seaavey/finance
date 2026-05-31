@@ -209,7 +209,11 @@
     "remaining": "Remaining",
     "completed": "Reached!",
     "upload_error": "Failed to upload image",
-    "max_size_error": "Max 5MB"
+    "max_size_error": "Max 5MB",
+    "total_goals": "Total Goals",
+    "total_target": "Total Target",
+    "total_saved": "Total Saved",
+    "featured": "Featured"
   },
   "budget": {
     "title": "Budget",

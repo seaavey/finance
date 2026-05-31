@@ -32,12 +32,26 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="space-y-3">
-      <div
-        v-for="i in 4"
-        :key="i"
-        class="h-20 animate-pulse rounded-2xl bg-muted/50"
-      />
+    <div v-if="loading" class="space-y-4">
+      <!-- Filter tabs skeleton -->
+      <Skeleton class="h-10 w-64 rounded-xl bg-muted/50" />
+      <!-- Bill items skeleton -->
+      <div class="space-y-3">
+        <div
+          v-for="i in 4"
+          :key="i"
+          class="flex animate-pulse items-center gap-3 rounded-2xl border border-border/50 bg-card p-4"
+        >
+          <Skeleton class="size-10 shrink-0 rounded-xl bg-muted/50" />
+          <div class="min-w-0 flex-1 space-y-2">
+            <Skeleton class="h-4 w-32 rounded-md bg-muted/50" />
+            <Skeleton class="h-3 w-20 rounded-md bg-muted/50" />
+          </div>
+          <Skeleton class="h-5 w-20 rounded-md bg-muted/50" />
+          <Skeleton class="h-5 w-24 rounded-full bg-muted/50" />
+          <Skeleton class="size-8 rounded-md bg-muted/50" />
+        </div>
+      </div>
     </div>
 
     <!-- Empty State -->
