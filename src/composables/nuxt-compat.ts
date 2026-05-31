@@ -71,7 +71,7 @@ interface ColorModeState {
 
 const colorModeState = reactive<ColorModeState>({
   preference: mode.value as string,
-  value: computed(() => mode.value) as unknown as BasicColorMode,
+  value: mode.value as BasicColorMode,
   unknown: false,
 });
 
@@ -80,9 +80,16 @@ watch(() => colorModeState.preference, (newPref) => {
   mode.value = newPref as BasicColorMode;
 });
 
-// Update value when mode changes
+// Update value when mode changes externally
 watch(mode, (newMode) => {
   colorModeState.value = newMode;
+});
+
+// Allow external writes to colorModeState.value (e.g. toggle dark/light)
+watch(() => colorModeState.value, (newVal) => {
+  if (newVal !== mode.value) {
+    mode.value = newVal as BasicColorMode;
+  }
 });
 
 export const useColorMode = () => {
