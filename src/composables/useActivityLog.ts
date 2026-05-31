@@ -109,7 +109,11 @@ export const useActivityLog = () => {
       const { data, count } = await query
 
       if (data) {
-        logs.value = data as ActivityLog[]
+        if (safePage === 1) {
+          logs.value = data as ActivityLog[]
+        } else {
+          logs.value = [...logs.value, ...data as ActivityLog[]]
+        }
       } else {
         logs.value = []
       }

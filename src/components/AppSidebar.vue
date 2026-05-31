@@ -143,7 +143,10 @@ const navSections = computed(() => [
   },
   {
     label: t('sidebar.sections.system'),
-    items: [{ to: '/settings', label: t('sidebar.settings'), icon: 'hugeicons:settings-01' }],
+    items: [
+      { to: '/activities', label: t('sidebar.activities'), icon: 'hugeicons:timeline-01' },
+      { to: '/settings', label: t('sidebar.settings'), icon: 'hugeicons:settings-01' },
+    ],
   },
 ]);
 
