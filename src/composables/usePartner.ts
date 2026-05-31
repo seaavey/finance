@@ -30,6 +30,7 @@ export const usePartner = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useI18n();
+  const activity = useActivityLog();
 
   const partner = ref<PartnerProfile | null>(null);
   const sentInvitations = ref<CoupleInvitation[]>([]);
@@ -183,6 +184,7 @@ export const usePartner = () => {
       cache.invalidate(); // Clear all cache as profile changed
       await Promise.all([fetchPartner(), fetchInvitations()]);
       toast.success(t('toast.partner_connected'));
+      activity.log('partner', 'connected')
     } else {
       toast.error(t('toast.partner_connect_error'));
     }
@@ -226,6 +228,7 @@ export const usePartner = () => {
       cache.invalidate();
       partner.value = null;
       toast.success(t('toast.partner_disconnected'));
+      activity.log('partner', 'disconnected')
     } else {
       toast.error(t('toast.partner_disconnect_error'));
     }
