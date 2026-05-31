@@ -227,6 +227,18 @@
     "no_limit": "No budget set",
     "empty": "No budgets set yet"
   },
+  "bills": {
+    "title": "Bills",
+    "subtitle": "Track and manage bills",
+    "saved": "Bill saved successfully",
+    "save_error": "Failed to save bill",
+    "deleted": "Bill deleted successfully",
+    "delete_error": "Failed to delete bill",
+    "mark_paid": "Mark as Paid",
+    "unpaid": "Unpaid",
+    "paid": "Paid",
+    "no_bills": "No bills yet"
+  },
   "accounts": {
     "title": "Accounts",
     "subtitle": "Manage bank accounts, e-wallets, and cash",

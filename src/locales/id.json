@@ -227,6 +227,18 @@
     "no_limit": "Tidak ada budget",
     "empty": "Belum ada budget yang diatur"
   },
+  "bills": {
+    "title": "Tagihan",
+    "subtitle": "Lacak dan kelola tagihan",
+    "saved": "Tagihan berhasil disimpan",
+    "save_error": "Gagal menyimpan tagihan",
+    "deleted": "Tagihan berhasil dihapus",
+    "delete_error": "Gagal menghapus tagihan",
+    "mark_paid": "Tandai Lunas",
+    "unpaid": "Belum Lunas",
+    "paid": "Lunas",
+    "no_bills": "Belum ada tagihan"
+  },
   "accounts": {
     "title": "Akun",
     "subtitle": "Kelola rekening, e-wallet, dan dompet",
