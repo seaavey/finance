@@ -131,6 +131,7 @@ const navSections = computed(() => [
       { to: '/budget', label: t('sidebar.budget'), icon: 'hugeicons:wallet-03' },
       { to: '/accounts', label: t('sidebar.accounts'), icon: 'hugeicons:bank' },
       { to: '/recurring', label: t('sidebar.recurring'), icon: 'hugeicons:repeat' },
+      { to: '/bills', label: t('sidebar.bills'), icon: 'hugeicons:calendar-03' },
     ],
   },
   {
