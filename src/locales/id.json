@@ -765,7 +765,7 @@
   },
   "activity": {
     "auth": {
-      "login": "Login berhasil",
+      "login": "Login",
       "logout": "Logout"
     },
     "transaction": {
@@ -799,9 +799,9 @@
       "deleted": "Menghapus akun \"{name}\""
     },
     "recurring": {
-      "created": "Menambahkan transaksi berulang \"{name}\"",
-      "updated": "Mengubah transaksi berulang \"{name}\"",
-      "deleted": "Menghapus transaksi berulang \"{name}\""
+      "created": "Menambahkan transaksi berulang \"{description}\"",
+      "updated": "Mengubah transaksi berulang \"{description}\"",
+      "deleted": "Menghapus transaksi berulang \"{description}\""
     },
     "todo": {
       "created": "Menambahkan tugas \"{description}\"",

@@ -799,9 +799,9 @@
       "deleted": "Deleted account \"{name}\""
     },
     "recurring": {
-      "created": "Added recurring \"{name}\"",
-      "updated": "Updated recurring \"{name}\"",
-      "deleted": "Deleted recurring \"{name}\""
+      "created": "Added recurring \"{description}\"",
+      "updated": "Updated recurring \"{description}\"",
+      "deleted": "Deleted recurring \"{description}\""
     },
     "todo": {
       "created": "Added task \"{description}\"",
