@@ -588,6 +588,7 @@ const saveProfile = async () => {
 
   if (!error) {
     toast.success(t('settings.toast_saved'));
+    loadCurrency();
   } else {
     toast.error(t('settings.toast_save_error'));
   }
@@ -609,6 +610,7 @@ const selectCurrency = async (value: string) => {
 
   if (!error) {
     toast.success(t('settings.toast_currency_updated'));
+    loadCurrency();
   } else {
     toast.error(t('settings.toast_currency_error'));
   }

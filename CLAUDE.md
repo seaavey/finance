@@ -23,6 +23,12 @@ bun run type-check   # vue-tsc --build
 bun install          # Install dependencies (lockfile: bun.lock)
 ```
 
+## Git & Commits
+
+- **Jangan** tambahkan `Co-Authored-By: Claude` atau trailer apapun di commit messages.
+- Git author sudah dikonfigurasi sebagai `seaavey` — gunakan itu.
+- Commit messages harus ditulis dari perspektif pengguna (seaavey), bukan AI.
+
 ## Architecture
 
 **Aemy Finance** — personal finance tracking app with supabase backend, migrated from Nuxt 3 to pure Vite + Vue 3.

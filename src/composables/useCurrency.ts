@@ -1,13 +1,28 @@
 import { ref } from 'vue';
 import { useSupabase } from '@/lib/supabase';
+import { user } from './useAuth';
+
+// Module-level singleton — shared across all useCurrency() calls
+const defaultCurrency = ref<string>('IDR');
+const exchangeRates = ref<Record<string, number> | null>(null);
+const isRatesLoading = ref(false);
+
+export const loadCurrency = async () => {
+  const supabase = useSupabase();
+  if (!user.value) {
+    return;
+  }
+  const { data } = await supabase
+    .from('profiles')
+    .select('currency')
+    .eq('id', user.value.id)
+    .single();
+  if (data?.currency) {
+    defaultCurrency.value = data.currency;
+  }
+};
 
 export const useCurrency = () => {
-  const supabase = useSupabase();
-  const { user } = useAuth();
-
-  const defaultCurrency = ref<string>('IDR');
-  const exchangeRates = ref<Record<string, number> | null>(null);
-  const isRatesLoading = ref(false);
 
   const fetchRates = async () => {
     if (exchangeRates.value) {
@@ -32,20 +47,6 @@ export const useCurrency = () => {
     // Base is assumed to be IDR as per API config
     const rate = exchangeRates.value[targetCurrency];
     return amount * rate;
-  };
-
-  const loadCurrency = async () => {
-    if (!user.value) {
-      return;
-    }
-    const { data } = await supabase
-      .from('profiles')
-      .select('currency')
-      .eq('id', user.value.id)
-      .single();
-    if (data?.currency) {
-      defaultCurrency.value = data.currency;
-    }
   };
 
   const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK'];
@@ -159,7 +160,6 @@ export const useCurrency = () => {
     hasDecimals,
     currencies,
     currencyGroups,
-    loadCurrency,
     defaultCurrency,
     exchangeRates,
     fetchRates,

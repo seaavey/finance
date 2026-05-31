@@ -55,6 +55,8 @@ declare global {
   const isReadonly: typeof import('vue').isReadonly
   const isRef: typeof import('vue').isRef
   const isShallow: typeof import('vue').isShallow
+  const loadCurrency: typeof import('./composables/useCurrency').loadCurrency
+  const loading: typeof import('./composables/useAuth').loading
   const makeDestructurable: typeof import('@vueuse/core').makeDestructurable
   const mapActions: typeof import('pinia').mapActions
   const mapGetters: typeof import('pinia').mapGetters
@@ -314,6 +316,7 @@ declare global {
   const useWindowFocus: typeof import('@vueuse/core').useWindowFocus
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const useWindowSize: typeof import('@vueuse/core').useWindowSize
+  const user: typeof import('./composables/useAuth').user
   const watch: typeof import('vue').watch
   const watchArray: typeof import('@vueuse/core').watchArray
   const watchAtMost: typeof import('@vueuse/core').watchAtMost
@@ -397,6 +400,8 @@ declare module 'vue' {
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
     readonly isShallow: UnwrapRef<typeof import('vue')['isShallow']>
+    readonly loadCurrency: UnwrapRef<typeof import('./composables/useCurrency')['loadCurrency']>
+    readonly loading: UnwrapRef<typeof import('./composables/useAuth')['loading']>
     readonly mapActions: UnwrapRef<typeof import('pinia')['mapActions']>
     readonly mapGetters: UnwrapRef<typeof import('pinia')['mapGetters']>
     readonly mapState: UnwrapRef<typeof import('pinia')['mapState']>
@@ -470,6 +475,7 @@ declare module 'vue' {
     readonly useToggle: UnwrapRef<typeof import('@vueuse/core')['useToggle']>
     readonly useTransactions: UnwrapRef<typeof import('./composables/useTransactions')['useTransactions']>
     readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
+    readonly user: UnwrapRef<typeof import('./composables/useAuth')['user']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

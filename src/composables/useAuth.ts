@@ -4,8 +4,8 @@ import type { User } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/supabase';
 
 // State shared across all useAuth calls
-const user = ref<User | null>(null);
-const loading = ref(true);
+export const user = ref<User | null>(null);
+export const loading = ref(true);
 
 export const useAuth = () => {
   const supabase = useSupabase();

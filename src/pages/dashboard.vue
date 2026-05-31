@@ -719,6 +719,7 @@ onMounted(async () => {
     fetchPartner(),
     fetchNetWorthHistory(),
     fetchRecurring(),
+    loadCurrency(),
   ]);
 
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
