@@ -255,6 +255,8 @@
           </div>
         </div>
 
+        <BillDashboardWidget />
+
         <!-- Budget Progress -->
         <div
           class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md flex-1"
@@ -496,6 +498,7 @@
 import { Button } from '@/components/ui/button';
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 import type { AccountWithBalance } from '@/composables/useAccounts';
+import BillDashboardWidget from '@/components/BillDashboardWidget.vue';
 
 const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'));
 
