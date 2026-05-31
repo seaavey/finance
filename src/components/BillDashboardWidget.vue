@@ -6,6 +6,9 @@
       <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
         {{ $t('bills.title') }}
       </h3>
+      <router-link to="/bills" class="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors">
+        {{ $t('dashboard.view_all') }}
+      </router-link>
     </div>
     <div v-if="upcomingBills.length > 0" class="space-y-2">
       <div

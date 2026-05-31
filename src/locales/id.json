@@ -257,7 +257,13 @@
     "all": "Semua",
     "overdue": "Terlambat!",
     "due_today": "Jatuh tempo hari ini!",
-    "due_in_days": "Jatuh tempo dalam {days} hari"
+    "due_in_days": "Jatuh tempo dalam {days} hari",
+    "edit_bill": "Edit Tagihan",
+    "edit_desc": "Perbarui detail tagihan",
+    "delete_confirm": "Hapus tagihan ini?",
+    "delete_confirm_desc": "Tindakan ini tidak bisa dibatalkan.",
+    "amount": "Jumlah",
+    "status": "Status"
   },
   "accounts": {
     "title": "Akun",

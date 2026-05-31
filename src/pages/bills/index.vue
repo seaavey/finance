@@ -10,54 +10,10 @@
           {{ $t('bills.subtitle') }}
         </p>
       </div>
-      <Dialog v-model:open="dialogOpen">
-        <DialogTrigger as-child>
-          <Button>
-            <Icon name="hugeicons:add-01" :size="16" class="mr-2" />
-            {{ $t('bills.add_bill') }}
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{{ $t('bills.add_title') }}</DialogTitle>
-            <DialogDescription>{{ $t('bills.add_desc') }}</DialogDescription>
-          </DialogHeader>
-          <div class="grid gap-4 py-4">
-            <div class="grid gap-2">
-              <Label for="title">{{ $t('bills.form_title') }}</Label>
-              <Input id="title" v-model="form.title" />
-            </div>
-            <div class="grid gap-2">
-              <Label for="amount">{{ $t('bills.form_amount') }}</Label>
-              <Input id="amount" v-model.number="form.amount" type="number" min="0" step="any" />
-            </div>
-            <div class="grid gap-2">
-              <Label for="due_date">{{ $t('bills.form_due_date') }}</Label>
-              <Input id="due_date" v-model="form.due_date" type="date" />
-            </div>
-            <div class="grid gap-2">
-              <Label for="recurrence">{{ $t('bills.form_recurrence') }}</Label>
-              <Select v-model="form.recurrence">
-                <SelectTrigger id="recurrence">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">{{ $t('bills.recurrence_none') }}</SelectItem>
-                  <SelectItem value="monthly">{{ $t('bills.recurrence_monthly') }}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" @click="dialogOpen = false">
-              {{ $t('bills.cancel') }}
-            </Button>
-            <Button :disabled="!isFormValid" @click="handleAddBill">
-              {{ $t('bills.save') }}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Button @click="router.push('/bills/new')">
+        <Icon name="hugeicons:add-01" :size="16" class="mr-2" />
+        {{ $t('bills.add_bill') }}
+      </Button>
     </div>
 
     <!-- Filter Tabs -->
@@ -102,7 +58,8 @@
       <div
         v-for="bill in filteredBills"
         :key="bill.id"
-        class="flex flex-col gap-3 rounded-2xl border border-border/50 bg-card p-4 transition-all hover:shadow-sm sm:flex-row sm:items-center"
+        class="flex cursor-pointer flex-col gap-3 rounded-2xl border border-border/50 bg-card p-4 transition-all hover:shadow-sm sm:flex-row sm:items-center"
+        @click="router.push(`/bills/${bill.id}`)"
       >
         <!-- Icon -->
         <div
@@ -140,7 +97,7 @@
         </span>
 
         <!-- Actions -->
-        <div class="flex shrink-0 items-center gap-2">
+        <div class="flex shrink-0 items-center gap-2" @click.stop>
           <Button
             v-if="!bill.is_paid"
             variant="outline"
@@ -165,38 +122,14 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import type { Bill } from '@/composables/useBills';
 
-const { bills, fetchBills, addBill, markAsPaid, deleteBill, loading } = useBills();
+const router = useRouter();
+const { bills, fetchBills, markAsPaid, deleteBill, loading } = useBills();
 const { formatCurrency } = useCurrency();
 const { t } = useI18n();
 
 const filter = ref<'all' | 'unpaid' | 'paid'>('unpaid');
-const dialogOpen = ref(false);
-
-const form = reactive({
-  title: '',
-  amount: 0,
-  due_date: '',
-  recurrence: 'none' as 'none' | 'monthly',
-});
 
 const filterTabs = computed(() => [
   { value: 'all' as const, label: t('bills.all') },
@@ -214,10 +147,6 @@ const filteredBills = computed(() => {
   return bills.value.filter((b) => b.is_paid);
 });
 
-const isFormValid = computed(() => {
-  return form.title.trim() && form.amount > 0 && form.due_date;
-});
-
 function getDaysUntilDue(dueDate: string): number {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
@@ -226,7 +155,7 @@ function getDaysUntilDue(dueDate: string): number {
   return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function getDueDateText(bill: { due_date: string; is_paid: boolean }): string {
+function getDueDateText(bill: Bill): string {
   if (bill.is_paid) {
     return t('bills.paid');
   }
@@ -240,7 +169,7 @@ function getDueDateText(bill: { due_date: string; is_paid: boolean }): string {
   return t('bills.due_in_days', { days });
 }
 
-function getDueDateClass(bill: { due_date: string; is_paid: boolean }): string {
+function getDueDateClass(bill: Bill): string {
   if (bill.is_paid) {
     return 'text-emerald-600 dark:text-emerald-400';
   }
@@ -254,7 +183,7 @@ function getDueDateClass(bill: { due_date: string; is_paid: boolean }): string {
   return 'text-muted-foreground';
 }
 
-function getIconClass(bill: { due_date: string; is_paid: boolean }): string {
+function getIconClass(bill: Bill): string {
   if (bill.is_paid) {
     return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
   }
@@ -263,25 +192,6 @@ function getIconClass(bill: { due_date: string; is_paid: boolean }): string {
     return 'bg-rose-500/10 text-rose-600 dark:text-rose-400';
   }
   return 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
-}
-
-async function handleAddBill() {
-  if (!isFormValid.value) {
-    return;
-  }
-  const { error } = await addBill({
-    title: form.title.trim(),
-    amount: form.amount,
-    due_date: form.due_date,
-    recurrence: form.recurrence,
-  });
-  if (!error) {
-    dialogOpen.value = false;
-    form.title = '';
-    form.amount = 0;
-    form.due_date = '';
-    form.recurrence = 'none';
-  }
 }
 
 async function handleMarkPaid(id: string) {

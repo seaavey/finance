@@ -257,7 +257,13 @@
     "all": "All",
     "overdue": "Overdue!",
     "due_today": "Due today!",
-    "due_in_days": "Due in {days} days"
+    "due_in_days": "Due in {days} days",
+    "edit_bill": "Edit Bill",
+    "edit_desc": "Update bill details",
+    "delete_confirm": "Delete this bill?",
+    "delete_confirm_desc": "This action cannot be undone.",
+    "amount": "Amount",
+    "status": "Status"
   },
   "accounts": {
     "title": "Accounts",
