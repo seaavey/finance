@@ -91,6 +91,7 @@
     "select_account": "Pilih akun",
     "delete": "Hapus",
     "cancel": "Batal",
+    "back": "Kembali",
     "save": "Simpan Transaksi"
   },
   "transaction_edit": {
@@ -136,6 +137,7 @@
     "expense": "Pengeluaran",
     "color": "Warna",
     "cancel": "Batal",
+    "back": "Kembali",
     "save": "Simpan"
   },
   "recurring": {
@@ -183,6 +185,7 @@
     "next_date": "Tanggal Berikutnya",
     "select_date": "Pilih tanggal",
     "cancel": "Batal",
+    "back": "Kembali",
     "save": "Simpan"
   },
   "reminders": {
@@ -216,6 +219,7 @@
     "edit_budget": "Edit Budget",
     "delete_budget": "Hapus Budget",
     "monthly_limit": "Batas Bulanan",
+    "month": "Bulan",
     "spent": "Terpakai",
     "remaining": "Sisa",
     "overspent": "Over budget!",
@@ -248,6 +252,7 @@
     "recurrence_none": "Sekali",
     "recurrence_monthly": "Bulanan",
     "cancel": "Batal",
+    "back": "Kembali",
     "save": "Simpan",
     "all": "Semua",
     "overdue": "Terlambat!",
@@ -295,6 +300,7 @@
     "image_placeholder": "Klik untuk upload gambar",
     "image_remove": "Hapus",
     "cancel": "Batal",
+    "back": "Kembali",
     "save": "Simpan"
   },
   "funds_form": {
@@ -302,6 +308,7 @@
     "subtitle": "Masukkan nominal untuk target {name}",
     "amount": "Nominal",
     "cancel": "Batal",
+    "back": "Kembali",
     "add": "Tambah Dana"
   },
   "settings": {
@@ -321,6 +328,7 @@
     "dialog_name_title": "Nama Tampilan",
     "name_placeholder": "Nama kamu",
     "cancel": "Batal",
+    "back": "Kembali",
     "saving": "Menyimpan...",
     "save": "Simpan",
     "dialog_currency_title": "Mata Uang Default",
@@ -651,6 +659,7 @@
     "confirm_desc": "Apakah kamu yakin?",
     "delete": "Hapus",
     "cancel": "Batal",
+    "back": "Kembali",
     "saving": "Menyimpan..."
   },
   "toast": {

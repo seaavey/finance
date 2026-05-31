@@ -3,14 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 
-
+const router = useRouter();
 const { locale } = useI18n();
 const { categories, fetchCategories } = useCategories();
-const { loading, fetchBudgetWithProgress, deleteBudget } = useBudgets();
+const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets();
+const { formatCurrency: fmtCurrency } = useCurrency();
 
 const budgetList = ref<BudgetWithProgress[]>([]);
-const showForm = ref(false);
-const editingBudget = ref<BudgetWithProgress | null>(null);
 const showDeleteDialog = ref(false);
 const deletingBudget = ref<BudgetWithProgress | null>(null);
 
@@ -48,16 +47,6 @@ onMounted(() => {
   loadData();
 });
 
-const onAddBudget = () => {
-  editingBudget.value = null;
-  showForm.value = true;
-};
-
-const onEditBudget = (budget: BudgetWithProgress) => {
-  editingBudget.value = budget;
-  showForm.value = true;
-};
-
 const onDeleteRequest = (budget: BudgetWithProgress) => {
   deletingBudget.value = budget;
   showDeleteDialog.value = true;
@@ -73,11 +62,17 @@ const onDeleteConfirm = async () => {
   deletingBudget.value = null;
 };
 
-const onFormSaved = async () => {
-  await loadBudget();
+const goToNew = () => {
+  router.push(`/budget/new?month=${currentMonthStr.value}`);
 };
 
-const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'));
+const goToEdit = (budget: BudgetWithProgress) => {
+  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}&amount=${budget.amount}`);
+};
+
+const goToDetail = (budget: BudgetWithProgress) => {
+  router.push(`/budget/detail/${budget.id}?month=${currentMonthStr.value}`);
+};
 </script>
 
 <template>
@@ -92,7 +87,7 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
       </div>
       <Button
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="onAddBudget"
+        @click="goToNew"
       >
         <Icon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('budget.set_budget')}}</span>
@@ -138,7 +133,7 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
       <Button
         variant="outline"
         class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-        @click="onAddBudget"
+        @click="goToNew"
       >
         {{ $t('budget.set_budget')}}
       </Button>
@@ -146,23 +141,72 @@ const expenseCategories = computed(() => categories.value.filter((c) => c.type =
 
     <!-- Budget List -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <BudgetCard
+      <div
         v-for="budget in budgetList"
         :key="budget.id"
-        :budget="budget"
-        @edit="onEditBudget"
-        @delete="onDeleteRequest"
-      />
-    </div>
+        class="group rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 hover:shadow-md cursor-pointer"
+        @click="goToDetail(budget)"
+      >
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="flex size-10 items-center justify-center rounded-xl"
+              :style="{ backgroundColor: budget.category_color + '20' }"
+            >
+              <Icon
+                v-if="budget.category_icon?.startsWith('hugeicons:')"
+                :name="budget.category_icon"
+                :size="20"
+                :style="{ color: budget.category_color }"
+              />
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
+              <p class="text-xs text-muted-foreground">
+                {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
+            <Button variant="ghost" size="icon" class="size-8" @click="goToEdit(budget)">
+              <Icon name="hugeicons:edit-01" :size="16" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-8 text-red-500 hover:text-red-600"
+              @click="onDeleteRequest(budget)"
+            >
+              <Icon name="hugeicons:delete-01" :size="16" />
+            </Button>
+          </div>
+        </div>
 
-    <!-- Budget Form Dialog -->
-    <BudgetForm
-      v-model:open="showForm"
-      :budget="editingBudget"
-      :categories="expenseCategories"
-      :month="currentMonthStr"
-      @saved="onFormSaved"
-    />
+        <div class="mt-4 space-y-1.5">
+          <div class="flex justify-between text-xs">
+            <span class="text-muted-foreground">
+              {{ $t('budget.spent') }}: {{ fmtCurrency(budget.spent) }}
+            </span>
+            <span
+              :class="getProgress(budget).overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'"
+            >
+              {{
+                getProgress(budget).overspent > 0
+                  ? $t('budget.overspent')
+                  : `${$t('budget.remaining')}: ${fmtCurrency(getProgress(budget).remaining)}`
+              }}
+            </span>
+          </div>
+          <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              :class="getProgress(budget).overspent > 0 ? 'bg-red-500' : getProgress(budget).percentage >= 80 ? 'bg-amber-500' : 'bg-primary'"
+              :style="{ width: `${Math.min(getProgress(budget).percentage, 100)}%` }"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Delete Confirmation -->
     <ConfirmDialog
