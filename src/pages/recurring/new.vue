@@ -18,6 +18,7 @@ const router = useRouter();
 const { locale } = useI18n();
 const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency();
 const { addRecurring } = useRecurring();
+const { fetchCategories } = useCategories();
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' });
 const todayDate = today(getLocalTimeZone()).toString();
@@ -52,6 +53,10 @@ const onNumberKeydown = (e: KeyboardEvent) => {
 };
 
 const isFormValid = computed(() => form.amount > 0 && form.next_date);
+
+onMounted(() => {
+  fetchCategories();
+});
 
 const onSubmit = async () => {
   if (!isFormValid.value) return;

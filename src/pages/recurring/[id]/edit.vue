@@ -20,6 +20,7 @@ const route = useRoute();
 const { locale } = useI18n();
 const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency();
 const { recurring, fetchRecurring, updateRecurring } = useRecurring();
+const { fetchCategories } = useCategories();
 
 const recurringId = route.params.id as string;
 const loading = ref(true);
@@ -58,7 +59,7 @@ const onNumberKeydown = (e: KeyboardEvent) => {
 const isFormValid = computed(() => form.amount > 0 && form.next_date);
 
 onMounted(async () => {
-  await fetchRecurring();
+  await Promise.all([fetchRecurring(), fetchCategories()]);
   const item = recurring.value.find((r: RecurringTransaction) => r.id === recurringId);
   if (item) {
     form.type = item.type;
