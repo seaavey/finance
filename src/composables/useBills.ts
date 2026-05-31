@@ -18,6 +18,7 @@ export const useBills = () => {
   const cache = createCache();
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const { user } = useAuth();
 
   const bills = ref<Bill[]>([]);
@@ -65,6 +66,7 @@ export const useBills = () => {
       cache.invalidate('bills');
       await fetchBills();
       toast.success(t('bills.saved'));
+      activity.log('bill', 'created', { name: data.title, amount: data.amount });
     } else {
       toast.error(t('bills.save_error'));
     }
@@ -82,6 +84,7 @@ export const useBills = () => {
       cache.invalidate('bills');
       await fetchBills();
       toast.success(t('bills.saved'));
+      activity.log('bill', 'updated', { name: updates.title, amount: updates.amount }, id);
     } else {
       toast.error(t('bills.save_error'));
     }
@@ -89,11 +92,13 @@ export const useBills = () => {
   };
 
   const deleteBill = async (id: string) => {
+    const billTitle = bills.value.find((b) => b.id === id)?.title || '';
     const { error } = await supabase.from('bills').delete().eq('id', id);
     if (!error) {
       cache.invalidate('bills');
       await fetchBills();
       toast.success(t('bills.deleted'));
+      activity.log('bill', 'deleted', { name: billTitle }, id);
     } else {
       toast.error(t('bills.delete_error'));
     }

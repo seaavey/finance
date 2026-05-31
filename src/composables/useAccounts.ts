@@ -24,6 +24,7 @@ export const useAccounts = () => {
   const cache = createCache();
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const { user } = useAuth();
 
   const accounts = ref<Account[]>([]);
@@ -67,6 +68,7 @@ export const useAccounts = () => {
       cache.invalidate('accounts');
       await fetchAccounts();
       toast.success(t('accounts.saved'));
+      activity.log('account', 'created', { name: data.name, type: data.type });
     } else {
       toast.error(t('accounts.save_error'));
     }
@@ -84,6 +86,7 @@ export const useAccounts = () => {
       cache.invalidate('accounts');
       await fetchAccounts();
       toast.success(t('accounts.saved'));
+      activity.log('account', 'updated', { name: updates.name }, id);
     } else {
       toast.error(t('accounts.save_error'));
     }
@@ -91,12 +94,14 @@ export const useAccounts = () => {
   };
 
   const deleteAccount = async (id: string) => {
+    const accountName = accounts.value.find((a) => a.id === id)?.name || '';
     const { error } = await supabase.from('accounts').delete().eq('id', id);
     if (!error) {
       cache.invalidate('accounts');
       cache.invalidate('transactions');
       await fetchAccounts();
       toast.success(t('accounts.deleted'));
+      activity.log('account', 'deleted', { name: accountName }, id);
     } else {
       toast.error(t('accounts.delete_error'));
     }

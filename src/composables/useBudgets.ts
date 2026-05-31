@@ -23,6 +23,7 @@ export const useBudgets = () => {
   const cache = createCache();
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const { user } = useAuth();
 
   const budgets = ref<Budget[]>([]);
@@ -145,6 +146,7 @@ export const useBudgets = () => {
     if (existing) {
       const result = await supabase.from('budgets').update({ amount }).eq('id', existing.id);
       error = result.error;
+      if (!error) activity.log('budget', 'updated', { category_name: categoryId, amount });
     } else {
       const result = await supabase.from('budgets').insert({
         user_id: user.value.id,
@@ -153,6 +155,7 @@ export const useBudgets = () => {
         amount,
       });
       error = result.error;
+      if (!error) activity.log('budget', 'created', { category_name: categoryId, amount });
     }
 
     if (!error) {
@@ -169,6 +172,8 @@ export const useBudgets = () => {
   };
 
   const deleteBudget = async (id: string, month: string) => {
+    const budget = budgets.value.find((b) => b.id === id);
+    const categoryId = budget?.category_id || '';
     const { error } = await supabase.from('budgets').delete().eq('id', id);
 
     if (!error) {
@@ -176,6 +181,7 @@ export const useBudgets = () => {
       cache.invalidate(`budgets:with-progress:${month}`);
       await fetchBudgets(month);
       toast.success(t('budget.deleted'));
+      activity.log('budget', 'deleted', { category_name: categoryId }, id);
     } else {
       toast.error(t('budget.delete_error'));
     }

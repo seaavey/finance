@@ -57,15 +57,17 @@ export const useActivityLog = () => {
     if (!user.value) return
 
     // Fire-and-forget: failure to log shouldn't block user's primary action
-    supabase.from('activity_logs').insert({
-      user_id: user.value.id,
-      entity_type: entityType,
-      entity_id: entityId ?? null,
-      action,
-      metadata: metadata ?? {},
-    }).catch(() => {
+    try {
+      await supabase.from('activity_logs').insert({
+        user_id: user.value.id,
+        entity_type: entityType,
+        entity_id: entityId ?? null,
+        action,
+        metadata: metadata ?? {},
+      })
+    } catch {
       // Silently ignore — activity logging is best-effort
-    })
+    }
   }
 
   const fetchAll = async (filters: ActivityLogFilters = {}) => {

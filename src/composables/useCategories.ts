@@ -32,6 +32,7 @@ const DEFAULT_CATEGORIES = {
 export const useCategories = () => {
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const supabase = useSupabase();
   const cache = createCache();
   const categories = ref<Category[]>([]);
@@ -72,14 +73,16 @@ export const useCategories = () => {
       return;
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('categories')
-      .insert({ ...category, user_id: user.value.id });
+      .insert({ ...category, user_id: user.value.id })
+      .select();
 
     if (!error) {
       cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_added'));
+      activity.log('category', 'created', { name: category.name }, data?.[0]?.id);
     } else {
       toast.error(t('toast.category_add_error'));
     }
@@ -96,6 +99,7 @@ export const useCategories = () => {
       cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_updated'));
+      activity.log('category', 'updated', { name: updates.name }, id);
     } else {
       toast.error(t('toast.category_update_error'));
     }
@@ -103,12 +107,14 @@ export const useCategories = () => {
   };
 
   const deleteCategory = async (id: string) => {
+    const deletedCategoryName = categories.value.find((c) => c.id === id)?.name || '';
     const { error } = await supabase.from('categories').delete().eq('id', id);
 
     if (!error) {
       cache.invalidate('categories');
       await fetchCategories();
       toast.success(t('toast.category_deleted'));
+      activity.log('category', 'deleted', { name: deletedCategoryName }, id);
     } else {
       toast.error(t('toast.category_delete_error'));
     }

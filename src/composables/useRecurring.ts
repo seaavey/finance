@@ -19,6 +19,7 @@ export interface RecurringTransaction {
 export const useRecurring = () => {
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const supabase = useSupabase();
   const cache = createCache();
   const recurring = ref<RecurringTransaction[]>([]);
@@ -52,6 +53,7 @@ export const useRecurring = () => {
       cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_added'));
+      activity.log('recurring', 'created', { description: item.description || item.type, amount: item.amount });
     } else {
       toast.error(t('toast.recurring_add_error'));
     }
@@ -65,6 +67,7 @@ export const useRecurring = () => {
       cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_updated'));
+      activity.log('recurring', 'updated', { description: updates.description || updates.type }, id);
     } else {
       toast.error(t('toast.recurring_update_error'));
     }
@@ -72,12 +75,14 @@ export const useRecurring = () => {
   };
 
   const deleteRecurring = async (id: string) => {
+    const recurringItem = recurring.value.find((r) => r.id === id);
     const { error } = await supabase.from('recurring_transactions').delete().eq('id', id);
 
     if (!error) {
       cache.invalidate('recurring');
       await fetchRecurring();
       toast.success(t('toast.recurring_deleted'));
+      activity.log('recurring', 'deleted', { description: recurringItem?.description || recurringItem?.type || '' }, id);
     } else {
       toast.error(t('toast.recurring_delete_error'));
     }

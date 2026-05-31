@@ -17,6 +17,7 @@ export interface Goal {
 export const useGoals = () => {
   const { t } = useI18n();
   const { toast } = useToast();
+  const activity = useActivityLog();
   const supabase = useSupabase();
   const goals = ref<Goal[]>([]);
   const loading = ref(false);
@@ -42,13 +43,15 @@ export const useGoals = () => {
       return { error: { message: 'Not authenticated' } };
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('goals')
-      .insert({ ...goal, user_id: user.value.id, current_amount: 0 });
+      .insert({ ...goal, user_id: user.value.id, current_amount: 0 })
+      .select();
 
     if (!error) {
       await fetchGoals();
       toast.success(t('toast.goal_added'));
+      activity.log('goal', 'created', { name: goal.name, target_amount: goal.target_amount }, data?.[0]?.id);
     } else {
       toast.error(t('toast.goal_add_error'));
     }
@@ -59,11 +62,13 @@ export const useGoals = () => {
     id: string,
     updates: Partial<Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at'>>,
   ) => {
+    const goalName = goals.value.find((g) => g.id === id)?.name || '';
     const { error } = await supabase.from('goals').update(updates).eq('id', id);
 
     if (!error) {
       await fetchGoals();
       toast.success(t('toast.goal_updated'));
+      activity.log('goal', 'updated', { name: goalName, ...updates }, id);
     } else {
       toast.error(t('toast.goal_update_error'));
     }
@@ -85,6 +90,7 @@ export const useGoals = () => {
     if (!error) {
       await fetchGoals();
       toast.success(t('toast.funds_added'));
+      activity.log('goal', 'updated', { name: goal.name, amount_added: amount }, goalId);
     } else {
       toast.error(t('toast.funds_add_error'));
     }
@@ -135,6 +141,7 @@ export const useGoals = () => {
     if (!error) {
       await fetchGoals();
       toast.success(t('toast.goal_deleted'));
+      activity.log('goal', 'deleted', { name: goal?.name || '' }, id);
     } else {
       toast.error(t('toast.goal_delete_error'));
     }
