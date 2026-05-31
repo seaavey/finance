@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 import DefaultLayout from './layouts/default.vue'
 import BlankLayout from './layouts/blank.vue'
 
@@ -48,4 +49,5 @@ const layout = computed(() => {
     <router-view />
   </component>
   <AppToast />
+  <Analytics />
 </template>
