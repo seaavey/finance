@@ -28,6 +28,7 @@ export const useTransactions = () => {
   const { toast } = useToast();
   const supabase = useSupabase();
   const cache = createCache();
+  const activity = useActivityLog();
   const transactions = ref<Transaction[]>([]);
   const loading = ref(false);
 
@@ -70,12 +71,19 @@ export const useTransactions = () => {
       return { error: { message: 'Not authenticated' } };
     }
 
-    const { error } = await supabase.from('transactions').insert({ ...tx, user_id: user.value.id });
+    const { data, error } = await supabase.from('transactions').insert({ ...tx, user_id: user.value.id }).select();
 
     if (!error) {
       cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_added'));
+      if (data) {
+        activity.log('transaction', 'created', {
+          description: tx.description || '',
+          amount: tx.amount,
+          type: tx.type,
+        }, data[0]?.id)
+      }
     } else {
       toast.error(t('toast.transaction_add_error'));
     }
@@ -92,6 +100,10 @@ export const useTransactions = () => {
       cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_updated'));
+      activity.log('transaction', 'updated', {
+        description: updates.description || '',
+        amount: updates.amount,
+      }, id)
     } else {
       toast.error(t('toast.transaction_update_error'));
     }
@@ -105,6 +117,7 @@ export const useTransactions = () => {
       cache.invalidate('transactions');
       await fetchTransactions();
       toast.success(t('toast.transaction_deleted'));
+      activity.log('transaction', 'deleted', {}, id)
     } else {
       toast.error(t('toast.transaction_delete_error'));
     }
