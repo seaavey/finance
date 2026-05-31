@@ -25,7 +25,7 @@ defineEmits<{
   'update:modelValue': [value: string | number | boolean | null];
 }>();
 
-const { categories, incomeCategories, expenseCategories } = useCategories();
+const { categories, incomeCategories, expenseCategories, fetchCategories } = useCategories();
 
 const filteredCategories = computed(() => {
   if (props.type === 'income') {
@@ -35,5 +35,11 @@ const filteredCategories = computed(() => {
     return expenseCategories.value;
   }
   return categories.value;
+});
+
+onMounted(() => {
+  if (categories.value.length === 0) {
+    fetchCategories();
+  }
 });
 </script>
