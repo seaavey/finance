@@ -85,13 +85,13 @@ const form = reactive({
 });
 
 const onSubmit = async () => {
-  const { error } = await addCategory({
+  const result = await addCategory({
     name: form.name,
     type: form.type,
     icon: form.icon,
     color: form.color,
   });
-  if (!error) {
+  if (!result?.error) {
     router.push('/categories');
   }
 };
