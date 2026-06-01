@@ -90,6 +90,90 @@
         </div>
       </div>
 
+      <!-- Filter Tabs -->
+      <div class="mb-4 space-y-2 sm:mb-6 sm:space-y-3">
+        <!-- Desktop Entity Tabs -->
+        <div
+          class="hidden gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md sm:inline-flex"
+        >
+          <Button
+            v-for="tab in filterTabs"
+            :key="tab.value"
+            :variant="activeTab === tab.value ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-3 text-xs font-bold transition-all md:px-4"
+            :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="
+              activeTab = tab.value;
+              applyFilters();
+            "
+          >
+            <AppIcon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
+            {{ tab.label }}
+          </Button>
+        </div>
+
+        <!-- Mobile Entity Select -->
+        <div class="sm:hidden">
+          <Select v-model="activeTab" @update:model-value="applyFilters()">
+            <SelectTrigger
+              class="w-full rounded-2xl border-border/50 bg-card shadow-sm backdrop-blur-md"
+            >
+              <SelectValue :placeholder="$t('activities.filter_placeholder')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="tab in filterTabs" :key="tab.value" :value="tab.value">
+                {{ tab.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div
+          class="inline-flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md"
+        >
+          <Button
+            :variant="filterAction === '' ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-3 text-xs font-bold transition-all"
+            :class="filterAction === '' ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="
+              filterAction = '';
+              applyFilters();
+            "
+          >
+            {{ $t('activities.filter_all') }}
+          </Button>
+          <Button
+            :variant="filterAction === 'created' ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-3 text-xs font-bold transition-all"
+            :class="filterAction === 'created' ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="
+              filterAction = 'created';
+              applyFilters();
+            "
+          >
+            <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
+            {{ $t('activities.filter_created') }}
+          </Button>
+          <Button
+            :variant="filterAction === 'deleted' ? 'default' : 'ghost'"
+            size="sm"
+            class="rounded-xl px-3 text-xs font-bold transition-all"
+            :class="filterAction === 'deleted' ? 'shadow-sm' : 'text-muted-foreground'"
+            @click="
+              filterAction = 'deleted';
+              applyFilters();
+            "
+          >
+            <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
+            {{ $t('activities.filter_deleted') }}
+          </Button>
+        </div>
+      </div>
+
       <!-- Empty State -->
       <div
         v-if="logs.length === 0 && !loading"
@@ -109,89 +193,6 @@
       </div>
 
       <template v-else>
-        <!-- Filter Tabs -->
-        <div class="mb-4 space-y-2 sm:mb-6 sm:space-y-3">
-          <!-- Desktop Entity Tabs -->
-          <div
-            class="hidden gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md sm:inline-flex"
-          >
-            <Button
-              v-for="tab in filterTabs"
-              :key="tab.value"
-              :variant="activeTab === tab.value ? 'default' : 'ghost'"
-              size="sm"
-              class="rounded-xl px-3 text-xs font-bold transition-all md:px-4"
-              :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
-              @click="
-                activeTab = tab.value;
-                applyFilters();
-              "
-            >
-              <AppIcon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
-              {{ tab.label }}
-            </Button>
-          </div>
-
-          <!-- Mobile Entity Select -->
-          <div class="sm:hidden">
-            <Select v-model="activeTab" @update:model-value="applyFilters()">
-              <SelectTrigger
-                class="w-full rounded-2xl border-border/50 bg-card shadow-sm backdrop-blur-md"
-              >
-                <SelectValue :placeholder="$t('activities.filter_placeholder')" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="tab in filterTabs" :key="tab.value" :value="tab.value">
-                  {{ tab.label }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <!-- Action Buttons -->
-          <div
-            class="inline-flex gap-1 rounded-2xl border border-border/50 bg-card/30 p-1 shadow-sm backdrop-blur-md"
-          >
-            <Button
-              :variant="filterAction === '' ? 'default' : 'ghost'"
-              size="sm"
-              class="rounded-xl px-3 text-xs font-bold transition-all"
-              :class="filterAction === '' ? 'shadow-sm' : 'text-muted-foreground'"
-              @click="
-                filterAction = '';
-                applyFilters();
-              "
-            >
-              {{ $t('activities.filter_all') }}
-            </Button>
-            <Button
-              :variant="filterAction === 'created' ? 'default' : 'ghost'"
-              size="sm"
-              class="rounded-xl px-3 text-xs font-bold transition-all"
-              :class="filterAction === 'created' ? 'shadow-sm' : 'text-muted-foreground'"
-              @click="
-                filterAction = 'created';
-                applyFilters();
-              "
-            >
-              <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
-              {{ $t('activities.filter_created') }}
-            </Button>
-            <Button
-              :variant="filterAction === 'deleted' ? 'default' : 'ghost'"
-              size="sm"
-              class="rounded-xl px-3 text-xs font-bold transition-all"
-              :class="filterAction === 'deleted' ? 'shadow-sm' : 'text-muted-foreground'"
-              @click="
-                filterAction = 'deleted';
-                applyFilters();
-              "
-            >
-              <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
-              {{ $t('activities.filter_deleted') }}
-            </Button>
-          </div>
-        </div>
 
         <!-- Activity Feed Bento Card -->
         <div class="rounded-3xl border border-border/50 bg-card shadow-sm sm:rounded-4xl">

@@ -101,10 +101,60 @@
 
         <!-- Mark as Paid button -->
         <div v-if="!billDetail.is_paid" class="mt-6">
-          <Button class="w-full rounded-2xl" @click="handleMarkPaid(billDetail.id)">
-            <AppIcon name="hugeicons:checkmark-circle-01" :size="16" class="mr-2" />
-            {{ $t('bills.mark_paid') }}
-          </Button>
+          <Dialog v-model:open="showPayDialog">
+            <DialogTrigger as-child>
+              <Button class="w-full rounded-2xl">
+                <AppIcon name="hugeicons:checkmark-circle-01" :size="16" class="mr-2" />
+                {{ $t('bills.mark_paid') }}
+              </Button>
+            </DialogTrigger>
+            <DialogContent class="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{{ $t('bills.mark_paid_title') }}</DialogTitle>
+                <DialogDescription>
+                  {{ $t('bills.mark_paid_desc') }}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div class="space-y-4 py-4">
+                <div class="space-y-2">
+                  <Label>{{ $t('transactions.form_account') }}</Label>
+                  <NativeSelect v-model="selectedAccountId" class="w-full">
+                    <NativeSelectOption value="" disabled>{{ $t('common.select_account') }}</NativeSelectOption>
+                    <NativeSelectOptGroup v-if="bankAccounts.length" :label="$t('accounts.type_bank')">
+                      <NativeSelectOption v-for="acc in bankAccounts" :key="acc.id" :value="acc.id">
+                        {{ acc.name }}
+                      </NativeSelectOption>
+                    </NativeSelectOptGroup>
+                    <NativeSelectOptGroup v-if="ewalletAccounts.length" :label="$t('accounts.type_ewallet')">
+                      <NativeSelectOption v-for="acc in ewalletAccounts" :key="acc.id" :value="acc.id">
+                        {{ acc.name }}
+                      </NativeSelectOption>
+                    </NativeSelectOptGroup>
+                    <NativeSelectOptGroup v-if="cashAccounts.length" :label="$t('accounts.type_cash')">
+                      <NativeSelectOption v-for="acc in cashAccounts" :key="acc.id" :value="acc.id">
+                        {{ acc.name }}
+                      </NativeSelectOption>
+                    </NativeSelectOptGroup>
+                  </NativeSelect>
+                </div>
+                <div class="flex items-center space-x-2 mt-4">
+                  <Switch id="create-transaction" v-model="createTransactionRecord" />
+                  <Label for="create-transaction" class="cursor-pointer">{{ $t('bills.create_transaction_record') }}</Label>
+                </div>
+              </div>
+
+              <DialogFooter class="sm:justify-end">
+                <DialogClose as-child>
+                  <Button type="button" variant="outline">{{ $t('common.cancel') }}</Button>
+                </DialogClose>
+                <Button type="button" @click="handleMarkPaid(billDetail.id)" :disabled="!selectedAccountId || paying">
+                  <AppIcon v-if="paying" name="hugeicons:loading-03" class="mr-2 h-4 w-4 animate-spin" />
+                  {{ $t('common.confirm') }}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -137,6 +187,14 @@
             {{ billDetail.recurrence === 'monthly' ? $t('bills.recurrence_monthly') : $t('bills.recurrence_none') }}
           </p>
         </div>
+        <div v-if="billDetail.is_paid && paidWithAccount" class="rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm sm:col-span-3">
+          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+            {{ $t('bills.paid_with') }}
+          </p>
+          <p class="mt-2 text-2xl font-black tracking-tighter text-foreground flex items-center gap-2">
+             <AppIcon :name="paidWithAccount.icon" class="text-primary" /> {{ paidWithAccount.name }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -157,6 +215,10 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from '@/components/ui/native-select';
 import type { Bill } from '@/composables/useBills';
 
 const router = useRouter();
@@ -164,11 +226,23 @@ const route = useRoute();
 const { t } = useI18n();
 const { bills, fetchBills, markAsPaid, deleteBill } = useBills();
 const { formatCurrency } = useCurrency();
+const { fetchAccounts, accounts, bankAccounts, ewalletAccounts, cashAccounts } = useAccounts();
+const { addTransaction } = useTransactions();
 
 const billId = route.params.id as string;
 const billDetail = ref<Bill | null>(null);
 const loading = ref(true);
 const showDeleteDialog = ref(false);
+
+const showPayDialog = ref(false);
+const selectedAccountId = ref('');
+const createTransactionRecord = ref(true);
+const paying = ref(false);
+
+const paidWithAccount = computed(() => {
+  if (!billDetail.value?.paid_with_account_id) return null;
+  return accounts.value.find(a => a.id === billDetail.value?.paid_with_account_id) || null;
+});
 
 const getDaysUntilDue = (dueDate: string): number => {
   const now = new Date();
@@ -218,8 +292,24 @@ function formatDate(dateStr: string): string {
 }
 
 async function handleMarkPaid(id: string) {
-  await markAsPaid(id);
-  billDetail.value = { ...billDetail.value!, is_paid: true };
+  paying.value = true;
+  await markAsPaid(id, selectedAccountId.value);
+  
+  if (createTransactionRecord.value && billDetail.value) {
+    await addTransaction({
+      type: 'expense',
+      amount: billDetail.value.amount,
+      currency: 'IDR',
+      category_id: null,
+      description: billDetail.value.title,
+      date: new Date().toISOString(),
+      account_id: selectedAccountId.value
+    });
+  }
+  
+  billDetail.value = { ...billDetail.value!, is_paid: true, paid_with_account_id: selectedAccountId.value };
+  paying.value = false;
+  showPayDialog.value = false;
 }
 
 async function handleDelete() {
@@ -233,6 +323,9 @@ async function handleDelete() {
 
 onMounted(async () => {
   await fetchBills();
+  if (accounts.value.length === 0) {
+    await fetchAccounts();
+  }
   billDetail.value = bills.value.find((b) => b.id === billId) || null;
   loading.value = false;
 });

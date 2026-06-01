@@ -8,6 +8,7 @@ export interface Bill {
   amount: number;
   due_date: string;
   is_paid: boolean;
+  paid_with_account_id?: string | null;
   recurrence: 'none' | 'weekly' | 'monthly';
   created_at: string;
   updated_at: string;
@@ -76,7 +77,7 @@ export const useBills = () => {
   const updateBill = async (
     id: string,
     updates: Partial<
-      Pick<Bill, 'title' | 'amount' | 'due_date' | 'is_paid' | 'recurrence'>
+      Pick<Bill, 'title' | 'amount' | 'due_date' | 'is_paid' | 'paid_with_account_id' | 'recurrence'>
     >,
   ) => {
     const { error } = await supabase.from('bills').update(updates).eq('id', id);
@@ -105,8 +106,11 @@ export const useBills = () => {
     return { error };
   };
 
-  const markAsPaid = async (id: string) => {
-    return updateBill(id, { is_paid: true });
+  const markAsPaid = async (id: string, accountId?: string) => {
+    return updateBill(id, { 
+      is_paid: true, 
+      paid_with_account_id: accountId || null 
+    });
   };
 
   return {
