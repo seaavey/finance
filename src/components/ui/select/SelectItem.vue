@@ -27,7 +27,7 @@ const forwardedProps = useForwardProps(delegatedProps);
     <span class="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
       <SelectItemIndicator>
         <slot name="indicator-icon">
-          <Icon name="hugeicons:tick-01" class="pointer-events-none" />
+          <AppIcon name="hugeicons:tick-01" class="pointer-events-none" />
         </slot>
       </SelectItemIndicator>
     </span>

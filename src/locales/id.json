@@ -762,7 +762,23 @@
     "filter_action": "Aksi",
     "filter_date": "Rentang Tanggal",
     "empty": "Belum ada aktivitas",
-    "load_more": "Muat lebih banyak"
+    "empty_desc": "Mulai catat transaksi atau buat kategori untuk melihat aktivitas",
+    "load_more": "Muat lebih banyak",
+    "total": "{count} aktivitas tercatat",
+    "today": "Hari Ini",
+    "transactions": "Transaksi",
+    "filter_placeholder": "Pilih filter",
+    "filter_all": "Semua",
+    "filter_created": "Baru",
+    "filter_deleted": "Hapus",
+    "loading": "Memuat...",
+    "no_results": "Tidak ada hasil untuk filter ini",
+    "no_results_desc": "Coba ubah filter atau reset",
+    "just_now": "Baru saja",
+    "minutes_ago": "{m}m lalu",
+    "hours_ago": "{h}j lalu",
+    "days_ago": "{d}h lalu",
+    "yesterday": "Kemarin"
   },
   "activity": {
     "auth": {

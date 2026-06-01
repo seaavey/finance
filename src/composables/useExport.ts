@@ -6,8 +6,8 @@ export const useExport = () => {
   const { toast } = useToast();
   const exporting = ref(false);
 
-  const convertToCSV = (rows: any[]) => {
-    if (!rows.length) return '';
+  const convertToCSV = (rows: Record<string, unknown>[]) => {
+    if (!rows.length || !rows[0]) return '';
     const headers = Object.keys(rows[0]).join(',');
     const content = rows.map(row => 
       Object.values(row).map(val => 

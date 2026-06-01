@@ -5,7 +5,7 @@
         <div
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
-          <Icon name="hugeicons:comment-01" :size="14" />
+          <AppIcon name="hugeicons:comment-01" :size="14" />
           {{ $t('landing.testimonials_title')}}
         </div>
         <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
@@ -33,7 +33,7 @@
             <div>
               <!-- Stars -->
               <div class="flex gap-1">
-                <Icon
+                <AppIcon
                   v-for="n in 5"
                   :key="n"
                   name="material-symbols:star"
@@ -82,6 +82,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingTestimonials',
+})
 const { tm, rt } = useI18n();
 
 interface Testimonial {

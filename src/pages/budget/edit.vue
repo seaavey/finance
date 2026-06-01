@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBudgetEdit',
+})
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,7 +62,7 @@ onMounted(async () => {
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/budget')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
       <h1 class="text-3xl font-black tracking-tighter text-foreground">
@@ -94,7 +97,7 @@ onMounted(async () => {
               :value="cat.id"
             >
               <div class="flex items-center gap-2">
-                <Icon
+                <AppIcon
                   v-if="cat.icon?.startsWith('hugeicons:')"
                   :name="cat.icon"
                   :size="16"

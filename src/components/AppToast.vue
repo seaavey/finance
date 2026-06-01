@@ -57,7 +57,7 @@ defineExpose({ addToast });
           class="flex items-center gap-2 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm"
           :class="colorMap[t.type]"
         >
-          <Icon :name="iconMap[t.type]" :size="18" />
+          <AppIcon :name="iconMap[t.type]" :size="18" />
           <span class="text-sm font-medium">{{ t.message }}</span>
         </div>
       </TransitionGroup>

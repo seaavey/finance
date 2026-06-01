@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/bills')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
       <h1 class="text-3xl font-black tracking-tighter text-foreground">
@@ -36,10 +36,10 @@
           <PopoverTrigger as-child>
             <Button variant="outline" :class="cn('w-full justify-between text-left font-medium', !form.due_date && 'text-muted-foreground')">
               <div class="flex items-center">
-                <Icon name="hugeicons:calendar-01" :size="16" class="mr-2" />
+                <AppIcon name="hugeicons:calendar-01" :size="16" class="mr-2" />
                 {{ form.due_date ? df.format(calendarDate!.toDate(getLocalTimeZone())) : $t('bills.form_due_date') }}
               </div>
-              <Icon name="hugeicons:arrow-down-01" :size="16" class="text-muted-foreground opacity-50" />
+              <AppIcon name="hugeicons:arrow-down-01" :size="16" class="text-muted-foreground opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-auto p-0">
@@ -75,6 +75,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBillsNew',
+})
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

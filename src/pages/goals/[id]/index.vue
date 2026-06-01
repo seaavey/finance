@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/goals')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
     </div>
@@ -22,7 +22,7 @@
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
       <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
-        <Icon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('goals.empty') }}</h3>
       <Button
@@ -60,7 +60,7 @@
           </div>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="rounded-xl" @click="router.push(`/goals/${goalDetail.id}/edit`)">
-              <Icon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
+              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
               {{ $t('goal_form.title_edit') }}
             </Button>
             <Button
@@ -69,7 +69,7 @@
               class="rounded-xl text-red-500 hover:text-red-600"
               @click="showDeleteDialog = true"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
         </div>
@@ -101,7 +101,7 @@
         <div class="mt-4 text-center">
           <template v-if="percentage >= 100">
             <span class="flex items-center justify-center gap-1 text-sm font-bold text-emerald-500">
-              <Icon name="hugeicons:tick-01" :size="16" />
+              <AppIcon name="hugeicons:tick-01" :size="16" />
               {{ $t('goals.completed') }}
             </span>
           </template>
@@ -115,7 +115,7 @@
         <!-- Add Funds (if not completed) -->
         <div v-if="percentage < 100" class="mt-6">
           <Button class="w-full rounded-2xl" @click="showFundsDialog = true">
-            <Icon name="hugeicons:add-01" :size="16" class="mr-2" />
+            <AppIcon name="hugeicons:add-01" :size="16" class="mr-2" />
             {{ $t('goals.add_funds') }}
           </Button>
         </div>
@@ -170,6 +170,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesGoalsDetailIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';

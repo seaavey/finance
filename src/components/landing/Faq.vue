@@ -15,7 +15,7 @@
         <div
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
-          <Icon name="hugeicons:help-circle" :size="14" />
+          <AppIcon name="hugeicons:help-circle" :size="14" />
           {{ $t('landing.nav_faq')}}
         </div>
         <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl lg:text-6xl">
@@ -42,7 +42,7 @@
                   <div
                     class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary"
                   >
-                    <Icon :name="item.icon" :size="20" />
+                    <AppIcon :name="item.icon" :size="20" />
                   </div>
                   {{ $t(item.questionKey)}}
                 </div>
@@ -75,7 +75,7 @@
             variant="default"
             class="h-12 gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            <Icon name="hugeicons:customer-service" :size="20" />
+            <AppIcon name="hugeicons:customer-service" :size="20" />
             {{ $t('landing.faq_support_button')}}
           </Button>
         </div>
@@ -85,6 +85,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingFaq',
+})
 import {
   Accordion,
   AccordionItem,

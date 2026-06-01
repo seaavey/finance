@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiAvatarAvatar',
+})
 import type { HTMLAttributes } from 'vue';
 import type { AvatarVariants } from '.';
 import { AvatarRoot } from 'reka-ui';

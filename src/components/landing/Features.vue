@@ -12,7 +12,7 @@
         <div
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
-          <Icon name="hugeicons:grid-view" :size="14" />
+          <AppIcon name="hugeicons:grid-view" :size="14" />
           {{ $t('landing.features_title')}}
         </div>
         <h2
@@ -47,7 +47,7 @@
               class="absolute inset-0 rounded-2xl opacity-0 blur-lg transition-opacity group-hover:opacity-50"
               :class="feature.iconBg"
             />
-            <Icon
+            <AppIcon
               :name="feature.icon"
               :size="32"
               :class="feature.iconColor"
@@ -75,7 +75,7 @@
             <div
               class="flex h-9 w-9 items-center justify-center rounded-xl border border-border/50 bg-muted/50 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
             >
-              <Icon name="hugeicons:arrow-right-01" :size="16" />
+              <AppIcon name="hugeicons:arrow-right-01" :size="16" />
             </div>
           </div>
         </div>
@@ -85,6 +85,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingFeatures',
+})
 interface Feature {
   titleKey: string;
   descKey: string;

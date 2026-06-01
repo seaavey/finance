@@ -762,7 +762,23 @@
     "filter_action": "Action",
     "filter_date": "Date Range",
     "empty": "No activity yet",
-    "load_more": "Load more"
+    "empty_desc": "Start recording transactions or create categories to see activity",
+    "load_more": "Load more",
+    "total": "{count} activities recorded",
+    "today": "Today",
+    "transactions": "Transactions",
+    "filter_placeholder": "Select filter",
+    "filter_all": "All",
+    "filter_created": "Created",
+    "filter_deleted": "Deleted",
+    "loading": "Loading...",
+    "no_results": "No results for this filter",
+    "no_results_desc": "Try changing the filter or reset",
+    "just_now": "Just now",
+    "minutes_ago": "{m}m ago",
+    "hours_ago": "{h}h ago",
+    "days_ago": "{d}d ago",
+    "yesterday": "Yesterday"
   },
   "activity": {
     "auth": {

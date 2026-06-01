@@ -1,10 +1,13 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesAccountsIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { AccountWithBalance } from '@/composables/useAccounts';
 
 const router = useRouter();
-const { t } = useI18n();
+useI18n();
 const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts();
 const { fetchCategories } = useCategories();
 const { formatCurrency } = useCurrency();
@@ -72,7 +75,7 @@ const totalBalance = computed(() =>
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="goToNew"
       >
-        <Icon name="hugeicons:add-01" :size="20" />
+        <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('accounts.add') }}</span>
       </Button>
     </div>
@@ -95,7 +98,7 @@ const totalBalance = computed(() =>
       <div
         class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
       >
-        <Icon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('accounts.empty') }}</h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
@@ -135,7 +138,7 @@ const totalBalance = computed(() =>
               class="flex size-10 shrink-0 items-center justify-center rounded-2xl"
               :style="{ backgroundColor: account.color + '20' }"
             >
-              <Icon
+              <AppIcon
                 v-if="account.icon?.startsWith('hugeicons:')"
                 :name="account.icon"
                 :size="20"
@@ -157,7 +160,7 @@ const totalBalance = computed(() =>
           </div>
           <div class="ml-2 flex shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
             <Button variant="ghost" size="icon" class="size-8 rounded-xl" @click="goToEdit(account)">
-              <Icon name="hugeicons:pencil-edit-01" :size="16" />
+              <AppIcon name="hugeicons:pencil-edit-01" :size="16" />
             </Button>
             <Button
               variant="ghost"
@@ -165,7 +168,7 @@ const totalBalance = computed(() =>
               class="size-8 rounded-xl text-red-400"
               @click="onDeleteRequest(account)"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
         </div>

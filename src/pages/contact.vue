@@ -31,7 +31,7 @@
                   <div
                     class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
                   >
-                    <Icon name="hugeicons:mail-01" :size="24" />
+                    <AppIcon name="hugeicons:mail-01" :size="24" />
                   </div>
                   <div>
                     <p
@@ -51,7 +51,7 @@
                   <div
                     class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
                   >
-                    <Icon name="hugeicons:customer-service" :size="24" />
+                    <AppIcon name="hugeicons:customer-service" :size="24" />
                   </div>
                   <div>
                     <p
@@ -69,7 +69,7 @@
                   <div
                     class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
                   >
-                    <Icon name="hugeicons:share-01" :size="24" />
+                    <AppIcon name="hugeicons:share-01" :size="24" />
                   </div>
                   <div>
                     <p
@@ -84,7 +84,7 @@
                         :href="s.href"
                         class="size-10 flex items-center justify-center rounded-xl bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
                       >
-                        <Icon :name="s.icon" :size="20" />
+                        <AppIcon :name="s.icon" :size="20" />
                       </a>
                     </div>
                   </div>
@@ -149,7 +149,7 @@
                 class="h-14 w-full rounded-2xl bg-linear-to-b from-primary to-primary/90 text-base font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span v-if="!loading">{{ $t('contact.form_submit')}}</span>
-                <Icon v-else name="hugeicons:loading-01" class="animate-spin" :size="24" />
+                <AppIcon v-else name="hugeicons:loading-01" class="animate-spin" :size="24" />
               </Button>
             </form>
           </div>

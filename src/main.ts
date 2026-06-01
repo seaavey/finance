@@ -16,7 +16,7 @@ app.use(i18n)
 app.use(head)
 
 // Register global components to handle Nuxt-specific tags
-app.component('Icon', Icon)
+app.component('AppIcon', Icon)
 app.component('ClientOnly', ClientOnly)
 app.component('NuxtLinkLocale', RouterLink)
 app.component('NuxtLink', RouterLink)

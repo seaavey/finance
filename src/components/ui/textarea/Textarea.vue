@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiTextareaTextarea',
+})
 import type { HTMLAttributes } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';

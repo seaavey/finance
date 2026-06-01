@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiPopoverPopover',
+})
 import type { PopoverRootEmits, PopoverRootProps } from 'reka-ui';
 import { PopoverRoot, useForwardPropsEmits } from 'reka-ui';
 

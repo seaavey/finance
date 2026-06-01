@@ -32,7 +32,7 @@
             >
               <router-link to="/auth/login">
                 {{ $t('landing.cta_button')}}
-                <Icon
+                <AppIcon
                   name="hugeicons:arrow-right-01"
                   :size="20"
                   class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
@@ -51,5 +51,8 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingCta',
+})
 import { Button } from '@/components/ui/button';
 </script>

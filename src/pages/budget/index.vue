@@ -1,11 +1,14 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBudgetIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 
 const router = useRouter();
 const { locale } = useI18n();
-const { categories, fetchCategories } = useCategories();
+const { fetchCategories } = useCategories();
 const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets();
 const { formatCurrency: fmtCurrency } = useCurrency();
 
@@ -100,7 +103,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="goToNew"
       >
-        <Icon name="hugeicons:add-01" :size="20" />
+        <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('budget.set_budget')}}</span>
       </Button>
     </div>
@@ -110,13 +113,13 @@ const goToDetail = (budget: BudgetWithProgress) => {
       class="flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-2 shadow-sm backdrop-blur-md"
     >
       <Button variant="ghost" size="icon" class="rounded-2xl" @click="changeMonth(-1)">
-        <Icon name="hugeicons:arrow-left-01" :size="20" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="20" />
       </Button>
       <span class="text-sm font-black uppercase tracking-widest text-foreground">
         {{ monthLabel }}
       </span>
       <Button variant="ghost" size="icon" class="rounded-2xl" @click="changeMonth(1)">
-        <Icon name="hugeicons:arrow-right-01" :size="20" />
+        <AppIcon name="hugeicons:arrow-right-01" :size="20" />
       </Button>
     </div>
 
@@ -142,7 +145,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
       <div
         class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
       >
-        <Icon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">
         {{ $t('budget.no_budgets')}}
@@ -213,7 +216,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
               class="flex size-10 items-center justify-center rounded-xl"
               :style="{ backgroundColor: budget.category_color + '20' }"
             >
-              <Icon
+              <AppIcon
                 v-if="budget.category_icon && budget.category_icon.startsWith('hugeicons:')"
                 :name="budget.category_icon"
                 :size="20"
@@ -234,7 +237,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
           </div>
           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
             <Button variant="ghost" size="icon" class="size-8" @click="goToEdit(budget)">
-              <Icon name="hugeicons:edit-01" :size="16" />
+              <AppIcon name="hugeicons:edit-01" :size="16" />
             </Button>
             <Button
               variant="ghost"
@@ -242,7 +245,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
               class="size-8 text-red-500 hover:text-red-600"
               @click="onDeleteRequest(budget)"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
         </div>

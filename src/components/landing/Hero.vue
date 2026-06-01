@@ -29,7 +29,7 @@
           <span class="text-muted-foreground group-hover:text-foreground transition-colors">{{
             $t('landing.hero_badge')
           }}</span>
-          <Icon
+          <AppIcon
             name="hugeicons:arrow-right-01"
             :size="12"
             class="text-primary opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0"
@@ -69,7 +69,7 @@
           @click="goToLogin"
         >
           {{ $t('landing.hero_cta')}}
-          <Icon name="hugeicons:arrow-right-01" :size="22" class="animate-bounce-x" />
+          <AppIcon name="hugeicons:arrow-right-01" :size="22" class="animate-bounce-x" />
         </Button>
         <Button
           variant="ghost"
@@ -77,7 +77,7 @@
           size="lg"
           @click="scrollToFeatures"
         >
-          <Icon name="hugeicons:play-circle" :size="22" />
+          <AppIcon name="hugeicons:play-circle" :size="22" />
           {{ $t('landing.hero_demo')}}
         </Button>
       </div>
@@ -90,7 +90,7 @@
           ><div
             class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
-            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
+            <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_free')}}</span
         >
@@ -98,7 +98,7 @@
           ><div
             class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
-            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
+            <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_noads')}}</span
         >
@@ -106,7 +106,7 @@
           ><div
             class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
-            <Icon name="hugeicons:checkmark-circle-02" :size="14" />
+            <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
           {{ $t('landing.hero_secure')}}</span
         >
@@ -134,7 +134,7 @@
               <div
                 class="rounded-full bg-background/50 px-6 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 border border-border/40 flex items-center gap-2"
               >
-                <Icon name="hugeicons:shield-01" :size="10" />
+                <AppIcon name="hugeicons:shield-01" :size="10" />
                 finansiil.app/dashboard
               </div>
             </div>
@@ -156,7 +156,7 @@
                 <div
                   class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest"
                 >
-                  <Icon name="hugeicons:arrow-up-01" :size="12" />
+                  <AppIcon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend')}}</span>
                 </div>
               </div>
@@ -253,7 +253,7 @@
                       class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all shadow-sm"
                       :class="tx.bg"
                     >
-                      <Icon :name="tx.icon" :size="20" :class="tx.color" />
+                      <AppIcon :name="tx.icon" :size="20" :class="tx.color" />
                     </div>
                     <div class="flex-1 min-w-0">
                       <p
@@ -285,7 +285,7 @@
             <div
               class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 shadow-sm"
             >
-              <Icon name="hugeicons:wallet-01" :size="24" />
+              <AppIcon name="hugeicons:wallet-01" :size="24" />
             </div>
             <div>
               <p class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
@@ -301,6 +301,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingHero',
+})
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';

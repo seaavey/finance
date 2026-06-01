@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue';
 import type { ChartConfig } from '.';
-import { computed } from 'vue';
+import { computed, type CSSProperties } from 'vue';
 import { cn } from '@/lib/utils';
 
 const props = withDefaults(
@@ -48,7 +48,7 @@ const tooltipLabel = computed(() => {
     return null;
   }
   if (props.labelFormatter && props.x !== undefined) {
-    return props.labelFormatter(props.x as any);
+    return props.labelFormatter(props.x as unknown as number);
   }
   return props.labelKey
     ? props.config[props.labelKey]?.label || props.payload[props.labelKey]
@@ -94,7 +94,7 @@ const tooltipLabel = computed(() => {
               :style="{
                 '--color-bg': indicatorColor,
                 '--color-border': indicatorColor,
-              } as any"
+              } as CSSProperties"
             />
           </template>
 

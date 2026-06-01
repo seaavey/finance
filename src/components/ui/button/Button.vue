@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiButtonButton',
+})
 import type { PrimitiveProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
 import type { ButtonVariants } from '.';

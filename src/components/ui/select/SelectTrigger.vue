@@ -29,7 +29,7 @@ const forwardedProps = useForwardProps(delegatedProps);
   >
     <slot />
     <SelectIcon as-child>
-      <Icon
+      <AppIcon
         name="hugeicons:arrow-down-01"
         class="text-muted-foreground size-4 pointer-events-none"
       />

@@ -115,7 +115,7 @@ const formatDate = (date: string) => {
             {{ tx.type === 'income' ? '+' : '-'
             }}{{ formatCurrency(Number(tx.amount), tx.currency) }}
           </p>
-          <Icon
+          <AppIcon
             name="hugeicons:pencil-edit-01"
             :size="14"
             class="shrink-0 text-muted-foreground/40"
@@ -133,7 +133,7 @@ const formatDate = (date: string) => {
             class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
             @select="select(item.to)"
           >
-            <Icon :name="item.icon" :size="16" class="text-muted-foreground" />
+            <AppIcon :name="item.icon" :size="16" class="text-muted-foreground" />
             <span class="text-sm font-medium">{{ item.label }}</span>
           </CommandItem>
         </CommandGroup>
@@ -146,7 +146,7 @@ const formatDate = (date: string) => {
             class="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
             @select="select(item.to)"
           >
-            <Icon :name="item.icon" :size="16" class="text-muted-foreground" />
+            <AppIcon :name="item.icon" :size="16" class="text-muted-foreground" />
             <span class="text-sm font-medium">{{ item.label }}</span>
             <CommandShortcut v-if="item.shortcut">
               {{ item.shortcut }}

@@ -61,6 +61,7 @@ declare global {
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
   const useAccounts: typeof import('./composables/useAccounts').useAccounts
+  const useActivityLog: typeof import('./composables/useActivityLog').useActivityLog
   const useAttrs: typeof import('vue').useAttrs
   const useAuth: typeof import('./composables/useAuth').useAuth
   const useBills: typeof import('./composables/useBills').useBills
@@ -108,6 +109,9 @@ declare global {
   // @ts-ignore
   export type { Account, AccountWithBalance } from './composables/useAccounts'
   import('./composables/useAccounts')
+  // @ts-ignore
+  export type { EntityType, ActionType, ActivityLog, ActivityLogFilters } from './composables/useActivityLog'
+  import('./composables/useActivityLog')
   // @ts-ignore
   export type { Bill } from './composables/useBills'
   import('./composables/useBills')
@@ -200,6 +204,7 @@ declare module 'vue' {
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly useAccounts: UnwrapRef<typeof import('./composables/useAccounts')['useAccounts']>
+    readonly useActivityLog: UnwrapRef<typeof import('./composables/useActivityLog')['useActivityLog']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useAuth: UnwrapRef<typeof import('./composables/useAuth')['useAuth']>
     readonly useBills: UnwrapRef<typeof import('./composables/useBills')['useBills']>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiInputInput',
+})
 import type { HTMLAttributes } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';

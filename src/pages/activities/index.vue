@@ -42,7 +42,7 @@
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm sm:size-10"
             >
-              <Icon name="hugeicons:note-01" :size="18" />
+              <AppIcon name="hugeicons:note-01" :size="18" />
             </div>
             <div class="min-w-0">
               <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -59,7 +59,7 @@
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 shadow-sm dark:text-sky-400 sm:size-10"
             >
-              <Icon name="hugeicons:calendar-01" :size="18" />
+              <AppIcon name="hugeicons:calendar-01" :size="18" />
             </div>
             <div class="min-w-0">
               <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -76,7 +76,7 @@
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 shadow-sm dark:text-emerald-400 sm:size-10"
             >
-              <Icon name="hugeicons:arrow-left-right" :size="18" />
+              <AppIcon name="hugeicons:arrow-left-right" :size="18" />
             </div>
             <div class="min-w-0">
               <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -96,7 +96,7 @@
         class="flex flex-col items-center gap-4 py-16 text-center"
       >
         <div class="flex size-14 items-center justify-center rounded-full bg-muted/50 sm:size-16">
-          <Icon name="hugeicons:note-01" :size="28" class="text-muted-foreground/30" />
+          <AppIcon name="hugeicons:note-01" :size="28" class="text-muted-foreground/30" />
         </div>
         <div>
           <p class="text-base font-black text-foreground tracking-tight">
@@ -127,7 +127,7 @@
                 applyFilters();
               "
             >
-              <Icon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
+              <AppIcon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
               {{ tab.label }}
             </Button>
           </div>
@@ -174,7 +174,7 @@
                 applyFilters();
               "
             >
-              <Icon name="hugeicons:add-01" :size="14" class="mr-1" />
+              <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
               {{ $t('activities.filter_created') }}
             </Button>
             <Button
@@ -187,7 +187,7 @@
                 applyFilters();
               "
             >
-              <Icon name="hugeicons:delete-01" :size="14" class="mr-1" />
+              <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
               {{ $t('activities.filter_deleted') }}
             </Button>
           </div>
@@ -269,7 +269,7 @@
                       class="flex size-8 shrink-0 items-center justify-center rounded-xl sm:size-9"
                       :class="getBadgeClass(log.entity_type)"
                     >
-                      <Icon :name="getActivityIcon(log.entity_type, log.action)" :size="14" />
+                      <AppIcon :name="getActivityIcon(log.entity_type, log.action)" :size="14" />
                     </div>
 
                     <!-- Content -->
@@ -299,7 +299,7 @@
               <div
                 class="flex size-14 items-center justify-center rounded-full bg-muted/50 sm:size-16"
               >
-                <Icon name="hugeicons:search-01" :size="28" class="text-muted-foreground/30" />
+                <AppIcon name="hugeicons:search-01" :size="28" class="text-muted-foreground/30" />
               </div>
               <div>
                 <p class="text-sm font-bold text-muted-foreground sm:text-base">
@@ -319,13 +319,13 @@
                 :disabled="loadingMore"
                 @click="loadMore"
               >
-                <Icon
+                <AppIcon
                   v-if="loadingMore"
                   name="hugeicons:loading-01"
                   :size="14"
                   class="mr-2 animate-spin"
                 />
-                <Icon v-else name="hugeicons:arrow-down-01" :size="14" class="mr-2" />
+                <AppIcon v-else name="hugeicons:arrow-down-01" :size="14" class="mr-2" />
                 {{ $t('activities.load_more') }}
               </Button>
             </div>

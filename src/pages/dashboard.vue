@@ -76,7 +76,7 @@
             <div
               class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-foreground dark:shadow-none"
             >
-              <Icon name="hugeicons:wallet-01" :size="20" />
+              <AppIcon name="hugeicons:wallet-01" :size="20" />
             </div>
             <span class="text-sm font-bold tracking-tight text-muted-foreground uppercase">{{
               $t('dashboard.balance_this_month')
@@ -97,7 +97,7 @@
                     : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                 "
               >
-                <Icon
+                <AppIcon
                   :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
                   :size="14"
                 />
@@ -121,7 +121,7 @@
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
         >
-          <Icon name="hugeicons:arrow-down-01" :size="24" />
+          <AppIcon name="hugeicons:arrow-down-01" :size="24" />
         </div>
         <div>
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -140,7 +140,7 @@
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
         >
-          <Icon name="hugeicons:arrow-up-01" :size="24" />
+          <AppIcon name="hugeicons:arrow-up-01" :size="24" />
         </div>
         <div>
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -159,7 +159,7 @@
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-sm"
         >
-          <Icon name="hugeicons:chart-line-data-01" :size="24" />
+          <AppIcon name="hugeicons:chart-line-data-01" :size="24" />
         </div>
         <div>
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -235,7 +235,7 @@
                 <div
                   class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
                 >
-                  <Icon name="hugeicons:calendar-03" :size="18" />
+                  <AppIcon name="hugeicons:calendar-03" :size="18" />
                 </div>
                 <div class="min-w-0">
                   <p class="truncate text-xs font-bold text-foreground">{{ reminder.name }}</p>
@@ -298,7 +298,7 @@
             </template>
             <div v-else class="flex flex-col items-center justify-center py-6 text-center">
               <div class="mb-3 flex size-12 items-center justify-center rounded-2xl bg-muted/50">
-                <Icon name="hugeicons:chart" :size="20" class="text-muted-foreground/40" />
+                <AppIcon name="hugeicons:chart" :size="20" class="text-muted-foreground/40" />
               </div>
               <p class="text-xs text-muted-foreground font-bold uppercase tracking-tight">
                 {{ $t('budget.empty') }}
@@ -334,7 +334,7 @@
                     <div
                       class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50"
                     >
-                      <Icon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
+                      <AppIcon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
                     </div>
                     <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
                   </div>
@@ -346,7 +346,7 @@
             </template>
             <div v-else class="flex flex-col items-center justify-center py-4 text-center">
               <div class="mb-2 flex size-10 items-center justify-center rounded-xl bg-muted/50">
-                <Icon name="hugeicons:bank" :size="18" class="text-muted-foreground/40" />
+                <AppIcon name="hugeicons:bank" :size="18" class="text-muted-foreground/40" />
               </div>
               <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">
                 {{ $t('accounts.empty') }}
@@ -383,7 +383,7 @@
             class="flex flex-col items-center gap-4 py-12 text-center"
           >
             <div class="flex size-16 items-center justify-center rounded-full bg-muted/50">
-              <Icon name="hugeicons:arrow-left-right" :size="32" class="text-muted-foreground/30" />
+              <AppIcon name="hugeicons:arrow-left-right" :size="32" class="text-muted-foreground/30" />
             </div>
             <div>
               <p class="text-base font-black text-foreground tracking-tight">
@@ -409,7 +409,7 @@
                     : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                 "
               >
-                <Icon
+                <AppIcon
                   :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
                   :size="20"
                 />
@@ -458,7 +458,7 @@
           <div
             class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transition-all duration-500 hover:scale-110"
           >
-            <Icon name="hugeicons:add-01" :size="28" />
+            <AppIcon name="hugeicons:add-01" :size="28" />
           </div>
           <div class="text-left">
             <p class="text-lg font-black tracking-tighter text-foreground">
@@ -478,7 +478,7 @@
           <div
             class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 transition-all duration-500 hover:scale-110"
           >
-            <Icon name="hugeicons:grid-view" :size="28" />
+            <AppIcon name="hugeicons:grid-view" :size="28" />
           </div>
           <div class="text-left">
             <p class="text-lg font-black tracking-tighter text-foreground">

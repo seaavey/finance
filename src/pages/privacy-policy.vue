@@ -49,7 +49,7 @@
                   :key="i"
                   class="flex items-start gap-3 text-base font-medium leading-relaxed text-muted-foreground md:text-lg"
                 >
-                  <Icon
+                  <AppIcon
                     name="hugeicons:checkmark-circle-01"
                     :size="22"
                     class="mt-0.5 shrink-0 text-primary"
@@ -73,7 +73,7 @@
             href="mailto:me@seaavey.com"
             class="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 font-black text-sm text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all"
           >
-            <Icon name="hugeicons:mail-01" :size="20" />
+            <AppIcon name="hugeicons:mail-01" :size="20" />
             {{ $t('contact.email_label')}}
           </a>
         </div>

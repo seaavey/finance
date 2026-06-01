@@ -7,7 +7,7 @@
       <div
         class="flex size-8 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20"
       >
-        <Icon name="hugeicons:money-add-01" :size="18" class="text-white" />
+        <AppIcon name="hugeicons:money-add-01" :size="18" class="text-white" />
       </div>
       <span class="text-lg font-black tracking-tighter text-foreground">{{
         $t('sidebar.finance')
@@ -32,7 +32,7 @@
             "
             @click="onItemClick"
           >
-            <Icon
+            <AppIcon
               :name="item.icon"
               :size="18"
               :class="
@@ -74,7 +74,7 @@
             class="size-8 rounded-xl text-muted-foreground hover:bg-muted/50 hover:text-foreground"
             @click="onSignOut"
           >
-            <Icon name="hugeicons:logout-01" :size="16" />
+            <AppIcon name="hugeicons:logout-01" :size="16" />
           </Button>
         </div>
 
@@ -85,7 +85,7 @@
           class="mt-3 flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2 text-[10px] font-bold text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
           @click="onItemClick"
         >
-          <Icon name="hugeicons:user" :size="14" class="text-primary" />
+          <AppIcon name="hugeicons:user" :size="14" class="text-primary" />
           <span>{{ partnerDisplayName }}</span>
           <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground/40"
             >Partner</span

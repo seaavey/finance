@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/goals')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
       <h1 class="text-3xl font-black tracking-tighter text-foreground">
@@ -49,7 +49,7 @@
                   :class="cn('w-full justify-between px-3 font-normal', !form.deadline && 'text-muted-foreground')"
                 >
                   {{ form.deadline ? df.format(calendarDate!.toDate(getLocalTimeZone())) : $t('goal_form.deadline') }}
-                  <Icon name="hugeicons:calendar-01" :size="16" class="opacity-50" />
+                  <AppIcon name="hugeicons:calendar-01" :size="16" class="opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
@@ -72,7 +72,7 @@
               @click="fileInputRef?.click()"
             >
               <div class="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm transition-all group-hover:bg-primary/15 group-hover:shadow-md">
-                <Icon name="hugeicons:image-upload-01" :size="28" />
+                <AppIcon name="hugeicons:image-upload-01" :size="28" />
               </div>
               <div>
                 <p class="text-sm font-bold text-foreground">{{ $t('goal_form.image_placeholder') }}</p>
@@ -93,7 +93,7 @@
                 class="absolute right-3 top-3 rounded-full shadow-md"
                 @click="removeImage"
               >
-                <Icon name="hugeicons:delete-01" :size="14" class="mr-1" />
+                <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
                 {{ $t('goal_form.image_remove') }}
               </Button>
               <div class="absolute bottom-3 left-3">
@@ -119,6 +119,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesGoalsDetailEdit',
+})
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -130,7 +130,7 @@
               <div
                 class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
               >
-                <Icon name="hugeicons:mail-send-01" :size="24" />
+                <AppIcon name="hugeicons:mail-send-01" :size="24" />
               </div>
               <div>
                 <p class="text-sm font-black text-foreground">
@@ -180,7 +180,7 @@
                   <div
                     class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50"
                   >
-                    <Icon name="hugeicons:mail-01" :size="18" class="text-muted-foreground" />
+                    <AppIcon name="hugeicons:mail-01" :size="18" class="text-muted-foreground" />
                   </div>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-bold text-foreground">
@@ -305,7 +305,7 @@
                 <div
                   class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
                 >
-                  <Icon name="hugeicons:unlink-01" :size="22" />
+                  <AppIcon name="hugeicons:unlink-01" :size="22" />
                 </div>
                 <div class="min-w-0 text-left">
                   <p class="text-sm font-black text-rose-500 md:text-base">
@@ -316,7 +316,7 @@
                   </p>
                 </div>
               </div>
-              <Icon
+              <AppIcon
                 name="hugeicons:arrow-right-01"
                 :size="20"
                 class="shrink-0 text-rose-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-rose-500/60"
@@ -365,7 +365,7 @@
                 <div
                   class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
                 >
-                  <Icon name="hugeicons:logout-01" :size="22" />
+                  <AppIcon name="hugeicons:logout-01" :size="22" />
                 </div>
                 <div class="min-w-0 text-left">
                   <p class="text-sm font-black text-foreground md:text-base">
@@ -376,7 +376,7 @@
                   </p>
                 </div>
               </div>
-              <Icon
+              <AppIcon
                 name="hugeicons:arrow-right-01"
                 :size="20"
                 class="shrink-0 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-muted-foreground/60"
@@ -461,7 +461,7 @@
                 @click="selectCurrency(c.value)"
               >
                 <span class="text-sm">{{ c.label }}</span>
-                <Icon v-if="profile.currency === c.value" name="hugeicons:tick-01" :size="18" />
+                <AppIcon v-if="profile.currency === c.value" name="hugeicons:tick-01" :size="18" />
               </Button>
             </div>
           </div>

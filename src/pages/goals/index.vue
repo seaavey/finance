@@ -12,7 +12,7 @@
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="router.push('/goals/new')"
       >
-        <Icon name="hugeicons:add-01" :size="20" />
+        <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('goals.add') }}</span>
       </Button>
     </div>
@@ -56,7 +56,7 @@
         class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
       >
         <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
-          <Icon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
+          <AppIcon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
         </div>
         <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('goals.empty') }}</h3>
         <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
@@ -74,15 +74,15 @@
       <!-- BENTO AUTO-FIT GRID -->
       <div v-else class="grid gap-4" :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }">
         <div
-          v-for="(goal, index) in goals"
+          v-for="goal in goals"
           :key="goal.id"
           class="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/30 transition-all hover:border-border hover:bg-card/50 hover:shadow-lg"
-          :class="{ 'md:col-span-2 md:row-span-2': getIsFeatured(goal, index) }"
-          :style="getIsFeatured(goal, index) ? { minHeight: '360px' } : { minHeight: '220px' }"
+          :class="{ 'md:col-span-2 md:row-span-2': getIsFeatured(goal) }"
+          :style="getIsFeatured(goal) ? { minHeight: '360px' } : { minHeight: '220px' }"
           @click="router.push(`/goals/${goal.id}`)"
         >
           <!-- Featured hero card (image background) -->
-          <template v-if="getIsFeatured(goal, index)">
+          <template v-if="getIsFeatured(goal)">
             <div class="absolute inset-0">
               <img :src="goal.image_url ?? ''" :alt="goal.name" class="h-full w-full object-cover" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
@@ -123,7 +123,7 @@
             <div class="flex h-full flex-col p-5">
               <div class="mb-3 flex items-center gap-3">
                 <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
-                  <Icon name="hugeicons:tick-01" :size="20" class="text-emerald-500" />
+                  <AppIcon name="hugeicons:tick-01" :size="20" class="text-emerald-500" />
                 </div>
                 <div class="min-w-0 flex-1">
                   <h3 class="truncate text-sm font-bold text-foreground">{{ goal.name }}</h3>
@@ -193,7 +193,7 @@
             class="absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-full bg-background/80 text-muted-foreground opacity-0 shadow-sm backdrop-blur-sm transition-all hover:bg-background group-hover:opacity-100"
             @click.stop="router.push(`/goals/${goal.id}/edit`)"
           >
-            <Icon name="hugeicons:pencil-edit-01" :size="14" />
+            <AppIcon name="hugeicons:pencil-edit-01" :size="14" />
           </button>
         </div>
       </div>
@@ -202,6 +202,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesGoalsIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
@@ -225,7 +228,7 @@ const featuredGoalId = computed(() => {
   return goals.value.find((g) => !!g.image_url)?.id || null;
 });
 
-function getIsFeatured(goal: Goal, _index: number): boolean {
+function getIsFeatured(goal: Goal): boolean {
   return goal.id === featuredGoalId.value;
 }
 

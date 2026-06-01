@@ -2,7 +2,7 @@
 defineOptions({
   name: 'AppIcon',
 })
-import { Icon } from '@iconify/vue';
+import { Icon as IconifyIcon } from '@iconify/vue';
 
 defineProps<{
   name: string;
@@ -11,7 +11,7 @@ defineProps<{
 </script>
 
 <template>
-  <Icon :icon="name" :width="size" :height="size" class="icon-component" />
+  <IconifyIcon :icon="name" :width="size" :height="size" class="icon-component" />
 </template>
 
 <style scoped>

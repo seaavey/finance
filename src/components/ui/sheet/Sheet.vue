@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiSheetSheet',
+})
 import type { DialogRootEmits, DialogRootProps } from 'reka-ui';
 import { DialogRoot, useForwardPropsEmits } from 'reka-ui';
 

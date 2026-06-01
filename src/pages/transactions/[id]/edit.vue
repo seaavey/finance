@@ -36,7 +36,7 @@
       <div v-else-if="fetchError" key="error" class="mx-auto max-w-md py-20">
         <div class="flex flex-col items-center gap-4 text-center">
           <div class="flex size-14 items-center justify-center rounded-2xl bg-red-500/10">
-            <Icon name="hugeicons:alert-circle" :size="28" class="text-red-400" />
+            <AppIcon name="hugeicons:alert-circle" :size="28" class="text-red-400" />
           </div>
           <h3 class="text-lg font-semibold">{{ $t('transaction_edit.error_title')}}</h3>
           <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.error_desc')}}</p>
@@ -52,7 +52,7 @@
       <div v-else-if="!transaction" key="not-found" class="mx-auto max-w-md py-20">
         <div class="flex flex-col items-center gap-4 text-center">
           <div class="flex size-14 items-center justify-center rounded-2xl bg-muted">
-            <Icon name="hugeicons:alert-circle" :size="28" class="text-muted-foreground" />
+            <AppIcon name="hugeicons:alert-circle" :size="28" class="text-muted-foreground" />
           </div>
           <h3 class="text-lg font-semibold">{{ $t('transaction_edit.not_found')}}</h3>
           <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found_desc')}}</p>
@@ -65,7 +65,7 @@
       <div v-else key="content" class="mx-auto w-full max-w-3xl space-y-6">
         <!-- Back link -->
         <Button variant="outline" size="icon" @click="router.push('/transactions')">
-          <Icon name="hugeicons:arrow-left-01" :size="16" />
+          <AppIcon name="hugeicons:arrow-left-01" :size="16" />
           {{ $t('transaction_edit.back')}}
         </Button>
 
@@ -78,7 +78,7 @@
               class="flex size-11 items-center justify-center rounded-xl"
               :class="transaction.type === 'income' ? 'bg-emerald-500/10' : 'bg-red-500/10'"
             >
-              <Icon
+              <AppIcon
                 :name="
                   transaction.type === 'income'
                     ? 'hugeicons:arrow-down-01'
@@ -101,7 +101,7 @@
             </div>
           </div>
           <Button variant="destructive" size="sm" @click="showDeleteDialog = true">
-            <Icon name="hugeicons:delete-01" :size="16" />
+            <AppIcon name="hugeicons:delete-01" :size="16" />
             {{ $t('transaction_edit.delete')}}
           </Button>
         </div>
@@ -139,6 +139,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesTransactionsDetailEdit',
+})
 import { onBeforeRouteLeave } from 'vue-router';
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
 import type { Transaction } from '@/composables/useTransactions';

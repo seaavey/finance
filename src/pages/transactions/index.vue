@@ -14,7 +14,7 @@
         class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
         @click="router.push('/transactions/new')"
       >
-        <Icon name="hugeicons:add-01" :size="18" />
+        <AppIcon name="hugeicons:add-01" :size="18" />
         <span>{{ $t('topbar.add')}}</span>
       </Button>
     </div>
@@ -27,7 +27,7 @@
       >
         <div class="flex items-center gap-3">
           <div class="relative flex-1">
-            <Icon
+            <AppIcon
               name="hugeicons:search-01"
               :size="22"
               class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50"
@@ -50,7 +50,7 @@
             "
             @click="showFilters = !showFilters"
           >
-            <Icon name="hugeicons:filter" :size="20" />
+            <AppIcon name="hugeicons:filter" :size="20" />
           </Button>
         </div>
 
@@ -89,7 +89,7 @@
                   class="h-11 w-full justify-start rounded-xl border-border/50 bg-muted/30 text-left font-normal"
                   :class="!dateRange.start && 'text-muted-foreground'"
                 >
-                  <Icon name="hugeicons:calendar-01" :size="16" class="mr-2" />
+                  <AppIcon name="hugeicons:calendar-01" :size="16" class="mr-2" />
                   <span v-if="dateRange.start && dateRange.end" class="truncate">
                     {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
                   </span>
@@ -135,7 +135,7 @@
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
         >
-          <Icon name="hugeicons:arrow-down-01" :size="24" />
+          <AppIcon name="hugeicons:arrow-down-01" :size="24" />
         </div>
         <div class="mt-4">
           <p
@@ -155,7 +155,7 @@
         <div
           class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
         >
-          <Icon name="hugeicons:arrow-up-01" :size="24" />
+          <AppIcon name="hugeicons:arrow-up-01" :size="24" />
         </div>
         <div class="mt-4">
           <p
@@ -211,7 +211,7 @@
             class="flex flex-col items-center justify-center py-16 text-center"
           >
             <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-muted/50">
-              <Icon name="hugeicons:inbox" :size="32" class="text-muted-foreground/30" />
+              <AppIcon name="hugeicons:inbox" :size="32" class="text-muted-foreground/30" />
             </div>
             <div>
               <p class="text-base font-black text-foreground tracking-tight">
@@ -253,8 +253,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesTransactionsIndex',
+})
 import { Input } from '@/components/ui/input';
-import type { DateRange } from 'reka-ui';
 import type { TransactionFilters } from '@/composables/useTransactions';
 
 interface CalendarDateLike {
@@ -268,7 +270,7 @@ const { fetchCategories } = useCategories();
 const { partner, isPartnered, fetchPartner } = usePartner();
 
 const router = useRouter();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { formatCurrency } = useCurrency();
 const { user } = useAuth();
 
@@ -309,6 +311,7 @@ const filters = reactive({
   category_id: '',
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dateRange = ref<any>({ start: undefined, end: undefined });
 
 let debounceTimer: ReturnType<typeof setTimeout>;

@@ -24,7 +24,7 @@
               : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
           "
         >
-          <Icon name="hugeicons:calendar-03" :size="18" />
+          <AppIcon name="hugeicons:calendar-03" :size="18" />
         </div>
         <div class="min-w-0 flex-1">
           <p class="truncate text-xs font-bold text-foreground">{{ bill.title }}</p>
@@ -47,7 +47,7 @@
     </div>
     <div v-else class="flex flex-col items-center justify-center py-6 text-center">
       <div class="mb-3 flex size-12 items-center justify-center rounded-2xl bg-muted/50">
-        <Icon name="hugeicons:calendar-03" :size="20" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:calendar-03" :size="20" class="text-muted-foreground/40" />
       </div>
       <p class="text-xs text-muted-foreground font-bold uppercase tracking-tight">
         {{ $t('bills.no_bills') }}

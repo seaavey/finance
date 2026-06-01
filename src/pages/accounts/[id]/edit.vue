@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesAccountsDetailEdit',
+})
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -101,7 +104,7 @@ const onSubmit = async () => {
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/accounts')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
       <h1 class="text-3xl font-black tracking-tighter text-foreground">
@@ -126,7 +129,7 @@ const onSubmit = async () => {
             class="flex flex-col items-center gap-1 py-3"
             @click="form.type = opt.value as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'"
           >
-            <Icon :name="opt.icon" :size="20" />
+            <AppIcon :name="opt.icon" :size="20" />
             <span class="text-xs">{{ opt.label }}</span>
           </Button>
         </div>

@@ -49,7 +49,7 @@
             <div
               class="mb-6 flex size-14 items-center justify-center rounded-2xl bg-card shadow-sm border border-border/50"
             >
-              <Icon :name="value.icon" :size="28" class="text-primary" />
+              <AppIcon :name="value.icon" :size="28" class="text-primary" />
             </div>
             <h3 class="mb-3 text-xl font-black tracking-tight text-foreground">
               {{ $t(value.titleKey)}}

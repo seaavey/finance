@@ -25,7 +25,7 @@ const delegatedProps = reactiveOmit(props, 'class');
     >
       <slot />
       <slot name="icon">
-        <Icon
+        <AppIcon
           name="hugeicons:arrow-down-01"
           :size="16"
           data-slot="accordion-trigger-icon"

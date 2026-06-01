@@ -9,7 +9,7 @@
             <div
               class="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-b from-primary to-primary/90 text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg shadow-primary/20"
             >
-              <Icon name="hugeicons:wallet-01" :size="22" />
+              <AppIcon name="hugeicons:wallet-01" :size="22" />
             </div>
             <span
               class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
@@ -28,7 +28,7 @@
               class="h-10 w-10 flex items-center justify-center rounded-xl border border-border/50 bg-muted/30 text-muted-foreground transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary shadow-sm active:scale-90"
               :aria-label="$t(`landing.${social.labelKey}`)"
             >
-              <Icon :name="social.icon" :size="18" />
+              <AppIcon :name="social.icon" :size="18" />
             </a>
           </div>
         </div>
@@ -82,7 +82,7 @@
           </p>
           <div class="flex flex-col gap-2 sm:flex-row lg:flex-col xl:flex-row">
             <div class="relative flex-1">
-              <Icon
+              <AppIcon
                 name="hugeicons:mail-01"
                 :size="16"
                 class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
@@ -126,6 +126,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingFooter',
+})
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 

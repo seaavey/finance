@@ -6,6 +6,7 @@ import { useSupabase } from '@/lib/supabase';
 // State shared across all useAuth calls
 export const user = ref<User | null>(null);
 export const loading = ref(true);
+let loginLogged = false;
 
 export const useAuth = () => {
   const supabase = useSupabase();
@@ -26,6 +27,7 @@ export const useAuth = () => {
   const signOut = async () => {
     await supabase.auth.signOut();
     user.value = null;
+    loginLogged = false;
     activity.log('auth', 'logout').catch(() => {})
     if (router) await router.push('/auth/login');
   };
@@ -36,7 +38,8 @@ export const useAuth = () => {
       data: { session },
     } = await supabase.auth.getSession();
     user.value = session?.user ?? null;
-    if (session?.user) {
+    if (session?.user && !loginLogged) {
+      loginLogged = true;
       activity.log('auth', 'login').catch(() => {})
     }
     loading.value = false;

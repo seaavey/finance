@@ -55,7 +55,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         <DialogClose
           class="absolute top-4 right-4 p-0.5 transition-colors rounded-md hover:bg-secondary"
         >
-          <Icon name="hugeicons:cancel-01" class="w-4 h-4" />
+          <AppIcon name="hugeicons:cancel-01" class="w-4 h-4" />
           <span class="sr-only">{{ $t('common.close')}}</span>
         </DialogClose>
       </DialogContent>

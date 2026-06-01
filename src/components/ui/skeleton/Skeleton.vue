@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiSkeletonSkeleton',
+})
 import type { HTMLAttributes } from 'vue';
 import { cn } from '@/lib/utils';
 

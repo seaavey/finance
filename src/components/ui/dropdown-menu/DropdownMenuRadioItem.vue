@@ -32,7 +32,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     >
       <DropdownMenuItemIndicator>
         <slot name="indicator-icon">
-          <Icon name="hugeicons:checkmark-circle-02" :size="16" />
+          <AppIcon name="hugeicons:checkmark-circle-02" :size="16" />
         </slot>
       </DropdownMenuItemIndicator>
     </span>

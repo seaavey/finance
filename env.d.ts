@@ -3,7 +3,7 @@
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
+  const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>
   export default component
 }
 
@@ -11,14 +11,14 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $t: (key: string, ...args: any[]) => string;
+    $t: (key: string, ...args: unknown[]) => string;
     $localePath: (path: string) => string;
   }
 }
 
 // Ensure global functions are typed
 declare global {
-  const $t: (key: string, ...args: any[]) => string;
+  const $t: (key: string, ...args: unknown[]) => string;
   const useI18n: typeof import('./src/composables/nuxt-compat')['useI18n'];
   const useLocalePath: typeof import('./src/composables/nuxt-compat')['useLocalePath'];
   const useColorMode: typeof import('./src/composables/nuxt-compat')['useColorMode'];

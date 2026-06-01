@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesRecurringIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
@@ -112,7 +115,7 @@ const confirmDelete = async () => {
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="goToNew"
       >
-        <Icon name="hugeicons:add-01" :size="20" />
+        <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('topbar.add')}}</span>
       </Button>
     </div>
@@ -133,7 +136,7 @@ const confirmDelete = async () => {
             Est. Per Bulan
           </p>
         </div>
-        <Icon
+        <AppIcon
           name="hugeicons:arrow-up-01"
           class="absolute -right-4 -top-4 size-24 rotate-12 opacity-5 transition-transform group-hover:scale-110"
         />
@@ -152,7 +155,7 @@ const confirmDelete = async () => {
             Est. Per Bulan
           </p>
         </div>
-        <Icon
+        <AppIcon
           name="hugeicons:arrow-down-01"
           class="absolute -right-4 -top-4 size-24 -rotate-12 opacity-5 transition-transform group-hover:scale-110"
         />
@@ -179,7 +182,7 @@ const confirmDelete = async () => {
       <div
         class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
       >
-        <Icon name="hugeicons:repeat" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:repeat" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty')}}</h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
@@ -212,7 +215,7 @@ const confirmDelete = async () => {
                   : 'bg-rose-500/10 text-rose-500'
               "
             >
-              <Icon
+              <AppIcon
                 :name="item.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
                 :size="24"
               />
@@ -248,7 +251,7 @@ const confirmDelete = async () => {
               class="size-9 rounded-xl hover:bg-muted"
               @click="goToEdit(item)"
             >
-              <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
+              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
             </Button>
             <Button
               variant="ghost"
@@ -256,7 +259,7 @@ const confirmDelete = async () => {
               class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
               @click="onDelete(item)"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
           <div class="text-right">

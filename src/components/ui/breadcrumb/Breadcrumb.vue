@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({
+  name: 'ComponentsUiBreadcrumbBreadcrumb',
+})</script>
 
 <template>
   <nav aria-label="breadcrumb">

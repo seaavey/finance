@@ -7,7 +7,7 @@
       class="flex size-10 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-active:scale-95"
       :class="iconBg"
     >
-      <Icon :name="iconComponent" :size="22" :class="iconColor" />
+      <AppIcon :name="iconComponent" :size="22" :class="iconColor" />
     </div>
 
     <div
@@ -23,7 +23,7 @@
         >
           {{ value }}
         </span>
-        <Icon
+        <AppIcon
           name="hugeicons:arrow-right-01"
           :size="16"
           class="shrink-0 text-muted-foreground/20 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-muted-foreground/40"

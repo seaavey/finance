@@ -17,7 +17,7 @@
         class="rounded-2xl px-5 py-4 text-center"
         @click="form.type = 'income'"
       >
-        <Icon name="hugeicons:arrow-down-01" :size="20" class="mr-2 inline-block" />
+        <AppIcon name="hugeicons:arrow-down-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.income')}}
       </Button>
       <Button
@@ -25,7 +25,7 @@
         class="rounded-2xl px-5 py-4 text-center"
         @click="form.type = 'expense'"
       >
-        <Icon name="hugeicons:arrow-up-01" :size="20" class="mr-2 inline-block" />
+        <AppIcon name="hugeicons:arrow-up-01" :size="20" class="mr-2 inline-block" />
         {{ $t('transaction_form.expense')}}
       </Button>
     </div>
@@ -51,7 +51,7 @@
     <!-- DETAIL FORM -->
     <div class="space-y-px overflow-hidden rounded-4xl border border-border/50 bg-card/20">
       <div class="flex items-center gap-3 px-5 py-4">
-        <Icon name="hugeicons:wallet-01" :size="18" class="text-muted-foreground" />
+        <AppIcon name="hugeicons:wallet-01" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
           <CategoryPicker
             v-model="form.category_id"
@@ -62,7 +62,7 @@
       </div>
 
       <div class="flex items-center gap-3 px-5 py-4">
-        <Icon name="hugeicons:bank" :size="18" class="text-muted-foreground" />
+        <AppIcon name="hugeicons:bank" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
           <Select v-model="form.account_id">
             <SelectTrigger class="border-none shadow-none">
@@ -91,7 +91,7 @@
       </div>
 
       <div class="flex items-center gap-3 px-5 py-4">
-        <Icon name="hugeicons:coins-swap" :size="18" class="text-muted-foreground" />
+        <AppIcon name="hugeicons:coins-swap" :size="18" class="text-muted-foreground" />
         <div class="flex-1">
           <Select v-model="form.currency">
             <SelectTrigger class="border-none shadow-none">
@@ -123,7 +123,7 @@
       </div>
 
       <div class="flex items-center gap-3 px-5 py-4">
-        <Icon name="hugeicons:calendar-01" :size="18" class="text-muted-foreground" />
+        <AppIcon name="hugeicons:calendar-01" :size="18" class="text-muted-foreground" />
         <div class="">
           <Popover>
             <PopoverTrigger as-child>
@@ -141,7 +141,7 @@
                     ? df.format(calendarDate!.toDate(getLocalTimeZone()))
                     : $t('transaction_form.select_date')
                 }}
-                <Icon
+                <AppIcon
                   name="hugeicons:arrow-down-01"
                   :size="16"
                   class="text-muted-foreground ml-auto opacity-50"
@@ -156,7 +156,7 @@
       </div>
 
       <div class="flex items-start gap-3 px-5 py-4">
-        <Icon name="hugeicons:note-01" :size="18" class="mt-0.5 text-muted-foreground" />
+        <AppIcon name="hugeicons:note-01" :size="18" class="mt-0.5 text-muted-foreground" />
         <div class="flex-1">
           <Textarea
             v-model="form.description"
@@ -271,7 +271,7 @@ watch(
       Number(newForm.amount) !== Number(initial.amount) ||
       newForm.currency !== initial.currency ||
       newForm.category_id !== (initial.category_id ?? '') ||
-      newForm.account_id !== ((initial as any).account_id ?? '') ||
+      newForm.account_id !== ((initial as Record<string, unknown>).account_id ?? '') ||
       newForm.description !== (initial.description ?? '') ||
       newForm.date !== initial.date;
     emit('dirty', changed);

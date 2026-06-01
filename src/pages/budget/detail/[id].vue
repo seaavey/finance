@@ -1,11 +1,14 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBudgetDetailDetail',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 
 const router = useRouter();
 const route = useRoute();
-const { t } = useI18n();
+useI18n();
 const { fetchBudgetWithProgress, getProgress, deleteBudget } = useBudgets();
 const { formatCurrency: fmtCurrency } = useCurrency();
 
@@ -64,7 +67,7 @@ onMounted(loadBudget);
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/budget')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
     </div>
@@ -84,7 +87,7 @@ onMounted(loadBudget);
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
       <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
-        <Icon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">
         {{ $t('budget.no_budgets') }}
@@ -108,7 +111,7 @@ onMounted(loadBudget);
               class="flex size-14 items-center justify-center rounded-2xl"
               :style="{ backgroundColor: budgetDetail.category_color + '20' }"
             >
-              <Icon
+              <AppIcon
                 v-if="hasValidIcon"
                 :name="budgetDetail.category_icon"
                 :size="28"
@@ -126,7 +129,7 @@ onMounted(loadBudget);
           </div>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="rounded-xl" @click="goToEdit">
-              <Icon name="hugeicons:edit-01" :size="16" class="mr-1" />
+              <AppIcon name="hugeicons:edit-01" :size="16" class="mr-1" />
               {{ $t('budget.edit_budget') }}
             </Button>
             <Button
@@ -135,7 +138,7 @@ onMounted(loadBudget);
               class="rounded-xl text-red-500 hover:text-red-600"
               @click="showDeleteDialog = true"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
         </div>

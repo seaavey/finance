@@ -10,7 +10,7 @@
         class="size-9 rounded-xl border border-border/50 bg-card/50 lg:hidden"
         @click="$emit('toggleSidebar')"
       >
-        <Icon name="hugeicons:menu-02" :size="18" />
+        <AppIcon name="hugeicons:menu-02" :size="18" />
       </Button>
 
       <Breadcrumb class="hidden md:block">
@@ -35,7 +35,7 @@
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator class="hidden md:flex">
-                <Icon name="hugeicons:arrow-right-01" :size="10" class="text-muted-foreground/30" />
+                <AppIcon name="hugeicons:arrow-right-01" :size="10" class="text-muted-foreground/30" />
               </BreadcrumbSeparator>
             </template>
           </template>
@@ -52,7 +52,7 @@
         class="size-9 rounded-xl border border-border/50 bg-card/50 md:hidden"
         @click="showSearchDialog = true"
       >
-        <Icon name="hugeicons:search-01" :size="18" />
+        <AppIcon name="hugeicons:search-01" :size="18" />
       </Button>
 
       <!-- SEARCH - Desktop -->
@@ -62,7 +62,7 @@
           class="h-9 w-64 justify-start rounded-xl border-border/50 bg-muted/50 pl-9 pr-12 text-xs font-bold text-muted-foreground transition-all hover:bg-muted"
           @click="showSearchDialog = true"
         >
-          <Icon
+          <AppIcon
             name="hugeicons:search-01"
             :size="14"
             class="absolute left-3 text-muted-foreground/60"
@@ -83,7 +83,7 @@
             size="icon"
             class="relative size-9 rounded-xl border border-border/50 bg-card/50"
           >
-            <Icon name="hugeicons:notification-03" :size="18" />
+            <AppIcon name="hugeicons:notification-03" :size="18" />
             <span
               v-if="activeReminders.length > 0"
               class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground ring-2 ring-background"
@@ -111,7 +111,7 @@
                 <div
                   class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
                 >
-                  <Icon name="hugeicons:alert-01" :size="14" />
+                  <AppIcon name="hugeicons:alert-01" :size="14" />
                 </div>
                 <div class="flex-1 space-y-0.5">
                   <p class="text-sm font-bold text-foreground">
@@ -134,12 +134,12 @@
                   class="size-7 rounded-lg text-muted-foreground/60 hover:bg-muted hover:text-foreground"
                   @click="dismissReminder(reminder.id)"
                 >
-                  <Icon name="hugeicons:cancel-01" :size="14" />
+                  <AppIcon name="hugeicons:cancel-01" :size="14" />
                 </Button>
               </div>
             </template>
             <div v-else class="flex h-32 flex-col items-center justify-center space-y-2">
-              <Icon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/30" />
+              <AppIcon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/30" />
               <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                 {{ $t('topbar.no_notifications') }}
               </p>
@@ -156,8 +156,8 @@
         @click="cycleColorMode"
       >
         <ClientOnly>
-          <Icon v-if="colorMode.value === 'dark'" name="hugeicons:sun-01" :size="18" />
-          <Icon v-else name="hugeicons:moon-01" :size="18" />
+          <AppIcon v-if="colorMode.value === 'dark'" name="hugeicons:sun-01" :size="18" />
+          <AppIcon v-else name="hugeicons:moon-01" :size="18" />
           <template #fallback>
             <div class="size-[18px]" />
           </template>
@@ -170,7 +170,7 @@
         class="h-9 gap-2 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
         @click="router.push('/transactions/new')"
       >
-        <Icon name="hugeicons:add-01" :size="16" />
+        <AppIcon name="hugeicons:add-01" :size="16" />
         <span class="hidden sm:inline">{{ $t('topbar.add') }}</span>
       </Button>
     </div>

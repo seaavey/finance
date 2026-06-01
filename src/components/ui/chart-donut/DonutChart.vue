@@ -25,7 +25,7 @@ const value = (d: Record<string, unknown>) => d[props.category] as number;
 
 const color = (_d: Record<string, unknown>, i: number) => {
   const item = props.data[i];
-  const key = (item as any)[props.index] as string;
+  const key = (item as Record<string, unknown>)[props.index] as string;
   return props.config[key]?.color || `var(--vis-color${i})`;
 };
 </script>

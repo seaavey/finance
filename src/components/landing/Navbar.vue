@@ -14,7 +14,7 @@
           <div
             class="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-b from-primary to-primary/90 text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg shadow-primary/20"
           >
-            <Icon name="hugeicons:wallet-01" :size="22" />
+            <AppIcon name="hugeicons:wallet-01" :size="22" />
           </div>
           <span
             class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
@@ -67,7 +67,7 @@
             class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
             @click="toggleTheme"
           >
-            <Icon
+            <AppIcon
               :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-02'"
               :size="20"
               class="text-muted-foreground group-hover:text-foreground"
@@ -83,7 +83,7 @@
                 size="icon"
                 class="h-9 w-9 rounded-xl hover:bg-muted/50 transition-all duration-300 active:scale-90"
               >
-                <Icon name="hugeicons:globe-02" :size="20" class="text-muted-foreground" />
+                <AppIcon name="hugeicons:globe-02" :size="20" class="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -134,7 +134,7 @@
               size="icon"
               class="md:hidden h-11 w-11 rounded-2xl bg-card/50 border border-border/40 shadow-sm hover:bg-muted/50 transition-all"
             >
-              <Icon name="hugeicons:menu-01" :size="26" />
+              <AppIcon name="hugeicons:menu-01" :size="26" />
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -146,7 +146,7 @@
                 <div
                   class="h-10 w-10 rounded-2xl bg-linear-to-b from-primary to-primary/90 flex items-center justify-center text-white shadow-lg shadow-primary/20"
                 >
-                  <Icon name="hugeicons:wallet-01" :size="22" />
+                  <AppIcon name="hugeicons:wallet-01" :size="22" />
                 </div>
                 {{ $t('sidebar.finance')}}
               </SheetTitle>
@@ -166,7 +166,7 @@
                     @click="scrollToSection(item.href)"
                   >
                     <span class="text-sm font-bold">{{ $t(item.label)}}</span>
-                    <Icon
+                    <AppIcon
                       name="hugeicons:arrow-right-01"
                       :size="20"
                       class="text-muted-foreground/20 transition-all group-hover:translate-x-1 group-hover:text-primary"
@@ -188,7 +188,7 @@
                     <div
                       class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm"
                     >
-                      <Icon
+                      <AppIcon
                         :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
                         :size="18"
                         class="text-primary"
@@ -249,6 +249,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ComponentsLandingNavbar',
+})
 const { locale: currentLocale, locales, setLocale } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();

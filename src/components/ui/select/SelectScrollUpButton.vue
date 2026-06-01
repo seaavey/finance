@@ -25,7 +25,7 @@ const forwardedProps = useForwardProps(delegatedProps);
     "
   >
     <slot>
-      <Icon name="hugeicons:arrow-up-01" />
+      <AppIcon name="hugeicons:arrow-up-01" />
     </slot>
   </SelectScrollUpButton>
 </template>

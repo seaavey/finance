@@ -1,10 +1,12 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesAccountsDetailIndex',
+})
 import type { AccountWithBalance } from '@/composables/useAccounts';
 
 const router = useRouter();
 const route = useRoute();
-const { t } = useI18n();
-const { accounts, fetchAccounts, getAccountBalances } = useAccounts();
+const { fetchAccounts, getAccountBalances } = useAccounts();
 const { formatCurrency } = useCurrency();
 
 const accountId = route.params.id as string;
@@ -31,7 +33,7 @@ onMounted(async () => {
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/accounts')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
     </div>
@@ -52,7 +54,7 @@ onMounted(async () => {
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
       <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
-        <Icon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('accounts.empty') }}</h3>
       <Button
@@ -74,7 +76,7 @@ onMounted(async () => {
               class="flex size-14 items-center justify-center rounded-2xl"
               :style="{ backgroundColor: accountDetail.color + '20' }"
             >
-              <Icon
+              <AppIcon
                 v-if="accountDetail.icon?.startsWith('hugeicons:')"
                 :name="accountDetail.icon"
                 :size="28"
@@ -96,7 +98,7 @@ onMounted(async () => {
             </div>
           </div>
           <Button variant="outline" size="sm" class="rounded-xl" @click="router.push(`/accounts/${accountDetail.id}/edit`)">
-            <Icon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
+            <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
             {{ $t('accounts.edit') }}
           </Button>
         </div>

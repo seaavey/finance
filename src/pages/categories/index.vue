@@ -12,7 +12,7 @@
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="router.push('/categories/new')"
       >
-        <Icon name="hugeicons:add-01" :size="20" />
+        <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('categories.add')}}</span>
       </Button>
     </div>
@@ -59,7 +59,7 @@
         <div
           class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
         >
-          <Icon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
+          <AppIcon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
         </div>
         <h3 class="text-xl font-black tracking-tight text-foreground">
           {{ $t('categories.empty')}}
@@ -123,7 +123,7 @@
                 class="size-9 rounded-xl hover:bg-muted"
                 @click="router.push(`/categories/${cat.id}/edit`)"
               >
-                <Icon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
+                <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
               </Button>
               <Button
                 variant="ghost"
@@ -131,7 +131,7 @@
                 class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
                 @click="confirmDelete(cat)"
               >
-                <Icon name="hugeicons:delete-01" :size="16" />
+                <AppIcon name="hugeicons:delete-01" :size="16" />
               </Button>
             </div>
           </div>
@@ -150,6 +150,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesCategoriesIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sortable } from 'sortablejs-vue3';

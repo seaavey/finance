@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
       <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/bills')">
-        <Icon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
+        <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
     </div>
@@ -22,7 +22,7 @@
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
       <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
-        <Icon name="hugeicons:calendar-03" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:calendar-03" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('bills.no_bills') }}</h3>
       <Button
@@ -44,7 +44,7 @@
               class="flex size-14 items-center justify-center rounded-2xl"
               :class="getIconBgClass"
             >
-              <Icon name="hugeicons:calendar-03" :size="28" :class="getIconColorClass" />
+              <AppIcon name="hugeicons:calendar-03" :size="28" :class="getIconColorClass" />
             </div>
             <div>
               <h2 class="text-2xl font-black tracking-tighter text-foreground">
@@ -62,7 +62,7 @@
               class="rounded-xl"
               @click="router.push(`/bills/${billDetail.id}/edit`)"
             >
-              <Icon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
+              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
               {{ $t('bills.edit_bill') }}
             </Button>
             <Button
@@ -71,7 +71,7 @@
               class="rounded-xl text-red-500 hover:text-red-600"
               @click="showDeleteDialog = true"
             >
-              <Icon name="hugeicons:delete-01" :size="16" />
+              <AppIcon name="hugeicons:delete-01" :size="16" />
             </Button>
           </div>
         </div>
@@ -102,7 +102,7 @@
         <!-- Mark as Paid button -->
         <div v-if="!billDetail.is_paid" class="mt-6">
           <Button class="w-full rounded-2xl" @click="handleMarkPaid(billDetail.id)">
-            <Icon name="hugeicons:checkmark-circle-01" :size="16" class="mr-2" />
+            <AppIcon name="hugeicons:checkmark-circle-01" :size="16" class="mr-2" />
             {{ $t('bills.mark_paid') }}
           </Button>
         </div>
@@ -152,6 +152,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBillsDetailIndex',
+})
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Bill } from '@/composables/useBills';

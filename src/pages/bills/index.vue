@@ -11,7 +11,7 @@
         </p>
       </div>
       <Button @click="router.push('/bills/new')">
-        <Icon name="hugeicons:add-01" :size="16" class="mr-2" />
+        <AppIcon name="hugeicons:add-01" :size="16" class="mr-2" />
         {{ $t('bills.add_bill') }}
       </Button>
     </div>
@@ -60,7 +60,7 @@
       class="flex flex-col items-center gap-4 py-16 text-center"
     >
       <div class="flex size-16 items-center justify-center rounded-full bg-muted/50">
-        <Icon name="hugeicons:calendar-03" :size="32" class="text-muted-foreground/30" />
+        <AppIcon name="hugeicons:calendar-03" :size="32" class="text-muted-foreground/30" />
       </div>
       <p class="text-sm font-bold text-muted-foreground">
         {{ $t('bills.no_bills') }}
@@ -80,7 +80,7 @@
           class="flex size-10 shrink-0 items-center justify-center rounded-xl"
           :class="getIconClass(bill)"
         >
-          <Icon name="hugeicons:calendar-03" :size="20" />
+          <AppIcon name="hugeicons:calendar-03" :size="20" />
         </div>
 
         <!-- Info -->
@@ -126,7 +126,7 @@
             class="size-8 text-muted-foreground hover:text-rose-500"
             @click="handleDelete(bill.id)"
           >
-            <Icon name="hugeicons:delete-01" :size="16" />
+            <AppIcon name="hugeicons:delete-01" :size="16" />
           </Button>
         </div>
       </div>
@@ -135,6 +135,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'PagesBillsIndex',
+})
 import { Button } from '@/components/ui/button';
 import type { Bill } from '@/composables/useBills';
 
