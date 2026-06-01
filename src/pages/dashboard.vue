@@ -215,46 +215,6 @@
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
       <div class="flex flex-col gap-4 md:col-span-6 lg:col-span-2">
-        <!-- Upcoming Bills / Reminders -->
-        <div
-          v-if="activeReminders.length > 0"
-          class="rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm backdrop-blur-sm transition-all hover:bg-rose-500/10 flex-1"
-        >
-          <h3
-            class="mb-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
-          >
-            {{ $t('dashboard.upcoming_bills') }}
-          </h3>
-          <div class="space-y-3">
-            <div
-              v-for="reminder in activeReminders.slice(0, 2)"
-              :key="reminder.id"
-              class="group flex items-center justify-between rounded-2xl bg-card p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div class="flex items-center gap-3 min-w-0">
-                <div
-                  class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
-                >
-                  <AppIcon name="hugeicons:calendar-03" :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <p class="truncate text-xs font-bold text-foreground">{{ reminder.name }}</p>
-                  <p class="text-[10px] font-bold text-rose-500 dark:text-rose-400">
-                    {{
-                      reminder.days_left === 0
-                        ? $t('recurring.due_today')
-                        : $t('recurring.due_in_n_days', { days: reminder.days_left })
-                    }}
-                  </p>
-                </div>
-              </div>
-              <p class="text-xs font-black text-foreground">
-                {{ formatCurrency(reminder.amount, reminder.currency) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
         <BillDashboardWidget />
 
         <!-- Budget Progress -->
