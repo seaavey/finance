@@ -210,9 +210,6 @@ const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
   const [moved] = list.splice(evt.oldIndex, 1);
   if (!moved) return;
   list.splice(evt.newIndex, 0, moved);
-  const otherType = activeTab.value === 'income' ? expenseCategories.value : incomeCategories.value;
-  categories.value =
-    activeTab.value === 'income' ? [...list, ...otherType] : [...otherType, ...list];
 };
 
 onMounted(async () => {

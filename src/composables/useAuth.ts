@@ -34,7 +34,7 @@ export const useAuth = () => {
         entity_type: 'auth',
         action: 'logout',
         metadata: {}
-      }).then(() => {}).catch(() => {});
+      }).then();
     }
     if (router) await router.push('/auth/login');
   };
@@ -52,7 +52,7 @@ export const useAuth = () => {
         entity_type: 'auth',
         action: 'login',
         metadata: {}
-      }).then(() => {}).catch(() => {});
+      }).then();
     }
     loading.value = false;
     return session;
