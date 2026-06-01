@@ -476,7 +476,7 @@ const { fetchBudgetWithProgress } = useBudgets();
 const { fetchAccounts, getAccountBalances } = useAccounts();
 const { currentNetWorth, fetchNetWorthHistory } = useNetWorth();
 const { fetchRecurring } = useRecurring();
-const { activeReminders } = useReminders();
+useReminders();
 
 const loading = ref(true);
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
