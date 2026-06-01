@@ -14,34 +14,38 @@
       <div
         v-for="bill in upcomingBills"
         :key="bill.id"
-        class="group flex items-center gap-3 rounded-2xl bg-muted/30 p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+        class="group flex gap-4 rounded-2xl bg-muted/30 p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
       >
+        <!-- Icon remains left-aligned -->
         <div
-          class="flex size-9 shrink-0 items-center justify-center rounded-xl"
-          :class="
-            isOverdue(bill.due_date)
-              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-          "
+          class="flex size-10 shrink-0 items-center justify-center rounded-xl"
+          :class="isOverdue(bill.due_date) ? 'bg-rose-500/10 text-rose-600' : 'bg-amber-500/10 text-amber-600'"
         >
-          <AppIcon name="hugeicons:calendar-03" :size="18" />
+          <AppIcon name="hugeicons:calendar-03" :size="20" />
         </div>
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-xs font-bold text-foreground">{{ bill.title }}</p>
-          <p
-            class="text-[10px] font-bold"
-            :class="getDueDateClass(bill.due_date)"
-          >
-            {{ getDueDateText(bill.due_date) }}
-          </p>
-        </div>
-        <div class="flex shrink-0 items-center gap-2">
-          <p class="text-xs font-black text-foreground">
-            {{ formatCurrency(bill.amount) }}
-          </p>
-          <Button variant="outline" size="sm" @click="handleMarkPaid(bill.id)">
-            {{ $t('bills.mark_paid') }}
-          </Button>
+
+        <!-- Main Content Area: Stacked -->
+        <div class="flex min-w-0 flex-1 flex-col gap-2.5">
+          <!-- Top Row: Title and Amount -->
+          <div class="flex items-start justify-between gap-2">
+            <p class="truncate text-sm font-bold text-foreground">{{ bill.title }}</p>
+            <p class="shrink-0 text-sm font-black text-foreground">
+              {{ formatCurrency(bill.amount) }}
+            </p>
+          </div>
+
+          <!-- Bottom Row: Due Date and Action -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <AppIcon name="hugeicons:calendar-03" :size="12" class="text-muted-foreground/60" />
+              <p class="text-[10px] font-bold" :class="getDueDateClass(bill.due_date)">
+                {{ getDueDateText(bill.due_date) }}
+              </p>
+            </div>
+            <Button variant="outline" size="sm" class="h-7 px-3 text-[10px] font-bold" @click="handleMarkPaid(bill.id)">
+              {{ $t('bills.mark_paid') }}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
