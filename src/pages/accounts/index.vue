@@ -138,16 +138,11 @@ const totalBalance = computed(() =>
               class="flex size-10 shrink-0 items-center justify-center rounded-2xl"
               :style="{ backgroundColor: account.color + '20' }"
             >
-              <AppIcon
-                v-if="account.icon?.startsWith('hugeicons:')"
-                :name="account.icon"
+              <AccountIcon
+                :icon="account.icon"
+                :type="account.type"
                 :size="20"
-                :style="{ color: account.color }"
-              />
-              <div
-                v-else
-                class="size-5 rounded-md"
-                :style="{ backgroundColor: account.color }"
+                :color="account.color"
               />
             </div>
             <div class="min-w-0">

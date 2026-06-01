@@ -15,6 +15,7 @@ declare module 'vue' {
     AccordionContent: typeof import('./components/ui/accordion/AccordionContent.vue')['default']
     AccordionItem: typeof import('./components/ui/accordion/AccordionItem.vue')['default']
     AccordionTrigger: typeof import('./components/ui/accordion/AccordionTrigger.vue')['default']
+    AccountIcon: typeof import('./components/AccountIcon.vue')['default']
     AddFundsDialog: typeof import('./components/AddFundsDialog.vue')['default']
     AlertDialog: typeof import('./components/ui/alert-dialog/AlertDialog.vue')['default']
     AlertDialogAction: typeof import('./components/ui/alert-dialog/AlertDialogAction.vue')['default']

@@ -4,101 +4,87 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-```bash
+```sh
 # Development
-bun run dev          # Start Vite dev server
-bun run build        # Type-check + production build (via vue-tsc --build && vite build)
-bun run preview      # Preview production build
+pnpm dev              # Start Vite dev server (port 5173)
 
-# Linting & Formatting
-bun run lint         # Run both oxlint and eslint (auto-fix + cache)
-bun run lint:oxlint  # oxlint --fix
-bun run lint:eslint  # eslint --fix --cache
-bun run format       # prettier --write on src/
+# Build
+pnpm build            # Type-check + production build (Rolldown)
+pnpm build-only       # Build without type-checking
+pnpm preview          # Preview production build
+
+# Lint & Format
+pnpm lint             # Run oxlint --fix then eslint --fix --cache
+pnpm format           # Prettier write on src/
 
 # Type Checking
-bun run type-check   # vue-tsc --build
+pnpm type-check       # vue-tsc --build
 
-# Bun-specific
-bun install          # Install dependencies (lockfile: bun.lock)
+# Supabase
+supabase start        # Start local Supabase stack
+supabase stop         # Stop local Supabase
+supabase migration up # Apply pending migrations
+supabase db diff -f <name>  # Generate migration from local DB changes
 ```
-
-## Git & Commits
-
-- **Jangan** tambahkan `Co-Authored-By: Claude` atau trailer apapun di commit messages.
-- Git author sudah dikonfigurasi sebagai `seaavey` — gunakan itu.
-- Commit messages harus ditulis dari perspektif pengguna (seaavey), bukan AI.
 
 ## Architecture
 
-**Aemy Finance** — personal finance tracking app with supabase backend, migrated from Nuxt 3 to pure Vite + Vue 3.
+**Tech stack**: Vue 3 (Composition API, `<script setup lang="ts">`), Vite 8, Tailwind CSS v4, shadcn-vue, Supabase, TanStack Vue Query, vue-router v5, vue-i18n, TypeScript, Unovis (charts).
 
-### Stack
+**File-based routing** via `vite-plugin-pages` — `src/pages/` directory mirrors route structure. Dynamic segments use `[param]` directories. No manual route config needed (see `src/router/index.ts` for middleware only).
 
-- **Vue 3** + **Vite 8** + **TypeScript**
-- **Supabase**: auth, database (PostgreSQL), edge functions, storage
-- **Tailwind CSS v4** with `@tailwindcss/vite` plugin
-- **shadcn-vue** UI component kit (under `src/components/ui/`)
-- **vue-router** with file-based routing (via `vite-plugin-pages`)
-- **Pinia** available but most state managed via composables
-- **vue-i18n**: Indonesian (`id`) and English (`en`) locales
-- **@unhead/vue**: SEO meta management
-- **unovis**: charts (area, bar, donut)
-- **unplugin-auto-import**: auto-imports vue, vue-router, pinia, all composables, and lib
+**Two layouts**: `default.vue` (sidebar + topbar, for authenticated pages) and `blank.vue` (for landing/auth pages). Set via `route.meta.layout` in the router.
 
-### Project Structure
+**Composables** (`src/composables/`): One composable per domain entity. Each follows the same pattern — wraps Supabase queries with TanStack Vue Query, exposes CRUD methods, logs activity, shows toasts on mutations, and has reactive `loading` state.
 
-```
-src/
-  composables/       # Primary data access layer — one per domain
-  pages/             # File-based routes (vite-plugin-pages)
-  layouts/           # default.vue (sidebar+topbar), blank.vue (landing/auth)
-  components/
-    ui/              # shadcn-vue components (button, dialog, calendar, etc.)
-    charts/          # Chart wrappers
-    landing/         # Landing page sections
-    *.vue            # Feature components
-  lib/               # Core utilities
-    supabase.ts      # Singleton Supabase client
-    cache.ts         # Request deduplication + TTL cache
-    utils.ts         # cn() helper, getOgImageUrl()
-  plugins/i18n.ts    # vue-i18n setup (id + en)
-  styles/globals.css # Tailwind v4 imports + CSS variables + dark mode
-  router/index.ts    # Router with auth middleware
-supabase/
-  migration.sql      # Full schema (profiles, categories, transactions, recurring, todos, accounts, budgets, goals, couple_invitations, etc.)
-  config.toml        # Supabase local dev config
-  functions/         # Edge functions (og-image, send-couple-invite, accept-couple-invite, disconnect-partner)
-```
+**Data fetching pattern**: TanStack Vue Query everywhere.
 
-### Key Patterns
+- Queries use `useQuery({ queryKey, queryFn, enabled })` with `computed` for reactive keys.
+- Mutations call Supabase directly, then `queryClient.invalidateQueries()` to refresh.
+- Query keys follow the pattern `['entityName', computed(() => user.value?.id)]` with optional filter refs.
+- Stale time default: 30s (set in `main.ts`).
+- `enabled: computed(() => !!user.value)` prevents queries before auth.
 
-**Composable-based data layer**: Each domain has a composable in `src/composables/` (useTransactions, useAccounts, useBudgets, useCategories, useGoals, useRecurring, usePartner, useNetWorth, useExport, useReminders, useCurrency, useAuth). Composables are the primary state management pattern — they hold reactive state (`ref`), expose CRUD methods, and use `createCache()` for request deduplication (30-60s TTL). Most composables call `useAuth()` and `useSupabase()` internally.
+**Auth flow**: Supabase Auth (Google OAuth). `useAuth` composable is a singleton with module-level `user` and `loading` refs. Public routes skip auth check in router guard. Login activity is logged on session fetch, not on mount.
 
-**Cache layer** (`src/lib/cache.ts`): In-memory Map-based cache with TTL support. Deduplicates in-flight requests. Invalidate by key prefix (e.g., `cache.invalidate('transactions')`) or clear all. Used by most data composables.
+**Supabase client**: Singleton in `src/lib/supabase.ts` — lazy-initialized, cached in module scope.
 
-**Auth flow**: Google OAuth via Supabase. `useAuth()` holds singleton `user` and `loading` refs. Router `beforeEach` guard redirects unauthenticated users to `/auth/login` and already-authenticated users away from login pages.
+**Activity logging**: Fire-and-forget inserts to `activity_logs` table after every mutation. The `useActivityLog` composable provides a `log()` function called by every CRUD composable. Failures are silently ignored.
 
-**Layout routing**: Routes use `meta.layout` — public pages (landing, login, about, etc.) use the `blank` layout (no sidebar), authenticated pages use the `default` layout (sidebar + topbar).
+**Couple/partner mode**: Users can invite partners via email. Accepted couples share finances. `usePartner` handles invitations, acceptance (via edge function), and disconnection.
 
-**i18n**: vue-i18n with `id` and `en` locales. A Nuxt compatibility layer (`nuxt-compat.ts`) provides Nuxt-style `useI18n()`, `useLocalePath()`, and `useColorMode()` wrappers. Locale files at `src/locales/{id,en}.json`.
+**Currency/formatting**: `useCurrency` composable renders numbers with `Intl.NumberFormat` per locale. Default currency from user profile. Currently only has exchange rate fetching skeleton (`fetchRates`).
 
-**Nuxt migration compatibility**: The app was migrated from Nuxt 3 to pure Vite + Vue 3. It registers global fallback components (NuxtLink → RouterLink, ClientOnly, Icon) in `main.ts` and provides Nuxt-like composable APIs via `nuxt-compat.ts`. Auto-imports are configured for all composables and lib modules.
+**Auto-imports**: Vue APIs, vue-router, composables (from `src/composables/`), and utils (from `src/lib/`) are auto-imported. No explicit imports needed for these. UI components from `src/components/` are also auto-imported.
 
-**Auto-imports**: `unplugin-auto-import` auto-imports Vue core APIs (ref, computed, watch, onMounted), vue-router, pinia, @unhead/vue (useHead, useSeoMeta), @vueuse/core (useWindowScroll, useStorage, useDark, useToggle), and all modules from `src/composables/` and `src/lib/`.
+**Nuxt compatibility layer**: `src/composables/nuxt-compat.ts` provides Nuxt-like `useI18n`, `useLocalePath`, and `useColorMode` APIs so migrated code works without changes.
 
-**Dark mode**: Toggled via `useColorMode()` (from nuxt-compat.ts) which wraps `@vueuse/core`'s `useColorMode`. Stores preference in `localStorage` under `vueuse-color-scheme`. CSS variables switch via `.dark` class on root element.
+### Database (Supabase/PostgreSQL)
 
-### Supabase Schema
+Key tables: `profiles`, `categories`, `transactions`, `recurring_transactions`, `budgets`, `accounts`, `bills`, `goals`, `activity_logs`, `couple_invitations`.
 
-Key tables (all with RLS policies scoped to `auth.uid()`):
+All tables have RLS enabled. Migrations in `supabase/migrations/` are timestamped `YYYYMMDDHHMMSS_desc.sql`. Schema defined in `supabase/migrations/20260523165600_init.sql` and subsequent files.
 
-- `profiles` — user profile, currency preference, partner_id
-- `categories` — user-defined income/expense categories with icon and color
-- `transactions` — income/expense entries with category, account, description, date
-- `accounts` — financial accounts (bank, e-wallet, cash, investment, liability) with initial_balance
-- `budgets` — monthly spending limits per category
-- `goals` — savings goals with target amount, deadline, optional image
-- `recurring_transactions` — recurring income/expense entries
-- `todos` — task list with priority and due date
-- `couple_invitations` — partner connection invitations
+### Styling
+
+Tailwind CSS v4 with CSS-first config (`src/styles/globals.css` uses `@theme inline`). shadcn-vue components in `src/components/ui/`. CSS variables for light/dark themes using the `.dark` variant. Custom `@keyframes` for fade-up, fade-in, and noise animations.
+
+### Charts
+
+Uses `@unovis/vue` (Unovis) for `MonthlyBar`, `ExpenseDonut` charts. `NetWorthChart` draws from `useNetWorth` composable which computes historical asset/debt/net-worth data.
+
+## Environment
+
+Copy `.env` to get started — it contains Supabase URL and anon key (bound to a live project). Local Supabase can be used with `supabase start`.
+
+**Production URL:** [seaavey.site](https://seaavey.site)
+
+## Naming conventions
+
+- Composables: `usePascalCase.ts`
+- Pages: `kebab-case.vue` matching route path
+- Components: `PascalCase.vue`
+- Migration files: `YYYYMMDDHHMMSS_snake_case_desc.sql`
+- Supabase tables: `snake_case`, plural
+- DB columns: `snake_case`
+- Frontend interfaces: PascalCase matching table names

@@ -1,88 +1,105 @@
 <template>
-  <div class="mx-auto w-full max-w-3xl space-y-8">
+  <div class="mx-auto w-full max-w-2xl space-y-8">
     <!-- HEADER -->
-    <div>
-      <h1 class="text-3xl font-bold">
+    <div class="text-center md:text-left">
+      <h1 class="text-4xl font-black tracking-tighter text-foreground">
         {{ isEdit ? $t('transaction_form.title_edit') : $t('transaction_form.title_new')}}
       </h1>
-      <p class="mt-1.5 text-sm text-muted-foreground">
+      <p class="mt-1 font-medium text-muted-foreground">
         {{ isEdit ? $t('transaction_form.subtitle_edit') : $t('transaction_form.subtitle')}}
       </p>
     </div>
 
     <!-- TYPE SELECTOR -->
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-2 gap-4">
       <Button
-        :variant="form.type === 'income' ? 'default' : 'outline'"
-        class="rounded-2xl px-5 py-4 text-center"
+        variant="ghost"
+        class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
+        :class="form.type === 'income' 
+          ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 border-emerald-500' 
+          : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'"
         @click="form.type = 'income'"
       >
-        <AppIcon name="hugeicons:arrow-down-01" :size="20" class="mr-2 inline-block" />
-        {{ $t('transaction_form.income')}}
+        <div class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          :class="form.type === 'income' ? 'bg-white/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'"
+        >
+          <AppIcon name="hugeicons:arrow-down-01" :size="28" />
+        </div>
+        <span class="text-xs font-black uppercase tracking-widest">{{ $t('transaction_form.income')}}</span>
       </Button>
+      
       <Button
-        :variant="form.type === 'expense' ? 'default' : 'outline'"
-        class="rounded-2xl px-5 py-4 text-center"
+        variant="ghost"
+        class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
+        :class="form.type === 'expense' 
+          ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 border-rose-500' 
+          : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'"
         @click="form.type = 'expense'"
       >
-        <AppIcon name="hugeicons:arrow-up-01" :size="20" class="mr-2 inline-block" />
-        {{ $t('transaction_form.expense')}}
+        <div class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          :class="form.type === 'expense' ? 'bg-white/20' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'"
+        >
+          <AppIcon name="hugeicons:arrow-up-01" :size="28" />
+        </div>
+        <span class="text-xs font-black uppercase tracking-widest">{{ $t('transaction_form.expense')}}</span>
       </Button>
     </div>
 
     <!-- AMOUNT CARD -->
-    <div class="rounded-4xl border border-border/50 bg-card/40 p-8">
-      <p class="text-sm font-medium text-muted-foreground">{{ $t('transaction_form.amount')}}</p>
-      <div class="mt-4 flex items-start gap-2">
-        <span class="mt-2 text-2xl font-semibold text-muted-foreground/90">{{
-          form.currency
-        }}</span>
+    <div class="relative overflow-hidden rounded-4xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80">
+      <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('transaction_form.amount')}}</Label>
+      <div class="mt-4 flex items-center gap-4">
+        <div class="flex h-14 items-center justify-center rounded-2xl bg-muted/50 px-5 text-xl font-black text-foreground shadow-inner">
+          {{ form.currency }}
+        </div>
         <input
           v-model="amountDisplay"
           type="text"
           inputmode="numeric"
           :placeholder="$t('transaction_form.amount_placeholder')"
-          class="w-full border-none bg-transparent text-5xl font-bold outline-none placeholder:text-muted-foreground/20"
+          class="w-full border-none bg-transparent text-5xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 md:text-6xl"
           @keydown="onNumberKeydown"
         />
       </div>
     </div>
 
-    <!-- DETAIL FORM -->
-    <div class="space-y-px overflow-hidden rounded-4xl border border-border/50 bg-card/20">
-      <div class="flex items-center gap-3 px-5 py-4">
-        <AppIcon name="hugeicons:wallet-01" :size="18" class="text-muted-foreground" />
-        <div class="flex-1">
+    <!-- DETAIL FORM GRID -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <!-- Category & Account (Left Side) -->
+      <div class="space-y-4">
+        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
+          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <AppIcon name="hugeicons:grid-view" :size="12" />
+            {{ $t('transaction_form.category') }}
+          </Label>
           <CategoryPicker
             v-model="form.category_id"
             :type="form.type"
             :placeholder="$t('transaction_form.select_category')"
+            class="w-full"
           />
         </div>
-      </div>
 
-      <div class="flex items-center gap-3 px-5 py-4">
-        <AppIcon name="hugeicons:bank" :size="18" class="text-muted-foreground" />
-        <div class="flex-1">
+        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
+          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <AppIcon name="hugeicons:wallet-01" :size="12" />
+            {{ $t('transaction_form.select_account') }}
+          </Label>
           <Select v-model="form.account_id">
-            <SelectTrigger class="border-none shadow-none">
+            <SelectTrigger class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80">
               <SelectValue :placeholder="$t('transaction_form.select_account')" />
             </SelectTrigger>
-            <SelectContent
-              class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2"
-            >
-              <SelectItem value="" class="rounded-xl px-3 py-2.5 text-sm text-muted-foreground">
-                {{ $t('transaction_form.select_account')}}
-              </SelectItem>
+            <SelectContent class="rounded-2xl p-2">
+              <SelectItem value="" class="rounded-xl">{{ $t('transaction_form.select_account') }}</SelectItem>
               <SelectItem
                 v-for="acct in accounts"
                 :key="acct.id"
                 :value="acct.id"
-                class="rounded-xl px-3 py-2.5 text-sm text-foreground hover:bg-accent cursor-pointer"
+                class="rounded-xl px-3 py-2.5"
               >
                 <div class="flex items-center gap-2">
                   <div class="size-2 rounded-full" :style="{ backgroundColor: acct.color }" />
-                  <span>{{ acct.name }}</span>
+                  <span class="font-bold">{{ acct.name }}</span>
                 </div>
               </SelectItem>
             </SelectContent>
@@ -90,91 +107,91 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3 px-5 py-4">
-        <AppIcon name="hugeicons:coins-swap" :size="18" class="text-muted-foreground" />
-        <div class="flex-1">
+      <!-- Currency & Date (Right Side) -->
+      <div class="space-y-4">
+        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
+          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <AppIcon name="hugeicons:coins-swap" :size="12" />
+            {{ $t('transaction_form.currency') }}
+          </Label>
           <Select v-model="form.currency">
-            <SelectTrigger class="border-none shadow-none">
+            <SelectTrigger class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent
-              class="bg-popover border border-border shadow-2xl shadow-black/10 dark:shadow-black/40 rounded-2xl p-2"
-            >
+            <SelectContent class="max-h-[300px] rounded-2xl p-2">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel
-                  class="sticky top-0 bg-popover z-10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                  >{{ group.label }}</SelectLabel
-                >
+                <SelectLabel class="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
+                  {{ group.label }}
+                </SelectLabel>
                 <SelectItem
                   v-for="c in group.currencies"
                   :key="c.value"
                   :value="c.value"
-                  class="rounded-xl px-3 py-2.5 text-sm text-foreground hover:bg-accent cursor-pointer"
+                  class="rounded-xl px-3 py-2.5"
                 >
                   <div class="flex items-center gap-2">
-                    <span class="font-medium">{{ c.value }}</span>
-                    <span class="text-muted-foreground"> - {{ c.label.split(' - ')[1] }}</span>
+                    <span class="font-black text-foreground">{{ c.value }}</span>
+                    <span class="text-xs text-muted-foreground opacity-60"> - {{ c.label.split(' - ')[1] }}</span>
                   </div>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
-      </div>
 
-      <div class="flex items-center gap-3 px-5 py-4">
-        <AppIcon name="hugeicons:calendar-01" :size="18" class="text-muted-foreground" />
-        <div class="">
+        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
+          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <AppIcon name="hugeicons:calendar-01" :size="12" />
+            {{ $t('transaction_form.select_date') }}
+          </Label>
           <Popover>
             <PopoverTrigger as-child>
               <Button
                 variant="outline"
-                :class="
-                  cn(
-                    'w-full justify-between border-none px-4 font-medium shadow-none hover:bg-transparent',
-                    !form.date && 'text-muted-foreground',
-                  )
-                "
+                class="h-11 w-full justify-between rounded-2xl border-border/50 bg-background/50 px-4 font-bold transition-all hover:bg-background/80"
+                :class="!form.date && 'text-muted-foreground'"
               >
                 {{
                   form.date
                     ? df.format(calendarDate!.toDate(getLocalTimeZone()))
                     : $t('transaction_form.select_date')
                 }}
-                <AppIcon
-                  name="hugeicons:arrow-down-01"
-                  :size="16"
-                  class="text-muted-foreground ml-auto opacity-50"
-                />
+                <AppIcon name="hugeicons:arrow-down-01" :size="16" class="ml-2 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent class="w-auto p-0">
-              <Calendar v-model="calendarDate" initial-focus />
+            <PopoverContent class="w-auto p-0 rounded-3xl border-border/50 shadow-2xl backdrop-blur-xl">
+              <Calendar v-model="calendarDate" initial-focus class="rounded-3xl" />
             </PopoverContent>
           </Popover>
         </div>
       </div>
 
-      <div class="flex items-start gap-3 px-5 py-4">
-        <AppIcon name="hugeicons:note-01" :size="18" class="mt-0.5 text-muted-foreground" />
-        <div class="flex-1">
-          <Textarea
-            v-model="form.description"
-            :placeholder="$t('transaction_form.note_optional')"
-            rows="2"
-            class="resize-none border-none shadow-none"
-          />
-        </div>
+      <!-- Notes (Full Width) -->
+      <div class="col-span-1 space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2">
+        <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+          <AppIcon name="hugeicons:note-01" :size="12" />
+          {{ $t('transaction_form.note_optional') }}
+        </Label>
+        <Textarea
+          v-model="form.description"
+          :placeholder="$t('transaction_form.note_optional')"
+          rows="2"
+          class="min-h-[80px] rounded-2xl border-border/50 bg-background/50 p-4 font-medium transition-all hover:bg-background/80 focus-visible:ring-primary/20"
+        />
       </div>
     </div>
 
     <!-- ACTION BUTTONS -->
-    <div class="flex items-center justify-end gap-3">
-      <Button variant="outline" @click="$emit('cancel')">
+    <div class="flex items-center justify-end gap-4 pt-4">
+      <Button 
+        variant="ghost" 
+        class="h-12 rounded-2xl px-8 font-black uppercase tracking-widest transition-all hover:bg-secondary/50"
+        @click="$emit('cancel')"
+      >
         {{ $t('transaction_form.cancel')}}
       </Button>
       <Button
-        class="rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-primary/20 transition hover:from-primary/80 hover:to-primary/90"
+        class="h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
         :disabled="!form.amount || !form.date"
         @click="onSubmit"
       >

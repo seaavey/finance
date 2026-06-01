@@ -76,16 +76,11 @@ onMounted(async () => {
               class="flex size-14 items-center justify-center rounded-2xl"
               :style="{ backgroundColor: accountDetail.color + '20' }"
             >
-              <AppIcon
-                v-if="accountDetail.icon?.startsWith('hugeicons:')"
-                :name="accountDetail.icon"
+              <AccountIcon
+                :icon="accountDetail.icon"
+                :type="accountDetail.type"
                 :size="28"
-                :style="{ color: accountDetail.color }"
-              />
-              <div
-                v-else
-                class="size-7 rounded-lg"
-                :style="{ backgroundColor: accountDetail.color }"
+                :color="accountDetail.color"
               />
             </div>
             <div>

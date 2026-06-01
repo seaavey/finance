@@ -74,7 +74,7 @@
         <div class="relative z-10">
           <div class="flex items-center gap-3">
             <div
-              class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-foreground dark:shadow-none"
+              class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-none"
             >
               <AppIcon name="hugeicons:wallet-01" :size="20" />
             </div>
