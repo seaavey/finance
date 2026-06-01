@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { defineAsyncComponent } from 'vue'
 
@@ -22,24 +22,30 @@ useHead({
   ]
 })
 
-const { user } = useAuth()
+// Defer auth + bills + toast — only needed for authenticated users on protected routes
+onMounted(async () => {
+  // Skip for public/blank-layout routes
+  if (route.meta.layout === 'blank') return;
 
-// Defer bills + toast imports — only needed for authenticated users
-watch(() => user.value, async (newUser) => {
-  if (newUser) {
-    const { useBills } = await import('@/composables/useBills')
-    const { useToast } = await import('@/composables/useToast')
-    const { bills, fetchBills } = useBills()
-    const { toast } = useToast()
-    await fetchBills()
-    const today = new Date().toISOString().split('T')[0]
-    const dueToday = bills.value.filter(b => b.due_date === today && !b.is_paid)
+  const { useAuth } = await import('@/composables/useAuth')
+  const { user } = useAuth()
 
-    if (dueToday.length > 0) {
-      toast.info(`You have ${dueToday.length} bill(s) due today!`)
+  watch(() => user.value, async (newUser) => {
+    if (newUser) {
+      const { useBills } = await import('@/composables/useBills')
+      const { useToast } = await import('@/composables/useToast')
+      const { bills, fetchBills } = useBills()
+      const { toast } = useToast()
+      await fetchBills()
+      const today = new Date().toISOString().split('T')[0]
+      const dueToday = bills.value.filter(b => b.due_date === today && !b.is_paid)
+
+      if (dueToday.length > 0) {
+        toast.info(`You have ${dueToday.length} bill(s) due today!`)
+      }
     }
-  }
-}, { immediate: true })
+  }, { immediate: true })
+})
 
 const layout = computed(() => {
   if (route.meta.layout === 'blank') {
