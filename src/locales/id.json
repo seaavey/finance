@@ -243,6 +243,7 @@
     "deleted": "Tagihan berhasil dihapus",
     "delete_error": "Gagal menghapus tagihan",
     "mark_paid": "Tandai Lunas",
+    "mark_paid_for": "Tandai {name} lunas",
     "unpaid": "Belum Lunas",
     "paid": "Lunas",
     "no_bills": "Belum ada tagihan",

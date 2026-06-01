@@ -42,7 +42,13 @@
                 {{ getDueDateText(bill.due_date) }}
               </p>
             </div>
-            <Button variant="outline" size="sm" class="h-7 px-3 text-[10px] font-bold" @click="handleMarkPaid(bill.id)">
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-7 px-3 text-[10px] font-bold"
+              :aria-label="$t('bills.mark_paid_for', { name: bill.title })"
+              @click="handleMarkPaid(bill.id)"
+            >
               {{ $t('bills.mark_paid') }}
             </Button>
           </div>
@@ -65,6 +71,7 @@ import { Button } from '@/components/ui/button';
 import type { Bill } from '@/composables/useBills';
 
 const { toast } = useToast();
+const { t } = useI18n();
 
 const { bills, fetchBills, markAsPaid } = useBills();
 const { formatCurrency } = useCurrency();
@@ -88,9 +95,9 @@ const isOverdue = (dueDate: string): boolean => getDaysUntilDue(dueDate) < 0;
 
 const getDueDateText = (dueDate: string): string => {
   const days = getDaysUntilDue(dueDate);
-  if (days === 0) return 'Due today!';
-  if (days < 0) return 'Overdue!';
-  return `Due in ${days} days`;
+  if (days === 0) return t('bills.due_today');
+  if (days < 0) return t('bills.overdue');
+  return t('bills.due_in_days', { days });
 };
 
 const getDueDateClass = (dueDate: string): string => {

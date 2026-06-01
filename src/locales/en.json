@@ -243,6 +243,7 @@
     "deleted": "Bill deleted successfully",
     "delete_error": "Failed to delete bill",
     "mark_paid": "Mark as Paid",
+    "mark_paid_for": "Mark {name} as paid",
     "unpaid": "Unpaid",
     "paid": "Paid",
     "no_bills": "No bills yet",
