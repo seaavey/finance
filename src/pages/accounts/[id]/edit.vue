@@ -50,6 +50,25 @@ const typeIcons: Record<string, string> = {
   liability: 'hugeicons:credit-card-change',
 };
 
+const ewalletBrands = [
+  { id: 'gopay', label: 'GoPay' },
+  { id: 'ovo', label: 'OVO' },
+  { id: 'dana', label: 'DANA' },
+  { id: 'shopeepay', label: 'ShopeePay' },
+  { id: 'linkaja', label: 'LinkAja' },
+  { id: 'isaku', label: 'i.saku' },
+];
+
+const bankBrands = [
+  { id: 'bca', label: 'BCA' },
+  { id: 'mandiri', label: 'Mandiri' },
+  { id: 'bri', label: 'BRI' },
+  { id: 'bni', label: 'BNI' },
+  { id: 'bsi', label: 'BSI' },
+  { id: 'jago', label: 'Bank Jago' },
+  { id: 'seabank', label: 'SeaBank' },
+];
+
 watch(
   () => form.type,
   (type) => { form.icon = typeIcons[type] || 'hugeicons:bank'; },
@@ -113,73 +132,141 @@ const onSubmit = async () => {
       <p class="mt-1 font-medium text-muted-foreground">{{ $t('accounts.subtitle') }}</p>
     </div>
 
-    <form class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm" @submit.prevent="onSubmit">
+    <form class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl" @submit.prevent="onSubmit">
       <div class="space-y-2">
-        <Label>{{ $t('accounts.name') }}</Label>
-        <Input v-model="form.name" :placeholder="t('accounts.name')" required />
+        <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.name') }}</Label>
+        <Input v-model="form.name" :placeholder="t('accounts.name')" class="h-12 rounded-xl bg-background/50 border-border/50 font-bold" required />
       </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('accounts.type') }}</Label>
-        <div class="grid grid-cols-3 gap-2">
+      <div class="space-y-3">
+        <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.type') }}</Label>
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
           <Button
             v-for="opt in typeOptions"
             :key="opt.value"
-            :variant="form.type === opt.value ? 'default' : 'outline'"
-            class="flex flex-col items-center gap-1 py-3"
-            @click="form.type = opt.value as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'"
+            type="button"
+            variant="ghost"
+            class="h-auto flex-col items-center gap-2 py-4 rounded-2xl transition-all duration-300 border border-transparent"
+            :class="form.type === opt.value 
+              ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-primary' 
+              : 'bg-secondary/40 hover:bg-secondary/60 text-foreground border-border/50'"
+            @click="form.type = opt.value as any"
           >
-            <AppIcon :name="opt.icon" :size="20" />
-            <span class="text-xs">{{ opt.label }}</span>
+            <AppIcon :name="opt.icon" :size="24" />
+            <span class="text-[10px] font-black tracking-tight uppercase">{{ opt.label }}</span>
           </Button>
         </div>
       </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('accounts.currency') }}</Label>
-        <Select v-model="form.currency">
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">
-              {{ c.label }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+      <!-- Brand icon picker (for bank) -->
+      <div v-if="form.type === 'bank'" class="space-y-3">
+        <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.icon') }}</Label>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <button
+            v-for="brand in bankBrands"
+            :key="brand.id"
+            type="button"
+            class="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 p-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            :class="form.icon === brand.id
+              ? 'border-primary bg-primary/5 shadow-xl shadow-primary/10'
+              : 'border-border/40 bg-background/40 hover:border-border/80'"
+            @click="form.icon = brand.id; form.name = brand.label"
+          >
+            <div class="flex size-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm">
+              <img
+                :src="`/accounts/bank/${brand.id}.svg`"
+                class="size-full object-contain"
+                :alt="brand.label"
+              />
+            </div>
+            <span class="text-[11px] font-bold tracking-tight">{{ brand.label }}</span>
+          </button>
+        </div>
       </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('accounts.initial_balance') }}</Label>
-        <Input
-          v-model="balanceDisplay"
-          type="text"
-          inputmode="numeric"
-          :placeholder="t('accounts.initial_balance')"
-          @keydown="onNumberKeydown"
-        />
+      <!-- Brand icon picker (for e-wallet) -->
+      <div v-if="form.type === 'e-wallet'" class="space-y-3">
+        <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.icon') }}</Label>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <button
+            v-for="brand in ewalletBrands"
+            :key="brand.id"
+            type="button"
+            class="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 p-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            :class="form.icon === brand.id
+              ? 'border-primary bg-primary/5 shadow-xl shadow-primary/10'
+              : 'border-border/40 bg-background/40 hover:border-border/80'"
+            @click="form.icon = brand.id; form.name = brand.label"
+          >
+            <div class="flex size-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm">
+              <img
+                :src="`/accounts/e-wallet/${brand.id}.svg`"
+                class="size-full object-contain"
+                :alt="brand.label"
+              />
+            </div>
+            <span class="text-[11px] font-bold tracking-tight">{{ brand.label }}</span>
+          </button>
+        </div>
       </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('accounts.color') }}</Label>
-        <div class="flex flex-wrap gap-2">
-          <Button
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div class="space-y-2">
+          <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.currency') }}</Label>
+          <Select v-model="form.currency">
+            <SelectTrigger class="h-12 rounded-xl bg-background/50 border-border/50">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">
+                {{ c.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div class="space-y-2">
+          <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.initial_balance') }}</Label>
+          <Input
+            v-model="balanceDisplay"
+            type="text"
+            inputmode="numeric"
+            :placeholder="t('accounts.initial_balance')"
+            class="h-12 rounded-xl bg-background/50 border-border/50 font-bold"
+            @keydown="onNumberKeydown"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('accounts.color') }}</Label>
+        <div class="flex flex-wrap gap-2.5">
+          <button
             v-for="c in colorOptions"
             :key="c"
-            variant="outline"
-            class="size-8 rounded-full p-0"
-            :class="form.color === c && 'scale-110 ring-2 ring-foreground'"
+            type="button"
+            class="size-8 rounded-full transition-all duration-300 hover:scale-110 active:scale-90 border-2"
+            :class="form.color === c ? 'border-foreground shadow-lg scale-110' : 'border-transparent opacity-60 hover:opacity-100'"
             :style="{ backgroundColor: c }"
             @click="form.color = c"
           />
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" @click="router.push('/accounts')">
+      <div class="flex justify-end gap-3 pt-6">
+        <Button 
+          type="button" 
+          variant="ghost" 
+          class="h-12 px-8 rounded-xl font-bold"
+          @click="router.push('/accounts')"
+        >
           {{ $t('common.cancel') }}
         </Button>
-        <Button type="submit" :disabled="loading || !isFormValid">
+        <Button 
+          type="submit" 
+          :disabled="loading || !isFormValid"
+          class="h-12 px-8 rounded-xl font-bold shadow-lg shadow-primary/20"
+        >
           {{ loading ? $t('common.saving') : $t('accounts.edit') }}
         </Button>
       </div>
