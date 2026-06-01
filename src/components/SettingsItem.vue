@@ -19,7 +19,7 @@
 
       <div class="flex min-w-0 items-center gap-2 transition-colors duration-200">
         <span
-          class="truncate text-left text-xs font-bold uppercase tracking-tight text-muted-foreground/60 transition-colors sm:text-right group-hover:text-muted-foreground"
+          class="truncate text-left text-xs font-bold uppercase tracking-tight text-muted-foreground/90 transition-colors sm:text-right group-hover:text-muted-foreground"
         >
           {{ value }}
         </span>

@@ -16,9 +16,9 @@
 
     <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
       <div v-for="section in navSections" :key="section.label" class="space-y-1">
-        <h4 class="px-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+        <h2 class="px-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
           {{ section.label }}
-        </h4>
+        </h2>
         <div class="space-y-0.5">
           <router-link
             v-for="item in section.items"
@@ -38,7 +38,7 @@
               :class="
                 isActive(item.to)
                   ? 'text-primary'
-                  : 'text-muted-foreground/60 group-hover:text-foreground'
+                  : 'text-muted-foreground/90 group-hover:text-foreground'
               "
             />
             {{ item.label }}
@@ -87,7 +87,7 @@
         >
           <AppIcon name="hugeicons:user" :size="14" class="text-primary" />
           <span>{{ partnerDisplayName }}</span>
-          <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground/40"
+          <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground/80"
             >Partner</span
           >
         </router-link>

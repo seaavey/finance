@@ -34,7 +34,7 @@
     <div class="rounded-4xl border border-border/50 bg-card/40 p-8">
       <p class="text-sm font-medium text-muted-foreground">{{ $t('transaction_form.amount')}}</p>
       <div class="mt-4 flex items-start gap-2">
-        <span class="mt-2 text-2xl font-semibold text-muted-foreground/60">{{
+        <span class="mt-2 text-2xl font-semibold text-muted-foreground/90">{{
           form.currency
         }}</span>
         <input

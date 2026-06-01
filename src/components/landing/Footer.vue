@@ -35,11 +35,11 @@
 
         <!-- Column 2: Product -->
         <div>
-          <h4
-            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60"
+          <h2
+            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/90"
           >
             {{ $t('landing.footer_product') }}
-          </h4>
+          </h2>
           <ul class="space-y-4">
             <li v-for="link in productLinks" :key="link.labelKey">
               <Button
@@ -55,11 +55,11 @@
 
         <!-- Column 3: Company & Legal -->
         <div>
-          <h4
-            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/60"
+          <h2
+            class="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-muted-foreground/90"
           >
             {{ $t('landing.footer_company') }}
-          </h4>
+          </h2>
           <ul class="space-y-4">
             <li v-for="link in companyLinks" :key="link.labelKey">
               <a
@@ -74,9 +74,9 @@
 
         <!-- Column 4: Newsletter -->
         <div class="space-y-6">
-          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
+          <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/90">
             {{ $t('landing.footer_subscribe_title') }}
-          </h4>
+          </h2>
           <p class="text-sm text-muted-foreground font-medium leading-relaxed">
             {{ $t('landing.footer_subscribe_desc') }}
           </p>
@@ -85,7 +85,7 @@
               <AppIcon
                 name="hugeicons:mail-01"
                 :size="16"
-                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/90"
               />
               <Input
                 type="email"
@@ -107,7 +107,7 @@
       <div
         class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-6"
       >
-        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
           {{ $t('landing.footer_copyright', { year: new Date().getFullYear() }) }}
         </p>
         <div class="flex items-center gap-8">
@@ -115,7 +115,7 @@
             v-for="link in legalLinks"
             :key="link.labelKey"
             :href="link.href"
-            class="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/60 transition-colors hover:text-primary"
+            class="text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/90 transition-colors hover:text-primary"
           >
             {{ $t(link.labelKey) }}
           </a>

@@ -28,7 +28,7 @@
             />
             <div class="relative z-10">
               <span
-                class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mb-2 block"
+                class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/80 mb-2 block"
               >
                 {{ $t(section.sectionKey)}}
               </span>

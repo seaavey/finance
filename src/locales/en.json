@@ -416,7 +416,10 @@
     "suggestions": "Suggestions",
     "quick_actions": "Quick Actions",
     "notifications": "Notifications",
-    "no_notifications": "No new notifications"
+    "no_notifications": "No new notifications",
+    "toggle_sidebar": "Toggle sidebar",
+    "toggle_theme": "Toggle theme",
+    "dismiss_notification": "Dismiss notification"
   },
   "landing": {
     "hero_badge": "100+ active users",

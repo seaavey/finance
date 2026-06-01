@@ -41,7 +41,7 @@
             </Button>
           </div>
 
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/80">
             {{ $t('landing.cta_footer')}}
           </p>
         </div>

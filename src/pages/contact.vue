@@ -21,7 +21,7 @@
           <div class="space-y-6">
             <div class="rounded-4xl border border-border/50 bg-card p-8 shadow-sm">
               <h2
-                class="mb-8 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60"
+                class="mb-8 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/90"
               >
                 {{ $t('contact.info_title')}}
               </h2>
@@ -35,7 +35,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/40 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
                     >
                       {{ $t('contact.email_label')}}
                     </p>
@@ -55,7 +55,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/40 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
                     >
                       {{ $t('contact.support_label')}}
                     </p>
@@ -73,7 +73,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/40 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
                     >
                       {{ $t('contact.social_label')}}
                     </p>
@@ -103,7 +103,7 @@
               <div class="space-y-2">
                 <Label
                   for="name"
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
                   >{{ $t('contact.form_name')}}</Label
                 >
                 <Input
@@ -117,7 +117,7 @@
               <div class="space-y-2">
                 <Label
                   for="email"
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
                   >{{ $t('contact.form_email')}}</Label
                 >
                 <Input
@@ -132,7 +132,7 @@
               <div class="space-y-2">
                 <Label
                   for="message"
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
                   >{{ $t('contact.form_message')}}</Label
                 >
                 <Textarea

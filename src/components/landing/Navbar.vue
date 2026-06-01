@@ -44,7 +44,7 @@
             :class="[
               activeSection === item.href.replace('#', '')
                 ? 'text-white'
-                : 'text-muted-foreground/60 hover:text-foreground',
+                : 'text-muted-foreground/90 hover:text-foreground',
               // Fallback for better visibility if the reddish pill is not yet visible
               activeSection === item.href.replace('#', '') && !pillStyle.opacity ? 'text-primary' : '',
             ]"
@@ -132,6 +132,7 @@
             <Button
               variant="ghost"
               size="icon"
+              aria-label="Menu"
               class="md:hidden h-11 w-11 rounded-2xl bg-card/50 border border-border/40 shadow-sm hover:bg-muted/50 transition-all"
             >
               <AppIcon name="hugeicons:menu-01" :size="26" />
@@ -155,7 +156,7 @@
             <div class="flex-1 py-8 flex flex-col gap-8">
               <div class="flex flex-col gap-2">
                 <p
-                  class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] px-2 mb-3"
+                  class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-[0.2em] px-2 mb-3"
                 >
                   {{ $t('landing.navigation')}}
                 </p>
@@ -177,7 +178,7 @@
 
               <div class="flex flex-col gap-4">
                 <p
-                  class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] px-2 mb-1"
+                  class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-[0.2em] px-2 mb-1"
                 >
                   {{ $t('settings.preferences')}}
                 </p>
@@ -201,7 +202,7 @@
 
                 <div class="flex flex-col gap-3 px-1">
                   <p
-                    class="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest"
+                    class="text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest"
                   >
                     {{ $t('settings.language')}}
                   </p>

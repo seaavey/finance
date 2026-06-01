@@ -101,7 +101,7 @@
               </div>
               <div>
                 <h3 class="font-bold text-foreground">{{ cat.name }}</h3>
-                <p class="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-tight">
+                <p class="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-tight">
                   {{
                     $t('categories.transaction_count', {
                       count: (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count,

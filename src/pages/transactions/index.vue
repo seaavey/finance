@@ -228,7 +228,7 @@
             <div v-for="(group, date) in groupedTransactions" :key="date" class="space-y-3">
               <div class="flex items-center gap-4 px-2">
                 <span
-                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 whitespace-nowrap"
+                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/90 whitespace-nowrap"
                 >
                   {{ formatGroupDate(date as string) }}
                 </span>

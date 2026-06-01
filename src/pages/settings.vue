@@ -60,7 +60,7 @@
       <!-- PREFERENCES -->
       <section>
         <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
           {{ $t('settings.preferences')}}
         </h3>
@@ -100,7 +100,7 @@
       <!-- COUPLE -->
       <section>
         <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
           {{ $t('sidebar.partner')}}
         </h3>
@@ -166,7 +166,7 @@
             class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
             <p
-              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
             >
               {{ $t('settings.sent_invitations_title')}}
             </p>
@@ -210,7 +210,7 @@
             class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
           >
             <p
-              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
             >
               {{ $t('settings.received_invitations_title')}}
             </p>
@@ -329,7 +329,7 @@
       <!-- EXPORT DATA -->
       <section>
         <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
           {{ $t('settings.data')}}
         </h3>
@@ -348,7 +348,7 @@
       <!-- DANGER ZONE -->
       <section>
         <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-rose-500/60"
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 text-rose-500/60"
         >
           {{ $t('settings.account')}}
         </h3>
@@ -379,7 +379,7 @@
               <AppIcon
                 name="hugeicons:arrow-right-01"
                 :size="20"
-                class="shrink-0 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-muted-foreground/60"
+                class="shrink-0 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-muted-foreground/90"
               />
             </div>
           </Button>
@@ -443,7 +443,7 @@
         <div class="max-h-80 overflow-y-auto py-2 space-y-4">
           <div v-for="group in currencyGroups" :key="group.label">
             <p
-              class="sticky top-0 bg-background/80 backdrop-blur-sm z-10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+              class="sticky top-0 bg-background/80 backdrop-blur-sm z-10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
             >
               {{ group.label }}
             </p>

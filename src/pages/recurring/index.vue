@@ -182,7 +182,7 @@ const confirmDelete = async () => {
       <div
         class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
       >
-        <AppIcon name="hugeicons:repeat" :size="40" class="text-muted-foreground/40" />
+        <AppIcon name="hugeicons:repeat" :size="40" class="text-muted-foreground/80" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty')}}</h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
@@ -234,7 +234,7 @@ const confirmDelete = async () => {
                 >
                   {{ frequencyLabel(item.frequency) }}
                 </span>
-                <span class="text-[10px] font-bold text-muted-foreground/60">
+                <span class="text-[10px] font-bold text-muted-foreground/90">
                   {{ formatNextDate(item.next_date) }}
                 </span>
               </div>
@@ -263,7 +263,7 @@ const confirmDelete = async () => {
             </Button>
           </div>
           <div class="text-right">
-            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
               {{ $t('recurring.amount')}}
             </p>
             <p

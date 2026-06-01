@@ -22,7 +22,7 @@
           {{ transaction.description || categoryName || $t('transactions.no_description')}}
         </h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
-        <p v-if="accountName" class="mt-1 text-xs text-muted-foreground/60">
+        <p v-if="accountName" class="mt-1 text-xs text-muted-foreground/90">
           {{ accountName }}
         </p>
       </div>

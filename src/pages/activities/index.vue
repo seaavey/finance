@@ -207,7 +207,7 @@
                 {{ $t('dashboard.latest_activity') }}
               </p>
             </div>
-            <div v-if="loading" class="text-xs text-muted-foreground/60">
+            <div v-if="loading" class="text-xs text-muted-foreground/90">
               {{ $t('activities.loading') }}
             </div>
           </div>
@@ -235,7 +235,7 @@
                 <!-- Date Header -->
                 <div class="flex items-center gap-3 px-1 sm:gap-4 sm:px-2">
                   <span
-                    class="whitespace-nowrap text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 sm:text-xs"
+                    class="whitespace-nowrap text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 sm:text-xs"
                   >
                     {{ group.label }}
                   </span>
@@ -277,7 +277,7 @@
                       <p class="text-xs font-medium text-foreground sm:text-sm">
                         {{ $t(`activity.${log.entity_type}.${log.action}`, log.metadata) }}
                       </p>
-                      <p class="mt-0.5 text-[10px] font-medium text-muted-foreground/60 sm:text-xs">
+                      <p class="mt-0.5 text-[10px] font-medium text-muted-foreground/90 sm:text-xs">
                         {{ formatTime(log.created_at) }}
                       </p>
                     </div>
@@ -305,7 +305,7 @@
                 <p class="text-sm font-bold text-muted-foreground sm:text-base">
                   {{ $t('activities.no_results') }}
                 </p>
-                <p class="mt-1 text-xs font-medium text-muted-foreground/60">
+                <p class="mt-1 text-xs font-medium text-muted-foreground/90">
                   {{ $t('activities.no_results_desc') }}
                 </p>
               </div>

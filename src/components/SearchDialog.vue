@@ -75,7 +75,7 @@ const formatDate = (date: string) => {
     <CommandInput :placeholder="$t('topbar.search')" @input="onInput" />
     <CommandList>
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <p class="text-sm text-muted-foreground/60">{{ $t('topbar.searching')}}</p>
+        <p class="text-sm text-muted-foreground/90">{{ $t('topbar.searching')}}</p>
       </div>
 
       <CommandEmpty v-else-if="results.length === 0 && searchQuery">
@@ -118,7 +118,7 @@ const formatDate = (date: string) => {
           <AppIcon
             name="hugeicons:pencil-edit-01"
             :size="14"
-            class="shrink-0 text-muted-foreground/40"
+            class="shrink-0 text-muted-foreground/80"
           />
         </CommandItem>
       </CommandGroup>

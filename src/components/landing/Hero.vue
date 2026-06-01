@@ -84,7 +84,7 @@
 
       <!-- Micro-Trust Badges -->
       <div
-        class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+        class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
       >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
@@ -132,7 +132,7 @@
             </div>
             <div class="flex-1 flex justify-center">
               <div
-                class="rounded-full bg-background/50 px-6 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 border border-border/40 flex items-center gap-2"
+                class="rounded-full bg-background/50 px-6 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 border border-border/40 flex items-center gap-2"
               >
                 <AppIcon name="hugeicons:shield-01" :size="10" />
                 finansiil.app/dashboard
@@ -148,7 +148,7 @@
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
                 <p
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
                   {{ $t('landing.hero_preview.balance')}}
                 </p>
@@ -166,7 +166,7 @@
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
                 <p
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
                   {{ $t('landing.hero_preview.income')}}
                 </p>
@@ -185,7 +185,7 @@
                 class="rounded-3xl border border-border/50 bg-muted/20 p-6 transition-all hover:bg-muted/30"
               >
                 <p
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
                   {{ $t('landing.hero_preview.expense')}}
                 </p>
@@ -206,7 +206,7 @@
                     {{ $t('landing.hero_preview.chart_title')}}
                   </p>
                   <div
-                    class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shadow-sm border border-border/40"
+                    class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 shadow-sm border border-border/40"
                   >
                     {{ $t('landing.hero_preview.chart_period')}}
                   </div>
@@ -226,7 +226,7 @@
                   </div>
                 </div>
                 <div
-                  class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest px-1"
+                  class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground/80 uppercase tracking-widest px-1"
                 >
                   <span>{{ $t('landing.hero_preview.days.mon')}}</span>
                   <span>{{ $t('landing.hero_preview.days.tue')}}</span>
@@ -262,7 +262,7 @@
                         {{ $t(tx.title)}}
                       </p>
                       <p
-                        class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/40"
+                        class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/80"
                       >
                         {{ $t(tx.date)}}
                       </p>
@@ -288,7 +288,7 @@
               <AppIcon name="hugeicons:wallet-01" :size="24" />
             </div>
             <div>
-              <p class="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
+              <p class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-widest">
                 {{ $t('landing.hero_preview.savings')}}
               </p>
               <p class="text-2xl font-black tracking-tighter text-emerald-500">Rp 2.100.000</p>

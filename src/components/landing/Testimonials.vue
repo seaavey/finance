@@ -60,7 +60,7 @@
                   {{ rt(testimonial.name) }}
                 </p>
                 <p
-                  class="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/60"
+                  class="truncate text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
                   {{ rt(testimonial.role) }}
                 </p>

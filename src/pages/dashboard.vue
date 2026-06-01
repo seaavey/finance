@@ -13,7 +13,7 @@
             </h2>
           </template>
         </ClientOnly>
-        <p class="mt-2 font-bold uppercase tracking-widest text-muted-foreground/60">
+        <p class="mt-2 font-bold uppercase tracking-widest text-muted-foreground/90">
           {{ monthLabel }}
         </p>
       </div>
@@ -103,7 +103,7 @@
                 />
                 {{ trendBalance === null ? $t('dashboard.new') : `${Math.abs(trendBalance)}%` }}
               </div>
-              <span class="text-xs font-bold text-muted-foreground/60">{{
+              <span class="text-xs font-bold text-muted-foreground/90">{{
                 $t('dashboard.vs_last_month_short')
               }}</span>
             </div>
@@ -342,7 +342,7 @@
                     {{ getCategoryName(tx.category_id) }}
                   </span>
                 </div>
-                <p class="text-xs font-bold text-muted-foreground/60">
+                <p class="text-xs font-bold text-muted-foreground/90">
                   {{ formatRelativeDate(tx.date) }}
                 </p>
               </div>

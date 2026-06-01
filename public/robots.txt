@@ -11,4 +11,4 @@ Disallow: /categories
 Disallow: /settings
 Disallow: /activities
 
-Sitemap: https://aemyfinance.com/sitemap.xml
+Sitemap: https://seaavey.site/sitemap.xml

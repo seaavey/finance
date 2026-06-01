@@ -416,7 +416,10 @@
     "suggestions": "Saran",
     "quick_actions": "Aksi Cepat",
     "notifications": "Notifikasi",
-    "no_notifications": "Tidak ada notifikasi baru"
+    "no_notifications": "Tidak ada notifikasi baru",
+    "toggle_sidebar": "Buka/tutup sidebar",
+    "toggle_theme": "Ganti tema",
+    "dismiss_notification": "Tutup notifikasi"
   },
   "landing": {
     "hero_badge": "100+ pengguna aktif",

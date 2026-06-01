@@ -8,6 +8,7 @@
         variant="ghost"
         size="icon"
         class="size-9 rounded-xl border border-border/50 bg-card/50 lg:hidden"
+        :aria-label="$t('topbar.toggle_sidebar')"
         @click="$emit('toggleSidebar')"
       >
         <AppIcon name="hugeicons:menu-02" :size="18" />
@@ -29,7 +30,7 @@
               <BreadcrumbItem class="hidden md:flex">
                 <BreadcrumbLink
                   :to="item.to!"
-                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/60 transition-colors hover:text-foreground"
+                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/90 transition-colors hover:text-foreground"
                 >
                   {{ item.label }}
                 </BreadcrumbLink>
@@ -50,6 +51,7 @@
         variant="ghost"
         size="icon"
         class="size-9 rounded-xl border border-border/50 bg-card/50 md:hidden"
+        :aria-label="$t('topbar.search')"
         @click="showSearchDialog = true"
       >
         <AppIcon name="hugeicons:search-01" :size="18" />
@@ -65,7 +67,7 @@
           <AppIcon
             name="hugeicons:search-01"
             :size="14"
-            class="absolute left-3 text-muted-foreground/60"
+            class="absolute left-3 text-muted-foreground/90"
           />
           <span>{{ $t('topbar.search') }}</span>
           <kbd
@@ -81,6 +83,7 @@
           <Button
             variant="ghost"
             size="icon"
+            :aria-label="$t('topbar.notifications')"
             class="relative size-9 rounded-xl border border-border/50 bg-card/50"
           >
             <AppIcon name="hugeicons:notification-03" :size="18" />
@@ -131,7 +134,8 @@
                 <Button
                   variant="ghost"
                   size="icon"
-                  class="size-7 rounded-lg text-muted-foreground/60 hover:bg-muted hover:text-foreground"
+                  :aria-label="$t('topbar.dismiss_notification')"
+                  class="size-7 rounded-lg text-muted-foreground/90 hover:bg-muted hover:text-foreground"
                   @click="dismissReminder(reminder.id)"
                 >
                   <AppIcon name="hugeicons:cancel-01" :size="14" />
@@ -140,7 +144,7 @@
             </template>
             <div v-else class="flex h-32 flex-col items-center justify-center space-y-2">
               <AppIcon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/30" />
-              <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/90">
                 {{ $t('topbar.no_notifications') }}
               </p>
             </div>
@@ -152,6 +156,7 @@
       <Button
         variant="ghost"
         size="icon"
+        :aria-label="$t('topbar.toggle_theme')"
         class="size-9 rounded-xl border border-border/50 bg-card/50"
         @click="cycleColorMode"
       >
