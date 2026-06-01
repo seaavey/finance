@@ -150,6 +150,52 @@ export const useAccounts = () => {
     }));
   };
 
+  const getConvertedBalances = async (): Promise<AccountWithBalance[]> => {
+    if (!user.value) {
+      return [];
+    }
+    const accts = accounts.value;
+    if (accts.length === 0) {
+      return [];
+    }
+
+    const { data } = await supabase
+      .from('transactions')
+      .select('account_id, type, amount')
+      .eq('user_id', user.value.id)
+      .in(
+        'account_id',
+        accts.map((a) => a.id),
+      )
+      .not('account_id', 'is', null);
+
+    const netMap = new Map<string, number>();
+    for (const tx of (data || []) as { account_id: string; type: string; amount: number }[]) {
+      const current = netMap.get(tx.account_id) || 0;
+      netMap.set(
+        tx.account_id,
+        tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount),
+      );
+    }
+
+    const { defaultCurrency, convertTo } = useCurrency();
+
+    return accts.map((a) => {
+      const net = netMap.get(a.id) || 0;
+      const rawBalance = Number(a.initial_balance) + net;
+
+      let convertedBalance = rawBalance;
+      if (a.currency !== defaultCurrency.value) {
+        const converted = convertTo(rawBalance, a.currency, defaultCurrency.value);
+        if (converted !== null) {
+          convertedBalance = converted;
+        }
+      }
+
+      return { ...a, balance: convertedBalance };
+    });
+  };
+
   const bankAccounts = computed(() => accounts.value.filter((a) => a.type === 'bank'));
   const ewalletAccounts = computed(() => accounts.value.filter((a) => a.type === 'e-wallet'));
   const cashAccounts = computed(() => accounts.value.filter((a) => a.type === 'cash'));
@@ -165,6 +211,7 @@ export const useAccounts = () => {
     deleteAccount,
     getAccountBalance,
     getAccountBalances,
+    getConvertedBalances,
     bankAccounts,
     ewalletAccounts,
     cashAccounts,
