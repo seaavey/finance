@@ -46,7 +46,7 @@ const yFormatter = (val: number | string) => {
 </script>
 
 <template>
-  <div class="relative h-[300px] w-full">
+  <div class="relative h-full w-full">
     <BarChart
       v-if="data.length > 0"
       :data="chartData"
