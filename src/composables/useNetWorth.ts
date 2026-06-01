@@ -12,6 +12,7 @@ export const useNetWorth = () => {
   const supabase = useSupabase();
   const { user } = useAuth();
   const { locale } = useI18n();
+  const { getConvertedBalances } = useAccounts();
 
   const history = ref<NetWorthData[]>([]);
   const loading = ref(false);
@@ -29,20 +30,37 @@ export const useNetWorth = () => {
         .select('*')
         .eq('user_id', user.value.id);
 
-      if (accError) {
-        throw accError;
+      if (accError) throw accError;
+      if (!accounts?.length) {
+        history.value = [];
+        return;
       }
 
-      // 2. Fetch all transactions (no limit to ensure historical accuracy)
+      // 2. Fetch all transactions (no limit for historical accuracy)
       const { data: transactions, error: txError } = await supabase
         .from('transactions')
         .select('account_id, type, amount, date')
         .eq('user_id', user.value.id)
         .order('date', { ascending: true });
 
-      if (txError) {
-        throw txError;
+      if (txError) throw txError;
+
+      // 3. Fetch exchange rates
+      const { data: ratesData } = await supabase
+        .from('exchange_rates')
+        .select('target_currency, rate');
+
+      const rates: Record<string, number> = {};
+      for (const row of ratesData || []) {
+        rates[row.target_currency] = Number(row.rate);
       }
+
+      const convertAmount = (amount: number, fromCurrency: string): number => {
+        if (fromCurrency === 'IDR' || !rates[fromCurrency]) {
+          return amount;
+        }
+        return amount / rates[fromCurrency];
+      };
 
       const result: NetWorthData[] = [];
       const now = new Date();
@@ -56,16 +74,15 @@ export const useNetWorth = () => {
         let totalDebts = 0;
 
         for (const acc of accounts) {
-          // Initial balance only if account created before or during this month
           const accCreatedAt = new Date(acc.created_at);
           let balance = accCreatedAt <= d ? Number(acc.initial_balance) : 0;
 
-          // Add transactions for this account up to the end of this month
-          const accTxs = transactions.filter(
-            (tx) => tx.account_id === acc.id && new Date(tx.date) <= d,
+          const accTxs = (transactions || []).filter(
+            (tx: { account_id: string; date: string }) =>
+              tx.account_id === acc.id && new Date(tx.date) <= d,
           );
 
-          for (const tx of accTxs) {
+          for (const tx of accTxs as { type: string; amount: number }[]) {
             if (tx.type === 'income') {
               balance += Number(tx.amount);
             } else {
@@ -73,10 +90,13 @@ export const useNetWorth = () => {
             }
           }
 
+          // Convert to base currency (IDR)
+          const convertedBalance = convertAmount(balance, acc.currency || 'IDR');
+
           if (acc.type === 'liability') {
-            totalDebts += balance;
+            totalDebts += convertedBalance;
           } else {
-            totalAssets += balance;
+            totalAssets += convertedBalance;
           }
         }
 
@@ -85,7 +105,7 @@ export const useNetWorth = () => {
           assets: totalAssets,
           debts: totalDebts,
           netWorth: totalAssets - totalDebts,
-          date: dateStr || "",
+          date: dateStr || '',
         });
       }
 
