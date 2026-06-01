@@ -1,5 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import type { LogLevel, RolldownLog } from 'rolldown'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
@@ -21,13 +22,16 @@ export default defineConfig({
         return html.replace(
           /<link rel="stylesheet" crossorigin href="([^"]+)">/g,
           `<link rel="stylesheet" href="$1" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" crossorigin href="$1"></noscript>`,
-        );
+        )
       },
     },
     Pages({
       dirs: 'src/pages',
+      exclude: ['**/*.spec.*', '**/*.test.*', '**/__tests__/**'],
     }),
     AutoImport({
+      include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
+      exclude: [/[\\/]node_modules[\\/]/, /[\\/]dist[\\/]/],
       imports: [
         'vue',
         'vue-router',
@@ -41,20 +45,36 @@ export default defineConfig({
       vueTemplate: true,
     }),
     Components({
+      include: [/\.vue$/, /\.vue\?vue/],
+      exclude: [/[\\/]node_modules[\\/]/, /[\\/]dist[\\/]/],
       dirs: ['src/components'],
       deep: true,
       dts: 'src/components.d.ts',
     }),
   ],
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
+        entryFileNames: '[hash:12].js',
+        chunkFileNames: '[hash:12].js',
         manualChunks(id) {
-          if (id.includes('@unovis')) return 'vendor-unovis';
-          if (id.includes('node_modules')) return 'vendor';
+          if (id.includes('node_modules')) {
+            const match = id.match(/[\\/]node_modules[\\/]((?:@[^\\/]+[\\/])?[^\\/]+)[\\/]/)
+            if (match) {
+              const pkg = match[1].replace('/', '-')
+              return `vendor-${pkg}`
+            }
+          }
         },
       },
+      onLog(level: LogLevel, log: RolldownLog) {
+        if (log.code === 'INVALID_ANNOTATION' && log.message.includes('@vueuse/core')) {
+          return
+        }
+      },
     },
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 500,
   },
   optimizeDeps: {
     include: ['@unovis/vue', '@unovis/ts'],
