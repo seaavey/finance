@@ -1,4 +1,4 @@
-import { ref, computed, reactive, watch, type Ref } from 'vue';
+import { computed, reactive, watch, type Ref } from 'vue';
 import { useI18n as useVueI18n } from 'vue-i18n';
 import { useColorMode as useVueUseColorMode, type BasicColorMode } from '@vueuse/core';
 

@@ -36,7 +36,7 @@ export const useExport = () => {
         return;
       }
 
-      const [txResult, recurringResult, catResult] = await Promise.all([
+      const [txResult, _recurringResult, catResult] = await Promise.all([
         supabase
           .from('transactions')
           .select('*')
