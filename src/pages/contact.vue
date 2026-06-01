@@ -162,6 +162,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ContactPage',
+})
 const { toast } = useToast();
 const { t } = useI18n();
 import { Button } from '@/components/ui/button';

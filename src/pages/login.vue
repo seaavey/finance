@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'LoginPage',
+})
 const router = useRouter();
 onMounted(() => {
   router.replace('/auth/login');

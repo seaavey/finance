@@ -16,6 +16,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'LandingPage',
+})
 import LandingNavbar from '@/components/landing/Navbar.vue';
 import LandingHero from '@/components/landing/Hero.vue';
 import LandingFeatures from '@/components/landing/Features.vue';

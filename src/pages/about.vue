@@ -65,6 +65,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'AboutPage',
+})
 import LandingNavbar from '@/components/landing/Navbar.vue';
 import LandingFooter from '@/components/landing/Footer.vue';
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'DefaultLayout',
+})
 import { ref, onMounted, watch } from 'vue';
 import { useMediaQuery } from '@vueuse/core';
 

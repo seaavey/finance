@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'AppIcon',
+})
 import { Icon } from '@iconify/vue';
 
 defineProps<{

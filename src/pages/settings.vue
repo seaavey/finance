@@ -472,6 +472,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'SettingsPage',
+})
 import { useExport } from "@/composables/useExport";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

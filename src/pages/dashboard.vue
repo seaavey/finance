@@ -495,6 +495,9 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'DashboardPage',
+})
 import { Button } from '@/components/ui/button';
 import type { BudgetWithProgress } from '@/composables/useBudgets';
 import type { AccountWithBalance } from '@/composables/useAccounts';
