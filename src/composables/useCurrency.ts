@@ -1,11 +1,9 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
+import { useQuery } from '@tanstack/vue-query';
 import { user } from './useAuth';
 
-// Module-level singleton — shared across all useCurrency() calls
 const defaultCurrency = ref<string>('IDR');
-const exchangeRates = ref<Record<string, number> | null>(null);
-const isRatesLoading = ref(false);
 
 export const loadCurrency = async () => {
   const supabase = useSupabase();
@@ -24,29 +22,45 @@ export const loadCurrency = async () => {
 
 export const useCurrency = () => {
 
-  const fetchRates = async () => {
-    if (exchangeRates.value) {
-      return;
-    }
-    isRatesLoading.value = true;
-    try {
-      const response = await fetch('/api/v1/rates');
-      const data = await response.json();
-      exchangeRates.value = data.rates;
-    } catch (error) {
-      console.error('Failed to fetch rates:', error);
-    } finally {
-      isRatesLoading.value = false;
-    }
-  };
+  // --- Exchange rates from Supabase (synced via Edge Function) ---
+  const { data: ratesData } = useQuery({
+    queryKey: ['exchange-rates'],
+    queryFn: async () => {
+      const supabase = useSupabase();
+      const { data, error } = await supabase
+        .from('exchange_rates')
+        .select('target_currency, rate');
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      for (const row of data || []) {
+        map[row.target_currency] = Number(row.rate);
+      }
+      return map;
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-  const convertTo = (amount: number, targetCurrency: string = 'USD') => {
-    if (!exchangeRates.value || !exchangeRates.value[targetCurrency]) {
-      return null;
-    }
-    // Base is assumed to be IDR as per API config
-    const rate = exchangeRates.value[targetCurrency];
-    return amount * rate;
+  const exchangeRates = computed(() => ratesData.value || null);
+
+  const convertTo = (
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string,
+  ): number | null => {
+    if (!exchangeRates.value || amount === 0) return null;
+    if (fromCurrency === toCurrency) return amount;
+
+    const baseCurrency = defaultCurrency.value;
+
+    // All stored rates are: 1 baseCurrency = X targetCurrency
+    const rateFrom = exchangeRates.value[fromCurrency];
+    const rateTo = exchangeRates.value[toCurrency];
+
+    if (!rateFrom || !rateTo) return null;
+
+    // Convert fromCurrency → baseCurrency first, then → toCurrency
+    const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom;
+    return toCurrency === baseCurrency ? inBase : inBase * rateTo;
   };
 
   const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK'];
@@ -141,7 +155,6 @@ export const useCurrency = () => {
 
   const parseLocalizedNumber = (str: string, currency?: string): number => {
     const cur = currency || defaultCurrency.value;
-    // Extract only digits
     const digits = str.replace(/\D/g, '');
     if (!digits) {
       return 0;
@@ -162,8 +175,6 @@ export const useCurrency = () => {
     currencyGroups,
     defaultCurrency,
     exchangeRates,
-    fetchRates,
     convertTo,
-    isRatesLoading,
   };
 };
