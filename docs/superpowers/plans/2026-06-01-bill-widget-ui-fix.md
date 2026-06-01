@@ -13,6 +13,7 @@
 ### Task 1: Refactor Template Structure
 
 **Files:**
+
 - Modify: `src/components/BillDashboardWidget.vue`
 
 - [ ] **Step 1: Update the item container and content layout**
@@ -89,13 +90,14 @@ git commit -m "feat: refactor bill widget to stacked layout for better readabili
 ### Task 2: Manual Verification
 
 **Files:**
+
 - N/A (Visual check)
 
 - [ ] **Step 1: Verify layout and truncation**
-Ensure that longer bill titles now have more horizontal space before truncating.
+      Ensure that longer bill titles now have more horizontal space before truncating.
 
 - [ ] **Step 2: Verify button functionality**
-Click "Mark as Paid" and ensure the bill is removed/updated correctly.
+      Click "Mark as Paid" and ensure the bill is removed/updated correctly.
 
 - [ ] **Step 3: Verify color coding**
-Ensure overdue bills still show in rose/red and upcoming bills in amber/yellow.
+      Ensure overdue bills still show in rose/red and upcoming bills in amber/yellow.
