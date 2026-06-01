@@ -6,6 +6,8 @@ import { defineAsyncComponent } from 'vue'
 // Lazy load layouts — each is only needed in specific routes
 const DefaultLayout = defineAsyncComponent(() => import('./layouts/default.vue'))
 const BlankLayout = defineAsyncComponent(() => import('./layouts/blank.vue'))
+// AppToast is only needed on authenticated pages — lazy load it
+const AppToast = defineAsyncComponent(() => import('./components/AppToast.vue'))
 
 const route = useRoute()
 const { locale } = useI18n()

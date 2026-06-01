@@ -14,17 +14,6 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     tailwindcss(),
-    // Non-blocking CSS: load stylesheets without blocking render
-    {
-      name: 'non-blocking-css',
-      enforce: 'post',
-      transformIndexHtml(html) {
-        return html.replace(
-          /<link rel="stylesheet" crossorigin href="([^"]+)">/g,
-          `<link rel="stylesheet" href="$1" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" crossorigin href="$1"></noscript>`,
-        )
-      },
-    },
     Pages({
       dirs: 'src/pages',
       exclude: ['**/*.spec.*', '**/*.test.*', '**/__tests__/**'],
