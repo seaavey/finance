@@ -9,9 +9,9 @@
       >
         <AppIcon name="hugeicons:money-add-01" :size="18" class="text-white" />
       </div>
-      <span class="text-lg font-black tracking-tighter text-foreground">{{
-        $t('sidebar.finance')
-      }}</span>
+      <span class="text-lg font-black tracking-tighter text-foreground"
+        >{{ brandParts.first }}<span class="hidden sm:inline">{{ brandParts.rest }}</span></span
+      >
     </div>
 
     <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
@@ -117,6 +117,18 @@ const { user, signOut } = useAuth();
 const { isPartnered, partnerDisplayName, fetchPartner } = usePartner();
 const route = useRoute();
 const { t } = useI18n();
+
+const brandParts = computed(() => {
+  const full = t('sidebar.finance');
+  const parts = full.split(' ');
+  if (parts.length > 1) {
+    return {
+      first: parts[0],
+      rest: ' ' + parts.slice(1).join(' '),
+    };
+  }
+  return { first: full, rest: '' };
+});
 
 const navSections = computed(() => [
   {

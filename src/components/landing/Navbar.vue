@@ -19,7 +19,7 @@
           <span
             class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
           >
-            {{ $t('sidebar.finance')}}
+            {{ brandParts.first }}<span class="hidden sm:inline">{{ brandParts.rest }}</span>
           </span>
         </router-link>
       </div>
@@ -149,7 +149,7 @@
                 >
                   <AppIcon name="hugeicons:wallet-01" :size="22" />
                 </div>
-                {{ $t('sidebar.finance')}}
+                {{ brandParts.first }}<span class="hidden sm:inline">{{ brandParts.rest }}</span>
               </SheetTitle>
             </SheetHeader>
 
@@ -253,11 +253,23 @@
 defineOptions({
   name: 'ComponentsLandingNavbar',
 })
-const { locale: currentLocale, locales, setLocale } = useI18n();
+const { locale: currentLocale, locales, setLocale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
 const colorMode = useColorMode();
 const { y } = useWindowScroll();
+
+const brandParts = computed(() => {
+  const full = t('sidebar.finance');
+  const parts = full.split(' ');
+  if (parts.length > 1) {
+    return {
+      first: parts[0],
+      rest: ' ' + parts.slice(1).join(' '),
+    };
+  }
+  return { first: full, rest: '' };
+});
 
 const isScrolled = computed(() => y.value > 20);
 const activeSection = ref('');

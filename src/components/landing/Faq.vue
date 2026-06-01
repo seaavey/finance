@@ -73,10 +73,10 @@
           </p>
           <Button
             variant="default"
-            class="h-12 gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-8 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            class="h-auto min-h-12 w-full sm:w-auto gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-3.5 text-sm font-black uppercase tracking-wide sm:tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-normal"
           >
-            <AppIcon name="hugeicons:customer-service" :size="20" />
-            {{ $t('landing.faq_support_button')}}
+            <AppIcon name="hugeicons:customer-service" :size="20" class="shrink-0" />
+            <span class="flex-1 sm:flex-none">{{ $t('landing.faq_support_button')}}</span>
           </Button>
         </div>
       </div>

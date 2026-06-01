@@ -40,7 +40,8 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button';
 
-const { signInWithGoogle } = useAuth();
+const { signInWithGoogle, getSession, user, loading } = useAuth();
+const router = useRouter();
 
 const { t: tSeo } = useI18n();
 useSeoMeta({
@@ -48,5 +49,12 @@ useSeoMeta({
   ogTitle: tSeo('auth.login_title'),
   description: tSeo('auth.login_subtitle'),
   ogDescription: tSeo('auth.login_subtitle'),
+});
+
+onMounted(async () => {
+  await getSession();
+  if (user.value) {
+    await router.replace('/dashboard');
+  }
 });
 </script>

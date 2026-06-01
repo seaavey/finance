@@ -9,15 +9,16 @@ const blankLayoutRoutes = [
   '/contact',
   '/privacy-policy',
   '/terms-of-service',
-  '/auth/login'
-];
+  '/auth/login',
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: routes.map((route) => {
     // Check if this route should be blank
-    const isBlank = blankLayoutRoutes.includes(route.path) ||
-                   (route.name && blankLayoutRoutes.includes(`/${String(route.name)}`));
+    const isBlank =
+      blankLayoutRoutes.includes(route.path) ||
+      (route.name && blankLayoutRoutes.includes(`/${String(route.name)}`))
 
     return {
       ...route,
@@ -30,34 +31,44 @@ const router = createRouter({
 })
 
 // Public routes that don't need auth check — skip Supabase init entirely
-const publicRoutes = ['/', '/auth/login', '/login', '/about', '/contact', '/privacy-policy', '/terms-of-service'];
+const publicRoutes = [
+  '/',
+  '/auth/login',
+  '/login',
+  '/about',
+  '/contact',
+  '/privacy-policy',
+  '/terms-of-service',
+]
 
-// Global Auth Middleware — lazy-load useAuth to avoid pulling Supabase into entry chunk
 router.beforeEach(async (to) => {
-  // Skip auth check for public routes (no supabase init needed)
-  if (publicRoutes.includes(to.path)) {
-    return true;
-  }
-
-  // Let Supabase handle hash fragments (tokens) on the client side
   if (to.hash?.includes('access_token') || to.query?.code) {
-    return true;
+    return true
   }
 
-  const { useAuth } = await import('@/composables/useAuth');
-  const { getSession } = useAuth();
-  const session = await getSession();
+  if (to.path === '/auth/login') {
+    const { useAuth } = await import('@/composables/useAuth')
+    const { getSession } = useAuth()
+    const session = await getSession()
+    if (session) {
+      return '/dashboard'
+    }
+    return true
+  }
+
+  if (publicRoutes.includes(to.path)) {
+    return true
+  }
+
+  const { useAuth } = await import('@/composables/useAuth')
+  const { getSession } = useAuth()
+  const session = await getSession()
 
   if (!session) {
-    return '/auth/login';
+    return '/auth/login'
   }
 
-  // Redirect to dashboard if already authenticated and trying to access login/landing
-  if (to.path === '/auth/login' || to.path === '/login') {
-    return '/dashboard';
-  }
-
-  return true;
-});
+  return true
+})
 
 export default router

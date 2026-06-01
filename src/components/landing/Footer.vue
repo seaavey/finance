@@ -14,7 +14,7 @@
             <span
               class="text-2xl font-black tracking-tighter text-foreground group-hover:text-primary transition-all duration-500"
             >
-              {{ $t('sidebar.finance') }}
+              {{ brandParts.first }}<span class="hidden sm:inline">{{ brandParts.rest }}</span>
             </span>
           </router-link>
           <p class="text-sm text-muted-foreground leading-relaxed font-medium max-w-60">
@@ -131,6 +131,20 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+const { t } = useI18n();
+
+const brandParts = computed(() => {
+  const full = t('sidebar.finance');
+  const parts = full.split(' ');
+  if (parts.length > 1) {
+    return {
+      first: parts[0],
+      rest: ' ' + parts.slice(1).join(' '),
+    };
+  }
+  return { first: full, rest: '' };
+});
 
 const socialLinks = [
   { labelKey: 'footer_github', href: 'https://github.com/seaavey', icon: 'hugeicons:github' },
