@@ -19,14 +19,17 @@
 defineOptions({
   name: 'LandingPage',
 })
+import { defineAsyncComponent } from 'vue';
 import LandingNavbar from '@/components/landing/Navbar.vue';
 import LandingHero from '@/components/landing/Hero.vue';
-import LandingFeatures from '@/components/landing/Features.vue';
-import LandingTestimonials from '@/components/landing/Testimonials.vue';
-import LandingFaq from '@/components/landing/Faq.vue';
-import LandingCta from '@/components/landing/Cta.vue';
-import LandingFooter from '@/components/landing/Footer.vue';
 import { getOgImageUrl } from '@/lib/utils';
+
+// Lazy load below-fold landing sections for faster initial load
+const LandingFeatures = defineAsyncComponent(() => import('@/components/landing/Features.vue'));
+const LandingTestimonials = defineAsyncComponent(() => import('@/components/landing/Testimonials.vue'));
+const LandingFaq = defineAsyncComponent(() => import('@/components/landing/Faq.vue'));
+const LandingCta = defineAsyncComponent(() => import('@/components/landing/Cta.vue'));
+const LandingFooter = defineAsyncComponent(() => import('@/components/landing/Footer.vue'));
 
 // Note: layout: 'blank' is handled in App.vue meta checks
 // but we need to ensure the route meta is set in router/index.ts

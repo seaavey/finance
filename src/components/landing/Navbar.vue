@@ -263,6 +263,18 @@ const isScrolled = computed(() => y.value > 20);
 const activeSection = ref('');
 const navRefs = ref<HTMLElement[]>([]);
 
+// Cached nav positions to avoid forced reflow from offsetWidth/offsetLeft reads
+const navPositions = ref<{ width: number; left: number }[]>([]);
+const pageHeight = ref(0);
+
+const updateCachedLayout = () => {
+  pageHeight.value = document.documentElement.scrollHeight;
+  navPositions.value = navRefs.value.map((el) => ({
+    width: el.offsetWidth,
+    left: el.offsetLeft,
+  }));
+};
+
 // Clear active section when at the top, and handle bottom of page for FAQ
 watch(y, (newY) => {
   if (newY < 200) {
@@ -271,9 +283,8 @@ watch(y, (newY) => {
   }
 
   // Detect if we are at the bottom of the page
-  const scrollHeight = document.documentElement.scrollHeight;
-  const clientHeight = document.documentElement.clientHeight;
-  if (newY + clientHeight >= scrollHeight - 100) {
+  // Use cached scrollHeight + fast window.innerHeight instead of reading DOM layout
+  if (newY + window.innerHeight >= pageHeight.value - 100) {
     activeSection.value = 'faq';
   }
 });
@@ -298,14 +309,14 @@ const pillStyle = computed(() => {
   const activeIndex = navItems.findIndex(
     (item) => item.href.replace('#', '') === activeSection.value,
   );
-  if (activeIndex === -1 || !navRefs.value[activeIndex]) {
+  if (activeIndex === -1 || !navPositions.value[activeIndex]) {
     return { width: '0px', left: '0px', opacity: 0 };
   }
 
-  const el = navRefs.value[activeIndex];
+  const pos = navPositions.value[activeIndex];
   return {
-    width: `${el.offsetWidth}px`,
-    left: `${el.offsetLeft}px`,
+    width: `${pos.width}px`,
+    left: `${pos.left}px`,
     opacity: 1,
   };
 });
@@ -324,6 +335,9 @@ const scrollToSection = (href: string) => {
 const goToLogin = () => router.push(localePath('/auth/login'));
 
 onMounted(() => {
+  updateCachedLayout();
+  window.addEventListener('resize', updateCachedLayout);
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
