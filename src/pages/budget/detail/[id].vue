@@ -135,7 +135,7 @@ onMounted(loadBudget);
             <Button
               variant="outline"
               size="sm"
-              class="rounded-xl text-red-500 hover:text-red-600"
+              class="rounded-xl text-red-600 hover:text-red-600"
               @click="showDeleteDialog = true"
             >
               <AppIcon name="hugeicons:delete-01" :size="16" />
@@ -151,7 +151,7 @@ onMounted(loadBudget);
             </span>
             <span
               class="font-black"
-              :class="progress.overspent > 0 ? 'text-red-500' : 'text-muted-foreground'"
+              :class="progress.overspent > 0 ? 'text-red-600' : 'text-muted-foreground'"
             >
               {{ Math.round(progress.percentage) }}%
             </span>
@@ -190,7 +190,7 @@ onMounted(loadBudget);
           </p>
           <p
             class="mt-2 text-2xl font-black tracking-tighter"
-            :class="progress.overspent > 0 ? 'text-red-500' : 'text-foreground'"
+            :class="progress.overspent > 0 ? 'text-red-600' : 'text-foreground'"
           >
             {{ progress.overspent > 0 ? fmtCurrency(progress.overspent) : fmtCurrency(progress.remaining) }}
           </p>

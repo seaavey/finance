@@ -66,7 +66,7 @@
             <Button
               variant="outline"
               size="sm"
-              class="rounded-xl text-red-500 hover:text-red-600"
+              class="rounded-xl text-red-600 hover:text-red-600"
               @click="showDeleteDialog = true"
             >
               <AppIcon name="hugeicons:delete-01" :size="16" />

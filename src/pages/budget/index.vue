@@ -195,7 +195,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
           </p>
           <p
             class="text-2xl font-black tracking-tighter"
-            :class="totals.totalOverspent > 0 ? 'text-red-500' : 'text-foreground'"
+            :class="totals.totalOverspent > 0 ? 'text-red-600' : 'text-foreground'"
           >
             {{ totals.totalOverspent > 0 ? fmtCurrency(totals.totalOverspent) : fmtCurrency(totals.totalRemaining) }}
           </p>
@@ -242,7 +242,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
             <Button
               variant="ghost"
               size="icon"
-              class="size-8 text-red-500 hover:text-red-600"
+              class="size-8 text-red-600 hover:text-red-600"
               @click="onDeleteRequest(budget)"
             >
               <AppIcon name="hugeicons:delete-01" :size="16" />
@@ -256,7 +256,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
               {{ $t('budget.spent') }}: {{ fmtCurrency(budget.spent) }}
             </span>
             <span
-              :class="getProgress(budget).overspent > 0 ? 'text-red-500 font-semibold' : 'text-muted-foreground'"
+              :class="getProgress(budget).overspent > 0 ? 'text-red-600 font-semibold' : 'text-muted-foreground'"
             >
               {{
                 getProgress(budget).overspent > 0

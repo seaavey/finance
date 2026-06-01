@@ -154,7 +154,7 @@
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
                 <div
-                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-600 uppercase tracking-widest"
+                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-700 uppercase tracking-widest"
                 >
                   <AppIcon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend')}}</span>
@@ -334,7 +334,7 @@ const previewTransactions = [
     amount: '-Rp 350rb',
     color: 'text-orange-500',
     bg: 'bg-orange-500/10',
-    amountColor: 'text-red-500',
+    amountColor: 'text-red-600',
   },
   {
     icon: 'hugeicons:money-receive-02',
@@ -343,7 +343,7 @@ const previewTransactions = [
     amount: '+Rp 15jt',
     color: 'text-green-600',
     bg: 'bg-green-500/10',
-    amountColor: 'text-green-600',
+    amountColor: 'text-green-700',
   },
   {
     icon: 'hugeicons:credit-card',
@@ -352,7 +352,7 @@ const previewTransactions = [
     amount: '-Rp 280rb',
     color: 'text-blue-500',
     bg: 'bg-blue-500/10',
-    amountColor: 'text-red-500',
+    amountColor: 'text-red-600',
   },
 ];
 </script>

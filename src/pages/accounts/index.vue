@@ -165,7 +165,7 @@ const totalBalance = computed(() =>
             <Button
               variant="ghost"
               size="icon"
-              class="size-8 rounded-xl text-red-500"
+              class="size-8 rounded-xl text-red-600"
               @click="onDeleteRequest(account)"
             >
               <AppIcon name="hugeicons:delete-01" :size="16" />
