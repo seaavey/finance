@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface Transaction {
   id: string;
@@ -27,46 +27,43 @@ export const useTransactions = () => {
   const { t } = useI18n();
   const { toast } = useToast();
   const supabase = useSupabase();
-  const cache = createCache();
+  const queryClient = useQueryClient();
   const activity = useActivityLog();
-  const transactions = ref<Transaction[]>([]);
-  const loading = ref(false);
+  const { user } = useAuth();
+  
+  const currentFilters = ref<TransactionFilters | undefined>(undefined);
+
+  const { data: transactionsData, isLoading: loading, refetch: refetchTransactions } = useQuery({
+    queryKey: ['transactions', computed(() => user.value?.id), currentFilters],
+    queryFn: async () => {
+      let query = supabase
+        .from('transactions')
+        .select('*')
+        .order('date', { ascending: false })
+        .limit(100);
+
+      const filters = currentFilters.value;
+      if (filters?.type) query = query.eq('type', filters.type);
+      if (filters?.category_id) query = query.eq('category_id', filters.category_id);
+      if (filters?.dateFrom) query = query.gte('date', filters.dateFrom);
+      if (filters?.dateTo) query = query.lte('date', filters.dateTo);
+      if (filters?.search) query = query.ilike('description', `%${filters.search}%`);
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data as Transaction[];
+    },
+    enabled: computed(() => !!user.value),
+  });
+
+  const transactions = computed(() => transactionsData.value || []);
 
   const fetchTransactions = async (filters?: TransactionFilters) => {
-    loading.value = true;
-    let query = supabase
-      .from('transactions')
-      .select('*')
-      .order('date', { ascending: false })
-      .limit(100);
-
-    if (filters?.type) {
-      query = query.eq('type', filters.type);
-    }
-    if (filters?.category_id) {
-      query = query.eq('category_id', filters.category_id);
-    }
-    if (filters?.dateFrom) {
-      query = query.gte('date', filters.dateFrom);
-    }
-    if (filters?.dateTo) {
-      query = query.lte('date', filters.dateTo);
-    }
-    if (filters?.search) {
-      query = query.ilike('description', `%${filters.search}%`);
-    }
-
-    const cacheKey = `transactions:${JSON.stringify(filters || {})}`;
-    const { data, error } = await cache.fetch(cacheKey, async () => await query, 30_000);
-
-    if (!error && data) {
-      transactions.value = data as Transaction[];
-    }
-    loading.value = false;
+    currentFilters.value = filters;
+    await refetchTransactions();
   };
 
   const addTransaction = async (tx: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
-    const { user } = useAuth();
     if (!user.value) {
       return { error: { message: 'Not authenticated' } };
     }
@@ -74,8 +71,7 @@ export const useTransactions = () => {
     const { data, error } = await supabase.from('transactions').insert({ ...tx, user_id: user.value.id }).select();
 
     if (!error) {
-      cache.invalidate('transactions');
-      await fetchTransactions();
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success(t('toast.transaction_added'));
       if (data) {
         activity.log('transaction', 'created', {
@@ -97,8 +93,7 @@ export const useTransactions = () => {
     const { error } = await supabase.from('transactions').update(updates).eq('id', id);
 
     if (!error) {
-      cache.invalidate('transactions');
-      await fetchTransactions();
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success(t('toast.transaction_updated'));
       activity.log('transaction', 'updated', {
         description: updates.description || '',
@@ -114,8 +109,7 @@ export const useTransactions = () => {
     const { error } = await supabase.from('transactions').delete().eq('id', id);
 
     if (!error) {
-      cache.invalidate('transactions');
-      await fetchTransactions();
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success(t('toast.transaction_deleted'));
       activity.log('transaction', 'deleted', {}, id)
     } else {

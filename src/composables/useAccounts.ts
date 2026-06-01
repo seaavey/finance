@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface Account {
   id: string;
@@ -21,41 +21,30 @@ export interface AccountWithBalance extends Account {
 
 export const useAccounts = () => {
   const supabase = useSupabase();
-  const cache = createCache();
+  const queryClient = useQueryClient();
   const { t } = useI18n();
   const { toast } = useToast();
   const activity = useActivityLog();
   const { user } = useAuth();
 
-  const accounts = ref<Account[]>([]);
-  const loading = ref(false);
+  const { data: accountsData, isLoading: loading, refetch: fetchAccounts } = useQuery({
+    queryKey: ['accounts', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated');
+      const { data, error } = await supabase
+        .from('accounts')
+        .select('*')
+        .eq('user_id', user.value.id)
+        .order('created_at');
+      if (error) {
+        throw error;
+      }
+      return data as Account[];
+    },
+    enabled: computed(() => !!user.value),
+  });
 
-  const fetchAccounts = async () => {
-    if (!user.value) {
-      return;
-    }
-    loading.value = true;
-    try {
-      const result = await cache.fetch(
-        'accounts',
-        async () => {
-          const { data, error } = await supabase
-            .from('accounts')
-            .select('*')
-            .eq('user_id', user.value!.id)
-            .order('created_at');
-          if (error) {
-            throw error;
-          }
-          return data as Account[];
-        },
-        30_000,
-      );
-      accounts.value = result || [];
-    } finally {
-      loading.value = false;
-    }
-  };
+  const accounts = computed(() => accountsData.value || []);
 
   const addAccount = async (
     data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
@@ -65,8 +54,7 @@ export const useAccounts = () => {
     }
     const { error } = await supabase.from('accounts').insert({ ...data, user_id: user.value.id });
     if (!error) {
-      cache.invalidate('accounts');
-      await fetchAccounts();
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
       toast.success(t('accounts.saved'));
       activity.log('account', 'created', { name: data.name, type: data.type });
     } else {
@@ -83,8 +71,7 @@ export const useAccounts = () => {
   ) => {
     const { error } = await supabase.from('accounts').update(updates).eq('id', id);
     if (!error) {
-      cache.invalidate('accounts');
-      await fetchAccounts();
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
       toast.success(t('accounts.saved'));
       activity.log('account', 'updated', { name: updates.name }, id);
     } else {
@@ -97,9 +84,8 @@ export const useAccounts = () => {
     const accountName = accounts.value.find((a) => a.id === id)?.name || '';
     const { error } = await supabase.from('accounts').delete().eq('id', id);
     if (!error) {
-      cache.invalidate('accounts');
-      cache.invalidate('transactions');
-      await fetchAccounts();
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success(t('accounts.deleted'));
       activity.log('account', 'deleted', { name: accountName }, id);
     } else {

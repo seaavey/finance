@@ -1,5 +1,6 @@
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
+import { computed } from 'vue';
 
 export interface Bill {
   id: string;
@@ -16,43 +17,30 @@ export interface Bill {
 
 export const useBills = () => {
   const supabase = useSupabase();
-  const cache = createCache();
+  const queryClient = useQueryClient();
   const { t } = useI18n();
   const { toast } = useToast();
   const activity = useActivityLog();
   const { user } = useAuth();
 
-  const bills = ref<Bill[]>([]);
-  const loading = ref(false);
+  const { data: billsData, isLoading: loading, refetch: fetchBills } = useQuery({
+    queryKey: ['bills', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated');
+      const { data, error } = await supabase
+        .from('bills')
+        .select('*')
+        .eq('user_id', user.value.id)
+        .order('due_date');
+      if (error) {
+        throw error;
+      }
+      return data as Bill[];
+    },
+    enabled: computed(() => !!user.value),
+  });
 
-  const fetchBills = async () => {
-    if (!user.value) {
-      return;
-    }
-    loading.value = true;
-
-    try {
-      const result = await cache.fetch(
-        'bills',
-        async () => {
-          const { data, error } = await supabase
-            .from('bills')
-            .select('*')
-            .eq('user_id', user.value!.id)
-            .order('due_date');
-          if (error) {
-            throw error;
-          }
-          return data as Bill[];
-        },
-        30_000,
-      );
-
-      bills.value = result || [];
-    } finally {
-      loading.value = false;
-    }
-  };
+  const bills = computed(() => billsData.value || []);
 
   const addBill = async (
     data: Omit<Bill, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'is_paid'>,
@@ -64,8 +52,7 @@ export const useBills = () => {
       .from('bills')
       .insert({ ...data, user_id: user.value.id, is_paid: false });
     if (!error) {
-      cache.invalidate('bills');
-      await fetchBills();
+      queryClient.invalidateQueries({ queryKey: ['bills'] });
       toast.success(t('bills.saved'));
       activity.log('bill', 'created', { name: data.title, amount: data.amount });
     } else {
@@ -82,8 +69,7 @@ export const useBills = () => {
   ) => {
     const { error } = await supabase.from('bills').update(updates).eq('id', id);
     if (!error) {
-      cache.invalidate('bills');
-      await fetchBills();
+      queryClient.invalidateQueries({ queryKey: ['bills'] });
       toast.success(t('bills.saved'));
       activity.log('bill', 'updated', { name: updates.title, amount: updates.amount }, id);
     } else {
@@ -96,8 +82,7 @@ export const useBills = () => {
     const billTitle = bills.value.find((b) => b.id === id)?.title || '';
     const { error } = await supabase.from('bills').delete().eq('id', id);
     if (!error) {
-      cache.invalidate('bills');
-      await fetchBills();
+      queryClient.invalidateQueries({ queryKey: ['bills'] });
       toast.success(t('bills.deleted'));
       activity.log('bill', 'deleted', { name: billTitle }, id);
     } else {

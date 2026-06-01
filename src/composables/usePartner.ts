@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 import type { PostgrestResponse } from '@supabase/supabase-js';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface CoupleInvitation {
   id: string;
@@ -26,80 +26,70 @@ export interface PartnerProfile {
 
 export const usePartner = () => {
   const supabase = useSupabase();
-  const cache = createCache();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useI18n();
   const activity = useActivityLog();
 
-  const partner = ref<PartnerProfile | null>(null);
-  const sentInvitations = ref<CoupleInvitation[]>([]);
-  const receivedInvitations = ref<CoupleInvitation[]>([]);
-  const loading = ref(false);
   const sending = ref(false);
 
+  const { data: partnerData, refetch: fetchPartner } = useQuery({
+    queryKey: ['partner', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) return null;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('partner_id')
+        .eq('id', user.value?.id)
+        .single();
+
+      if (profile?.partner_id) {
+        const { data: partnerProfile } = await supabase
+          .from('profiles')
+          .select('id, display_name, avatar_url, currency')
+          .eq('id', profile.partner_id)
+          .single();
+        return partnerProfile as PartnerProfile | null;
+      }
+      return null;
+    },
+    enabled: computed(() => !!user.value),
+  });
+
+  const partner = computed(() => partnerData.value || null);
   const isPartnered = computed(() => partner.value !== null);
 
   const partnerDisplayName = computed(
     () => partner.value?.display_name || (partner.value ? t('sidebar.partner') : ''),
   );
 
-  const fetchPartner = async () => {
-    if (!user.value) {
-      return;
-    }
+  const { data: sentInvitationsData, isLoading: loadingSent, refetch: fetchSentInvitations } = useQuery({
+    queryKey: ['invitations:sent', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) return [];
+      const { data } = await supabase.from('couple_invitations').select('*').eq('sender_id', user.value.id).order('created_at', { ascending: false });
+      return data as CoupleInvitation[] || [];
+    },
+    enabled: computed(() => !!user.value),
+  });
+  
+  const { data: receivedInvitationsData, isLoading: loadingReceived, refetch: fetchReceivedInvitations } = useQuery({
+    queryKey: ['invitations:received', computed(() => user.value?.email)],
+    queryFn: async () => {
+      if (!user.value?.email) return [];
+      const { data } = await supabase.from('couple_invitations').select('*, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value.email).eq('status', 'pending').order('created_at', { ascending: false });
+      return data as CoupleInvitation[] || [];
+    },
+    enabled: computed(() => !!user.value?.email),
+  });
 
-    const result = await cache.fetch(
-      `partner:${user.value.id}`,
-      async () => {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('partner_id')
-          .eq('id', user.value?.id)
-          .single();
-
-        if (profile?.partner_id) {
-          const { data: partnerData } = await supabase
-            .from('profiles')
-            .select('id, display_name, avatar_url, currency')
-            .eq('id', profile.partner_id)
-            .single();
-          return partnerData as PartnerProfile | null;
-        }
-        return null;
-      },
-      60_000,
-    );
-
-    partner.value = result;
-  };
+  const sentInvitations = computed(() => sentInvitationsData.value || []);
+  const receivedInvitations = computed(() => receivedInvitationsData.value || []);
+  const loading = computed(() => loadingSent.value || loadingReceived.value);
 
   const fetchInvitations = async () => {
-    if (!user.value?.email) {
-      return;
-    }
-    loading.value = true;
-
-    const [sentResult, receivedResult] = await Promise.all([
-      cache.fetch(
-        `invitations:sent:${user.value.id}`,
-        async () => await supabase.from('couple_invitations').select('*').eq('sender_id', user.value?.id).order('created_at', { ascending: false }),
-        60_000,
-      ) as Promise<PostgrestResponse<CoupleInvitation>>,
-      cache.fetch(
-        `invitations:received:${user.value.email}`,
-        async () => await supabase.from('couple_invitations').select('*, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value?.email).eq('status', 'pending').order('created_at', { ascending: false }),
-        60_000,
-      ) as Promise<PostgrestResponse<CoupleInvitation>>,
-    ]);
-
-    if (!sentResult.error && sentResult.data) {
-      sentInvitations.value = sentResult.data;
-    }
-    if (!receivedResult.error && receivedResult.data) {
-      receivedInvitations.value = receivedResult.data;
-    }
-    loading.value = false;
+    await Promise.all([fetchSentInvitations(), fetchReceivedInvitations()]);
   };
 
   const sendInvite = async (email: string) => {
@@ -150,8 +140,7 @@ export const usePartner = () => {
     });
 
     if (!error) {
-      cache.invalidate('invitations');
-      await fetchInvitations();
+      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] });
       toast.success(t('toast.partner_invite_sent'));
 
       // Notify recipient via email (fire-and-forget)
@@ -175,20 +164,17 @@ export const usePartner = () => {
   };
 
   const acceptInvite = async (invitationId: string) => {
-    loading.value = true;
     const { error } = await supabase.functions.invoke('accept-couple-invite', {
       body: { invitation_id: invitationId },
     });
 
     if (!error) {
-      cache.invalidate(); // Clear all cache as profile changed
-      await Promise.all([fetchPartner(), fetchInvitations()]);
+      queryClient.invalidateQueries(); // Clear all cache as profile changed
       toast.success(t('toast.partner_connected'));
       activity.log('partner', 'connected')
     } else {
       toast.error(t('toast.partner_connect_error'));
     }
-    loading.value = false;
     return { error };
   };
 
@@ -199,8 +185,7 @@ export const usePartner = () => {
       .eq('id', invitationId);
 
     if (!error) {
-      cache.invalidate('invitations');
-      await fetchInvitations();
+      queryClient.invalidateQueries({ queryKey: ['invitations:received'] });
       toast.success(t('toast.partner_invite_rejected'));
     }
     return { error };
@@ -213,26 +198,22 @@ export const usePartner = () => {
       .eq('id', invitationId);
 
     if (!error) {
-      cache.invalidate('invitations');
-      await fetchInvitations();
+      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] });
       toast.success(t('toast.partner_invite_cancelled'));
     }
     return { error };
   };
 
   const disconnectPartner = async () => {
-    loading.value = true;
     const { error } = await supabase.functions.invoke('disconnect-partner');
 
     if (!error) {
-      cache.invalidate();
-      partner.value = null;
+      queryClient.invalidateQueries();
       toast.success(t('toast.partner_disconnected'));
       activity.log('partner', 'disconnected')
     } else {
       toast.error(t('toast.partner_disconnect_error'));
     }
-    loading.value = false;
     return { error };
   };
 

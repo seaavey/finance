@@ -2,6 +2,7 @@ import './styles/globals.css'
 import { createApp } from 'vue'
 import { RouterLink } from 'vue-router'
 import { createHead } from '@unhead/vue/client'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import App from './App.vue'
 import router from './router'
 import i18n from './plugins/i18n'
@@ -14,6 +15,16 @@ const head = createHead()
 app.use(router)
 app.use(i18n)
 app.use(head)
+app.use(VueQueryPlugin, {
+  queryClientConfig: {
+    defaultOptions: {
+      queries: {
+        staleTime: 30_000,
+        refetchOnWindowFocus: false,
+      },
+    },
+  },
+})
 
 // Register global components to handle Nuxt-specific tags
 app.component('AppIcon', Icon)

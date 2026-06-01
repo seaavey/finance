@@ -139,9 +139,6 @@ declare global {
   // @ts-ignore
   export type { Transaction, TransactionFilters } from './composables/useTransactions'
   import('./composables/useTransactions')
-  // @ts-ignore
-  export type { Cache } from './lib/cache'
-  import('./lib/cache')
 }
 
 // for vue template auto import
@@ -153,7 +150,6 @@ declare module 'vue' {
     readonly cn: UnwrapRef<typeof import('./lib/utils')['cn']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
-    readonly createCache: UnwrapRef<typeof import('./lib/cache')['createCache']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>

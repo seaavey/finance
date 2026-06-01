@@ -1,6 +1,7 @@
 import type { PostgrestResponse } from '@supabase/supabase-js';
+import { computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface RecurringTransaction {
   id: string;
@@ -21,26 +22,23 @@ export const useRecurring = () => {
   const { toast } = useToast();
   const activity = useActivityLog();
   const supabase = useSupabase();
-  const cache = createCache();
-  const recurring = ref<RecurringTransaction[]>([]);
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  const fetchRecurring = async () => {
-    loading.value = true;
-    const { data, error } = await (cache.fetch(
-      'recurring',
-      async () => await supabase.from('recurring_transactions').select('*').order('next_date', { ascending: true }),
-      60_000,
-    ) as Promise<PostgrestResponse<RecurringTransaction>>);
+  const { data: recurringData, isLoading: loading, refetch: fetchRecurring } = useQuery({
+    queryKey: ['recurring', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated');
+      const { data, error } = await supabase.from('recurring_transactions').select('*').eq('user_id', user.value.id).order('next_date', { ascending: true });
+      if (error) throw error;
+      return data as RecurringTransaction[];
+    },
+    enabled: computed(() => !!user.value),
+  });
 
-    if (!error && data) {
-      recurring.value = data;
-    }
-    loading.value = false;
-  };
+  const recurring = computed(() => recurringData.value || []);
 
   const addRecurring = async (item: Omit<RecurringTransaction, 'id' | 'user_id' | 'created_at'>) => {
-    const { user } = useAuth();
     if (!user.value) {
       return;
     }
@@ -50,8 +48,7 @@ export const useRecurring = () => {
       .insert({ ...item, user_id: user.value.id });
 
     if (!error) {
-      cache.invalidate('recurring');
-      await fetchRecurring();
+      queryClient.invalidateQueries({ queryKey: ['recurring'] });
       toast.success(t('toast.recurring_added'));
       activity.log('recurring', 'created', { description: item.description || item.type, amount: item.amount });
     } else {
@@ -64,8 +61,7 @@ export const useRecurring = () => {
     const { error } = await supabase.from('recurring_transactions').update(updates).eq('id', id);
 
     if (!error) {
-      cache.invalidate('recurring');
-      await fetchRecurring();
+      queryClient.invalidateQueries({ queryKey: ['recurring'] });
       toast.success(t('toast.recurring_updated'));
       activity.log('recurring', 'updated', { description: updates.description || updates.type }, id);
     } else {
@@ -79,8 +75,7 @@ export const useRecurring = () => {
     const { error } = await supabase.from('recurring_transactions').delete().eq('id', id);
 
     if (!error) {
-      cache.invalidate('recurring');
-      await fetchRecurring();
+      queryClient.invalidateQueries({ queryKey: ['recurring'] });
       toast.success(t('toast.recurring_deleted'));
       activity.log('recurring', 'deleted', { description: recurringItem?.description || recurringItem?.type || '' }, id);
     } else {

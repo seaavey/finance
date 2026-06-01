@@ -19,6 +19,7 @@
     "@iconify/vue": "^5.0.1",
     "@supabase/supabase-js": "^2.106.2",
     "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/vue-query": "^5.100.14",
     "@unhead/vue": "^3.1.1",
     "@unovis/vue": "^1.6.5",
     "class-variance-authority": "^0.7.1",

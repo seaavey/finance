@@ -1,5 +1,6 @@
+import { computed, ref } from 'vue';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface Budget {
   id: string;
@@ -20,53 +21,46 @@ export interface BudgetWithProgress extends Budget {
 
 export const useBudgets = () => {
   const supabase = useSupabase();
-  const cache = createCache();
+  const queryClient = useQueryClient();
   const { t } = useI18n();
   const { toast } = useToast();
   const activity = useActivityLog();
   const { user } = useAuth();
 
-  const budgets = ref<Budget[]>([]);
-  const loading = ref(false);
+  const currentMonth = ref<string>('');
+
+  const { data: budgetsData, isLoading: loading, refetch: refetchBudgets } = useQuery({
+    queryKey: ['budgets', computed(() => user.value?.id), currentMonth],
+    queryFn: async () => {
+      if (!user.value || !currentMonth.value) return [];
+      const { data, error } = await supabase
+        .from('budgets')
+        .select('*')
+        .eq('user_id', user.value.id)
+        .eq('month', currentMonth.value)
+        .order('created_at');
+      if (error) {
+        throw error;
+      }
+      return data as Budget[];
+    },
+    enabled: computed(() => !!user.value && !!currentMonth.value),
+  });
+
+  const budgets = computed(() => budgetsData.value || []);
 
   const fetchBudgets = async (month: string) => {
-    if (!user.value) {
-      return;
-    }
-    loading.value = true;
-
-    try {
-      const result = await cache.fetch(
-        `budgets:${month}`,
-        async () => {
-          const { data, error } = await supabase
-            .from('budgets')
-            .select('*')
-            .eq('user_id', user.value!.id)
-            .eq('month', month)
-            .order('created_at');
-          if (error) {
-            throw error;
-          }
-          return data as Budget[];
-        },
-        30_000,
-      );
-
-      budgets.value = result || [];
-    } finally {
-      loading.value = false;
-    }
+    currentMonth.value = month;
+    await refetchBudgets();
   };
 
   const fetchBudgetWithProgress = async (month: string): Promise<BudgetWithProgress[]> => {
-    if (!user.value) {
-      return [];
-    }
-
-    const result = await cache.fetch(
-      `budgets:with-progress:${month}`,
-      async () => {
+    if (!user.value) return [];
+    
+    // Explicit direct fetch for fetchBudgetWithProgress as it's often used inline
+    return queryClient.fetchQuery({
+      queryKey: ['budgets:with-progress', user.value.id, month],
+      queryFn: async () => {
         const { data: budgetData } = await supabase
           .from('budgets')
           .select('*')
@@ -120,10 +114,8 @@ export const useBudgets = () => {
           };
         });
       },
-      30_000,
-    );
-
-    return result || [];
+      staleTime: 30_000,
+    });
   };
 
   const setBudget = async (categoryId: string, month: string, amount: number) => {
@@ -131,8 +123,6 @@ export const useBudgets = () => {
       toast.error(t('toast.login_required'));
       return { error: new Error('Not authenticated') };
     }
-
-    loading.value = true;
 
     const { data: existing } = await supabase
       .from('budgets')
@@ -159,15 +149,14 @@ export const useBudgets = () => {
     }
 
     if (!error) {
-      cache.invalidate(`budgets:${month}`);
-      cache.invalidate(`budgets:with-progress:${month}`);
+      queryClient.invalidateQueries({ queryKey: ['budgets'] });
+      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] });
       await fetchBudgets(month);
       toast.success(t('budget.saved'));
     } else {
       toast.error(t('budget.save_error'));
     }
 
-    loading.value = false;
     return { error };
   };
 
@@ -177,8 +166,8 @@ export const useBudgets = () => {
     const { error } = await supabase.from('budgets').delete().eq('id', id);
 
     if (!error) {
-      cache.invalidate(`budgets:${month}`);
-      cache.invalidate(`budgets:with-progress:${month}`);
+      queryClient.invalidateQueries({ queryKey: ['budgets'] });
+      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] });
       await fetchBudgets(month);
       toast.success(t('budget.deleted'));
       activity.log('budget', 'deleted', { category_name: categoryId }, id);

@@ -1,4 +1,6 @@
+import { computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface Goal {
   id: string;
@@ -19,26 +21,31 @@ export const useGoals = () => {
   const { toast } = useToast();
   const activity = useActivityLog();
   const supabase = useSupabase();
-  const goals = ref<Goal[]>([]);
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  const fetchGoals = async () => {
-    loading.value = true;
-    const { data, error } = await supabase
-      .from('goals')
-      .select('*')
-      .order('created_at', { ascending: false });
+  const { data: goalsData, isLoading: loading, refetch: fetchGoals } = useQuery({
+    queryKey: ['goals', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated');
+      const { data, error } = await supabase
+        .from('goals')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (!error && data) {
-      goals.value = data as Goal[];
-    }
-    loading.value = false;
-  };
+      if (error) {
+        throw error;
+      }
+      return data as Goal[];
+    },
+    enabled: computed(() => !!user.value),
+  });
+
+  const goals = computed(() => goalsData.value || []);
 
   const addGoal = async (
     goal: Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'current_amount'>,
   ) => {
-    const { user } = useAuth();
     if (!user.value) {
       return { error: { message: 'Not authenticated' } };
     }
@@ -49,7 +56,7 @@ export const useGoals = () => {
       .select();
 
     if (!error) {
-      await fetchGoals();
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       toast.success(t('toast.goal_added'));
       activity.log('goal', 'created', { name: goal.name, target_amount: goal.target_amount }, data?.[0]?.id);
     } else {
@@ -66,7 +73,7 @@ export const useGoals = () => {
     const { error } = await supabase.from('goals').update(updates).eq('id', id);
 
     if (!error) {
-      await fetchGoals();
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       toast.success(t('toast.goal_updated'));
       activity.log('goal', 'updated', { name: goalName, ...updates }, id);
     } else {
@@ -88,7 +95,7 @@ export const useGoals = () => {
       .eq('id', goalId);
 
     if (!error) {
-      await fetchGoals();
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       toast.success(t('toast.funds_added'));
       activity.log('goal', 'updated', { name: goal.name, amount_added: amount }, goalId);
     } else {
@@ -98,7 +105,6 @@ export const useGoals = () => {
   };
 
   const uploadGoalImage = async (file: File): Promise<string | null> => {
-    const { user } = useAuth();
     if (!user.value) {
       return null;
     }
@@ -139,7 +145,7 @@ export const useGoals = () => {
     const { error } = await supabase.from('goals').delete().eq('id', id);
 
     if (!error) {
-      await fetchGoals();
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       toast.success(t('toast.goal_deleted'));
       activity.log('goal', 'deleted', { name: goal?.name || '' }, id);
     } else {

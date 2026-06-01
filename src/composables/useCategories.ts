@@ -1,5 +1,6 @@
+import { computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
-import { createCache } from '@/lib/cache';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export interface Category {
   id: string;
@@ -34,22 +35,21 @@ export const useCategories = () => {
   const { toast } = useToast();
   const activity = useActivityLog();
   const supabase = useSupabase();
-  const cache = createCache();
-  const categories = ref<Category[]>([]);
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  const fetchCategories = async () => {
-    loading.value = true;
-    const { data, error } = await cache.fetch(
-      'categories',
-      async () => await supabase.from('categories').select('*').order('created_at', { ascending: true }),
-      60_000,
-    );
-    if (!error && data) {
-      categories.value = data as Category[];
-    }
-    loading.value = false;
-  };
+  const { data: categoriesData, isLoading: loading, refetch: fetchCategories } = useQuery({
+    queryKey: ['categories', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated');
+      const { data, error } = await supabase.from('categories').select('*').eq('user_id', user.value.id).order('created_at', { ascending: true });
+      if (error) throw error;
+      return data as Category[];
+    },
+    enabled: computed(() => !!user.value),
+  });
+
+  const categories = computed(() => categoriesData.value || []);
 
   const seedDefaults = async (userId: string) => {
     const entries = [
@@ -62,13 +62,12 @@ export const useCategories = () => {
     ];
     const { error } = await supabase.from('categories').insert(entries);
     if (!error) {
-      cache.invalidate('categories');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       await fetchCategories();
     }
   };
 
   const addCategory = async (category: Omit<Category, 'id' | 'user_id' | 'created_at'>) => {
-    const { user } = useAuth();
     if (!user.value) {
       return;
     }
@@ -79,8 +78,7 @@ export const useCategories = () => {
       .select();
 
     if (!error) {
-      cache.invalidate('categories');
-      await fetchCategories();
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('toast.category_added'));
       activity.log('category', 'created', { name: category.name }, data?.[0]?.id);
     } else {
@@ -96,8 +94,7 @@ export const useCategories = () => {
     const { error } = await supabase.from('categories').update(updates).eq('id', id);
 
     if (!error) {
-      cache.invalidate('categories');
-      await fetchCategories();
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('toast.category_updated'));
       activity.log('category', 'updated', { name: updates.name }, id);
     } else {
@@ -111,8 +108,7 @@ export const useCategories = () => {
     const { error } = await supabase.from('categories').delete().eq('id', id);
 
     if (!error) {
-      cache.invalidate('categories');
-      await fetchCategories();
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('toast.category_deleted'));
       activity.log('category', 'deleted', { name: deletedCategoryName }, id);
     } else {
