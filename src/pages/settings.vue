@@ -37,7 +37,7 @@
             <h2 class="text-2xl font-black tracking-tight text-foreground md:text-3xl truncate">
               {{ profile.display_name || user?.user_metadata?.full_name }}
             </h2>
-            <p class="mt-1 text-sm font-medium text-muted-foreground/80 truncate">
+            <p class="mt-1 text-sm font-medium text-muted-foreground truncate">
               {{ user?.email }}
             </p>
             <div class="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">

@@ -100,7 +100,7 @@
         <!-- Status text -->
         <div class="mt-4 text-center">
           <template v-if="percentage >= 100">
-            <span class="flex items-center justify-center gap-1 text-sm font-bold text-emerald-500">
+            <span class="flex items-center justify-center gap-1 text-sm font-bold text-emerald-600">
               <AppIcon name="hugeicons:tick-01" :size="16" />
               {{ $t('goals.completed') }}
             </span>

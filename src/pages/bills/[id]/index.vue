@@ -125,7 +125,7 @@
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
             {{ $t('bills.status') }}
           </p>
-          <p class="mt-2 text-2xl font-black tracking-tighter" :class="billDetail.is_paid ? 'text-emerald-500' : 'text-amber-500'">
+          <p class="mt-2 text-2xl font-black tracking-tighter" :class="billDetail.is_paid ? 'text-emerald-600' : 'text-amber-500'">
             {{ billDetail.is_paid ? $t('bills.paid') : $t('bills.unpaid') }}
           </p>
         </div>

@@ -202,7 +202,7 @@
 
                 <div class="flex flex-col gap-3 px-1">
                   <p
-                    class="text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest"
+                    class="text-[10px] font-black text-muted-foreground uppercase tracking-widest"
                   >
                     {{ $t('settings.language')}}
                   </p>

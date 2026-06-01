@@ -25,7 +25,7 @@
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.completed') }}</p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-emerald-500">{{ completedCount }}</p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-emerald-600">{{ completedCount }}</p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.total_target') }}</p>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="min-w-0 flex-1">
                   <h3 class="truncate text-sm font-bold text-foreground">{{ goal.name }}</h3>
-                  <p class="text-[10px] font-medium text-emerald-500">{{ $t('goals.completed') }}</p>
+                  <p class="text-[10px] font-medium text-emerald-600">{{ $t('goals.completed') }}</p>
                 </div>
               </div>
               <p class="mt-auto text-2xl font-black tracking-tighter text-foreground">

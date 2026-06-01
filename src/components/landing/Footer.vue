@@ -107,7 +107,7 @@
       <div
         class="pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-6"
       >
-        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
+        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {{ $t('landing.footer_copyright', { year: new Date().getFullYear() }) }}
         </p>
         <div class="flex items-center gap-8">

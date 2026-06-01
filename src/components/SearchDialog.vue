@@ -110,7 +110,7 @@ const formatDate = (date: string) => {
           </div>
           <p
             class="shrink-0 text-sm font-semibold"
-            :class="tx.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
+            :class="tx.type === 'income' ? 'text-emerald-600' : 'text-red-500'"
           >
             {{ tx.type === 'income' ? '+' : '-'
             }}{{ formatCurrency(Number(tx.amount), tx.currency) }}

@@ -35,7 +35,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
                       {{ $t('contact.email_label')}}
                     </p>
@@ -55,7 +55,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
                       {{ $t('contact.support_label')}}
                     </p>
@@ -73,7 +73,7 @@
                   </div>
                   <div>
                     <p
-                      class="text-xs font-black uppercase tracking-widest text-muted-foreground/80 mb-1"
+                      class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
                       {{ $t('contact.social_label')}}
                     </p>

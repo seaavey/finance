@@ -88,7 +88,7 @@
       >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -96,7 +96,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -104,7 +104,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -154,7 +154,7 @@
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
                 <div
-                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest"
+                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-600 uppercase tracking-widest"
                 >
                   <AppIcon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend')}}</span>
@@ -170,7 +170,7 @@
                 >
                   {{ $t('landing.hero_preview.income')}}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">
+                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
                   Rp 18.200.000
                 </p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-emerald-500/10">
@@ -226,7 +226,7 @@
                   </div>
                 </div>
                 <div
-                  class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground/80 uppercase tracking-widest px-1"
+                  class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground uppercase tracking-widest px-1"
                 >
                   <span>{{ $t('landing.hero_preview.days.mon')}}</span>
                   <span>{{ $t('landing.hero_preview.days.tue')}}</span>
@@ -262,7 +262,7 @@
                         {{ $t(tx.title)}}
                       </p>
                       <p
-                        class="text-[10px] font-black uppercase tracking-tight text-muted-foreground/80"
+                        class="text-[10px] font-black uppercase tracking-tight text-muted-foreground"
                       >
                         {{ $t(tx.date)}}
                       </p>
@@ -283,7 +283,7 @@
         >
           <div class="flex items-center gap-4">
             <div
-              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 shadow-sm"
+              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 shadow-sm"
             >
               <AppIcon name="hugeicons:wallet-01" :size="24" />
             </div>
@@ -291,7 +291,7 @@
               <p class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-widest">
                 {{ $t('landing.hero_preview.savings')}}
               </p>
-              <p class="text-2xl font-black tracking-tighter text-emerald-500">Rp 2.100.000</p>
+              <p class="text-2xl font-black tracking-tighter text-emerald-600">Rp 2.100.000</p>
             </div>
           </div>
         </div>
@@ -334,16 +334,16 @@ const previewTransactions = [
     amount: '-Rp 350rb',
     color: 'text-orange-500',
     bg: 'bg-orange-500/10',
-    amountColor: 'text-red-400',
+    amountColor: 'text-red-500',
   },
   {
     icon: 'hugeicons:money-receive-02',
     title: 'landing.hero_preview.item_salary',
     date: 'landing.hero_preview.days_ago_2',
     amount: '+Rp 15jt',
-    color: 'text-green-500',
+    color: 'text-green-600',
     bg: 'bg-green-500/10',
-    amountColor: 'text-green-500',
+    amountColor: 'text-green-600',
   },
   {
     icon: 'hugeicons:credit-card',
@@ -352,7 +352,7 @@ const previewTransactions = [
     amount: '-Rp 280rb',
     color: 'text-blue-500',
     bg: 'bg-blue-500/10',
-    amountColor: 'text-red-400',
+    amountColor: 'text-red-500',
   },
 ];
 </script>

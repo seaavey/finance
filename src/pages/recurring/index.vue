@@ -145,13 +145,13 @@ const confirmDelete = async () => {
         class="group relative overflow-hidden rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.03] p-6 transition-all hover:bg-emerald-500/[0.06]"
       >
         <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-widest text-emerald-500/70">
+          <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600">
             {{ $t('recurring.income')}}
           </p>
-          <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-500">
+          <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
             {{ formatCurrency(monthlyIncome) }}
           </h3>
-          <p class="mt-1 text-[10px] font-bold text-emerald-500/40 uppercase tracking-tight">
+          <p class="mt-1 text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
             Est. Per Bulan
           </p>
         </div>
@@ -211,7 +211,7 @@ const confirmDelete = async () => {
               class="flex size-12 items-center justify-center rounded-2xl shadow-sm transition-transform group-hover:scale-110"
               :class="
                 item.type === 'income'
-                  ? 'bg-emerald-500/10 text-emerald-500'
+                  ? 'bg-emerald-500/10 text-emerald-600'
                   : 'bg-rose-500/10 text-rose-500'
               "
             >
@@ -263,12 +263,12 @@ const confirmDelete = async () => {
             </Button>
           </div>
           <div class="text-right">
-            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
+            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               {{ $t('recurring.amount')}}
             </p>
             <p
               class="text-xl font-black tracking-tighter"
-              :class="item.type === 'income' ? 'text-emerald-500' : 'text-foreground'"
+              :class="item.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
             >
               {{ item.type === 'income' ? '+' : '-'
               }}{{ formatCurrency(Number(item.amount), item.currency) }}

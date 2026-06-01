@@ -36,7 +36,7 @@
       <div v-else-if="fetchError" key="error" class="mx-auto max-w-md py-20">
         <div class="flex flex-col items-center gap-4 text-center">
           <div class="flex size-14 items-center justify-center rounded-2xl bg-red-500/10">
-            <AppIcon name="hugeicons:alert-circle" :size="28" class="text-red-400" />
+            <AppIcon name="hugeicons:alert-circle" :size="28" class="text-red-500" />
           </div>
           <h3 class="text-lg font-semibold">{{ $t('transaction_edit.error_title')}}</h3>
           <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.error_desc')}}</p>
@@ -85,7 +85,7 @@
                     : 'hugeicons:arrow-up-01'
                 "
                 :size="22"
-                :class="transaction.type === 'income' ? 'text-emerald-400' : 'text-red-400'"
+                :class="transaction.type === 'income' ? 'text-emerald-600' : 'text-red-500'"
               />
             </div>
             <div class="space-y-0.5">
