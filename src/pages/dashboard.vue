@@ -480,7 +480,7 @@ useReminders();
 
 const loading = ref(true);
 const viewMode = ref<'all' | 'mine' | 'partner'>('all');
-const period = ref<'1d' | '7d' | '30d' | 'all'>('30d');
+const period = ref<'1d' | '7d' | '30d' | 'all'>('7d');
 const budgetSummaries = ref<BudgetWithProgress[]>([]);
 const accountBalances = ref<AccountWithBalance[]>([]);
 
