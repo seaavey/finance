@@ -40,9 +40,9 @@ const props = defineProps<{
   summary: { income: number; expense: number; balance: number };
 }>();
 
-const { formatCurrency, convertTo } = useCurrency();
+const { formatCurrency, convertTo, defaultCurrency } = useCurrency();
 
-const convertedIncome = computed(() => convertTo(props.summary.income, 'USD'));
-const convertedExpense = computed(() => convertTo(props.summary.expense, 'USD'));
-const convertedBalance = computed(() => convertTo(props.summary.balance, 'USD'));
+const convertedIncome = computed(() => convertTo(props.summary.income, defaultCurrency.value, 'USD'));
+const convertedExpense = computed(() => convertTo(props.summary.expense, defaultCurrency.value, 'USD'));
+const convertedBalance = computed(() => convertTo(props.summary.balance, defaultCurrency.value, 'USD'));
 </script>
