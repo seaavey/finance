@@ -38,7 +38,7 @@
           <Button
             v-for="(item, index) in navItems"
             :key="item.href"
-            :ref="(el) => { if (el) navRefs[index] = el as HTMLElement  }"
+            :ref="(el: any) => { if (el) navRefs[index] = el as HTMLElement  }"
             variant="ghost"
             class="relative z-10 px-6 py-2 text-xs font-black uppercase tracking-widest whitespace-nowrap rounded-full transition-all duration-300"
             :class="[
