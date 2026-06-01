@@ -70,7 +70,7 @@ export const useExport = () => {
       
       downloadFile(
         csvContent, 
-        `finansiil-export-${today}.csv`, 
+        `seaavey-export-${today}.csv`, 
         'text/csv;charset=utf-8;'
       );
 

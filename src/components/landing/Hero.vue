@@ -135,7 +135,7 @@
                 class="rounded-full bg-background/50 px-6 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 border border-border/40 flex items-center gap-2"
               >
                 <AppIcon name="hugeicons:shield-01" :size="10" />
-                finansiil.app/dashboard
+                seaavey.site/dashboard
               </div>
             </div>
           </div>
