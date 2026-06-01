@@ -266,54 +266,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Quick Accounts -->
-        <div
-          class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-lg flex-1"
-        >
-          <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-              {{ $t('dashboard.accounts_title') }}
-            </h3>
-            <router-link
-              to="/accounts"
-              class="text-[10px] font-black text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
-            >
-              {{ $t('dashboard.view_all') }}
-            </router-link>
-          </div>
-          <div class="flex h-full flex-col justify-center pb-4">
-            <template v-if="accountBalances.length > 0">
-              <div class="grid grid-cols-1 gap-2">
-                <div
-                  v-for="acct in accountBalances.slice(0, 3)"
-                  :key="acct.id"
-                  class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
-                >
-                  <div class="flex items-center gap-2 min-w-0">
-                    <div
-                      class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50"
-                    >
-                      <AppIcon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
-                    </div>
-                    <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
-                  </div>
-                  <span class="text-xs font-black tracking-tighter text-foreground">{{
-                    formatCurrency(acct.balance, acct.currency)
-                  }}</span>
-                </div>
-              </div>
-            </template>
-            <div v-else class="flex flex-col items-center justify-center py-4 text-center">
-              <div class="mb-2 flex size-10 items-center justify-center rounded-xl bg-muted/50">
-                <AppIcon name="hugeicons:bank" :size="18" class="text-muted-foreground/40" />
-              </div>
-              <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">
-                {{ $t('accounts.empty') }}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Recent Transactions (Full Width - 6 cols) -->
@@ -405,6 +357,54 @@
                 {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
               </p>
             </router-link>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Accounts -->
+      <div
+        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-lg md:col-span-6"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+            {{ $t('dashboard.accounts_title') }}
+          </h3>
+          <router-link
+            to="/accounts"
+            class="text-[10px] font-black text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
+          >
+            {{ $t('dashboard.view_all') }}
+          </router-link>
+        </div>
+        <div class="flex h-full flex-col justify-center pb-4">
+          <template v-if="accountBalances.length > 0">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div
+                v-for="acct in accountBalances.slice(0, 3)"
+                :key="acct.id"
+                class="flex items-center justify-between rounded-xl bg-muted/30 p-2 transition-all hover:bg-muted/50"
+              >
+                <div class="flex items-center gap-2 min-w-0">
+                  <div
+                    class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50"
+                  >
+                    <AppIcon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
+                  </div>
+                  <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
+                </div>
+                <span class="text-xs font-black tracking-tighter text-foreground">{{
+                  formatCurrency(acct.balance, acct.currency)
+                }}</span>
+              </div>
+            </div>
+          </template>
+          <div v-else class="flex flex-col items-center justify-center py-4 text-center">
+            <div class="mb-2 flex size-10 items-center justify-center rounded-xl bg-muted/50">
+              <AppIcon name="hugeicons:bank" :size="18" class="text-muted-foreground/40" />
+            </div>
+            <p class="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">
+              {{ $t('accounts.empty') }}
+            </p>
           </div>
         </div>
       </div>
