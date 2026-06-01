@@ -201,7 +201,7 @@
             </div>
           </div>
         </div>
-        <div class="h-80">
+        <div class="h-[460px]">
           <ClientOnly>
             <ChartsMonthlyBar :data="monthlyData" />
             <template #fallback>
