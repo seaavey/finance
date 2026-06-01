@@ -10,7 +10,7 @@ const router = useRouter();
 useI18n();
 const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts();
 const { fetchCategories } = useCategories();
-const { formatCurrency } = useCurrency();
+const { formatCurrency, convertTo, defaultCurrency } = useCurrency();
 
 const accountList = ref<AccountWithBalance[]>([]);
 const showDeleteDialog = ref(false);
@@ -56,9 +56,14 @@ const goToDetail = (account: AccountWithBalance) => {
   router.push(`/accounts/${account.id}`);
 };
 
-const totalBalance = computed(() =>
-  accountList.value.reduce((s, a) => s + a.balance, 0),
-);
+const totalBalance = computed(() => {
+  let total = 0;
+  for (const a of accountList.value) {
+    const converted = convertTo(a.balance, a.currency, defaultCurrency.value);
+    total += converted ?? a.balance;
+  }
+  return total;
+});
 </script>
 
 <template>
