@@ -42,6 +42,7 @@ __screenshots__/
 /docs/
 CLAUDE.md
 GEMINI.md
+RPD.md
 
 # Environment
 .env
