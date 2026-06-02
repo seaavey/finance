@@ -180,6 +180,8 @@ bun format           # Prettier formatting
 
 Copyright © 2026 — [seaavey](https://github.com/seaavey) · [Koxi](https://github.com/koci79)
 
+Licensed under the [MIT License](LICENSE).
+
 ---
 
 > Built with ❤️ using Vue 3, Tailwind CSS, Supabase, and many other awesome technologies.

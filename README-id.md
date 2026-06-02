@@ -186,6 +186,8 @@ Project ini adalah proyek pribadi. Jika ada saran atau menemukan bug, silakan bu
 
 Hak cipta © 2026 — [seaavey](https://github.com/seaavey) · [Koxi](https://github.com/koci79)
 
+Dilisensikan di bawah [MIT License](LICENSE).
+
 ---
 
 > Dibuat dengan ❤️ menggunakan Vue 3, Tailwind CSS, Supabase, dan sederet teknologi keren lainnya.
