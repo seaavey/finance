@@ -70,6 +70,7 @@ export default defineConfig({
               cacheName: 'google-fonts-cache',
               expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] },
+              fetchOptions: { mode: 'cors' },
             },
           },
           {
@@ -79,6 +80,7 @@ export default defineConfig({
               cacheName: 'gstatic-fonts-cache',
               expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] },
+              fetchOptions: { mode: 'cors' },
             },
           },
           {
@@ -87,6 +89,7 @@ export default defineConfig({
             options: {
               cacheName: 'iconify-cache',
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              fetchOptions: { mode: 'cors' },
             },
           },
           {
