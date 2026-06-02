@@ -1,6 +1,10 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
 import { randomBytes, randomInt, publicEncrypt, constants } from 'node:crypto'
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 const UA =
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36'
 
@@ -238,7 +242,28 @@ serve(async (req) => {
       )
     }
 
-    const result = await scanReceipt(imageUrl)
+    // Retry with exponential backoff on rate limits (429) or service unavailable (503)
+    const MAX_RETRIES = 3
+    const BASE_DELAY_MS = 1000
+    let result: ScanResult = { status: 'error', data: null, error: 'Unexpected error' }
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      result = await scanReceipt(imageUrl)
+      if (result.status === 'ok') break
+      if (result.error?.includes('429') || result.error?.includes('503')) {
+        if (attempt < MAX_RETRIES) {
+          const delay = BASE_DELAY_MS * Math.pow(4, attempt) // 1s, 4s, 16s
+          await sleep(delay)
+          continue
+        }
+        result = {
+          status: 'error',
+          data: null,
+          error: 'AI API rate limited after multiple retries. Please try again later.',
+        }
+      } else {
+        break
+      }
+    }
     const httpStatus = result.status === 'ok' ? 200 : 422
 
     return new Response(JSON.stringify(result), { status: httpStatus, headers })
