@@ -535,7 +535,7 @@ const activeCurrency = computed(() => {
   if (viewMode.value === 'partner' && isPartnered.value && partner.value?.currency) {
     return partner.value.currency;
   }
-  return defaultCurrency;
+  return defaultCurrency.value;
 });
 
 const monthLabel = computed(() => {
