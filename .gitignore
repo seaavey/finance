@@ -38,6 +38,9 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
+# Docs (local AI agent docs, not pushed to GitHub)
+/docs/
+
 # Environment
 .env
 .env.*
