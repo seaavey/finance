@@ -86,7 +86,7 @@
             <h1
               class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl"
             >
-              {{ formatCurrency(balance) }}
+              {{ formatCurrency(balance, activeCurrency) }}
             </h1>
             <div class="mt-4 flex items-center gap-2">
               <div
@@ -128,7 +128,7 @@
             {{ $t('dashboard.income') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(totalIncome) }}
+            {{ formatCurrency(totalIncome, activeCurrency) }}
           </p>
         </div>
       </div>
@@ -147,7 +147,7 @@
             {{ $t('dashboard.expense') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(totalExpense) }}
+            {{ formatCurrency(totalExpense, activeCurrency) }}
           </p>
         </div>
       </div>
@@ -354,7 +354,7 @@
                     : 'text-foreground'
                 "
               >
-                {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
+                {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount, tx.currency) }}
               </p>
             </router-link>
           </div>
@@ -469,7 +469,7 @@ const router = useRouter();
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
-const { formatCurrency } = useCurrency();
+const { formatCurrency, defaultCurrency } = useCurrency();
 const { t, locale } = useI18n();
 const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
@@ -493,7 +493,7 @@ const periodOptions = [
 
 const viewModes = computed(() => [
   { value: 'all' as const, label: t('transactions.all') },
-  { value: 'mine' as const, label: t('dashboard.greeting') },
+  { value: 'mine' as const, label: displayName.value },
   {
     value: 'partner' as const,
     label: partner.value?.display_name?.split(' ')[0] || t('sidebar.partner'),
@@ -528,6 +528,14 @@ const displayName = computed(() => {
     return t('dashboard.user');
   }
   return name.split(' ')[0];
+});
+
+// Determine which currency to use based on view mode
+const activeCurrency = computed(() => {
+  if (viewMode.value === 'partner' && isPartnered.value && partner.value?.currency) {
+    return partner.value.currency;
+  }
+  return defaultCurrency;
 });
 
 const monthLabel = computed(() => {
