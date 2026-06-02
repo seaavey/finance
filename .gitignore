@@ -38,8 +38,10 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
-# Docs (local AI agent docs, not pushed to GitHub)
+# AI agent config/docs (local only, not pushed to GitHub)
 /docs/
+CLAUDE.md
+GEMINI.md
 
 # Environment
 .env
