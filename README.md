@@ -178,7 +178,7 @@ bun format           # Prettier formatting
 
 ## 📄 License
 
-Copyright © 2026 — [seaavey](https://github.com/seaavey)
+Copyright © 2026 — [seaavey](https://github.com/seaavey) · [Koxi](https://github.com/koci79)
 
 ---
 

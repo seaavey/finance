@@ -60,7 +60,7 @@ A personal finance management app that makes it easy to track income, expenses, 
 | ------------------ | ------------------------------ | -------------------------------------------- |
 | **Database**       | Supabase (PostgreSQL)          | All persistent data                          |
 | **Auth**           | Supabase Auth                  | Google OAuth, session management             |
-| **Storage**        | Supabase Storage               | Goal images                                  |
+| **Storage**        | Supabase Storage               | Goal images, receipts                        |
 | **Edge Functions** | Supabase Edge Functions (Deno) | Exchange rate sync, email sending, OG images |
 | **Email**          | Resend                         | Partner invitation emails                    |
 | **Hosting**        | Vercel                         | Frontend hosting                             |
@@ -238,24 +238,26 @@ The entire color system uses OKLCH with CSS custom properties. Light theme is th
 | **Layout**         | Bento grid (6-column)                                                                                                                    |
 | **Widgets**        | Balance hero card, Income/Expense/NetWorth stats, Monthly bar chart, Budget progress, Quick accounts, Recent transactions, Quick actions |
 | **Period filter**  | 1D / 7D / 30D / ALL — affects all chart and summary data                                                                                 |
-| **Partner filter** | All / Mine / Partner — filters transactions by user                                                                                      |
+| **Partner filter** | Mine / Partner — filters transactions by user (no "All" mode)                                                                            |
+| **Multi-currency** | Summary cards convert all amounts to `activeCurrency` via exchange rates before summing. Partner mode uses partner's currency.           |
 | **Data loaded**    | Transactions (6 months), categories, partner, net worth history, recurring, currencies, accounts, budget progress                        |
-| **Chart**          | MonthlyBar: daily (1D/7D) or monthly (30D/ALL) income vs expense bars                                                                    |
+| **Chart**          | MonthlyBar: daily (1D/7D) or monthly (30D/ALL) income vs expense bars with multi-currency conversion                                     |
 | **Empty states**   | Per-widget fallback with icon + message                                                                                                  |
 
 ### 4.3 Transactions
 
-| Aspect           | Detail                                                                          |
-| ---------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Routes**       | `/transactions` (list) · `/transactions/new` · `/transactions/:id/edit`         |
-| **Composable**   | `useTransactions`                                                               |
-| **CRUD**         | `addTransaction`, `updateTransaction`, `deleteTransaction`, `getTransaction`    |
-| **Filtering**    | `TransactionFilters`: type, category_id, search (description), dateFrom, dateTo |
-| **Limit**        | Fetches latest 100 by date DESC                                                 |
-| **Search**       | `searchTransactions(term)` — ilike on description, limit 10                     |
-| **Computed**     | `monthlySummary` — income/expense/balance for current month                     |
-| **Data type**    | `Transaction`: id, user_id, type (income                                        | expense), amount, currency, category_id, description, date, account_id |
-| **Activity log** | Logged on every mutation                                                        |
+| Aspect           | Detail                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| **Routes**       | `/transactions` (list) · `/transactions/new` · `/transactions/:id/edit`            |
+| **Composable**   | `useTransactions`                                                                  |
+| **CRUD**         | `addTransaction`, `updateTransaction`, `deleteTransaction`, `getTransaction`       |
+| **Filtering**    | `TransactionFilters`: type, category_id, search (description), dateFrom, dateTo    |
+| **Limit**        | Fetches latest 100 by date DESC                                                    |
+| **Search**       | `searchTransactions(term)` — ilike on description, limit 10                        |
+| **Summary**      | Income/Expense/Selisih shown **per-currency** (IDR + BND rows) via computed maps   |
+| **List row**     | `TransactionItem.vue` component — shows formatted amount in each tx's own currency |
+| **Data type**    | `Transaction`: id, user_id, type, amount, currency, category_id, description, date |
+| **Activity log** | Logged on every mutation                                                           |
 
 ### 4.4 Categories
 
@@ -335,8 +337,8 @@ The entire color system uses OKLCH with CSS custom properties. Light theme is th
 | --------------- | ----------------------------------------------------------------------------------------------------- |
 | **Composable**  | `usePartner`                                                                                          |
 | **Invite flow** | Send invite by email → recipient sees pending in Settings → accepts/rejects                           |
-| **Accept**      | Via Supabase RPC `accept-couple-invite` edge function                                                 |
-| **Disconnect**  | Via edge function `disconnect-partner`                                                                |
+| **Accept**      | Via `supabase.rpc('accept_couple_invitation')` — database RPC, not an edge function                   |
+| **Disconnect**  | Via `supabase.rpc('disconnect_partner')` — database RPC, not an edge function                         |
 | **Email**       | `send-couple-invite` edge function uses Resend                                                        |
 | **Data types**  | `CoupleInvitation` (id, sender_id, recipient_email, status, token), `PartnerProfile` (profile subset) |
 | **RLS**         | Couples can read each other's profiles and transactions                                               |
@@ -659,6 +661,7 @@ All tables have **Row-Level Security (RLS)** enabled and use UUID primary keys.
 | Bucket        | Purpose            | Files stored as          |
 | ------------- | ------------------ | ------------------------ |
 | `goal-images` | Goal image uploads | `{user_id}/{uuid}.{ext}` |
+| `receipts`    | Receipt snapshots  | `{user_id}/{uuid}.{ext}` |
 
 ### 6.3 Edge Functions (Supabase/Deno)
 
@@ -668,7 +671,7 @@ All tables have **Row-Level Security (RLS)** enabled and use UUID primary keys.
 | `send-couple-invite` | `/functions/v1/send-couple-invite` | Sends partner invitation email via Resend                                           |
 | `og-image`           | `/functions/v1/og-image`           | Generates dynamic Open Graph PNG using Satori + Resvg                               |
 
-**Note:** `accept-couple-invite` and `disconnect-partner` are called as `supabase.functions.invoke()` RPC-style but their actual handler code is outside the `functions/` directory (likely database-side or inlined).
+**Auth:** `send-couple-invite` validates JWT Bearer token from caller against Supabase Auth before processing. Falls back gracefully for DB webhook format (no auth needed).
 
 ---
 
@@ -765,10 +768,10 @@ These are all client-side methods that talk directly to Supabase. There is no cu
 | Method                       | Params          | Description                          |
 | ---------------------------- | --------------- | ------------------------------------ |
 | `sendInvite(email)`          | recipient email | Create invitation + notify via email |
-| `acceptInvite(invitationId)` | id              | Accept via edge function             |
+| `acceptInvite(invitationId)` | id              | Accept via `supabase.rpc()`          |
 | `rejectInvite(invitationId)` | id              | Set status to 'rejected'             |
 | `cancelInvite(invitationId)` | id              | Set status to 'cancelled'            |
-| `disconnectPartner()`        | —               | Invoke disconnect edge function      |
+| `disconnectPartner()`        | —               | Invoke `supabase.rpc()` disconnect   |
 | `fetchPartner()`             | —               | Refresh partner profile              |
 | `fetchInvitations()`         | —               | Refresh both sent and received       |
 
@@ -807,10 +810,8 @@ These are all client-side methods that talk directly to Supabase. There is no cu
 | Endpoint                              | Method | Auth                                | Description                   |
 | ------------------------------------- | ------ | ----------------------------------- | ----------------------------- |
 | `/functions/v1/sync-rates`            | GET    | Service Role (cron)                 | Fetch & store exchange rates  |
-| `/functions/v1/send-couple-invite`    | POST   | Service Role (DB webhook or direct) | Send partner invitation email |
+| `/functions/v1/send-couple-invite`    | POST   | JWT Bearer token or DB webhook      | Send partner invitation email via Resend |
 | `/functions/v1/og-image?title=&desc=` | GET    | Public                              | Generate OG image             |
-| `/functions/v1/accept-couple-invite`  | POST   | Authenticated user                  | RPC: accept invitation        |
-| `/functions/v1/disconnect-partner`    | POST   | Authenticated user                  | RPC: disconnect partner       |
 
 ### 7.3 Supabase Direct Queries
 
@@ -900,9 +901,14 @@ supabase/
 │   ├── og-image/
 │   ├── send-couple-invite/
 │   └── sync-rates/
-├── migrations/           # 26 timestamped SQL migrations
+├── migrations/           # 30 timestamped SQL migrations
 ├── config.toml           # Supabase project config
 └── .temp/                # Local Supabase state
+```
+
+```
+.env                     # (in gitignore) Live Supabase credentials
+.env.example             # Template with docs for all env vars
 ```
 
 ### B. Design Files (docs/)
@@ -928,6 +934,22 @@ docs/
 | `type-check` | `vue-tsc --build`         | TypeScript type check    |
 | `lint`       | `oxlint + eslint --fix`   | Lint + auto-fix          |
 | `format`     | `prettier --write src/`   | Format source files      |
+| `audit:security` | `claude-flow security scan` | Security audit (defined in package.json) |
+
+### D. Security Audit
+
+**Status:** Scanned June 2026 — 0 critical vulnerabilities (bun audit), 7 RLS/auth issues found and fixed.
+
+| # | Severity | Issue | Fix |
+|---|----------|-------|-----|
+| 1 | 🔴 Critical | Partner Escalation — profile UPDATE tanpa `WITH CHECK` | Added `WITH CHECK` preventing partner_id tampering |
+| 2 | 🔴 Critical | Multi-Table Data Leak — goals & activity_logs missing partner SELECT policy | Added `is_my_partner()` policies |
+| 3 | 🟠 High | acceptInvite manggil edge function yang tidak ada | Migrated to `supabase.rpc('accept_couple_invitation')` |
+| 4 | 🟠 High | disconnectPartner manggil edge function yang tidak ada | Created `disconnect_partner()` RPC migration |
+| 5 | 🟠 High | send-couple-invite tanpa auth JWT | Added Bearer token validation + sender_id ownership check |
+| 6 | 🟠 High | Storage receipts RLS missing bucket_id filter | Added `bucket_id = 'receipts'` to storage policy |
+| 7 | 🟡 Medium | exchange_rates public read (unauthenticated) | Restricted to `auth.role() = 'authenticated'` |
+| — | ✅ All clear | XSS, SQL injection, mass assignment, env secrets | No vectors found |
 
 ---
 
