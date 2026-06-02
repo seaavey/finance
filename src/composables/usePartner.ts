@@ -128,7 +128,7 @@ export const usePartner = () => {
       .maybeSingle();
 
     if (existing) {
-      toast.error(t('toast.partner_invite_pending'));
+      toast.error(t('toast.partner_invite_exists'));
       sending.value = false;
       return { error: new Error('Invitation already pending') };
     }
@@ -164,18 +164,19 @@ export const usePartner = () => {
   };
 
   const acceptInvite = async (invitationId: string) => {
-    const { error } = await supabase.functions.invoke('accept-couple-invite', {
-      body: { invitation_id: invitationId },
+    const { data, error } = await supabase.rpc('accept_couple_invitation', {
+      invitation_id: invitationId,
     });
 
-    if (!error) {
+    const err = data?.error || error?.message;
+    if (!err) {
       queryClient.invalidateQueries(); // Clear all cache as profile changed
       toast.success(t('toast.partner_connected'));
       activity.log('partner', 'connected')
     } else {
-      toast.error(t('toast.partner_connect_error'));
+      toast.error(t('toast.partner_accept_error'));
     }
-    return { error };
+    return { error: err ? new Error(err as string) : null };
   };
 
   const rejectInvite = async (invitationId: string) => {
@@ -186,7 +187,7 @@ export const usePartner = () => {
 
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['invitations:received'] });
-      toast.success(t('toast.partner_invite_rejected'));
+      toast.success(t('toast.partner_rejected'));
     }
     return { error };
   };
@@ -199,22 +200,23 @@ export const usePartner = () => {
 
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['invitations:sent'] });
-      toast.success(t('toast.partner_invite_cancelled'));
+      toast.success(t('toast.partner_cancelled'));
     }
     return { error };
   };
 
   const disconnectPartner = async () => {
-    const { error } = await supabase.functions.invoke('disconnect-partner');
+    const { data, error } = await supabase.rpc('disconnect_partner');
 
-    if (!error) {
+    const err = data?.error || error?.message;
+    if (!err) {
       queryClient.invalidateQueries();
       toast.success(t('toast.partner_disconnected'));
       activity.log('partner', 'disconnected')
     } else {
       toast.error(t('toast.partner_disconnect_error'));
     }
-    return { error };
+    return { error: err ? new Error(err as string) : null };
   };
 
   return {
