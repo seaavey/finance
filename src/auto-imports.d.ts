@@ -72,6 +72,7 @@ declare global {
   const useCssVars: typeof import('vue').useCssVars
   const useCurrency: typeof import('./composables/useCurrency').useCurrency
   const useDark: typeof import('@vueuse/core').useDark
+  const useOnline: typeof import('@vueuse/core').useOnline
   const useExport: typeof import('./composables/useExport').useExport
   const useGoals: typeof import('./composables/useGoals').useGoals
   const useHead: typeof import('@unhead/vue').useHead
@@ -211,6 +212,7 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useCurrency: UnwrapRef<typeof import('./composables/useCurrency')['useCurrency']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
+    readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly useExport: UnwrapRef<typeof import('./composables/useExport')['useExport']>
     readonly useGoals: UnwrapRef<typeof import('./composables/useGoals')['useGoals']>
     readonly useHead: UnwrapRef<typeof import('@unhead/vue')['useHead']>

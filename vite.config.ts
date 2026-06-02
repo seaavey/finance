@@ -27,7 +27,7 @@ export default defineConfig({
         'vue-router',
         {
           '@unhead/vue': ['useHead', 'useSeoMeta'],
-          '@vueuse/core': ['useWindowScroll', 'useStorage', 'useDark', 'useToggle'],
+          '@vueuse/core': ['useWindowScroll', 'useStorage', 'useDark', 'useToggle', 'useOnline'],
         },
       ],
       dts: 'src/auto-imports.d.ts',
