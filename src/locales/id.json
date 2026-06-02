@@ -92,7 +92,8 @@
     "delete": "Hapus",
     "cancel": "Batal",
     "back": "Kembali",
-    "save": "Simpan Transaksi"
+    "save": "Simpan Transaksi",
+    "saving": "Menyimpan..."
   },
   "transaction_edit": {
     "not_found": "Transaksi tidak ditemukan",
