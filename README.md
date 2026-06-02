@@ -1,35 +1,35 @@
 # Aemy Finance ✦
 
-**Kelola Keuangan Pribadi & Bersama**
+**Personal & Shared Finance Management**
 
-Aplikasi manajemen keuangan pribadi modern dengan dukungan multi-mata uang, visualisasi interaktif, dan mode pasangan (couple mode) — gratis tanpa iklan.
+A modern personal finance app with multi-currency support, interactive visualizations, and couple mode — free with no ads.
 
 🌐 **Live:** [seaavey.site](https://seaavey.site)
 
 ---
 
-## ✨ Fitur Utama
+## ✨ Key Features
 
-| Fitur | Deskripsi |
-|-------|-----------|
-| 💰 **Dashboard interaktif** | Bento-grid dengan balance, chart, budget progress, transaksi terbaru |
-| 💳 **Multi-mata uang** | Akun dalam berbagai mata uang, konversi otomatis ke base currency |
-| 📊 **Chart visual** | Grafik bulanan (income/expense), donat kategori, net worth line chart |
-| 🏷️ **Kategori** | Default Indonesia, bisa dikustom dengan ikon & warna |
-| 📋 **Budget planning** | Anggaran per kategori per bulan dengan progress tracking |
-| 🔁 **Transaksi berulang** | Daily / weekly / monthly / yearly recurring transactions |
-| 🎯 **Goals tracker** | Target finansial dengan progress bar dan upload gambar |
-| 💸 **Bills manager** | Manajemen tagihan dengan status paid/unpaid & recurring |
-| 👫 **Couple mode** | Bagikan keuangan dengan pasangan — undang via email |
-| 📈 **Net worth** | Pantau aset, utang, dan kekayaan bersih dari waktu ke waktu |
-| 📥 **Export CSV** | Ekspor transaksi ke CSV |
-| 🔔 **Reminder** | Notifikasi tagihan jatuh tempo (7 hari ke depan) |
-| 🌙 **Dark mode** | Toggle light/dark theme |
-| 🔒 **Aman** | Autentikasi Google OAuth, Row-Level Security di database |
+| Feature | Description |
+|---------|-------------|
+| 💰 **Interactive Dashboard** | Bento-grid layout with balance, charts, budget progress, recent transactions |
+| 💳 **Multi-Currency** | Accounts in different currencies, auto-converted to base currency |
+| 📊 **Charts** | Monthly income/expense bars, category donut, net worth line chart |
+| 🏷️ **Categories** | Indonesian defaults, fully customizable with icons & colors |
+| 📋 **Budget Planning** | Per-category monthly budgets with progress tracking |
+| 🔁 **Recurring Transactions** | Daily / weekly / monthly / yearly |
+| 🎯 **Goals Tracker** | Financial targets with progress bar and image upload |
+| 💸 **Bills Manager** | Bill tracking with paid/unpaid status and recurring support |
+| 👫 **Couple Mode** | Share finances with a partner — invite via email |
+| 📈 **Net Worth** | Track assets, debts, and net worth over time |
+| 📥 **CSV Export** | Export all transactions to CSV |
+| 🔔 **Reminders** | Upcoming bill notifications (7-day window) |
+| 🌙 **Dark Mode** | Light/dark theme toggle |
+| 🔒 **Secure** | Google OAuth, Row-Level Security on all data |
 
 ---
 
-## 🚀 Mulai Cepat
+## 🚀 Quick Start
 
 ```bash
 # Clone
@@ -46,13 +46,13 @@ cp .env .env.local
 pnpm dev
 ```
 
-> **Catatan:** `.env` berisi Supabase URL dan anon key yang sudah terhubung ke project live. Untuk development lokal, jalankan `supabase start`.
+> **Note:** The `.env` file contains the Supabase URL and anon key tied to the live project. For local development, run `supabase start`.
 
 ### Prerequisites
 
 - **Node.js** ^20.19.0 or >=22.12.0
-- **pnpm** (recommended package manager)
-- **Supabase CLI** (untuk lokal)
+- **pnpm** (recommended)
+- **Supabase CLI** (for local database)
 
 ---
 
@@ -60,98 +60,98 @@ pnpm dev
 
 ### Frontend
 
-| Teknologi | Kegunaan |
-|-----------|----------|
-| **Vue 3** + Composition API + `<script setup>` | Framework UI |
+| Technology | Purpose |
+|-----------|---------|
+| **Vue 3** + Composition API + `<script setup>` | UI framework |
 | **Vite 8** + Rolldown | Build tool |
 | **TypeScript 6** | Type safety |
 | **Tailwind CSS v4** | Utility-first styling |
 | **shadcn-vue** | UI component library |
 | **TanStack Vue Query** | Server state management |
 | **vue-router 5** | File-based routing |
-| **vue-i18n** | Internasionalisasi |
-| **Unovis** | Chart visualisasi |
+| **vue-i18n** | Internationalization |
+| **Unovis** | Chart visualization |
 | **Iconify** (HugeIcons) | Icon set |
 | **@unhead/vue** | SEO / meta tags |
 
 ### Backend & Infrastructure
 
-| Teknologi | Kegunaan |
-|-----------|----------|
+| Technology | Purpose |
+|-----------|---------|
 | **Supabase** | Database (PostgreSQL), Auth, Storage, Edge Functions |
-| **Google OAuth** | Autentikasi |
-| **Resend** | Email (undangan pasangan) |
+| **Google OAuth** | Authentication |
+| **Resend** | Email (partner invitations) |
 | **Vercel** | Hosting |
-| **exchangerate.fun** | API kurs mata uang |
+| **exchangerate.fun** | Exchange rate API |
 
 ---
 
-## 📁 Struktur Project
+## 📁 Project Structure
 
 ```
 src/
 ├── components/       # Auto-imported UI & domain components
-│   ├── ui/           # shadcn-vue (136 komponen)
+│   ├── ui/           # shadcn-vue (136 components)
 │   ├── charts/       # Unovis chart wrappers
 │   └── landing/      # Landing page sections
-├── composables/      # Domain logic (useAuth, useTransactions, dll.)
+├── composables/      # Domain logic (useAuth, useTransactions, etc.)
 ├── layouts/          # default.vue (sidebar), blank.vue (landing)
 ├── lib/              # supabase client, utility helpers
-├── pages/            # File-based routes (35 halaman)
+├── pages/            # File-based routes (35 pages)
 ├── router/           # Router guard & layout assignment
 └── styles/           # Tailwind + CSS custom properties
 
 supabase/
 ├── functions/        # Edge Functions (Deno)
-│   ├── sync-rates/   # Sinkronisasi kurs mata uang
-│   ├── send-couple-invite/  # Email undangan pasangan
+│   ├── sync-rates/   # Exchange rate sync
+│   ├── send-couple-invite/  # Partner invitation emails
 │   └── og-image/     # Dynamic Open Graph image
 └── migrations/       # 27 timestamped SQL migrations
 ```
 
 ---
 
-## 📄 Halaman & Routing
+## 📄 Pages & Routing
 
-| Route | Halaman | Layout |
-|-------|---------|--------|
+| Route | Page | Layout |
+|-------|------|--------|
 | `/` | Landing page | blank |
-| `/dashboard` | Dashboard utama | default |
-| `/transactions` | Daftar transaksi | default |
-| `/transactions/new` | Tambah transaksi | default |
-| `/transactions/:id/edit` | Edit transaksi | default |
-| `/categories` | Manajemen kategori | default |
+| `/dashboard` | Main dashboard | default |
+| `/transactions` | Transaction list | default |
+| `/transactions/new` | Add transaction | default |
+| `/transactions/:id/edit` | Edit transaction | default |
+| `/categories` | Category management | default |
 | `/budget` | Budget planning | default |
-| `/accounts` | Daftar akun | default |
-| `/bills` | Manajemen tagihan | default |
-| `/recurring` | Transaksi berulang | default |
+| `/accounts` | Account list | default |
+| `/bills` | Bill management | default |
+| `/recurring` | Recurring transactions | default |
 | `/goals` | Financial goals | default |
 | `/activities` | Activity log | default |
-| `/settings` | Pengaturan profil | default |
-| `/auth/login` | Halaman login | blank |
-| `/about` | Tentang | blank |
-| `/privacy-policy` | Kebijakan privasi | blank |
-| `/terms-of-service` | Syarat & ketentuan | blank |
+| `/settings` | User settings | default |
+| `/auth/login` | Login page | blank |
+| `/about` | About | blank |
+| `/privacy-policy` | Privacy policy | blank |
+| `/terms-of-service` | Terms of service | blank |
 
 ---
 
 ## 🗄️ Database (Supabase)
 
-**10 tabel utama** dengan Row-Level Security:
+**11 tables** with Row-Level Security:
 
-| Tabel | Fungsi |
-|-------|--------|
-| `profiles` | Profil user (display name, currency, partner) |
-| `categories` | Kategori income/expense |
-| `transactions` | Catatan transaksi keuangan |
-| `accounts` | Akun bank/e-wallet/cash/investment/liability |
-| `budgets` | Anggaran per kategori per bulan |
-| `bills` | Tagihan berulang & satu kali |
-| `recurring_transactions` | Transaksi berulang |
-| `goals` | Target finansial |
-| `activity_logs` | Log aktivitas user |
-| `couple_invitations` | Undangan pasangan |
-| `exchange_rates` | Kurs mata uang (sync dari edge function) |
+| Table | Purpose |
+|-------|---------|
+| `profiles` | User profiles (display name, currency, partner) |
+| `categories` | Income/expense categories |
+| `transactions` | Financial transaction records |
+| `accounts` | Bank/e-wallet/cash/investment/liability accounts |
+| `budgets` | Per-category monthly budgets |
+| `bills` | One-time & recurring bills |
+| `recurring_transactions` | Recurring transactions |
+| `goals` | Financial goals |
+| `activity_logs` | User activity audit trail |
+| `couple_invitations` | Partner invitations |
+| `exchange_rates` | Currency exchange rates (synced via edge function) |
 
 ---
 
@@ -160,7 +160,7 @@ supabase/
 ```bash
 pnpm dev              # Dev server (port 5173)
 pnpm build            # Type-check + production build
-pnpm build-only       # Build tanpa type-check
+pnpm build-only       # Build without type-check
 pnpm preview          # Preview production build
 pnpm type-check       # vue-tsc type checking
 pnpm lint             # oxlint + eslint --fix
@@ -169,24 +169,18 @@ pnpm format           # Prettier formatting
 
 ---
 
-## 🌐 Lingkungan & Deploy
+## 🌐 Environment & Deploy
 
-- **Production:** [seaavey.site](https://seaavey.site) — deploy via Vercel
-- **Supabase Project:** Terhubung ke project live (URL & anon key di `.env`)
-- **Local DB:** `supabase start` untuk lokal PostgreSQL + Stack
-
----
-
-## 🤝 Kontribusi
-
-Project ini adalah proyek pribadi. Jika ada saran atau menemukan bug, silakan buka issue atau hubungi langsung.
+- **Production:** [seaavey.site](https://seaavey.site) — deployed via Vercel
+- **Supabase Project:** Connected to live project (URL & anon key in `.env`)
+- **Local DB:** `supabase start` for local PostgreSQL + stack
 
 ---
 
-## 📄 Lisensi
+## 📄 License
 
-Hak cipta © 2026 — [seaavey](https://github.com/seaavey)
+Copyright © 2026 — [seaavey](https://github.com/seaavey)
 
 ---
 
-> Dibuat dengan ❤️ menggunakan Vue 3, Tailwind CSS, Supabase, dan sederet teknologi keren lainnya.
+> Built with ❤️ using Vue 3, Tailwind CSS, Supabase, and many other awesome technologies.
