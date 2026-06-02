@@ -166,7 +166,7 @@
             {{ $t('dashboard.net_worth') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(currentNetWorth?.netWorth || 0, activeCurrency) }}
+            {{ formatCurrency(currentNetWorth?.netWorth || 0, defaultCurrency) }}
           </p>
         </div>
       </div>

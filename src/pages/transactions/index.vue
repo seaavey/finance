@@ -137,14 +137,22 @@
         >
           <AppIcon name="hugeicons:arrow-down-01" :size="24" />
         </div>
-        <div class="mt-4">
+        <div class="mt-auto">
           <p
-            class="text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase"
+            class="mt-4 text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase"
           >
             {{ $t('transactions.income')}}
           </p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-foreground truncate">
-            {{ formatCurrency(monthIncome) }}
+          <div v-for="(total, cur) in incomeByCurrency" :key="cur">
+            <p class="text-2xl font-black tracking-tighter text-foreground truncate">
+              {{ formatCurrency(total, cur) }}
+            </p>
+          </div>
+          <p
+            v-if="Object.keys(incomeByCurrency).length === 0"
+            class="mt-1 text-2xl font-black tracking-tighter text-muted-foreground/50 truncate"
+          >
+            {{ formatCurrency(0) }}
           </p>
         </div>
       </div>
@@ -157,14 +165,22 @@
         >
           <AppIcon name="hugeicons:arrow-up-01" :size="24" />
         </div>
-        <div class="mt-4">
+        <div class="mt-auto">
           <p
-            class="text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
+            class="mt-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
           >
             {{ $t('transactions.expense')}}
           </p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-foreground truncate">
-            {{ formatCurrency(monthExpense) }}
+          <div v-for="(total, cur) in expenseByCurrency" :key="cur">
+            <p class="text-2xl font-black tracking-tighter text-foreground truncate">
+              {{ formatCurrency(total, cur) }}
+            </p>
+          </div>
+          <p
+            v-if="Object.keys(expenseByCurrency).length === 0"
+            class="mt-1 text-2xl font-black tracking-tighter text-muted-foreground/50 truncate"
+          >
+            {{ formatCurrency(0) }}
           </p>
         </div>
       </div>
@@ -186,16 +202,18 @@
             <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
               {{ $t('transactions.difference')}}
             </p>
-            <p
-              class="text-lg font-black tracking-tighter"
-              :class="
-                monthIncome - monthExpense >= 0
-                  ? 'text-emerald-600 dark:text-emerald-400'
-                  : 'text-rose-600 dark:text-rose-400'
-              "
-            >
-              {{ formatCurrency(monthIncome - monthExpense) }}
-            </p>
+            <div v-for="(total, cur) in balanceByCurrency" :key="cur">
+              <p
+                class="text-lg font-black tracking-tighter"
+                :class="
+                  total >= 0
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-rose-600 dark:text-rose-400'
+                "
+              >
+                {{ formatCurrency(total, cur) }}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -271,7 +289,7 @@ const { partner, isPartnered, fetchPartner } = usePartner();
 
 const router = useRouter();
 const { t } = useI18n();
-const { formatCurrency } = useCurrency();
+const { formatCurrency, defaultCurrency } = useCurrency();
 const { user } = useAuth();
 
 const ownerFilter = ref<'all' | 'mine' | 'partner'>('all');
@@ -297,12 +315,35 @@ const filteredTransactions = computed(() => {
   return all.filter((tx) => tx.user_id === partner.value?.id);
 });
 
-const monthIncome = computed(() =>
-  filteredTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
-);
-const monthExpense = computed(() =>
-  filteredTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
-);
+const incomeByCurrency = computed(() => {
+  const totals: Record<string, number> = {};
+  for (const tx of filteredTransactions.value) {
+    if (tx.type === 'income') {
+      const cur = tx.currency || defaultCurrency.value;
+      totals[cur] = (totals[cur] || 0) + tx.amount;
+    }
+  }
+  return totals;
+});
+
+const expenseByCurrency = computed(() => {
+  const totals: Record<string, number> = {};
+  for (const tx of filteredTransactions.value) {
+    if (tx.type === 'expense') {
+      const cur = tx.currency || defaultCurrency.value;
+      totals[cur] = (totals[cur] || 0) + tx.amount;
+    }
+  }
+  return totals;
+});
+
+const balanceByCurrency = computed(() => {
+  const totals: Record<string, number> = { ...incomeByCurrency.value };
+  for (const [cur, total] of Object.entries(expenseByCurrency.value)) {
+    totals[cur] = (totals[cur] || 0) - total;
+  }
+  return totals;
+});
 
 const showFilters = ref(false);
 const filters = reactive({
