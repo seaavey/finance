@@ -212,11 +212,55 @@ export async function scanReceipt(imageUrl: string): Promise<ScanResult> {
   }
 }
 
+/** Sleep for ms milliseconds */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+const MAX_RETRIES = 3
+const BASE_DELAY_MS = 1000
+
+/**
+ * Scan a receipt image with automatic retry on retryable errors.
+ * Retries with exponential backoff: 1s → 4s → 16s on 429/503 responses.
+ */
+export async function scanReceiptWithRetry(imageUrl: string): Promise<ScanResult> {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const result = await scanReceipt(imageUrl)
+
+    if (result.status === 'ok') return result
+
+    // Only retry on 429 (rate limit) or 503 (service unavailable)
+    if (result.error?.includes('429') || result.error?.includes('503')) {
+      if (attempt < MAX_RETRIES) {
+        const delay = BASE_DELAY_MS * Math.pow(4, attempt) // 1s, 4s, 16s
+        console.warn(
+          `[ocr] Retryable error (attempt ${attempt + 1}/${MAX_RETRIES}), ` +
+          `retrying in ${delay}ms: ${result.error}`,
+        )
+        await sleep(delay)
+        continue
+      }
+      return {
+        status: 'error',
+        data: null,
+        error: `AI API rate limited after ${MAX_RETRIES + 1} attempts. Please try again later.`,
+      }
+    }
+
+    // Non-retryable error — return immediately
+    return result
+  }
+
+  // TypeScript exhaustiveness fallback
+  return { status: 'error', data: null, error: 'Unknown retry error' }
+}
+
 // --- CLI usage ---
 if (import.meta.url === `file://${process.argv[1]}`) {
   const imageUrl = process.argv[2] || 'https://upload.wikimedia.org/wikipedia/commons/0/0b/ReceiptSwiss.jpg'
 
-  scanReceipt(imageUrl)
+  scanReceiptWithRetry(imageUrl)
     .then((r) => console.log(JSON.stringify(r, null, 2)))
     .catch((e) => {
       console.error(JSON.stringify({ status: 'error', data: null, error: e.message }, null, 2))

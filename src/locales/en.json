@@ -85,6 +85,8 @@
     "expense": "Expense",
     "amount": "Amount",
     "amount_placeholder": "0",
+    "category": "Category",
+    "currency": "Currency",
     "select_category": "Select category",
     "note_optional": "Note (optional)",
     "select_date": "Select date",
@@ -93,7 +95,16 @@
     "cancel": "Cancel",
     "back": "Back",
     "save": "Save Transaction",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "scan_receipt": "Scan Receipt",
+    "scanning": "Reading receipt...",
+    "uploading": "Uploading image...",
+    "scan_success": "Receipt scanned successfully",
+    "scan_error": "Failed to read receipt. Try again with better lighting.",
+    "scan_error_format": "Unsupported image format. Use JPEG or PNG.",
+    "scan_error_size": "Image exceeds 5MB limit. Please choose a smaller file.",
+    "scan_error_network": "Connection failed. Please try again.",
+    "scan_error_auth": "Session expired. Please log in again."
   },
   "transaction_edit": {
     "not_found": "Transaction not found",

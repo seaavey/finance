@@ -85,6 +85,8 @@
     "expense": "Pengeluaran",
     "amount": "Nominal",
     "amount_placeholder": "0",
+    "category": "Kategori",
+    "currency": "Mata Uang",
     "select_category": "Pilih kategori",
     "note_optional": "Catatan (opsional)",
     "select_date": "Pilih tanggal",
@@ -93,7 +95,16 @@
     "cancel": "Batal",
     "back": "Kembali",
     "save": "Simpan Transaksi",
-    "saving": "Menyimpan..."
+    "saving": "Menyimpan...",
+    "scan_receipt": "Scan Struk",
+    "scanning": "Membaca struk...",
+    "uploading": "Mengupload gambar...",
+    "scan_success": "Struk berhasil dibaca",
+    "scan_error": "Gagal membaca struk. Coba foto lagi dengan pencahayaan lebih baik.",
+    "scan_error_format": "Format gambar tidak didukung. Gunakan JPEG atau PNG.",
+    "scan_error_size": "Ukuran gambar melebihi 5MB. Pilih file yang lebih kecil.",
+    "scan_error_network": "Koneksi gagal. Silakan coba lagi.",
+    "scan_error_auth": "Sesi habis. Silakan login ulang."
   },
   "transaction_edit": {
     "not_found": "Transaksi tidak ditemukan",

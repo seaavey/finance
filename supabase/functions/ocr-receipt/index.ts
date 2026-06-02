@@ -1,11 +1,20 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
+import { Buffer } from 'node:buffer'
 import { randomBytes, randomInt, publicEncrypt, constants } from 'node:crypto'
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 const UA =
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36'
 
-const RSA_PEM =
-  '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCAdf/EyIbLBxjGqmh7qLU6/CPCzru+75+82OSPZ+nf4BFvg88drpZ6KigNW0J8TNgxe6Yms1irCZNVDyu+RXsl4y/7c2KOHc4OGTzHB5fUMiMasFUvcEs2P70e6yA/sKHZfBLG1XPhlb84Ibs3nhD3W5e2SuC+4EuVkaqzN08LQIDAQAB\n-----END PUBLIC KEY-----'
+const RSA_PEM = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCAdf/EyIbLBxjGqmh7qLU6/CP
+Czru+75+82OSPZ+nf4BFvg88drpZ6KigNW0J8TNgxe6Yms1irCZNVDyu+RXsl4y/
+7c2KOHc4OGTzHB5fUMiMasFUvcEs2P70e6yA/sKHZfBLG1XPhlb84Ibs3nhD3W5e
+2SuC+4EuVkaqzN08LQIDAQAB
+-----END PUBLIC KEY-----`
 
 function encryptVisitorId(id: string) {
   return publicEncrypt(
@@ -238,7 +247,28 @@ serve(async (req) => {
       )
     }
 
-    const result = await scanReceipt(imageUrl)
+    // Retry with exponential backoff on rate limits (429) or service unavailable (503)
+    const MAX_RETRIES = 3
+    const BASE_DELAY_MS = 1000
+    let result: ScanResult = { status: 'error', data: null, error: 'Unexpected error' }
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      result = await scanReceipt(imageUrl)
+      if (result.status === 'ok') break
+      if (result.error?.includes('429') || result.error?.includes('503')) {
+        if (attempt < MAX_RETRIES) {
+          const delay = BASE_DELAY_MS * Math.pow(4, attempt) // 1s, 4s, 16s
+          await sleep(delay)
+          continue
+        }
+        result = {
+          status: 'error',
+          data: null,
+          error: 'AI API rate limited after multiple retries. Please try again later.',
+        }
+      } else {
+        break
+      }
+    }
     const httpStatus = result.status === 'ok' ? 200 : 422
 
     return new Response(JSON.stringify(result), { status: httpStatus, headers })

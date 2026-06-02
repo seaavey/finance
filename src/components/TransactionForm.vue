@@ -45,6 +45,35 @@
       </Button>
     </div>
 
+    <!-- SCAN RECEIPT BUTTON -->
+    <div class="flex justify-center">
+      <Button
+        variant="outline"
+        class="group relative h-12 w-full rounded-2xl border-dashed border-border/50 bg-transparent font-black uppercase tracking-widest text-xs transition-all hover:border-primary/50 hover:bg-primary/5 disabled:opacity-50"
+        :disabled="uploading || scanning"
+        @click="fileInputRef?.click()"
+      >
+        <div class="flex items-center gap-3">
+          <div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary/20">
+            <AppIcon
+              :name="scanning ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
+              :size="16"
+              :class="scanning ? 'animate-spin' : ''"
+            />
+          </div>
+          <span>{{ scanning ? $t('transaction_form.scanning') : $t('transaction_form.scan_receipt') }}</span>
+        </div>
+      </Button>
+
+      <input
+        ref="fileInputRef"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        class="hidden"
+        @change="onFileSelected"
+      />
+    </div>
+
     <!-- AMOUNT CARD -->
     <div class="relative overflow-hidden rounded-4xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80">
       <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('transaction_form.amount')}}</Label>
@@ -90,7 +119,6 @@
               <SelectValue :placeholder="$t('transaction_form.select_account')" />
             </SelectTrigger>
             <SelectContent class="rounded-2xl p-2">
-              <SelectItem value="" class="rounded-xl">{{ $t('transaction_form.select_account') }}</SelectItem>
               <SelectItem
                 v-for="acct in accounts"
                 :key="acct.id"
@@ -208,6 +236,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useReceipts } from '@/composables/useReceipts';
 
 const { locale } = useI18n();
 
@@ -261,6 +290,56 @@ const form = reactive({
 });
 
 const submitting = ref(false);
+
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const { uploading, scanning, scanReceiptFromFile } = useReceipts()
+
+const { categories } = useCategories()
+
+async function onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const receiptData = await scanReceiptFromFile(file)
+
+  // Reset file input so the same file can be selected again
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+
+  if (!receiptData) return
+
+  // --- AUTO-FILL FORM ---
+  form.type = receiptData.type
+
+  form.amount = receiptData.amount
+  form.currency = receiptData.currency
+
+  // Match category name from AI to local category_id
+  if (receiptData.category) {
+    const match = categories.value.find(
+      (c: { name: string; type: string }) => c.name.toLowerCase() === receiptData.category!.toLowerCase() && c.type === form.type,
+    )
+    if (match) {
+      form.category_id = match.id
+    }
+  }
+
+  if (receiptData.description) {
+    form.description = receiptData.description
+  }
+
+  if (receiptData.date) {
+    form.date = receiptData.date
+  }
+
+  // merchant is appended to description if it exists and description doesn't already include it
+  if (receiptData.merchant && receiptData.description && !receiptData.description.includes(receiptData.merchant)) {
+    form.description = `${receiptData.merchant} — ${receiptData.description}`
+  }
+}
 
 const calendarDate = computed({
   get: () => (form.date ? parseDate(form.date) : undefined),
