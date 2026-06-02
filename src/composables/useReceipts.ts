@@ -134,7 +134,7 @@ export const useReceipts = (): UseReceiptsReturn => {
 
   /**
    * Upload a compressed image blob to Supabase Storage.
-   * Returns the public URL or throws on error.
+   * Returns a signed URL with 10-minute expiry for Edge Function access, or throws on error.
    */
   async function uploadToStorage(blob: Blob): Promise<string> {
     const userId = user.value?.id
@@ -160,8 +160,10 @@ export const useReceipts = (): UseReceiptsReturn => {
           .from('receipts')
           .upload(retryPath, blob, { contentType: 'image/jpeg', upsert: false })
         if (retryError) throw retryError
-        const { data: retryUrl } = supabase.storage.from('receipts').getPublicUrl(retryPath)
-        return retryUrl.publicUrl
+        const { data: retryUrl } = await supabase.storage
+          .from('receipts')
+          .createSignedUrl(retryPath, 600)
+        return retryUrl.signedUrl
       }
 
       if (error.message?.includes('401') || error.message?.includes('403')) {
@@ -172,8 +174,12 @@ export const useReceipts = (): UseReceiptsReturn => {
       throw error
     }
 
-    const { data: urlData } = supabase.storage.from('receipts').getPublicUrl(path)
-    return urlData.publicUrl
+    // Use signed URL (10 min expiry) so Edge Function can access private bucket files
+    const { data: urlData } = await supabase.storage
+      .from('receipts')
+      .createSignedUrl(path, 600)
+
+    return urlData.signedUrl
   }
 
   /**
@@ -181,13 +187,16 @@ export const useReceipts = (): UseReceiptsReturn => {
    */
   async function callScanEndpoint(imageUrl: string): Promise<ScanResult> {
     const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL as string
-    const anonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY as string
+
+    // Get the user's session token for Edge Function auth
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
 
     const res = await fetch(`${supabaseUrl}/functions/v1/ocr-receipt`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        apikey: anonKey,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({ imageUrl }),
     })

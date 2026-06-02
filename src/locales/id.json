@@ -85,6 +85,8 @@
     "expense": "Pengeluaran",
     "amount": "Nominal",
     "amount_placeholder": "0",
+    "category": "Kategori",
+    "currency": "Mata Uang",
     "select_category": "Pilih kategori",
     "note_optional": "Catatan (opsional)",
     "select_date": "Pilih tanggal",

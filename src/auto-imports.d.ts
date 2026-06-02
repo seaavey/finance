@@ -83,6 +83,7 @@ declare global {
   const useNetWorth: typeof import('./composables/useNetWorth').useNetWorth
   const useOnline: typeof import('@vueuse/core').useOnline
   const usePartner: typeof import('./composables/usePartner').usePartner
+  const useReceipts: typeof import('./composables/useReceipts').useReceipts
   const useRecurring: typeof import('./composables/useRecurring').useRecurring
   const useReminders: typeof import('./composables/useReminders').useReminders
   const useRoute: typeof import('vue-router').useRoute
@@ -131,6 +132,9 @@ declare global {
   // @ts-ignore
   export type { CoupleInvitation, PartnerProfile } from './composables/usePartner'
   import('./composables/usePartner')
+  // @ts-ignore
+  export type { UseReceiptsReturn } from './composables/useReceipts'
+  import('./composables/useReceipts')
   // @ts-ignore
   export type { RecurringTransaction } from './composables/useRecurring'
   import('./composables/useRecurring')
@@ -223,6 +227,7 @@ declare module 'vue' {
     readonly useNetWorth: UnwrapRef<typeof import('./composables/useNetWorth')['useNetWorth']>
     readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly usePartner: UnwrapRef<typeof import('./composables/usePartner')['usePartner']>
+    readonly useReceipts: UnwrapRef<typeof import('./composables/useReceipts')['useReceipts']>
     readonly useRecurring: UnwrapRef<typeof import('./composables/useRecurring')['useRecurring']>
     readonly useReminders: UnwrapRef<typeof import('./composables/useReminders')['useReminders']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>

@@ -85,6 +85,8 @@
     "expense": "Expense",
     "amount": "Amount",
     "amount_placeholder": "0",
+    "category": "Category",
+    "currency": "Currency",
     "select_category": "Select category",
     "note_optional": "Note (optional)",
     "select_date": "Select date",

@@ -119,7 +119,6 @@
               <SelectValue :placeholder="$t('transaction_form.select_account')" />
             </SelectTrigger>
             <SelectContent class="rounded-2xl p-2">
-              <SelectItem value="" class="rounded-xl">{{ $t('transaction_form.select_account') }}</SelectItem>
               <SelectItem
                 v-for="acct in accounts"
                 :key="acct.id"
