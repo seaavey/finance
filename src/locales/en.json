@@ -92,7 +92,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "back": "Back",
-    "save": "Save Transaction"
+    "save": "Save Transaction",
+    "saving": "Saving..."
   },
   "transaction_edit": {
     "not_found": "Transaction not found",

@@ -192,10 +192,10 @@
       </Button>
       <Button
         class="h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-        :disabled="!form.amount || !form.date"
+        :disabled="submitting || !form.amount || !form.date"
         @click="onSubmit"
       >
-        {{ $t('transaction_form.save')}}
+        {{ submitting ? $t('transaction_form.saving') : $t('transaction_form.save') }}
       </Button>
     </div>
   </div>
@@ -259,6 +259,8 @@ const form = reactive({
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
 });
+
+const submitting = ref(false);
 
 const calendarDate = computed({
   get: () => (form.date ? parseDate(form.date) : undefined),
@@ -328,21 +330,31 @@ const onNumberKeydown = (e: KeyboardEvent) => {
 };
 
 const onSubmit = async () => {
-  const payload = {
-    type: form.type,
-    amount: Number(form.amount),
-    currency: form.currency,
-    category_id: form.category_id || null,
-    account_id: form.account_id || null,
-    description: form.description || null,
-    date: form.date!,
-  };
-
-  if (props.transaction) {
-    await updateTransaction(props.transaction.id, payload);
-  } else {
-    await addTransaction(payload);
+  if (submitting.value) {
+    return;
   }
-  emit('saved');
+
+  submitting.value = true;
+  try {
+    const payload = {
+      type: form.type,
+      amount: Number(form.amount),
+      currency: form.currency,
+      category_id: form.category_id || null,
+      account_id: form.account_id || null,
+      description: form.description || null,
+      date: form.date!,
+    };
+
+    const result = props.transaction
+      ? await updateTransaction(props.transaction.id, payload)
+      : await addTransaction(payload);
+
+    if (!result.error) {
+      emit('saved');
+    }
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>
