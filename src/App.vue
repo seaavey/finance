@@ -24,6 +24,16 @@ useHead({
 const { bills, fetchBills } = useBills()
 const { toast } = useToast()
 
+const online = useOnline()
+
+watch(online, (val) => {
+  if (!val) {
+    toast.error('Koneksi terputus — Beberapa data mungkin tidak tersedia.')
+  } else {
+    toast.info('Kembali online — Data terbaru telah dimuat.')
+  }
+})
+
 onMounted(async () => {
   if (route.meta.layout === 'blank') return;
 
@@ -52,6 +62,13 @@ const layout = computed(() => {
 </script>
 
 <template>
+  <!-- Offline notification banner -->
+  <div
+    v-if="!online"
+    class="sticky top-0 z-50 bg-destructive text-destructive-foreground text-center text-sm py-1 px-3"
+  >
+    Kamu sedang offline — menampilkan data cache
+  </div>
   <component :is="layout">
     <router-view />
   </component>

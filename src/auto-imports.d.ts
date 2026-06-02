@@ -81,6 +81,7 @@ declare global {
   const useLocalePath: typeof import('./composables/nuxt-compat').useLocalePath
   const useModel: typeof import('vue').useModel
   const useNetWorth: typeof import('./composables/useNetWorth').useNetWorth
+  const useOnline: typeof import('@vueuse/core').useOnline
   const usePartner: typeof import('./composables/usePartner').usePartner
   const useRecurring: typeof import('./composables/useRecurring').useRecurring
   const useReminders: typeof import('./composables/useReminders').useReminders
@@ -220,6 +221,7 @@ declare module 'vue' {
     readonly useLocalePath: UnwrapRef<typeof import('./composables/nuxt-compat')['useLocalePath']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNetWorth: UnwrapRef<typeof import('./composables/useNetWorth')['useNetWorth']>
+    readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly usePartner: UnwrapRef<typeof import('./composables/usePartner')['usePartner']>
     readonly useRecurring: UnwrapRef<typeof import('./composables/useRecurring')['useRecurring']>
     readonly useReminders: UnwrapRef<typeof import('./composables/useReminders')['useReminders']>
