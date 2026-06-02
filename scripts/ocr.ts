@@ -18,7 +18,6 @@ function createSession() {
     visitorId: id,
     vtoken: encryptVisitorId(id),
     conversationId: crypto.randomInt(10000000, 99999999),
-    messages: [] as any[],
   }
 }
 
