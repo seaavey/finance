@@ -37,21 +37,20 @@ git clone https://github.com/seaavey/finance.git
 cd finance
 
 # Install dependencies
-pnpm install
+bun install
 
 # Copy environment
 cp .env .env.local
 
 # Start dev server
-pnpm dev
+bun dev
 ```
 
 > **Catatan:** `.env` berisi Supabase URL dan anon key yang sudah terhubung ke project live. Untuk development lokal, jalankan `supabase start`.
 
 ### Prerequisites
 
-- **Node.js** ^20.19.0 or >=22.12.0
-- **pnpm** (recommended package manager)
+- **bun** (JavaScript runtime & package manager)
 - **Supabase CLI** (untuk lokal)
 
 ---
@@ -158,13 +157,13 @@ supabase/
 ## 📦 Scripts
 
 ```bash
-pnpm dev              # Dev server (port 5173)
-pnpm build            # Type-check + production build
-pnpm build-only       # Build tanpa type-check
-pnpm preview          # Preview production build
-pnpm type-check       # vue-tsc type checking
-pnpm lint             # oxlint + eslint --fix
-pnpm format           # Prettier formatting
+bun dev              # Dev server (port 5173)
+bun build            # Type-check + production build
+bun build-only       # Build tanpa type-check
+bun preview          # Preview production build
+bun type-check       # vue-tsc type checking
+bun lint             # oxlint + eslint --fix
+bun format           # Prettier formatting
 ```
 
 ---
