@@ -166,7 +166,7 @@
             {{ $t('dashboard.net_worth') }}
           </p>
           <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(currentNetWorth?.netWorth || 0) }}
+            {{ formatCurrency(currentNetWorth?.netWorth || 0, activeCurrency) }}
           </p>
         </div>
       </div>
@@ -469,7 +469,7 @@ const router = useRouter();
 const { user } = useAuth();
 const { transactions, fetchTransactions } = useTransactions();
 const { categories, fetchCategories } = useCategories();
-const { formatCurrency, defaultCurrency } = useCurrency();
+const { formatCurrency, defaultCurrency, convertTo } = useCurrency();
 const { t, locale } = useI18n();
 const { fetchPartner, partner, isPartnered } = usePartner();
 const { fetchBudgetWithProgress } = useBudgets();
@@ -479,7 +479,7 @@ const { fetchRecurring } = useRecurring();
 useReminders();
 
 const loading = ref(true);
-const viewMode = ref<'all' | 'mine' | 'partner'>('all');
+const viewMode = ref<'mine' | 'partner'>('mine');
 const period = ref<'1d' | '7d' | '30d' | 'all'>('7d');
 const budgetSummaries = ref<BudgetWithProgress[]>([]);
 const accountBalances = ref<AccountWithBalance[]>([]);
@@ -492,7 +492,6 @@ const periodOptions = [
 ];
 
 const viewModes = computed(() => [
-  { value: 'all' as const, label: t('transactions.all') },
   { value: 'mine' as const, label: displayName.value },
   {
     value: 'partner' as const,
@@ -504,7 +503,7 @@ const filteredTransactions = computed(() => {
   let list = transactions.value;
 
   // 1. View Mode Filter (Self/Partner)
-  if (isPartnered.value && viewMode.value !== 'all') {
+  if (isPartnered.value) {
     const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
     if (targetUserId) {
       list = list.filter((tx) => tx.user_id === targetUserId);
@@ -537,6 +536,16 @@ const activeCurrency = computed(() => {
   }
   return defaultCurrency.value;
 });
+
+// Convert a transaction amount to active currency using exchange rates
+const convertAmount = (amount: number, fromCurrency: string, toCurrency: string): number => {
+  if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount;
+  const converted = convertTo(amount, fromCurrency, toCurrency);
+  if (converted !== null) return converted;
+  // If conversion fails (rates not loaded), fall back to 0 rather than silently using wrong currency
+  console.warn(`Currency conversion failed: ${fromCurrency}→${toCurrency} for amount ${amount}`);
+  return 0;
+};
 
 const monthLabel = computed(() => {
   if (period.value === '1d') {
@@ -587,11 +596,21 @@ const getCategoryName = (id: string | null) => {
 };
 
 const totalIncome = computed(() =>
-  filteredTransactions.value.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value
+    .filter((t) => t.type === 'income')
+    .reduce(
+      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
+      0,
+    ),
 );
 
 const totalExpense = computed(() =>
-  filteredTransactions.value.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+  filteredTransactions.value
+    .filter((t) => t.type === 'expense')
+    .reduce(
+      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
+      0,
+    ),
 );
 
 const balance = computed(() => totalIncome.value - totalExpense.value);
@@ -613,12 +632,19 @@ const trendBalance = computed(() => {
     return d >= prevCutoff && d < currentCutoff;
   });
 
+  const activeCur = activeCurrency.value;
   const prevIncome = prevTransactions
     .filter((tx) => tx.type === 'income')
-    .reduce((s, t) => s + t.amount, 0);
+    .reduce(
+      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+      0,
+    );
   const prevExpense = prevTransactions
     .filter((tx) => tx.type === 'expense')
-    .reduce((s, t) => s + t.amount, 0);
+    .reduce(
+      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+      0,
+    );
 
   const prevBalance = prevIncome - prevExpense;
   if (prevBalance === 0) {
@@ -646,10 +672,21 @@ const monthlyData = computed(() => {
       const dateStr = d.toISOString().split('T')[0];
 
       const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr);
+      const activeCur = activeCurrency.value;
       data.push({
         label,
-        income: dayTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
-        expense: dayTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+        income: dayTx
+          .filter((t) => t.type === 'income')
+          .reduce(
+            (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+            0,
+          ),
+        expense: dayTx
+          .filter((t) => t.type === 'expense')
+          .reduce(
+            (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+            0,
+          ),
       });
     }
     return data;
@@ -672,10 +709,21 @@ const monthlyData = computed(() => {
       return td.getMonth() === m && td.getFullYear() === y;
     });
 
+    const activeCur = activeCurrency.value;
     months.push({
       label,
-      income: monthTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0),
-      expense: monthTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0),
+      income: monthTx
+        .filter((t) => t.type === 'income')
+        .reduce(
+          (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+          0,
+        ),
+      expense: monthTx
+        .filter((t) => t.type === 'expense')
+        .reduce(
+          (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
+          0,
+        ),
     });
   }
   return months;
