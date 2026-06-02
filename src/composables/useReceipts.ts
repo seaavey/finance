@@ -163,6 +163,9 @@ export const useReceipts = (): UseReceiptsReturn => {
         const { data: retryUrl } = await supabase.storage
           .from('receipts')
           .createSignedUrl(retryPath, 600)
+        if (!retryUrl) {
+          throw new Error('Failed to create signed URL for receipt upload')
+        }
         return retryUrl.signedUrl
       }
 
@@ -178,6 +181,10 @@ export const useReceipts = (): UseReceiptsReturn => {
     const { data: urlData } = await supabase.storage
       .from('receipts')
       .createSignedUrl(path, 600)
+
+    if (!urlData) {
+      throw new Error('Failed to create signed URL for receipt upload')
+    }
 
     return urlData.signedUrl
   }
