@@ -107,12 +107,7 @@
                       count: (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count,
                     })
                   }}
-                  · Rp
-                  {{
-                    (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total.toLocaleString(
-                      locale,
-                    )
-                  }}
+                  · {{ formatCurrency((categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total) }}
                 </p>
               </div>
             </div>
@@ -160,6 +155,7 @@ import type { Category } from '@/composables/useCategories';
 
 const router = useRouter();
 const { t, locale } = useI18n();
+const { formatCurrency } = useCurrency();
 
 const {
   categories,
