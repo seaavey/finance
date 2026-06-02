@@ -33,8 +33,8 @@ A modern personal finance app with multi-currency support, interactive visualiza
 
 ```bash
 # Clone
-git clone https://github.com/seaavey/finance-vite.git
-cd finance-vite
+git clone https://github.com/seaavey/finance.git
+cd finance
 
 # Install dependencies
 pnpm install

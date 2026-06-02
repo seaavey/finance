@@ -33,8 +33,8 @@ Aplikasi manajemen keuangan pribadi modern dengan dukungan multi-mata uang, visu
 
 ```bash
 # Clone
-git clone https://github.com/seaavey/finance-vite.git
-cd finance-vite
+git clone https://github.com/seaavey/finance.git
+cd finance
 
 # Install dependencies
 pnpm install
