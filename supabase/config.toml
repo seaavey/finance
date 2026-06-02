@@ -409,3 +409,9 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 [functions.sync-rates]
 verify_jwt = false
+
+[functions.send-couple-invite]
+verify_jwt = false
+
+[functions.og-image]
+verify_jwt = false

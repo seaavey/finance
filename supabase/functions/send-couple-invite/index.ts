@@ -4,11 +4,11 @@ import { Resend } from 'npm:resend@4';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const APP_URL = Deno.env.get('APP_URL') || 'https://seaavey.site';
 
 const resend = new Resend(RESEND_API_KEY);
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 serve(async (req) => {
   // Only accept POST
@@ -17,9 +17,21 @@ serve(async (req) => {
   }
 
   try {
+    // --- Auth validation ---
+    const authHeader = req.headers.get('Authorization') || '';
+    let callerId: string | null = null;
+
+    if (authHeader.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const authClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const { data: { user } } = await authClient.auth.getUser(token);
+      callerId = user?.id || null;
+    }
+
     let record: Record<string, unknown>;
 
-    // Handle both Database Webhook format and direct API call
     const contentType = req.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await req.json();
@@ -48,8 +60,14 @@ serve(async (req) => {
       return new Response('Missing sender_id or recipient_email', { status: 400 });
     }
 
+    // If called directly (not via DB webhook), verify the caller owns this sender_id
+    if (!record.type && callerId && callerId !== sender_id) {
+      return new Response('Forbidden: sender_id does not match authenticated user', { status: 403 });
+    }
+
     // Get sender's display name
-    const { data: sender } = await supabase
+    const svcClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: sender } = await svcClient
       .from('profiles')
       .select('display_name')
       .eq('id', sender_id)
@@ -58,7 +76,7 @@ serve(async (req) => {
     const senderName = sender?.display_name || 'Seseorang';
 
     // Get sender's email for the "reply-to"
-    const { data: senderUser } = await supabase.auth.admin.getUserById(sender_id);
+    const { data: senderUser } = await svcClient.auth.admin.getUserById(sender_id);
     const senderEmail = senderUser?.user?.email;
 
     const acceptUrl = `${APP_URL}/settings`;
@@ -120,7 +138,6 @@ serve(async (req) => {
       });
     }
 
-    // Log the invitation send for tracking
     console.log(`Invitation email sent: ${id} -> ${recipient_email}`);
 
     return new Response(JSON.stringify({ ok: true }), {

@@ -145,15 +145,21 @@ export const usePartner = () => {
 
       // Notify recipient via email (fire-and-forget)
       const edgeUrl = `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/functions/v1/send-couple-invite`;
-      fetch(edgeUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sender_id: user.value.id,
-          recipient_email: email,
-        }),
-      }).catch((e) => {
-        console.warn('Failed to send notification email:', e);
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        const token = session?.access_token;
+        fetch(edgeUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            sender_id: user.value!.id,
+            recipient_email: email,
+          }),
+        }).catch((e) => {
+          console.warn('Failed to send notification email:', e);
+        });
       });
     } else {
       toast.error(t('toast.partner_invite_error'));
