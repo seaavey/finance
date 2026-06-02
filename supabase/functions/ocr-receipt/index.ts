@@ -1,23 +1,25 @@
-import crypto from 'node:crypto'
+import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
+import { randomBytes, randomInt, publicEncrypt, constants } from 'node:crypto'
 
 const UA =
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36'
 
-function encryptVisitorId(id: string) {
-  const pem =
-    '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCAdf/EyIbLBxjGqmh7qLU6/CPCzru+75+82OSPZ+nf4BFvg88drpZ6KigNW0J8TNgxe6Yms1irCZNVDyu+RXsl4y/7c2KOHc4OGTzHB5fUMiMasFUvcEs2P70e6yA/sKHZfBLG1XPhlb84Ibs3nhD3W5e2SuC+4EuVkaqzN08LQIDAQAB\n-----END PUBLIC KEY-----'
+const RSA_PEM =
+  '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCAdf/EyIbLBxjGqmh7qLU6/CPCzru+75+82OSPZ+nf4BFvg88drpZ6KigNW0J8TNgxe6Yms1irCZNVDyu+RXsl4y/7c2KOHc4OGTzHB5fUMiMasFUvcEs2P70e6yA/sKHZfBLG1XPhlb84Ibs3nhD3W5e2SuC+4EuVkaqzN08LQIDAQAB\n-----END PUBLIC KEY-----'
 
-  return crypto
-    .publicEncrypt({ key: pem, padding: crypto.constants.RSA_PKCS1_PADDING }, Buffer.from(id))
-    .toString('base64')
+function encryptVisitorId(id: string) {
+  return publicEncrypt(
+    { key: RSA_PEM, padding: constants.RSA_PKCS1_PADDING },
+    Buffer.from(id),
+  ).toString('base64')
 }
 
 function createSession() {
-  const id = crypto.randomBytes(16).toString('hex')
+  const id = randomBytes(16).toString('hex')
   return {
     visitorId: id,
     vtoken: encryptVisitorId(id),
-    conversationId: crypto.randomInt(10000000, 99999999),
+    conversationId: randomInt(10000000, 99999999),
   }
 }
 
@@ -30,11 +32,18 @@ async function toDataUrl(url: string) {
     },
   })
 
-  const mime = (res.headers.get('content-type') || '').split(';')[0].toLowerCase()
-  if (!/^image\/(jpeg|png)$/.test(mime))
-    throw new Error(`Format gambar tidak didukung: ${mime}`)
+  if (!res.ok) {
+    throw new Error(`Gagal fetch gambar: ${res.status}`)
+  }
 
-  return `data:${mime};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`
+  const mime = (res.headers.get('content-type') || '').split(';')[0].toLowerCase()
+  if (!/^image\/(jpeg|png)$/.test(mime)) {
+    throw new Error(`Format gambar tidak didukung: ${mime}`)
+  }
+
+  const buf = await res.arrayBuffer()
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)))
+  return `data:${mime};base64,${base64}`
 }
 
 async function streamToString(res: Response): Promise<string> {
@@ -56,33 +65,10 @@ async function streamToString(res: Response): Promise<string> {
   }
 
   return answer
-    .replace(/-=-n--/g, ' ')   // strip SSE newline markers
-    .replace(/-=-\s*--/g, ' ') // handle any remaining -=- + whitespace + --
+    .replace(/-=-n--/g, ' ')
+    .replace(/-=-\s*--/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-}
-
-export interface ScanResult {
-  status: 'ok' | 'error'
-  data: ReceiptData | null
-  error?: string
-}
-
-export interface ReceiptItem {
-  name: string
-  quantity: number
-  price: number
-}
-
-export interface ReceiptData {
-  type: 'expense' | 'income'
-  amount: number
-  currency: string
-  category: string
-  description: string | null
-  date: string
-  items: ReceiptItem[] | null
-  merchant: string | null
 }
 
 const SYSTEM_PROMPT = `You are a receipt scanner for a personal finance app. Extract transaction details from receipt/struk photos and return ONLY valid JSON.
@@ -117,16 +103,26 @@ Return JSON with this exact structure:
   "merchant": string | null
 }`
 
-/**
- * Scan a receipt image and extract transaction data using GPT-4o-mini.
- * @param imageUrl - Public URL of the receipt image (JPEG or PNG)
- * @returns ScanResult with parsed ReceiptData on success
- */
-export async function scanReceipt(imageUrl: string): Promise<ScanResult> {
-  let session
+interface ReceiptData {
+  type: 'expense' | 'income'
+  amount: number
+  currency: string
+  category: string
+  description: string | null
+  date: string
+  items: Array<{ name: string; quantity: number; price: number }> | null
+  merchant: string | null
+}
 
+interface ScanResult {
+  status: 'ok' | 'error'
+  data: ReceiptData | null
+  error?: string
+}
+
+async function scanReceipt(imageUrl: string): Promise<ScanResult> {
   try {
-    session = createSession()
+    const session = createSession()
     const dataUrl = await toDataUrl(imageUrl)
 
     const res = await fetch('https://aga-api.aichatting.net/aigc/chat/v2/professional/stream', {
@@ -176,33 +172,23 @@ export async function scanReceipt(imageUrl: string): Promise<ScanResult> {
     }
 
     if (!res.body) {
-      return {
-        status: 'error',
-        data: null,
-        error: 'Response body is empty',
-      }
+      return { status: 'error', data: null, error: 'Response body is empty' }
     }
 
     const raw = await streamToString(res)
 
     if (!raw) {
-      return {
-        status: 'error',
-        data: null,
-        error: 'Empty response from AI model',
-      }
+      return { status: 'error', data: null, error: 'Empty response from AI model' }
     }
 
-    // Parse the JSON returned by the AI (strip markdown fences if present)
+    // Strip markdown code fences if the AI wraps the JSON
     let jsonStr = raw.trim()
     const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)\s*```/)
     if (fenceMatch) jsonStr = fenceMatch[1]
+
     const parsed: ReceiptData = JSON.parse(jsonStr)
 
-    return {
-      status: 'ok',
-      data: parsed,
-    }
+    return { status: 'ok', data: parsed }
   } catch (e) {
     return {
       status: 'error',
@@ -212,14 +198,58 @@ export async function scanReceipt(imageUrl: string): Promise<ScanResult> {
   }
 }
 
-// --- CLI usage ---
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const imageUrl = process.argv[2] || 'https://upload.wikimedia.org/wikipedia/commons/0/0b/ReceiptSwiss.jpg'
+serve(async (req) => {
+  // CORS headers
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  })
 
-  scanReceipt(imageUrl)
-    .then((r) => console.log(JSON.stringify(r, null, 2)))
-    .catch((e) => {
-      console.error(JSON.stringify({ status: 'error', data: null, error: e.message }, null, 2))
-      process.exit(1)
-    })
-}
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers })
+  }
+
+  // Only accept POST
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ status: 'error', data: null, error: 'Method not allowed. Use POST.' }),
+      { status: 405, headers },
+    )
+  }
+
+  try {
+    const body = await req.json()
+    const { imageUrl } = body
+
+    if (!imageUrl || typeof imageUrl !== 'string') {
+      return new Response(
+        JSON.stringify({ status: 'error', data: null, error: 'Missing required field: imageUrl' }),
+        { status: 400, headers },
+      )
+    }
+
+    if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+      return new Response(
+        JSON.stringify({ status: 'error', data: null, error: 'imageUrl must be a valid HTTP(S) URL' }),
+        { status: 400, headers },
+      )
+    }
+
+    const result = await scanReceipt(imageUrl)
+    const httpStatus = result.status === 'ok' ? 200 : 422
+
+    return new Response(JSON.stringify(result), { status: httpStatus, headers })
+  } catch (e) {
+    return new Response(
+      JSON.stringify({
+        status: 'error',
+        data: null,
+        error: e instanceof Error ? e.message : 'Invalid request body',
+      }),
+      { status: 400, headers },
+    )
+  }
+})
