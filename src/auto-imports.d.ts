@@ -72,7 +72,6 @@ declare global {
   const useCssVars: typeof import('vue').useCssVars
   const useCurrency: typeof import('./composables/useCurrency').useCurrency
   const useDark: typeof import('@vueuse/core').useDark
-  const useOnline: typeof import('@vueuse/core').useOnline
   const useExport: typeof import('./composables/useExport').useExport
   const useGoals: typeof import('./composables/useGoals').useGoals
   const useHead: typeof import('@unhead/vue').useHead
@@ -82,6 +81,7 @@ declare global {
   const useLocalePath: typeof import('./composables/nuxt-compat').useLocalePath
   const useModel: typeof import('vue').useModel
   const useNetWorth: typeof import('./composables/useNetWorth').useNetWorth
+  const useOnline: typeof import('@vueuse/core').useOnline
   const usePartner: typeof import('./composables/usePartner').usePartner
   const useRecurring: typeof import('./composables/useRecurring').useRecurring
   const useReminders: typeof import('./composables/useReminders').useReminders
@@ -212,7 +212,6 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useCurrency: UnwrapRef<typeof import('./composables/useCurrency')['useCurrency']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
-    readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly useExport: UnwrapRef<typeof import('./composables/useExport')['useExport']>
     readonly useGoals: UnwrapRef<typeof import('./composables/useGoals')['useGoals']>
     readonly useHead: UnwrapRef<typeof import('@unhead/vue')['useHead']>
@@ -222,6 +221,7 @@ declare module 'vue' {
     readonly useLocalePath: UnwrapRef<typeof import('./composables/nuxt-compat')['useLocalePath']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNetWorth: UnwrapRef<typeof import('./composables/useNetWorth')['useNetWorth']>
+    readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly usePartner: UnwrapRef<typeof import('./composables/usePartner')['usePartner']>
     readonly useRecurring: UnwrapRef<typeof import('./composables/useRecurring')['useRecurring']>
     readonly useReminders: UnwrapRef<typeof import('./composables/useReminders')['useReminders']>
