@@ -263,6 +263,23 @@
                 </router-link>
               </div>
             </div>
+
+            <!-- Load More -->
+            <div v-if="hasMore && !loadingMore" class="flex justify-center pb-4">
+              <Button
+                variant="outline"
+                class="h-11 rounded-2xl border-border/50 px-8 font-bold text-muted-foreground"
+                @click="loadMore"
+              >
+                {{ $t('transactions.load_more') }}
+              </Button>
+            </div>
+            <div v-else-if="loadingMore" class="flex justify-center pb-4">
+              <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <div class="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                {{ $t('transactions.loading') }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -283,7 +300,7 @@ interface CalendarDateLike {
   day: number;
 }
 
-const { transactions, loading, fetchTransactions } = useTransactions();
+const { transactions, loading, hasMore, loadingMore, fetchTransactions, loadMore } = useTransactions();
 const { fetchCategories } = useCategories();
 const { partner, isPartnered, fetchPartner } = usePartner();
 

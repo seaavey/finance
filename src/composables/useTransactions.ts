@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useSupabase } from '@/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
@@ -23,6 +23,8 @@ export interface TransactionFilters {
   dateTo?: string;
 }
 
+const PAGE_SIZE = 50;
+
 export const useTransactions = () => {
   const { t } = useI18n();
   const { toast } = useToast();
@@ -30,17 +32,25 @@ export const useTransactions = () => {
   const queryClient = useQueryClient();
   const activity = useActivityLog();
   const { user } = useAuth();
-  
-  const currentFilters = ref<TransactionFilters | undefined>(undefined);
 
-  const { data: transactionsData, isLoading: loading, refetch: refetchTransactions } = useQuery({
-    queryKey: ['transactions', computed(() => user.value?.id), currentFilters],
+  const currentFilters = ref<TransactionFilters | undefined>(undefined);
+  const currentPage = ref(1);
+  const loadedTransactions = ref<Transaction[]>([]);
+  const hasMore = ref(true);
+  const loadingMore = ref(false);
+
+  const { isLoading: loading, refetch: refetchTransactions } = useQuery({
+    queryKey: ['transactions', computed(() => user.value?.id), currentFilters, currentPage],
     queryFn: async () => {
+      const page = currentPage.value;
+      const from = (page - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
       let query = supabase
         .from('transactions')
         .select('id, user_id, type, amount, currency, category_id, description, date, account_id, created_at')
         .order('date', { ascending: false })
-        .limit(100);
+        .range(from, to);
 
       const filters = currentFilters.value;
       if (filters?.type) query = query.eq('type', filters.type);
@@ -51,17 +61,39 @@ export const useTransactions = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as Transaction[];
+      const items = (data as Transaction[]) || [];
+
+      // If fewer items than page size, this was the last page
+      hasMore.value = items.length >= PAGE_SIZE;
+
+      return items;
     },
     enabled: computed(() => !!user.value),
-    staleTime: 30_000, // 30s — transactions change frequently
+    staleTime: 30_000,
   });
 
-  const transactions = computed(() => transactionsData.value || []);
+  const transactions = computed(() => loadedTransactions.value);
 
   const fetchTransactions = async (filters?: TransactionFilters) => {
     currentFilters.value = filters;
-    await refetchTransactions();
+    currentPage.value = 1;
+    hasMore.value = true;
+    loadedTransactions.value = [];
+    const result = await refetchTransactions();
+    if (result.data) {
+      loadedTransactions.value = result.data;
+    }
+  };
+
+  const loadMore = async () => {
+    if (!hasMore.value || loadingMore.value || loading.value) return;
+    loadingMore.value = true;
+    currentPage.value += 1;
+    const result = await refetchTransactions();
+    if (result.data) {
+      loadedTransactions.value = [...loadedTransactions.value, ...result.data];
+    }
+    loadingMore.value = false;
   };
 
   const addTransaction = async (tx: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
@@ -162,7 +194,10 @@ export const useTransactions = () => {
   return {
     transactions,
     loading,
+    hasMore,
+    loadingMore,
     fetchTransactions,
+    loadMore,
     searchTransactions,
     addTransaction,
     updateTransaction,
