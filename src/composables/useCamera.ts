@@ -81,6 +81,9 @@ export function useCamera(): UseCameraReturn {
    */
   function setVideoElement(el: HTMLVideoElement | null) {
     videoElement = el
+    if (el && stream.value) {
+      el.srcObject = stream.value
+    }
   }
 
   /**

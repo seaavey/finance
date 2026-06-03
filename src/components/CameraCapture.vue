@@ -3,11 +3,7 @@ import { ref, watch, nextTick, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCamera } from '@/composables/useCamera'
 import { useToast } from '@/composables/useToast'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 defineOptions({
@@ -24,6 +20,7 @@ const { toast } = useToast()
 
 const {
   isActive,
+  stream,
   error: cameraError,
   hasCameraSupport,
   startCamera,
@@ -82,10 +79,6 @@ watch(open, async (val) => {
 
     await nextTick()
 
-    // Register video element so it's ready for captureImage later
-    if (videoRef.value) {
-      setVideoElement(videoRef.value)
-    }
     // NOTE: We do NOT call checkPermission() here.
     // On some Android Chrome versions, permissions.query({ name: 'camera' })
     // returns 'denied' even when the user has never been asked.
@@ -96,6 +89,17 @@ watch(open, async (val) => {
     watchCancelled = true
     stopCamera()
     setVideoElement(null)
+  }
+})
+
+/** Handle video element availability (which might be delayed due to v-if/v-else-if) */
+watch(videoRef, (el) => {
+  if (el) {
+    setVideoElement(el)
+    // If stream is already active but wasn't linked because el was null
+    if (isActive.value && stream.value) {
+      el.srcObject = stream.value
+    }
   }
 })
 
@@ -138,9 +142,7 @@ async function retryCamera() {
 }
 
 /** Whether permission is permanently denied (for error messaging) */
-const isPermissionPermanentlyDenied = computed(
-  () => permissionState.value === 'denied',
-)
+const isPermissionPermanentlyDenied = computed(() => permissionState.value === 'denied')
 
 /** Capture a photo from the video stream */
 async function capture() {
@@ -242,12 +244,17 @@ function onGalleryFile(event: Event) {
       />
 
       <!-- UNSUPPORTED: no camera API on this device -->
-      <div v-if="!hasCameraSupport" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
+      <div
+        v-if="!hasCameraSupport"
+        class="flex flex-col items-center justify-center gap-5 p-12 text-center"
+      >
         <div class="flex size-16 items-center justify-center rounded-2xl bg-muted">
           <AppIcon name="hugeicons:camera-off-01" :size="28" class="text-muted-foreground" />
         </div>
         <div class="space-y-1">
-          <p class="font-bold text-foreground">{{ t('transaction_form.camera_error_unsupported') }}</p>
+          <p class="font-bold text-foreground">
+            {{ t('transaction_form.camera_error_unsupported') }}
+          </p>
         </div>
         <div class="flex flex-col gap-2 w-full max-w-[200px]">
           <Button variant="secondary" class="rounded-2xl w-full" @click="openGallery">
@@ -261,13 +268,18 @@ function onGalleryFile(event: Event) {
       </div>
 
       <!-- START CAMERA: initial state for ALL users (never blocked at this point) -->
-      <div v-else-if="!cameraStarted" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
+      <div
+        v-else-if="!cameraStarted"
+        class="flex flex-col items-center justify-center gap-5 p-12 text-center"
+      >
         <div class="flex size-20 items-center justify-center rounded-3xl bg-primary/10">
           <AppIcon name="hugeicons:camera-01" :size="36" class="text-primary" />
         </div>
         <div class="space-y-1">
           <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_start') }}</p>
-          <p class="text-sm font-medium text-muted-foreground max-w-xs">{{ t('transaction_form.camera_start_desc') }}</p>
+          <p class="text-sm font-medium text-muted-foreground max-w-xs">
+            {{ t('transaction_form.camera_start_desc') }}
+          </p>
         </div>
         <div class="flex flex-col gap-2 w-full max-w-[220px]">
           <Button
@@ -284,7 +296,11 @@ function onGalleryFile(event: Event) {
               {{ t('transaction_form.camera_start') }}
             </div>
           </Button>
-          <Button variant="ghost" class="rounded-2xl text-sm font-bold text-muted-foreground" @click="handleClose">
+          <Button
+            variant="ghost"
+            class="rounded-2xl text-sm font-bold text-muted-foreground"
+            @click="handleClose"
+          >
             {{ t('transaction_form.cancel') }}
           </Button>
         </div>
@@ -320,7 +336,9 @@ function onGalleryFile(event: Event) {
 
           <!-- Permission permanently denied -> show settings instructions -->
           <div v-if="isPermissionPermanentlyDenied" class="space-y-2">
-            <p class="text-lg font-black text-white">{{ t('transaction_form.camera_permission_denied_title') }}</p>
+            <p class="text-lg font-black text-white">
+              {{ t('transaction_form.camera_permission_denied_title') }}
+            </p>
             <p class="text-sm font-medium text-white/70 leading-relaxed max-w-xs">
               {{ t('transaction_form.camera_permission_denied_desc') }}
             </p>
@@ -336,7 +354,11 @@ function onGalleryFile(event: Event) {
               <AppIcon name="hugeicons:refresh-01" :size="16" />
               {{ t('transaction_form.camera_retry') }}
             </Button>
-            <Button variant="ghost" class="rounded-2xl w-full text-white/70 hover:text-white" @click="openGallery">
+            <Button
+              variant="ghost"
+              class="rounded-2xl w-full text-white/70 hover:text-white"
+              @click="openGallery"
+            >
               <AppIcon name="hugeicons:folder-01" :size="16" />
               {{ t('transaction_form.scan_gallery') }}
             </Button>
@@ -352,10 +374,17 @@ function onGalleryFile(event: Event) {
         <!-- Top bar (only visible when camera is active) -->
         <template v-if="isActive && !cameraFailed">
           <div class="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-            <Button variant="ghost" size="icon-sm" class="rounded-full bg-black/40 text-white hover:bg-black/60" @click="handleClose">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              class="rounded-full bg-black/40 text-white hover:bg-black/60"
+              @click="handleClose"
+            >
               <AppIcon name="hugeicons:cancel-01" :size="20" />
             </Button>
-            <span class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+            <span
+              class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white"
+            >
               {{ t('transaction_form.scan_receipt') }}
             </span>
             <Button
@@ -384,18 +413,21 @@ function onGalleryFile(event: Event) {
 
       <!-- Captured photo preview -->
       <div v-else-if="previewUrl" class="relative aspect-[4/3] w-full bg-black">
-        <img
-          :src="previewUrl"
-          alt="Captured receipt"
-          class="h-full w-full object-contain"
-        />
+        <img :src="previewUrl" alt="Captured receipt" class="h-full w-full object-contain" />
 
         <!-- Top bar in preview -->
         <div class="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-          <Button variant="ghost" size="icon-sm" class="rounded-full bg-black/40 text-white hover:bg-black/60" @click="handleClose">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            class="rounded-full bg-black/40 text-white hover:bg-black/60"
+            @click="handleClose"
+          >
             <AppIcon name="hugeicons:cancel-01" :size="20" />
           </Button>
-          <span class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+          <span
+            class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white"
+          >
             {{ t('transaction_form.camera_preview') }}
           </span>
           <div class="size-9" />
