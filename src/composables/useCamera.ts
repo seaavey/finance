@@ -93,14 +93,8 @@ export function useCamera(): UseCameraReturn {
         videoElement.srcObject = mediaStream
       }
     } catch (err: unknown) {
-      const msg = getErrorMessage(err)
-      error.value = msg
+      error.value = getErrorMessage(err)
       isActive.value = false
-
-      // If rear camera fails, try front camera as fallback
-      if (facingMode.value === 'environment' && msg === 'camera_error_not_allowed') {
-        // Don't retry — user denied permission
-      }
     }
   }
 

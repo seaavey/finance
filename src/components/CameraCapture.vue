@@ -21,7 +21,6 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const {
-  stream,
   isActive,
   error: cameraError,
   hasCameraSupport,
@@ -79,8 +78,16 @@ async function capture() {
   }
 }
 
+/** Revoke the preview blob URL if one exists */
+function revokePreview() {
+  if (previewUrl.value) {
+    URL.revokeObjectURL(previewUrl.value)
+  }
+}
+
 /** Retake — go back to live view */
 function retake() {
+  revokePreview()
   photoCaptured.value = false
   previewUrl.value = null
   capturedBlob.value = null
@@ -93,12 +100,14 @@ function confirm() {
   const file = new File([capturedBlob.value], 'receipt.jpg', {
     type: 'image/jpeg',
   })
+  revokePreview()
   emit('captured', file)
   open.value = false
 }
 
 /** Close handler */
 function handleClose() {
+  revokePreview()
   open.value = false
   emit('close')
 }
