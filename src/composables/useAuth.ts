@@ -16,7 +16,10 @@ export const useAuth = () => {
     const redirectTo = `${window.location.origin}/auth/login`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo },
+      options: {
+        redirectTo,
+        state: crypto.randomUUID(),
+      },
     });
     if (error) {
       throw error;
