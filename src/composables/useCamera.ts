@@ -10,7 +10,7 @@ export interface UseCameraReturn {
   /** Current facing mode */
   facingMode: Ref<'environment' | 'user'>
   /** Whether the device likely has a camera */
-  hasCameraSupport: Ref<boolean>
+  hasCameraSupport: boolean
   /** Start the camera. facingMode overrides the current setting. */
   startCamera: (facingModeOverride?: 'environment' | 'user') => Promise<void>
   /** Stop the camera and release all tracks */
@@ -45,7 +45,7 @@ export function useCamera(): UseCameraReturn {
   const facingMode = ref<'environment' | 'user'>('environment')
 
   /** Check if the browser supports camera access */
-  const hasCameraSupport = ref(!!navigator.mediaDevices?.getUserMedia)
+  const hasCameraSupport = !!navigator.mediaDevices?.getUserMedia
 
   /** Internal reference to the video element for capture */
   let videoElement: HTMLVideoElement | null = null
@@ -124,9 +124,15 @@ export function useCamera(): UseCameraReturn {
         return
       }
 
+      // Guard: reject if video has no decoded frame yet
+      if (el.videoWidth === 0 || el.videoHeight === 0) {
+        reject(new Error('Video not ready — no frame available'))
+        return
+      }
+
       const canvas = document.createElement('canvas')
-      canvas.width = el.videoWidth || 1920
-      canvas.height = el.videoHeight || 1080
+      canvas.width = el.videoWidth
+      canvas.height = el.videoHeight
       const ctx = canvas.getContext('2d')
 
       if (!ctx) {

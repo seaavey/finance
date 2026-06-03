@@ -364,7 +364,7 @@ function autoFillForm(receiptData: {
   // Match category name from AI to local category_id
   if (receiptData.category) {
     const match = categories.value.find(
-      (c: { name: string; type: string }) => c.name.toLowerCase() === receiptData.category!.toLowerCase() && c.type === form.type,
+      (c: { name: string; type: string }) => c.name.toLowerCase() === receiptData.category.toLowerCase() && c.type === form.type,
     )
     if (match) {
       form.category_id = match.id
@@ -403,7 +403,7 @@ async function onFileSelected(event: Event) {
 }
 
 async function onCameraCaptured(file: File) {
-  const receiptData = await scanReceiptFromFile(file)
+  const receiptData = await scanReceiptFromFile(file, { skipCompression: true })
   if (!receiptData) return
   autoFillForm(receiptData)
 }

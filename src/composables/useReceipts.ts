@@ -33,7 +33,7 @@ export interface UseReceiptsReturn {
   scanning: Ref<boolean>
   statusMessage: Ref<string>
   lastResult: Ref<ScanResult | null>
-  scanReceiptFromFile: (file: File) => Promise<ReceiptData | null>
+  scanReceiptFromFile: (file: File, options?: { skipCompression?: boolean }) => Promise<ReceiptData | null>
   reset: () => void
 }
 
@@ -229,7 +229,7 @@ export const useReceipts = (): UseReceiptsReturn => {
    * Main entry point: select file → validate → compress → upload → scan → return data.
    * Returns ReceiptData on success, null on failure (toast already shown).
    */
-  async function scanReceiptFromFile(file: File): Promise<ReceiptData | null> {
+  async function scanReceiptFromFile(file: File, options?: { skipCompression?: boolean }): Promise<ReceiptData | null> {
     // Reset previous state
     lastResult.value = null
     const validationError = validateFile(file)
@@ -243,11 +243,16 @@ export const useReceipts = (): UseReceiptsReturn => {
     statusMessage.value = t('transaction_form.uploading')
 
     let compressedBlob: Blob
-    try {
-      compressedBlob = await compressImage(file)
-    } catch {
-      // Fallback: upload original file if compression fails
+    if (options?.skipCompression) {
+      // Camera already outputs JPEG — skip re-encode to preserve OCR quality
       compressedBlob = file
+    } else {
+      try {
+        compressedBlob = await compressImage(file)
+      } catch {
+        // Fallback: upload original file if compression fails
+        compressedBlob = file
+      }
     }
 
     // --- UPLOAD ---

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCamera } from '@/composables/useCamera'
+import { useToast } from '@/composables/useToast'
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { toast } = useToast()
 
 const {
   isActive,
@@ -38,13 +40,19 @@ const photoCaptured = ref(false)
 const previewUrl = ref<string | null>(null)
 const capturedBlob = ref<Blob | null>(null)
 const flashVisible = ref(false)
+const videoReady = ref(false)
+
+let flashTimer: ReturnType<typeof setTimeout> | null = null
+let watchCancelled = false
 
 /** Open camera when dialog opens, stop when closed */
 watch(open, async (val) => {
+  watchCancelled = false
   if (val) {
     photoCaptured.value = false
     previewUrl.value = null
     capturedBlob.value = null
+    videoReady.value = false
 
     await nextTick()
     // Register video element for the composable
@@ -53,6 +61,7 @@ watch(open, async (val) => {
     }
     await startCamera()
   } else {
+    watchCancelled = true
     stopCamera()
     setVideoElement(null)
   }
@@ -64,19 +73,26 @@ async function capture() {
 
   try {
     const blob = await captureImage()
+    if (watchCancelled) return
     capturedBlob.value = blob
     previewUrl.value = URL.createObjectURL(blob)
     photoCaptured.value = true
 
     // Flash effect
     flashVisible.value = true
-    setTimeout(() => {
+    flashTimer = setTimeout(() => {
       flashVisible.value = false
+      flashTimer = null
     }, 200)
-  } catch {
-    // Toast or silent — user can retry
+  } catch (err) {
+    console.warn('[CameraCapture] capture failed:', err)
+    toast.error(t('transaction_form.scan_error'))
   }
 }
+
+onUnmounted(() => {
+  if (flashTimer !== null) clearTimeout(flashTimer)
+})
 
 /** Revoke the preview blob URL if one exists */
 function revokePreview() {
@@ -141,6 +157,7 @@ function handleClose() {
           muted
           class="h-full w-full object-cover"
           :class="{ hidden: !isActive && !cameraError }"
+          @canplay="videoReady = true"
         />
 
         <!-- Loading state -->
@@ -181,7 +198,7 @@ function handleClose() {
             variant="ghost"
             size="icon-sm"
             class="rounded-full bg-black/40 text-white hover:bg-black/60"
-            :disabled="!isActive"
+            :disabled="!isActive || !videoReady"
             @click="switchCamera"
           >
             <AppIcon name="hugeicons:flip-camera" :size="20" />
@@ -192,7 +209,7 @@ function handleClose() {
         <div class="absolute inset-x-0 bottom-0 flex items-center justify-center p-6">
           <button
             class="flex size-16 items-center justify-center rounded-full border-4 border-white/80 bg-white/20 backdrop-blur-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
-            :disabled="!isActive"
+            :disabled="!isActive || !videoReady"
             @click="capture"
           >
             <div class="size-12 rounded-full bg-white" />
@@ -201,9 +218,9 @@ function handleClose() {
       </div>
 
       <!-- Captured photo preview -->
-      <div v-else class="relative aspect-[4/3] w-full bg-black">
+      <div v-else-if="previewUrl" class="relative aspect-[4/3] w-full bg-black">
         <img
-          :src="previewUrl!"
+          :src="previewUrl"
           alt="Captured receipt"
           class="h-full w-full object-contain"
         />
