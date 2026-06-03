@@ -13,12 +13,6 @@ export interface UseCameraReturn {
   facingMode: Ref<'environment' | 'user'>
   /** Whether the device likely has a camera API */
   hasCameraSupport: boolean
-  /** Whether the permission query API is available */
-  permissionQuerySupported: boolean
-  /** Current permission state detected via navigator.permissions.query */
-  permissionState: Ref<CameraPermissionState>
-  /** Whether we are checking permission right now */
-  permissionLoading: Ref<boolean>
   /** Start the camera. facingMode overrides the current setting. */
   startCamera: (facingModeOverride?: 'environment' | 'user') => Promise<void>
   /** Stop the camera and release all tracks */
@@ -29,31 +23,42 @@ export interface UseCameraReturn {
   switchCamera: () => Promise<void>
   /** Register the <video> element for capture (set by the component) */
   setVideoElement: (el: HTMLVideoElement | null) => void
-  /** Proactively check camera permission without starting the stream */
+  /** Check permission status — only use AFTER camera has failed */
   checkPermission: () => Promise<CameraPermissionState>
+  /** Current detected permission state (for error messaging) */
+  permissionState: Ref<CameraPermissionState>
   /** Reset error state so the user can retry */
   clearError: () => void
 }
 
 /**
+ * Helper to build progressively relaxed video constraints for Android
+ * compatibility. Some devices fail with resolution constraints.
+ */
+function buildVideoConstraints(facingMode: 'environment' | 'user'): MediaTrackConstraints {
+  return {
+    facingMode,
+    // Intentionally omit width/height — some Android Chrome versions
+    // fail with even ideal resolution constraints on certain hardware.
+    // The browser picks the best matching resolution automatically.
+  }
+}
+
+/**
  * Camera composable using navigator.mediaDevices.getUserMedia.
  *
- * Provides reactive state for live preview, snapshot capture,
- * camera toggling (front / rear), and proactive permission detection
- * via navigator.permissions.query.
+ * IMPORTANT DESIGN DECISION:
+ * We do NOT use navigator.permissions.query() to gate the UI proactively.
+ * On some Android Chrome versions, permissions.query({ name: 'camera' })
+ * can return 'denied' even when the user has never been asked.
+ * Instead, we ALWAYS show the "Start Camera" button first. Only after
+ * getUserMedia() fails do we check permission state to show the right
+ * error message.
  *
- * Permission detection improves UX on Android Chrome and other mobile
- * browsers by surfacing the permanent "denied" state early so we can
- * show recovery instructions instead of a generic error.
- *
- * @example
- * ```ts
- * const { stream, isActive, error, startCamera, stopCamera, captureImage } = useCamera()
- * await startCamera()
- * // <video :srcObject="stream" autoplay />
- * const blob = await captureImage()
- * const file = new File([blob], 'receipt.jpg', { type: 'image/jpeg' })
- * ```
+ * Constraint strategy for Android compatibility:
+ * 1. Try with facingMode only (no resolution constraints)
+ * 2. If OverconstrainedError, retry without facingMode
+ * 3. All errors are caught and mapped to user-facing keys
  */
 export function useCamera(): UseCameraReturn {
   const stream = ref<MediaStream | null>(null)
@@ -61,13 +66,9 @@ export function useCamera(): UseCameraReturn {
   const error = ref<string | null>(null)
   const facingMode = ref<'environment' | 'user'>('environment')
   const permissionState = ref<CameraPermissionState>('prompt')
-  const permissionLoading = ref(false)
 
   /** Check if the browser supports camera access */
   const hasCameraSupport = !!navigator.mediaDevices?.getUserMedia
-
-  /** Check if the browser supports the Permissions API for camera */
-  const permissionQuerySupported = !!navigator.permissions?.query
 
   /** Internal reference to the video element for capture */
   let videoElement: HTMLVideoElement | null = null
@@ -77,34 +78,24 @@ export function useCamera(): UseCameraReturn {
 
   /**
    * Register a video element so `captureImage` can draw from it.
-   * Called by the CameraCapture component on mount.
    */
   function setVideoElement(el: HTMLVideoElement | null) {
     videoElement = el
   }
 
   /**
-   * Proactively check camera permission without starting the stream.
+   * Check camera permission status — only meaningful AFTER getUserMedia
+   * has been called and failed with NotAllowedError.
    *
-   * Uses navigator.permissions.query({ name: 'camera' }) to detect
-   * whether the user has permanently granted or denied camera access.
-   *
-   * - 'granted'  → camera can be started immediately (skip the start button)
-   * - 'prompt'   → permission has not been asked yet (show start button)
-   * - 'denied'   → user permanently blocked camera (show recovery UI)
-   * - 'unsupported' → Permission API not available (fall back to old flow)
+   * We keep this as a diagnostic tool for error messaging, NOT for UI gating.
    */
   async function checkPermission(): Promise<CameraPermissionState> {
-    permissionLoading.value = true
-
     if (!navigator.permissions?.query) {
       permissionState.value = 'unsupported'
-      permissionLoading.value = false
       return 'unsupported'
     }
 
     try {
-      // Clean up previous listener before creating a new one
       if (permissionStatus) {
         permissionStatus.onchange = null
       }
@@ -112,27 +103,26 @@ export function useCamera(): UseCameraReturn {
       const result = await navigator.permissions.query({ name: 'camera' as PermissionName })
       permissionStatus = result
       const state = result.state as CameraPermissionState
-
       permissionState.value = state
 
-      // Listen for future changes (e.g. user changes it in browser settings)
       result.onchange = () => {
         permissionState.value = result.state as CameraPermissionState
       }
 
-      permissionLoading.value = false
       return state
     } catch {
-      // navigator.permissions.query({ name: 'camera' }) can throw
-      // on some browsers that don't support the 'camera' permission name.
       permissionState.value = 'unsupported'
-      permissionLoading.value = false
       return 'unsupported'
     }
   }
 
   /**
-   * Start the camera stream.
+   * Start the camera stream with constraint fallback for Android.
+   *
+   * Fallback chain:
+   *   1. facingMode + no resolution constraints
+   *   2. If OverconstrainedError → { video: true } (no facingMode)
+   *   3. On any error → mapped to user-facing key
    */
   async function startCamera(facingModeOverride?: 'environment' | 'user'): Promise<void> {
     // Clean up any previous stream
@@ -148,31 +138,73 @@ export function useCamera(): UseCameraReturn {
       facingMode.value = facingModeOverride
     }
 
+    // Attempt 1: with facingMode only (no resolution constraints)
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: facingMode.value,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
+        video: buildVideoConstraints(facingMode.value),
         audio: false,
       })
 
       stream.value = mediaStream
       isActive.value = true
+      permissionState.value = 'granted'
 
-      // After a successful getUserMedia call, sync the permission state
-      if (permissionQuerySupported) {
-        permissionState.value = 'granted'
-      }
-
-      // Auto-attach to a video element if it was registered
       if (videoElement) {
         videoElement.srcObject = mediaStream
       }
+      return
     } catch (err: unknown) {
-      error.value = getErrorMessage(err)
-      isActive.value = false
+      // If OverconstrainedError, retry without facingMode
+      if (err instanceof DOMException && err.name === 'OverconstrainedError') {
+        console.warn('[useCamera] OverconstrainedError with facingMode, retrying without facingMode')
+      } else {
+        // Map other errors immediately, but still try fallback
+        // Only NotAllowedError/NotFoundError are terminal — keep the first error
+        // for all other errors we try the fallback
+        const firstErrKey = getErrorMessage(err)
+
+        // If it's a permanent error, don't bother with fallback
+        if (firstErrKey === 'camera_error_not_allowed' || firstErrKey === 'camera_error_not_found') {
+          error.value = firstErrKey
+          isActive.value = false
+          return
+        }
+
+        if (firstErrKey !== 'camera_error_constraint') {
+          // For NotReadableError or generic, still try fallback
+          console.warn('[useCamera] First attempt failed, trying fallback:', err)
+        }
+      }
+
+      // Attempt 2: simplest possible constraint — no facingMode, no resolution
+      try {
+        const fallbackStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        })
+
+        stream.value = fallbackStream
+        isActive.value = true
+        permissionState.value = 'granted'
+
+        if (videoElement) {
+          videoElement.srcObject = fallbackStream
+        }
+        return
+      } catch (fallbackErr: unknown) {
+        // Both attempts failed — use the ORIGINAL error (more specific)
+        // but if original was constraint and fallback was permission, use fallback
+        const fallbackErrKey = getErrorMessage(fallbackErr)
+
+        // If original was OverconstrainedError/constraint but fallback
+        // gives us a different error, prefer the fallback error
+        if (err instanceof DOMException && err.name === 'OverconstrainedError') {
+          error.value = fallbackErrKey
+        } else {
+          error.value = getErrorMessage(err)
+        }
+        isActive.value = false
+      }
     }
   }
 
@@ -192,7 +224,6 @@ export function useCamera(): UseCameraReturn {
 
   /**
    * Capture the current video frame as a JPEG Blob.
-   * Must be called while the camera is active and a video element is connected.
    */
   function captureImage(): Promise<Blob> {
     return new Promise((resolve, reject) => {
@@ -202,7 +233,6 @@ export function useCamera(): UseCameraReturn {
         return
       }
 
-      // Guard: reject if video has no decoded frame yet
       if (el.videoWidth === 0 || el.videoHeight === 0) {
         reject(new Error('Video not ready — no frame available'))
         return
@@ -218,7 +248,6 @@ export function useCamera(): UseCameraReturn {
         return
       }
 
-      // Draw the current video frame
       ctx.drawImage(el, 0, 0, canvas.width, canvas.height)
 
       canvas.toBlob(
@@ -244,18 +273,13 @@ export function useCamera(): UseCameraReturn {
     await startCamera(next)
   }
 
-  /** Reset error state so the user can retry */
+  /** Reset error state */
   function clearError(): void {
     error.value = null
   }
 
   /**
    * Map getUserMedia errors to user-facing keys.
-   *
-   * On Android Chrome:
-   * - First denial → NotAllowedError (state sticks as 'denied' in permissions API)
-   * - Subsequent attempts also throw NotAllowedError without prompting
-   * - The only fix is navigating to browser site settings
    */
   function getErrorMessage(err: unknown): string {
     if (err instanceof DOMException) {
@@ -296,15 +320,13 @@ export function useCamera(): UseCameraReturn {
     error,
     facingMode,
     hasCameraSupport,
-    permissionQuerySupported,
-    permissionState,
-    permissionLoading,
     startCamera,
     stopCamera,
     captureImage,
     switchCamera,
     setVideoElement,
     checkPermission,
+    permissionState,
     clearError,
   }
 }

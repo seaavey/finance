@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onUnmounted } from 'vue'
+import { ref, watch, nextTick, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCamera } from '@/composables/useCamera'
 import { useToast } from '@/composables/useToast'
@@ -26,14 +26,13 @@ const {
   isActive,
   error: cameraError,
   hasCameraSupport,
-  permissionState,
-  permissionLoading,
   startCamera,
   stopCamera,
   captureImage,
   switchCamera,
   setVideoElement,
   checkPermission,
+  permissionState,
   clearError,
 } = useCamera()
 
@@ -53,27 +52,22 @@ let flashTimer: ReturnType<typeof setTimeout> | undefined
 let watchCancelled = false
 
 /*
- * ── State machine ──────────────────────────────────────
+ * UX State Machine
  *
- * Dialog opens → checkPermission() proactively
+ * Dialog opens -> show "Start Camera" button.
+ *   No proactive permission check - let getUserMedia trigger the browser dialog.
  *
- *   permissionState:
- *     'denied'      → show blocked UI + gallery fallback
- *     'prompt'      → show "Start Camera" button
- *     'unsupported' → show "Start Camera" button (fallback)
- *     'granted'     → auto-start camera immediately
+ * User taps "Mulai Kamera" -> startCamera()
+ *   SUCCESS -> live preview -> capture -> preview -> confirm
+ *   ERROR   -> error overlay + call checkPermission() for diagnostics
+ *              - "Coba Lagi" button
+ *              - "Upload dari Galeri" button
  *
- * User taps "Start Camera" → startCamera()
- *   → success → live preview
- *   → error   → error overlay with retry + gallery fallback
- *
- * User taps "Upload from Gallery" → opens file picker → scan
- * User taps "Retry" → startCamera() again
- * User taps close  → stopCamera() + close dialog
- * ──────────────────────────────────────────────────────
+ * User changes settings & comes back -> tap "Coba Lagi"
+ *   -> startCamera() again
  */
 
-/** Open dialog → check permission proactively */
+/** Open dialog - do NOT check permission proactively */
 watch(open, async (val) => {
   watchCancelled = false
   if (val) {
@@ -92,12 +86,12 @@ watch(open, async (val) => {
     if (videoRef.value) {
       setVideoElement(videoRef.value)
     }
-
-    // Proactively check permission so we can adapt the UI
-    // before the user taps anything.
-    if (hasCameraSupport) {
-      await checkPermission()
-    }
+    // NOTE: We do NOT call checkPermission() here.
+    // On some Android Chrome versions, permissions.query({ name: 'camera' })
+    // returns 'denied' even when the user has never been asked.
+    // Calling it before getUserMedia would show a bogus "blocked" screen.
+    // Instead, ALWAYS show the "Start Camera" button and let the browser
+    // dialog appear when getUserMedia is called from a user gesture.
   } else {
     watchCancelled = true
     stopCamera()
@@ -105,7 +99,7 @@ watch(open, async (val) => {
   }
 })
 
-/** Start camera directly from a user click handler */
+/** Start camera from user click handler (preserves transient activation) */
 async function startCameraClick() {
   if (cameraStarting.value || cameraStarted.value) return
 
@@ -118,9 +112,10 @@ async function startCameraClick() {
 
   cameraStarting.value = false
 
-  // If even after the user gesture the camera failed, mark as failed
-  // so we show the error overlay with retry options.
+  // If camera failed, check permission BEFORE showing error overlay
+  // so the correct message (blocked vs denied) appears immediately
   if (cameraError.value) {
+    await checkPermission()
     cameraFailed.value = true
   }
 }
@@ -137,9 +132,15 @@ async function retryCamera() {
   cameraStarting.value = false
 
   if (cameraError.value) {
+    await checkPermission()
     cameraFailed.value = true
   }
 }
+
+/** Whether permission is permanently denied (for error messaging) */
+const isPermissionPermanentlyDenied = computed(
+  () => permissionState.value === 'denied',
+)
 
 /** Capture a photo from the video stream */
 async function capture() {
@@ -175,7 +176,7 @@ function revokePreview() {
   }
 }
 
-/** Retake — go back to live view */
+/** Retake - go back to live view */
 function retakePhoto() {
   revokePreview()
   photoCaptured.value = false
@@ -202,7 +203,7 @@ function handleClose() {
   emit('close')
 }
 
-// ── Gallery fallback ─────────────────────────────────────
+// Gallery fallback
 
 const galleryInputRef = ref<HTMLInputElement | null>(null)
 
@@ -240,7 +241,7 @@ function onGalleryFile(event: Event) {
         @change="onGalleryFile"
       />
 
-      <!-- UNSUPPORTED: no camera API -->
+      <!-- UNSUPPORTED: no camera API on this device -->
       <div v-if="!hasCameraSupport" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
         <div class="flex size-16 items-center justify-center rounded-2xl bg-muted">
           <AppIcon name="hugeicons:camera-off-01" :size="28" class="text-muted-foreground" />
@@ -259,46 +260,14 @@ function onGalleryFile(event: Event) {
         </div>
       </div>
 
-      <!-- CHECKING: proactively detecting permission state -->
-      <div v-else-if="permissionLoading" class="flex flex-col items-center justify-center gap-4 p-12 text-center">
-        <AppIcon name="hugeicons:loading-03" :size="32" class="animate-spin text-muted-foreground" />
-        <p class="font-medium text-muted-foreground">{{ t('transaction_form.camera_checking') }}</p>
-      </div>
-
-      <!-- BLOCKED: permission permanently denied -->
-      <div v-else-if="permissionState === 'denied'" class="flex flex-col items-center justify-center gap-5 p-8 text-center">
-        <div class="flex size-20 items-center justify-center rounded-3xl bg-rose-500/10">
-          <AppIcon name="hugeicons:camera-off-01" :size="36" class="text-rose-500" />
-        </div>
-        <div class="space-y-1">
-          <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_permission_denied_title') }}</p>
-          <p class="text-sm font-medium text-muted-foreground leading-relaxed max-w-xs">
-            {{ t('transaction_form.camera_permission_denied_desc') }}
-          </p>
-        </div>
-        <div class="flex flex-col gap-2 w-full max-w-[220px]">
-          <Button variant="secondary" class="rounded-2xl w-full" @click="retryCamera">
-            <AppIcon name="hugeicons:refresh-01" :size="16" />
-            {{ t('transaction_form.camera_retry') }}
-          </Button>
-          <Button variant="outline" class="rounded-2xl w-full" @click="openGallery">
-            <AppIcon name="hugeicons:folder-01" :size="16" />
-            {{ t('transaction_form.scan_gallery') }}
-          </Button>
-          <Button variant="ghost" class="rounded-2xl w-full text-muted-foreground" @click="handleClose">
-            {{ t('transaction_form.cancel') }}
-          </Button>
-        </div>
-      </div>
-
-      <!-- PERMISSION UNKNOWN / PROMPT: show start-camera button -->
+      <!-- START CAMERA: initial state for ALL users (never blocked at this point) -->
       <div v-else-if="!cameraStarted" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
         <div class="flex size-20 items-center justify-center rounded-3xl bg-primary/10">
           <AppIcon name="hugeicons:camera-01" :size="36" class="text-primary" />
         </div>
         <div class="space-y-1">
           <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_start') }}</p>
-          <p class="text-sm font-medium text-muted-foreground">{{ t('transaction_form.camera_start_desc') }}</p>
+          <p class="text-sm font-medium text-muted-foreground max-w-xs">{{ t('transaction_form.camera_start_desc') }}</p>
         </div>
         <div class="flex flex-col gap-2 w-full max-w-[220px]">
           <Button
@@ -321,7 +290,7 @@ function onGalleryFile(event: Event) {
         </div>
       </div>
 
-      <!-- Camera live preview -->
+      <!-- Camera live preview (or error overlay) -->
       <div v-else-if="!photoCaptured" class="relative aspect-[4/3] w-full bg-black">
         <!-- Video element -->
         <video
@@ -330,11 +299,11 @@ function onGalleryFile(event: Event) {
           playsinline
           muted
           class="h-full w-full object-cover"
-          :class="{ hidden: !isActive && !cameraFailed }"
+          :class="{ hidden: !isActive || cameraFailed }"
           @canplay="videoReady = true"
         />
 
-        <!-- Loading state (camera is starting up) -->
+        <!-- Loading state (camera is starting up, first attempt) -->
         <div
           v-if="cameraStarting"
           class="absolute inset-0 flex items-center justify-center bg-black/60"
@@ -342,13 +311,26 @@ function onGalleryFile(event: Event) {
           <AppIcon name="hugeicons:loading-03" :size="32" class="animate-spin text-white" />
         </div>
 
-        <!-- Camera error overlay (inside live preview) -->
+        <!-- Camera error overlay - shown when getUserMedia failed -->
         <div
-          v-if="cameraFailed || cameraError"
+          v-else-if="cameraFailed || cameraError"
           class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/80 p-8 text-center"
         >
           <AppIcon name="hugeicons:camera-off-01" :size="32" class="text-white/60" />
-          <p class="font-bold text-white">{{ t('transaction_form.' + (cameraError || 'camera_error_generic')) }}</p>
+
+          <!-- Permission permanently denied -> show settings instructions -->
+          <div v-if="isPermissionPermanentlyDenied" class="space-y-2">
+            <p class="text-lg font-black text-white">{{ t('transaction_form.camera_permission_denied_title') }}</p>
+            <p class="text-sm font-medium text-white/70 leading-relaxed max-w-xs">
+              {{ t('transaction_form.camera_permission_denied_desc') }}
+            </p>
+          </div>
+
+          <!-- Generic / other errors -->
+          <p v-else class="font-bold text-white">
+            {{ t('transaction_form.' + (cameraError || 'camera_error_generic')) }}
+          </p>
+
           <div class="flex flex-col gap-2 w-full max-w-[200px]">
             <Button variant="secondary" class="rounded-2xl w-full" @click="retryCamera">
               <AppIcon name="hugeicons:refresh-01" :size="16" />
@@ -367,35 +349,37 @@ function onGalleryFile(event: Event) {
           class="pointer-events-none absolute inset-0 bg-white/80 transition-opacity duration-150"
         />
 
-        <!-- Top bar -->
-        <div class="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-          <Button variant="ghost" size="icon-sm" class="rounded-full bg-black/40 text-white hover:bg-black/60" @click="handleClose">
-            <AppIcon name="hugeicons:cancel-01" :size="20" />
-          </Button>
-          <span class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
-            {{ t('transaction_form.scan_receipt') }}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            class="rounded-full bg-black/40 text-white hover:bg-black/60"
-            :disabled="!isActive || !videoReady"
-            @click="switchCamera"
-          >
-            <AppIcon name="hugeicons:flip-camera" :size="20" />
-          </Button>
-        </div>
+        <!-- Top bar (only visible when camera is active) -->
+        <template v-if="isActive && !cameraFailed">
+          <div class="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+            <Button variant="ghost" size="icon-sm" class="rounded-full bg-black/40 text-white hover:bg-black/60" @click="handleClose">
+              <AppIcon name="hugeicons:cancel-01" :size="20" />
+            </Button>
+            <span class="rounded-full bg-black/40 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+              {{ t('transaction_form.scan_receipt') }}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              class="rounded-full bg-black/40 text-white hover:bg-black/60"
+              :disabled="!videoReady"
+              @click="switchCamera"
+            >
+              <AppIcon name="hugeicons:flip-camera" :size="20" />
+            </Button>
+          </div>
 
-        <!-- Bottom capture button -->
-        <div class="absolute inset-x-0 bottom-0 flex items-center justify-center p-6">
-          <button
-            class="flex size-16 items-center justify-center rounded-full border-4 border-white/80 bg-white/20 backdrop-blur-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
-            :disabled="!isActive || !videoReady"
-            @click="capture"
-          >
-            <div class="size-12 rounded-full bg-white" />
-          </button>
-        </div>
+          <!-- Bottom capture button -->
+          <div class="absolute inset-x-0 bottom-0 flex items-center justify-center p-6">
+            <button
+              class="flex size-16 items-center justify-center rounded-full border-4 border-white/80 bg-white/20 backdrop-blur-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40"
+              :disabled="!videoReady"
+              @click="capture"
+            >
+              <div class="size-12 rounded-full bg-white" />
+            </button>
+          </div>
+        </template>
       </div>
 
       <!-- Captured photo preview -->
