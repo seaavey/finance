@@ -18,7 +18,9 @@ export const useAuth = () => {
       provider: 'google',
       options: {
         redirectTo,
-        state: crypto.randomUUID(),
+        queryParams: {
+          state: crypto.randomUUID(),
+        },
       },
     });
     if (error) {
