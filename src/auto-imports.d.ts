@@ -66,6 +66,7 @@ declare global {
   const useAuth: typeof import('./composables/useAuth').useAuth
   const useBills: typeof import('./composables/useBills').useBills
   const useBudgets: typeof import('./composables/useBudgets').useBudgets
+  const useCamera: typeof import('./composables/useCamera').useCamera
   const useCategories: typeof import('./composables/useCategories').useCategories
   const useColorMode: typeof import('./composables/nuxt-compat').useColorMode
   const useCssModule: typeof import('vue').useCssModule
@@ -120,6 +121,9 @@ declare global {
   // @ts-ignore
   export type { Budget, BudgetWithProgress } from './composables/useBudgets'
   import('./composables/useBudgets')
+  // @ts-ignore
+  export type { UseCameraReturn } from './composables/useCamera'
+  import('./composables/useCamera')
   // @ts-ignore
   export type { Category } from './composables/useCategories'
   import('./composables/useCategories')
@@ -210,6 +214,7 @@ declare module 'vue' {
     readonly useAuth: UnwrapRef<typeof import('./composables/useAuth')['useAuth']>
     readonly useBills: UnwrapRef<typeof import('./composables/useBills')['useBills']>
     readonly useBudgets: UnwrapRef<typeof import('./composables/useBudgets')['useBudgets']>
+    readonly useCamera: UnwrapRef<typeof import('./composables/useCamera')['useCamera']>
     readonly useCategories: UnwrapRef<typeof import('./composables/useCategories')['useCategories']>
     readonly useColorMode: UnwrapRef<typeof import('./composables/nuxt-compat')['useColorMode']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>

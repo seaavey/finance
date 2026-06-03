@@ -60,6 +60,7 @@ declare module 'vue' {
     CalendarHeading: typeof import('./components/ui/calendar/CalendarHeading.vue')['default']
     CalendarNextButton: typeof import('./components/ui/calendar/CalendarNextButton.vue')['default']
     CalendarPrevButton: typeof import('./components/ui/calendar/CalendarPrevButton.vue')['default']
+    CameraCapture: typeof import('./components/CameraCapture.vue')['default']
     CategoryPicker: typeof import('./components/CategoryPicker.vue')['default']
     ChartContainer: typeof import('./components/ui/chart/ChartContainer.vue')['default']
     ChartLegendContent: typeof import('./components/ui/chart/ChartLegendContent.vue')['default']

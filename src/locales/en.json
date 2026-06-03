@@ -105,7 +105,20 @@
     "scan_error_format": "Unsupported image format. Use JPEG or PNG.",
     "scan_error_size": "Image exceeds 5MB limit. Please choose a smaller file.",
     "scan_error_network": "Connection failed. Please try again.",
-    "scan_error_auth": "Session expired. Please log in again."
+    "scan_error_auth": "Session expired. Please log in again.",
+    "scan_gallery": "Choose from Gallery",
+    "scan_gallery_desc": "Select an image from your device",
+    "scan_camera": "Take Photo",
+    "scan_camera_desc": "Capture using camera",
+    "camera_preview": "Preview",
+    "camera_retake": "Retake",
+    "camera_use": "Use Photo",
+    "camera_error_not_allowed": "Camera access denied. Please allow camera access in your browser settings.",
+    "camera_error_not_found": "No camera found.",
+    "camera_error_busy": "Camera is being used by another application.",
+    "camera_error_unsupported": "Your browser does not support camera access.",
+    "camera_error_constraint": "Camera does not meet requirements.",
+    "camera_error_generic": "Failed to access camera."
   },
   "transaction_edit": {
     "not_found": "Transaction not found",

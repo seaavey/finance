@@ -105,7 +105,20 @@
     "scan_error_format": "Format gambar tidak didukung. Gunakan JPEG atau PNG.",
     "scan_error_size": "Ukuran gambar melebihi 5MB. Pilih file yang lebih kecil.",
     "scan_error_network": "Koneksi gagal. Silakan coba lagi.",
-    "scan_error_auth": "Sesi habis. Silakan login ulang."
+    "scan_error_auth": "Sesi habis. Silakan login ulang.",
+    "scan_gallery": "Pilih dari Galeri",
+    "scan_gallery_desc": "Ambil file gambar dari penyimpanan",
+    "scan_camera": "Ambil Foto",
+    "scan_camera_desc": "Gunakan kamera langsung",
+    "camera_preview": "Pratinjau",
+    "camera_retake": "Foto Ulang",
+    "camera_use": "Gunakan Foto",
+    "camera_error_not_allowed": "Akses kamera ditolak. Izinkan akses kamera di pengaturan browser.",
+    "camera_error_not_found": "Kamera tidak ditemukan.",
+    "camera_error_busy": "Kamera sedang digunakan aplikasi lain.",
+    "camera_error_unsupported": "Browser tidak mendukung akses kamera.",
+    "camera_error_constraint": "Kamera tidak memenuhi persyaratan.",
+    "camera_error_generic": "Gagal mengakses kamera."
   },
   "transaction_edit": {
     "not_found": "Transaksi tidak ditemukan",

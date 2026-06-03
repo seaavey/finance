@@ -47,23 +47,51 @@
 
     <!-- SCAN RECEIPT BUTTON -->
     <div class="flex justify-center">
-      <Button
-        variant="outline"
-        class="group relative h-12 w-full rounded-2xl border-dashed border-border/50 bg-transparent font-black uppercase tracking-widest text-xs transition-all hover:border-primary/50 hover:bg-primary/5 disabled:opacity-50"
-        :disabled="uploading || scanning"
-        @click="fileInputRef?.click()"
-      >
-        <div class="flex items-center gap-3">
-          <div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary/20">
-            <AppIcon
-              :name="scanning ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
-              :size="16"
-              :class="scanning ? 'animate-spin' : ''"
-            />
-          </div>
-          <span>{{ scanning ? $t('transaction_form.scanning') : $t('transaction_form.scan_receipt') }}</span>
-        </div>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button
+            variant="outline"
+            class="group relative h-12 w-full rounded-2xl border-dashed border-border/50 bg-transparent font-black uppercase tracking-widest text-xs transition-all hover:border-primary/50 hover:bg-primary/5 disabled:opacity-50"
+            :disabled="uploading || scanning"
+          >
+            <div class="flex items-center gap-3">
+              <div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary/20">
+                <AppIcon
+                  :name="scanning ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
+                  :size="16"
+                  :class="scanning ? 'animate-spin' : ''"
+                />
+              </div>
+              <span>{{ scanning ? $t('transaction_form.scanning') : $t('transaction_form.scan_receipt') }}</span>
+            </div>
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="center" class="min-w-48 p-2">
+          <DropdownMenuItem class="rounded-xl px-3 py-2.5 cursor-pointer" @select.prevent="cameraDialogOpen = true">
+            <div class="flex items-center gap-3">
+              <div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <AppIcon name="hugeicons:camera-01" :size="16" />
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold">{{ $t('transaction_form.scan_camera') }}</span>
+                <span class="text-xs text-muted-foreground">{{ $t('transaction_form.scan_camera_desc') }}</span>
+              </div>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem class="rounded-xl px-3 py-2.5 cursor-pointer" @select.prevent="fileInputRef?.click()">
+            <div class="flex items-center gap-3">
+              <div class="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <AppIcon name="hugeicons:folder-01" :size="16" />
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold">{{ $t('transaction_form.scan_gallery') }}</span>
+                <span class="text-xs text-muted-foreground">{{ $t('transaction_form.scan_gallery_desc') }}</span>
+              </div>
+            </div>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <input
         ref="fileInputRef"
@@ -72,6 +100,9 @@
         class="hidden"
         @change="onFileSelected"
       />
+
+      <!-- Camera capture dialog -->
+      <CameraCapture v-model:open="cameraDialogOpen" @captured="onCameraCaptured" />
     </div>
 
     <!-- AMOUNT CARD -->
@@ -242,6 +273,12 @@ import type { Transaction } from '@/composables/useTransactions';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useReceipts } from '@/composables/useReceipts';
 
@@ -304,21 +341,21 @@ const { uploading, scanning, scanReceiptFromFile } = useReceipts()
 
 const { categories } = useCategories()
 
-async function onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
+const cameraDialogOpen = ref(false)
 
-  const receiptData = await scanReceiptFromFile(file)
-
-  // Reset file input so the same file can be selected again
-  if (fileInputRef.value) {
-    fileInputRef.value.value = ''
-  }
-
-  if (!receiptData) return
-
-  // --- AUTO-FILL FORM ---
+/**
+ * Auto-fill the form fields from scanned receipt data.
+ * Shared by file selection and camera capture flows.
+ */
+function autoFillForm(receiptData: {
+  type: 'income' | 'expense'
+  amount: number
+  currency: string
+  category: string | null
+  description: string | null
+  date: string | null
+  merchant: string | null
+}) {
   form.type = receiptData.type
 
   form.amount = receiptData.amount
@@ -346,6 +383,29 @@ async function onFileSelected(event: Event) {
   if (receiptData.merchant && receiptData.description && !receiptData.description.includes(receiptData.merchant)) {
     form.description = `${receiptData.merchant} — ${receiptData.description}`
   }
+}
+
+async function onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const receiptData = await scanReceiptFromFile(file)
+
+  // Reset file input so the same file can be selected again
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+
+  if (!receiptData) return
+
+  autoFillForm(receiptData)
+}
+
+async function onCameraCaptured(file: File) {
+  const receiptData = await scanReceiptFromFile(file)
+  if (!receiptData) return
+  autoFillForm(receiptData)
 }
 
 const calendarDate = computed({
