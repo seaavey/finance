@@ -363,8 +363,9 @@ function autoFillForm(receiptData: {
 
   // Match category name from AI to local category_id
   if (receiptData.category) {
+    const categoryName = receiptData.category.toLowerCase()
     const match = categories.value.find(
-      (c: { name: string; type: string }) => c.name.toLowerCase() === receiptData.category.toLowerCase() && c.type === form.type,
+      (c: { name: string; type: string }) => c.name.toLowerCase() === categoryName && c.type === form.type,
     )
     if (match) {
       form.category_id = match.id

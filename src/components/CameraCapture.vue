@@ -41,11 +41,13 @@ const previewUrl = ref<string | null>(null)
 const capturedBlob = ref<Blob | null>(null)
 const flashVisible = ref(false)
 const videoReady = ref(false)
+const cameraStarted = ref(false)
+const cameraStarting = ref(false)
 
-let flashTimer: ReturnType<typeof setTimeout> | null = null
+let flashTimer: ReturnType<typeof setTimeout> | undefined
 let watchCancelled = false
 
-/** Open camera when dialog opens, stop when closed */
+/** Open dialog without starting camera — wait for user tap */
 watch(open, async (val) => {
   watchCancelled = false
   if (val) {
@@ -53,19 +55,32 @@ watch(open, async (val) => {
     previewUrl.value = null
     capturedBlob.value = null
     videoReady.value = false
+    cameraStarted.value = false
+    cameraStarting.value = false
 
     await nextTick()
-    // Register video element for the composable
+    // Register video element for the composable so it's ready when user taps start
     if (videoRef.value) {
       setVideoElement(videoRef.value)
     }
-    await startCamera()
+    // Camera is NOT auto-started — user must tap "Start Camera" button
+    // This ensures getUserMedia is called from a user gesture, so the
+    // browser shows the permission prompt instead of silently denying it.
   } else {
     watchCancelled = true
     stopCamera()
     setVideoElement(null)
   }
 })
+
+/** Start camera directly from a user click handler */
+async function startCameraClick() {
+  if (cameraStarting.value || cameraStarted.value) return
+  cameraStarting.value = true
+  cameraStarted.value = true
+  await startCamera()
+  cameraStarting.value = false
+}
 
 /** Capture a photo from the video stream */
 async function capture() {
@@ -82,7 +97,7 @@ async function capture() {
     flashVisible.value = true
     flashTimer = setTimeout(() => {
       flashVisible.value = false
-      flashTimer = null
+      flashTimer = undefined
     }, 200)
   } catch (err) {
     console.warn('[CameraCapture] capture failed:', err)
@@ -91,7 +106,7 @@ async function capture() {
 }
 
 onUnmounted(() => {
-  clearTimeout(flashTimer)
+  if (flashTimer !== undefined) clearTimeout(flashTimer)
 })
 
 /** Revoke the preview blob URL if one exists */
@@ -143,6 +158,34 @@ function handleClose() {
         </div>
         <p class="font-bold text-foreground">{{ t('transaction_form.camera_error_unsupported') }}</p>
         <Button variant="secondary" class="rounded-2xl" @click="handleClose">
+          {{ t('transaction_form.cancel') }}
+        </Button>
+      </div>
+
+      <!-- Start Camera button (user gesture required) -->
+      <div v-else-if="!cameraStarted" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
+        <div class="flex size-20 items-center justify-center rounded-3xl bg-primary/10">
+          <AppIcon name="hugeicons:camera-01" :size="36" class="text-primary" />
+        </div>
+        <div class="space-y-1">
+          <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_start') }}</p>
+          <p class="text-sm font-medium text-muted-foreground">{{ t('transaction_form.camera_start_desc') }}</p>
+        </div>
+        <Button
+          class="h-12 rounded-2xl bg-primary px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90"
+          :disabled="cameraStarting"
+          @click="startCameraClick"
+        >
+          <div class="flex items-center gap-2">
+            <AppIcon
+              :name="cameraStarting ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
+              :size="16"
+              :class="cameraStarting ? 'animate-spin' : ''"
+            />
+            {{ t('transaction_form.camera_start') }}
+          </div>
+        </Button>
+        <Button variant="ghost" class="rounded-2xl text-sm font-bold text-muted-foreground" @click="handleClose">
           {{ t('transaction_form.cancel') }}
         </Button>
       </div>

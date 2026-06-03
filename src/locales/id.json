@@ -117,6 +117,8 @@
     "camera_error_not_found": "Kamera tidak ditemukan.",
     "camera_error_busy": "Kamera sedang digunakan aplikasi lain.",
     "camera_error_unsupported": "Browser tidak mendukung akses kamera.",
+    "camera_start": "Mulai Kamera",
+    "camera_start_desc": "Tekan untuk mengaktifkan kamera dan memindai struk",
     "camera_error_constraint": "Kamera tidak memenuhi persyaratan.",
     "camera_error_generic": "Gagal mengakses kamera."
   },
