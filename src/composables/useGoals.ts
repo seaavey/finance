@@ -30,7 +30,8 @@ export const useGoals = () => {
       if (!user.value) throw new Error('Not authenticated');
       const { data, error } = await supabase
         .from('goals')
-        .select('*')
+        .select('id, user_id, name, target_amount, current_amount, deadline, icon, color, image_url, created_at')
+        .eq('user_id', user.value.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -39,6 +40,7 @@ export const useGoals = () => {
       return data as Goal[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 30_000, // 30s — fund changes are frequent enough
   });
 
   const goals = computed(() => goalsData.value || []);

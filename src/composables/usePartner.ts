@@ -55,6 +55,7 @@ export const usePartner = () => {
       return null;
     },
     enabled: computed(() => !!user.value),
+    staleTime: 60_000, // 1 min — partner data changes infrequently
   });
 
   const partner = computed(() => partnerData.value || null);
@@ -68,20 +69,22 @@ export const usePartner = () => {
     queryKey: ['invitations:sent', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return [];
-      const { data } = await supabase.from('couple_invitations').select('*').eq('sender_id', user.value.id).order('created_at', { ascending: false });
+      const { data } = await supabase.from('couple_invitations').select('id, sender_id, recipient_email, status, token, created_at').eq('sender_id', user.value.id).order('created_at', { ascending: false });
       return data as CoupleInvitation[] || [];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 60_000, // 1 min
   });
-  
+
   const { data: receivedInvitationsData, isLoading: loadingReceived, refetch: fetchReceivedInvitations } = useQuery({
     queryKey: ['invitations:received', computed(() => user.value?.email)],
     queryFn: async () => {
       if (!user.value?.email) return [];
-      const { data } = await supabase.from('couple_invitations').select('*, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value.email).eq('status', 'pending').order('created_at', { ascending: false });
-      return data as CoupleInvitation[] || [];
+      const { data } = await supabase.from('couple_invitations').select('id, sender_id, recipient_email, status, token, created_at, updated_at, sender:profiles(display_name, avatar_url)').eq('recipient_email', user.value.email).eq('status', 'pending').order('created_at', { ascending: false });
+      return (data as unknown as CoupleInvitation[]) || [];
     },
     enabled: computed(() => !!user.value?.email),
+    staleTime: 30_000, // 30s — incoming invites should stay fresh
   });
 
   const sentInvitations = computed(() => sentInvitationsData.value || []);
@@ -176,7 +179,10 @@ export const usePartner = () => {
 
     const err = data?.error || error?.message;
     if (!err) {
-      queryClient.invalidateQueries(); // Clear all cache as profile changed
+      queryClient.invalidateQueries({ queryKey: ['partner'] });
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] });
+      queryClient.invalidateQueries({ queryKey: ['invitations:received'] });
       toast.success(t('toast.partner_connected'));
       activity.log('partner', 'connected')
     } else {
@@ -216,7 +222,10 @@ export const usePartner = () => {
 
     const err = data?.error || error?.message;
     if (!err) {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ['partner'] });
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] });
+      queryClient.invalidateQueries({ queryKey: ['invitations:received'] });
       toast.success(t('toast.partner_disconnected'));
       activity.log('partner', 'disconnected')
     } else {

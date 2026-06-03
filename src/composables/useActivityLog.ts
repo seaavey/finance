@@ -59,7 +59,7 @@ export const useActivityLog = () => {
 
       let query = supabase
         .from('activity_logs')
-        .select('*', { count: 'exact' })
+        .select('id, user_id, entity_type, entity_id, action, metadata, created_at', { count: 'exact' })
         .eq('user_id', user.value.id)
         .order('created_at', { ascending: false })
         .range((safePage - 1) * limit, safePage * limit - 1)
@@ -150,7 +150,7 @@ export const useActivityLog = () => {
       queryFn: async () => {
         const { data } = await supabase
           .from('activity_logs')
-          .select('*')
+          .select('id, user_id, entity_type, entity_id, action, metadata, created_at')
           .eq('user_id', user.value!.id)
           .order('created_at', { ascending: false })
           .limit(limitCount)

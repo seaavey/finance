@@ -38,7 +38,7 @@ export const useTransactions = () => {
     queryFn: async () => {
       let query = supabase
         .from('transactions')
-        .select('*')
+        .select('id, user_id, type, amount, currency, category_id, description, date, account_id, created_at')
         .order('date', { ascending: false })
         .limit(100);
 
@@ -54,6 +54,7 @@ export const useTransactions = () => {
       return data as Transaction[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 30_000, // 30s — transactions change frequently
   });
 
   const transactions = computed(() => transactionsData.value || []);
@@ -119,7 +120,7 @@ export const useTransactions = () => {
   };
 
   const getTransaction = async (id: string) => {
-    const { data, error } = await supabase.from('transactions').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('transactions').select('id, user_id, type, amount, currency, category_id, description, date, account_id, created_at').eq('id', id).single();
 
     return { data: data as Transaction | null, error };
   };
@@ -130,7 +131,7 @@ export const useTransactions = () => {
     }
     const { data, error } = await supabase
       .from('transactions')
-      .select('*')
+      .select('id, user_id, type, amount, currency, category_id, description, date, account_id, created_at')
       .ilike('description', `%${term}%`)
       .order('date', { ascending: false })
       .limit(10);

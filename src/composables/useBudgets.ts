@@ -35,7 +35,7 @@ export const useBudgets = () => {
       if (!user.value || !currentMonth.value) return [];
       const { data, error } = await supabase
         .from('budgets')
-        .select('*')
+        .select('id, user_id, category_id, month, amount, created_at')
         .eq('user_id', user.value.id)
         .eq('month', currentMonth.value)
         .order('created_at');
@@ -45,6 +45,7 @@ export const useBudgets = () => {
       return data as Budget[];
     },
     enabled: computed(() => !!user.value && !!currentMonth.value),
+    staleTime: 60_000, // 1 min — budget amounts are monthly-static
   });
 
   const budgets = computed(() => budgetsData.value || []);
@@ -63,7 +64,7 @@ export const useBudgets = () => {
       queryFn: async () => {
         const { data: budgetData } = await supabase
           .from('budgets')
-          .select('*')
+          .select('id, user_id, category_id, month, amount, created_at')
           .eq('user_id', user.value!.id)
           .eq('month', month);
 

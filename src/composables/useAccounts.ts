@@ -33,7 +33,7 @@ export const useAccounts = () => {
       if (!user.value) throw new Error('Not authenticated');
       const { data, error } = await supabase
         .from('accounts')
-        .select('*')
+        .select('id, user_id, name, type, currency, color, icon, initial_balance, created_at')
         .eq('user_id', user.value.id)
         .order('created_at');
       if (error) {
@@ -42,6 +42,7 @@ export const useAccounts = () => {
       return data as Account[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 120_000, // 2 min — account structure rarely changes
   });
 
   const accounts = computed(() => accountsData.value || []);

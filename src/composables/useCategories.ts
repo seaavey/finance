@@ -42,11 +42,12 @@ export const useCategories = () => {
     queryKey: ['categories', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) throw new Error('Not authenticated');
-      const { data, error } = await supabase.from('categories').select('*').eq('user_id', user.value.id).order('created_at', { ascending: true });
+      const { data, error } = await supabase.from('categories').select('id, user_id, name, type, icon, color, created_at').eq('user_id', user.value.id).order('created_at', { ascending: true });
       if (error) throw error;
       return data as Category[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 300_000, // 5 min — categories almost never change
   });
 
   const categories = computed(() => categoriesData.value || []);

@@ -29,7 +29,7 @@ export const useBills = () => {
       if (!user.value) throw new Error('Not authenticated');
       const { data, error } = await supabase
         .from('bills')
-        .select('*')
+        .select('id, user_id, title, amount, due_date, is_paid, paid_with_account_id, recurrence, created_at')
         .eq('user_id', user.value.id)
         .order('due_date');
       if (error) {
@@ -38,6 +38,7 @@ export const useBills = () => {
       return data as Bill[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 60_000, // 1 min — bill status changes infrequently
   });
 
   const bills = computed(() => billsData.value || []);

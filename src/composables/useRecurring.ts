@@ -29,11 +29,12 @@ export const useRecurring = () => {
     queryKey: ['recurring', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) throw new Error('Not authenticated');
-      const { data, error } = await supabase.from('recurring_transactions').select('*').eq('user_id', user.value.id).order('next_date', { ascending: true });
+      const { data, error } = await supabase.from('recurring_transactions').select('id, user_id, type, amount, currency, category_id, frequency, next_date, active, description, created_at').eq('user_id', user.value.id).order('next_date', { ascending: true });
       if (error) throw error;
       return data as RecurringTransaction[];
     },
     enabled: computed(() => !!user.value),
+    staleTime: 120_000, // 2 min — recurring rarely changes
   });
 
   const recurring = computed(() => recurringData.value || []);
