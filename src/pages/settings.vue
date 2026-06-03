@@ -298,7 +298,7 @@
           <Button
             variant="ghost"
             class="group w-full h-auto rounded-4xl border border-rose-500/20 bg-rose-500/[0.02] p-4 transition-all hover:bg-rose-500/5 hover:border-rose-500/40"
-            @click="onDisconnect"
+            @click="showDisconnectDialog = true"
           >
             <div class="flex w-full items-center justify-between">
               <div class="flex items-center gap-4">
@@ -395,6 +395,29 @@
         </p>
       </div>
     </div>
+
+    <!-- DISCONNECT CONFIRMATION DIALOG -->
+    <AlertDialog v-model:open="showDisconnectDialog">
+      <AlertDialogContent class="rounded-4xl">
+        <AlertDialogHeader>
+          <AlertDialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_disconnect_title') }}</AlertDialogTitle>
+          <AlertDialogDescription class="text-sm">
+            {{ $t('settings.dialog_disconnect_desc') }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel class="rounded-xl font-bold">
+            {{ $t('settings.cancel') }}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            class="rounded-xl bg-rose-500 px-6 font-bold text-white shadow-lg shadow-rose-500/20 hover:bg-rose-600"
+            @click="onConfirmDisconnect"
+          >
+            {{ $t('settings.disconnect_title') }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
 
     <!-- DIALOGS -->
     <Dialog v-model:open="editName">
@@ -654,18 +677,10 @@ const onCancelInvite = async (inv: CoupleInvitation) => {
   await cancelInvite(inv.id);
 };
 
-const confirmDisconnect = ref(false);
+const showDisconnectDialog = ref(false);
 
-const onDisconnect = async () => {
-  if (!confirmDisconnect.value) {
-    confirmDisconnect.value = true;
-    toast.info(t('settings.disconnect_confirm'));
-    setTimeout(() => {
-      confirmDisconnect.value = false;
-    }, 3000);
-    return;
-  }
+const onConfirmDisconnect = async () => {
+  showDisconnectDialog.value = false;
   await disconnectPartner();
-  confirmDisconnect.value = false;
 };
 </script>

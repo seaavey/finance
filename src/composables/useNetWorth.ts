@@ -16,6 +16,7 @@ export const useNetWorth = () => {
   const { user } = useAuth();
   const { locale } = useI18n();
   const { getConvertedBalances } = useAccounts();
+  const { defaultCurrency, convertTo } = useCurrency();
 
   const history = ref<NetWorthData[]>([]);
   const loading = ref(false);
@@ -54,21 +55,10 @@ export const useNetWorth = () => {
 
           if (txError) throw txError;
 
-          // 3. Fetch exchange rates
-          const { data: ratesData } = await supabase
-            .from('exchange_rates')
-            .select('target_currency, rate');
-
-          const rates: Record<string, number> = {};
-          for (const row of ratesData || []) {
-            rates[row.target_currency] = Number(row.rate);
-          }
-
           const convertAmount = (amount: number, fromCurrency: string): number => {
-            if (fromCurrency === 'IDR' || !rates[fromCurrency]) {
-              return amount;
-            }
-            return amount / rates[fromCurrency];
+            if (fromCurrency === defaultCurrency.value) return amount;
+            const converted = convertTo(amount, fromCurrency, defaultCurrency.value);
+            return converted ?? amount;
           };
 
           const result: NetWorthData[] = [];

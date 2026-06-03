@@ -96,25 +96,9 @@ export const useAccounts = () => {
   };
 
   const getAccountBalance = async (accountId: string): Promise<number> => {
-    if (!user.value) {
-      return 0;
-    }
-    const account = accounts.value.find((a) => a.id === accountId);
-    if (!account) {
-      return 0;
-    }
-
-    const { data } = await supabase
-      .from('transactions')
-      .select('type, amount')
-      .eq('user_id', user.value.id)
-      .eq('account_id', accountId);
-
-    const net = (data || []).reduce((sum, tx: { type: string; amount: number }) => {
-      return tx.type === 'income' ? sum + Number(tx.amount) : sum - Number(tx.amount);
-    }, 0);
-
-    return Number(account.initial_balance) + net;
+    const balances = await getAccountBalances();
+    const account = balances.find((a) => a.id === accountId);
+    return account?.balance ?? 0;
   };
 
   const getAccountBalances = async (): Promise<AccountWithBalance[]> => {

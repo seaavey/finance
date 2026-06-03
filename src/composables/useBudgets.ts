@@ -88,7 +88,9 @@ export const useBudgets = () => {
         );
 
         const [year, mon] = month.split('-').map(Number);
-        const nextMonth = new Date(year as number, mon as number, 1).toISOString().slice(0, 10);
+        const date = new Date(year as number, (mon as number) - 1, 1);
+        date.setMonth(date.getMonth() + 1);
+        const nextMonth = date.toISOString().slice(0, 10);
 
         const { data: txData } = await supabase
           .from('transactions')

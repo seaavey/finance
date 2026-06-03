@@ -90,6 +90,12 @@
           @keydown="onNumberKeydown"
         />
       </div>
+      <p
+        v-if="hasDecimals(form.currency)"
+        class="mt-2 text-[10px] font-medium text-muted-foreground/60 text-center"
+      >
+        {{ $t('transaction_form.cents_hint', { value: '50000', formatted: formatNumberOnly(500, form.currency) }) }}
+      </p>
     </div>
 
     <!-- DETAIL FORM GRID -->
@@ -250,7 +256,7 @@ const emit = defineEmits<{
   dirty: [value: boolean];
 }>();
 
-const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency();
+const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals } = useCurrency();
 
 const { addTransaction, updateTransaction } = useTransactions();
 const { accounts, fetchAccounts } = useAccounts();
