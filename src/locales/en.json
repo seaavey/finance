@@ -119,6 +119,11 @@
     "camera_error_unsupported": "Your browser does not support camera access.",
     "camera_start": "Start Camera",
     "camera_start_desc": "Tap to enable camera and scan your receipt",
+    "camera_checking": "Checking camera...",
+    "camera_retry": "Try Again",
+    "camera_permission_denied_title": "Camera Access Blocked",
+    "camera_permission_denied_desc": "Open your browser settings, look for \"Site Settings\" or \"Permissions\", then allow camera access for this site. On Chrome: {icon} ⋮ → Settings → Site Settings → Camera → Allow.",
+    "camera_error_blocked": "Camera access has been permanently blocked. Open browser settings to allow camera access, or upload a photo from your gallery instead.",
     "camera_error_constraint": "Camera does not meet requirements.",
     "camera_error_generic": "Failed to access camera."
   },

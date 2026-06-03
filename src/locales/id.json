@@ -119,6 +119,11 @@
     "camera_error_unsupported": "Browser tidak mendukung akses kamera.",
     "camera_start": "Mulai Kamera",
     "camera_start_desc": "Tekan untuk mengaktifkan kamera dan memindai struk",
+    "camera_checking": "Memeriksa kamera...",
+    "camera_retry": "Coba Lagi",
+    "camera_permission_denied_title": "Akses Kamera Diblokir",
+    "camera_permission_denied_desc": "Buka pengaturan browser, cari \"Setelan Situs\" atau \"Izin\", lalu izinkan akses kamera untuk situs ini. Di Chrome: {icon} ⋮ → Setelan → Setelan Situs → Kamera → Izinkan.",
+    "camera_error_blocked": "Akses kamera telah diblokir permanen. Buka pengaturan browser untuk mengizinkan akses kamera, atau gunakan gallery sebagai alternatif.",
     "camera_error_constraint": "Kamera tidak memenuhi persyaratan.",
     "camera_error_generic": "Gagal mengakses kamera."
   },

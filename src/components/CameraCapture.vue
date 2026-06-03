@@ -26,11 +26,15 @@ const {
   isActive,
   error: cameraError,
   hasCameraSupport,
+  permissionState,
+  permissionLoading,
   startCamera,
   stopCamera,
   captureImage,
   switchCamera,
   setVideoElement,
+  checkPermission,
+  clearError,
 } = useCamera()
 
 const open = defineModel<boolean>('open', { required: true })
@@ -43,11 +47,33 @@ const flashVisible = ref(false)
 const videoReady = ref(false)
 const cameraStarted = ref(false)
 const cameraStarting = ref(false)
+const cameraFailed = ref(false)
 
 let flashTimer: ReturnType<typeof setTimeout> | undefined
 let watchCancelled = false
 
-/** Open dialog without starting camera — wait for user tap */
+/*
+ * ── State machine ──────────────────────────────────────
+ *
+ * Dialog opens → checkPermission() proactively
+ *
+ *   permissionState:
+ *     'denied'      → show blocked UI + gallery fallback
+ *     'prompt'      → show "Start Camera" button
+ *     'unsupported' → show "Start Camera" button (fallback)
+ *     'granted'     → auto-start camera immediately
+ *
+ * User taps "Start Camera" → startCamera()
+ *   → success → live preview
+ *   → error   → error overlay with retry + gallery fallback
+ *
+ * User taps "Upload from Gallery" → opens file picker → scan
+ * User taps "Retry" → startCamera() again
+ * User taps close  → stopCamera() + close dialog
+ * ──────────────────────────────────────────────────────
+ */
+
+/** Open dialog → check permission proactively */
 watch(open, async (val) => {
   watchCancelled = false
   if (val) {
@@ -57,15 +83,21 @@ watch(open, async (val) => {
     videoReady.value = false
     cameraStarted.value = false
     cameraStarting.value = false
+    cameraFailed.value = false
+    clearError()
 
     await nextTick()
-    // Register video element for the composable so it's ready when user taps start
+
+    // Register video element so it's ready for captureImage later
     if (videoRef.value) {
       setVideoElement(videoRef.value)
     }
-    // Camera is NOT auto-started — user must tap "Start Camera" button
-    // This ensures getUserMedia is called from a user gesture, so the
-    // browser shows the permission prompt instead of silently denying it.
+
+    // Proactively check permission so we can adapt the UI
+    // before the user taps anything.
+    if (hasCameraSupport) {
+      await checkPermission()
+    }
   } else {
     watchCancelled = true
     stopCamera()
@@ -76,10 +108,37 @@ watch(open, async (val) => {
 /** Start camera directly from a user click handler */
 async function startCameraClick() {
   if (cameraStarting.value || cameraStarted.value) return
+
+  clearError()
+  cameraFailed.value = false
   cameraStarting.value = true
   cameraStarted.value = true
+
   await startCamera()
+
   cameraStarting.value = false
+
+  // If even after the user gesture the camera failed, mark as failed
+  // so we show the error overlay with retry options.
+  if (cameraError.value) {
+    cameraFailed.value = true
+  }
+}
+
+/** Retry after an error */
+async function retryCamera() {
+  clearError()
+  cameraFailed.value = false
+  cameraStarted.value = true
+  cameraStarting.value = true
+
+  await startCamera()
+
+  cameraStarting.value = false
+
+  if (cameraError.value) {
+    cameraFailed.value = true
+  }
 }
 
 /** Capture a photo from the video stream */
@@ -117,7 +176,7 @@ function revokePreview() {
 }
 
 /** Retake — go back to live view */
-function retake() {
+function retakePhoto() {
   revokePreview()
   photoCaptured.value = false
   previewUrl.value = null
@@ -142,6 +201,27 @@ function handleClose() {
   open.value = false
   emit('close')
 }
+
+// ── Gallery fallback ─────────────────────────────────────
+
+const galleryInputRef = ref<HTMLInputElement | null>(null)
+
+function openGallery() {
+  galleryInputRef.value?.click()
+}
+
+function onGalleryFile(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  // Reset so the same file can be selected again
+  input.value = ''
+
+  // Emit the file directly and close the camera dialog
+  emit('captured', file)
+  open.value = false
+}
 </script>
 
 <template>
@@ -151,18 +231,67 @@ function handleClose() {
       class="sm:max-w-lg p-0 overflow-hidden rounded-3xl border-border/50"
       :show-close-button="false"
     >
-      <!-- Unsupported: no camera support -->
-      <div v-if="!hasCameraSupport" class="flex flex-col items-center justify-center gap-4 p-12 text-center">
+      <!-- Hidden file input for gallery fallback -->
+      <input
+        ref="galleryInputRef"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        class="hidden"
+        @change="onGalleryFile"
+      />
+
+      <!-- UNSUPPORTED: no camera API -->
+      <div v-if="!hasCameraSupport" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
         <div class="flex size-16 items-center justify-center rounded-2xl bg-muted">
           <AppIcon name="hugeicons:camera-off-01" :size="28" class="text-muted-foreground" />
         </div>
-        <p class="font-bold text-foreground">{{ t('transaction_form.camera_error_unsupported') }}</p>
-        <Button variant="secondary" class="rounded-2xl" @click="handleClose">
-          {{ t('transaction_form.cancel') }}
-        </Button>
+        <div class="space-y-1">
+          <p class="font-bold text-foreground">{{ t('transaction_form.camera_error_unsupported') }}</p>
+        </div>
+        <div class="flex flex-col gap-2 w-full max-w-[200px]">
+          <Button variant="secondary" class="rounded-2xl w-full" @click="openGallery">
+            <AppIcon name="hugeicons:folder-01" :size="16" />
+            {{ t('transaction_form.scan_gallery') }}
+          </Button>
+          <Button variant="ghost" class="rounded-2xl w-full" @click="handleClose">
+            {{ t('transaction_form.cancel') }}
+          </Button>
+        </div>
       </div>
 
-      <!-- Start Camera button (user gesture required) -->
+      <!-- CHECKING: proactively detecting permission state -->
+      <div v-else-if="permissionLoading" class="flex flex-col items-center justify-center gap-4 p-12 text-center">
+        <AppIcon name="hugeicons:loading-03" :size="32" class="animate-spin text-muted-foreground" />
+        <p class="font-medium text-muted-foreground">{{ t('transaction_form.camera_checking') }}</p>
+      </div>
+
+      <!-- BLOCKED: permission permanently denied -->
+      <div v-else-if="permissionState === 'denied'" class="flex flex-col items-center justify-center gap-5 p-8 text-center">
+        <div class="flex size-20 items-center justify-center rounded-3xl bg-rose-500/10">
+          <AppIcon name="hugeicons:camera-off-01" :size="36" class="text-rose-500" />
+        </div>
+        <div class="space-y-1">
+          <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_permission_denied_title') }}</p>
+          <p class="text-sm font-medium text-muted-foreground leading-relaxed max-w-xs">
+            {{ t('transaction_form.camera_permission_denied_desc') }}
+          </p>
+        </div>
+        <div class="flex flex-col gap-2 w-full max-w-[220px]">
+          <Button variant="secondary" class="rounded-2xl w-full" @click="retryCamera">
+            <AppIcon name="hugeicons:refresh-01" :size="16" />
+            {{ t('transaction_form.camera_retry') }}
+          </Button>
+          <Button variant="outline" class="rounded-2xl w-full" @click="openGallery">
+            <AppIcon name="hugeicons:folder-01" :size="16" />
+            {{ t('transaction_form.scan_gallery') }}
+          </Button>
+          <Button variant="ghost" class="rounded-2xl w-full text-muted-foreground" @click="handleClose">
+            {{ t('transaction_form.cancel') }}
+          </Button>
+        </div>
+      </div>
+
+      <!-- PERMISSION UNKNOWN / PROMPT: show start-camera button -->
       <div v-else-if="!cameraStarted" class="flex flex-col items-center justify-center gap-5 p-12 text-center">
         <div class="flex size-20 items-center justify-center rounded-3xl bg-primary/10">
           <AppIcon name="hugeicons:camera-01" :size="36" class="text-primary" />
@@ -171,23 +300,25 @@ function handleClose() {
           <p class="text-lg font-black text-foreground">{{ t('transaction_form.camera_start') }}</p>
           <p class="text-sm font-medium text-muted-foreground">{{ t('transaction_form.camera_start_desc') }}</p>
         </div>
-        <Button
-          class="h-12 rounded-2xl bg-primary px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90"
-          :disabled="cameraStarting"
-          @click="startCameraClick"
-        >
-          <div class="flex items-center gap-2">
-            <AppIcon
-              :name="cameraStarting ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
-              :size="16"
-              :class="cameraStarting ? 'animate-spin' : ''"
-            />
-            {{ t('transaction_form.camera_start') }}
-          </div>
-        </Button>
-        <Button variant="ghost" class="rounded-2xl text-sm font-bold text-muted-foreground" @click="handleClose">
-          {{ t('transaction_form.cancel') }}
-        </Button>
+        <div class="flex flex-col gap-2 w-full max-w-[220px]">
+          <Button
+            class="h-12 rounded-2xl bg-primary px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary/90"
+            :disabled="cameraStarting"
+            @click="startCameraClick"
+          >
+            <div class="flex items-center gap-2">
+              <AppIcon
+                :name="cameraStarting ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
+                :size="16"
+                :class="cameraStarting ? 'animate-spin' : ''"
+              />
+              {{ t('transaction_form.camera_start') }}
+            </div>
+          </Button>
+          <Button variant="ghost" class="rounded-2xl text-sm font-bold text-muted-foreground" @click="handleClose">
+            {{ t('transaction_form.cancel') }}
+          </Button>
+        </div>
       </div>
 
       <!-- Camera live preview -->
@@ -199,28 +330,35 @@ function handleClose() {
           playsinline
           muted
           class="h-full w-full object-cover"
-          :class="{ hidden: !isActive && !cameraError }"
+          :class="{ hidden: !isActive && !cameraFailed }"
           @canplay="videoReady = true"
         />
 
-        <!-- Loading state -->
+        <!-- Loading state (camera is starting up) -->
         <div
-          v-if="!isActive && !cameraError"
+          v-if="cameraStarting"
           class="absolute inset-0 flex items-center justify-center bg-black/60"
         >
           <AppIcon name="hugeicons:loading-03" :size="32" class="animate-spin text-white" />
         </div>
 
-        <!-- Camera error -->
+        <!-- Camera error overlay (inside live preview) -->
         <div
-          v-if="cameraError"
+          v-if="cameraFailed || cameraError"
           class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/80 p-8 text-center"
         >
           <AppIcon name="hugeicons:camera-off-01" :size="32" class="text-white/60" />
-          <p class="font-bold text-white">{{ t('transaction_form.' + cameraError) }}</p>
-          <Button variant="secondary" class="rounded-2xl" @click="handleClose">
-            {{ t('transaction_form.cancel') }}
-          </Button>
+          <p class="font-bold text-white">{{ t('transaction_form.' + (cameraError || 'camera_error_generic')) }}</p>
+          <div class="flex flex-col gap-2 w-full max-w-[200px]">
+            <Button variant="secondary" class="rounded-2xl w-full" @click="retryCamera">
+              <AppIcon name="hugeicons:refresh-01" :size="16" />
+              {{ t('transaction_form.camera_retry') }}
+            </Button>
+            <Button variant="ghost" class="rounded-2xl w-full text-white/70 hover:text-white" @click="openGallery">
+              <AppIcon name="hugeicons:folder-01" :size="16" />
+              {{ t('transaction_form.scan_gallery') }}
+            </Button>
+          </div>
         </div>
 
         <!-- Flash overlay -->
@@ -284,7 +422,7 @@ function handleClose() {
           <Button
             variant="ghost"
             class="rounded-2xl bg-black/40 px-6 font-black uppercase tracking-widest text-white backdrop-blur-sm hover:bg-black/60"
-            @click="retake"
+            @click="retakePhoto"
           >
             <div class="flex items-center gap-2">
               <AppIcon name="hugeicons:refresh-01" :size="16" />
