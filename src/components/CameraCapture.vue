@@ -91,7 +91,7 @@ async function capture() {
 }
 
 onUnmounted(() => {
-  if (flashTimer !== null) clearTimeout(flashTimer)
+  clearTimeout(flashTimer)
 })
 
 /** Revoke the preview blob URL if one exists */
