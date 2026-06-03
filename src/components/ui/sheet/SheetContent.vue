@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
+import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
 
-import type { HTMLAttributes } from 'vue';
-import { reactiveOmit } from '@vueuse/core';
-import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import SheetOverlay from './SheetOverlay.vue';
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
+import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import SheetOverlay from './SheetOverlay.vue'
 
 interface SheetContentProps extends DialogContentProps {
-  class?: HTMLAttributes['class'];
-  side?: 'top' | 'right' | 'bottom' | 'left';
-  showCloseButton?: boolean;
+  class?: HTMLAttributes['class']
+  side?: 'top' | 'right' | 'bottom' | 'left'
+  showCloseButton?: boolean
 }
 
 defineOptions({
   inheritAttrs: false,
-});
+})
 
 const props = withDefaults(defineProps<SheetContentProps>(), {
   side: 'right',
   showCloseButton: true,
-});
-const emits = defineEmits<DialogContentEmits>();
+})
+const emits = defineEmits<DialogContentEmits>()
 
-const delegatedProps = reactiveOmit(props, 'class', 'side', 'showCloseButton');
+const delegatedProps = reactiveOmit(props, 'class', 'side', 'showCloseButton')
 
-const forwarded = useForwardPropsEmits(delegatedProps, emits);
+const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
@@ -48,7 +48,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       <DialogClose v-if="showCloseButton" data-slot="sheet-close" as-child>
         <Button variant="ghost" class="absolute top-4 right-4" size="icon">
           <AppIcon name="hugeicons:cancel-01" :size="18" />
-          <span class="sr-only">{{ $t('common.close')}}</span>
+          <span class="sr-only">{{ $t('common.close') }}</span>
         </Button>
       </DialogClose>
     </DialogContent>

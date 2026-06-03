@@ -11,10 +11,18 @@
       <p class="mt-1 font-medium text-muted-foreground">{{ $t('categories.subtitle') }}</p>
     </div>
 
-    <form class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm" @submit.prevent="onSubmit">
+    <form
+      class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm"
+      @submit.prevent="onSubmit"
+    >
       <div class="space-y-2">
         <Label for="name">{{ $t('category_form.name') }}</Label>
-        <Input id="name" v-model="form.name" :placeholder="$t('category_form.name_placeholder')" required />
+        <Input
+          id="name"
+          v-model="form.name"
+          :placeholder="$t('category_form.name_placeholder')"
+          required
+        />
       </div>
 
       <div class="space-y-2">
@@ -61,31 +69,41 @@
 defineOptions({
   name: 'PagesCategoriesNew',
 })
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
-const router = useRouter();
-const { addCategory } = useCategories();
+const router = useRouter()
+const { addCategory } = useCategories()
 
 const colorOptions = [
-  '#22c55e', '#3b82f6', '#8b5cf6', '#f97316', '#06b6d4',
-  '#ec4899', '#ef4444', '#a855f7', '#14b8a6', '#6b7280', '#eab308', '#f43f5e',
-];
+  '#22c55e',
+  '#3b82f6',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#ec4899',
+  '#ef4444',
+  '#a855f7',
+  '#14b8a6',
+  '#6b7280',
+  '#eab308',
+  '#f43f5e',
+]
 
 const form = reactive({
   name: '',
   type: 'expense' as 'income' | 'expense',
   icon: 'hugeicons:wallet-01',
   color: '#3b82f6',
-});
+})
 
 const onSubmit = async () => {
   const result = await addCategory({
@@ -93,9 +111,9 @@ const onSubmit = async () => {
     type: form.type,
     icon: form.icon,
     color: form.color,
-  });
+  })
   if (!result?.error) {
-    router.push('/categories');
+    router.push('/categories')
   }
-};
+}
 </script>

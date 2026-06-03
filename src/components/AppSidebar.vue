@@ -88,7 +88,6 @@
           <AppIcon name="hugeicons:user" :size="14" class="text-primary" />
           <span>{{ partnerDisplayName }}</span>
           <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground"
-
             >Partner</span
           >
         </router-link>
@@ -98,37 +97,37 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { Button } from '@/components/ui/button';
-import { useMediaQuery } from '@vueuse/core';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { Button } from '@/components/ui/button'
+import { useMediaQuery } from '@vueuse/core'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 defineProps<{
-  open: boolean;
-}>();
+  open: boolean
+}>()
 
 const emit = defineEmits<{
-  close: [];
-}>();
+  close: []
+}>()
 
-const isDesktop = useMediaQuery('(min-width: 1024px)');
-const { user, signOut } = useAuth();
-const { isPartnered, partnerDisplayName, fetchPartner } = usePartner();
-const route = useRoute();
-const { t } = useI18n();
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+const { user, signOut } = useAuth()
+const { isPartnered, partnerDisplayName, fetchPartner } = usePartner()
+const route = useRoute()
+const { t } = useI18n()
 
 const brandParts = computed(() => {
-  const full = t('sidebar.finance');
-  const parts = full.split(' ');
+  const full = t('sidebar.finance')
+  const parts = full.split(' ')
   if (parts.length > 1) {
     return {
       first: parts[0],
       rest: ' ' + parts.slice(1).join(' '),
-    };
+    }
   }
-  return { first: full, rest: '' };
-});
+  return { first: full, rest: '' }
+})
 
 const navSections = computed(() => [
   {
@@ -161,28 +160,28 @@ const navSections = computed(() => [
       { to: '/settings', label: t('sidebar.settings'), icon: 'hugeicons:settings-01' },
     ],
   },
-]);
+])
 
 const isActive = (path: string) => {
   if (path === '/') {
-    return route.path === '/';
+    return route.path === '/'
   }
-  return route.path.startsWith(path);
-};
+  return route.path.startsWith(path)
+}
 
 const onItemClick = () => {
   if (!isDesktop.value) {
-    emit('close');
+    emit('close')
   }
-};
+}
 
 const onSignOut = async () => {
-  await signOut();
-};
+  await signOut()
+}
 
 onMounted(() => {
   if (user.value) {
-    fetchPartner();
+    fetchPartner()
   }
-});
+})
 </script>

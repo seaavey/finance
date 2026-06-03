@@ -6,13 +6,13 @@
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <AppIcon name="hugeicons:comment-01" :size="14" />
-          {{ $t('landing.testimonials_title')}}
+          {{ $t('landing.testimonials_title') }}
         </div>
         <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
-          {{ $t('landing.testimonials_heading')}}
+          {{ $t('landing.testimonials_heading') }}
         </h2>
         <p class="mt-4 text-lg font-medium text-muted-foreground">
-          {{ $t('landing.testimonials_desc')}}
+          {{ $t('landing.testimonials_desc') }}
         </p>
       </div>
     </div>
@@ -38,7 +38,9 @@
                   :key="n"
                   name="material-symbols:star"
                   :size="16"
-                  :class="n <= (testimonial.rating as any) ? 'text-amber-400' : 'text-muted-foreground/20'"
+                  :class="
+                    n <= (testimonial.rating as any) ? 'text-amber-400' : 'text-muted-foreground/20'
+                  "
                 />
               </div>
               <!-- Quote -->
@@ -51,7 +53,10 @@
             <div class="mt-8 flex items-center gap-4">
               <Avatar class="size-11 shrink-0 border-2 border-background shadow-sm">
                 <AvatarImage :src="rt(testimonial.avatar)" :alt="rt(testimonial.name)" />
-                <AvatarFallback class="text-xs font-black" :class="getColorClasses(testimonial.color)">
+                <AvatarFallback
+                  class="text-xs font-black"
+                  :class="getColorClasses(testimonial.color)"
+                >
                   {{ rt(testimonial.initials) }}
                 </AvatarFallback>
               </Avatar>
@@ -85,42 +90,42 @@
 defineOptions({
   name: 'ComponentsLandingTestimonials',
 })
-const { tm, rt } = useI18n();
+const { tm, rt } = useI18n()
 
 interface Testimonial {
-  name: string | object;
-  role: string | object;
-  quote: string | object;
-  initials: string | object;
-  color: string | object;
-  rating: number | object;
-  avatar: string | object;
+  name: string | object
+  role: string | object
+  quote: string | object
+  initials: string | object
+  color: string | object
+  rating: number | object
+  avatar: string | object
 }
 
-const rawTestimonials = tm('landing.testimonials_items') as Record<string, unknown>[];
+const rawTestimonials = tm('landing.testimonials_items') as Record<string, unknown>[]
 const testimonials = rawTestimonials.map((t) => ({
   ...t,
   rating:
     typeof t.rating === 'number' ? t.rating : parseInt(rt(t.rating as unknown as string)) || 5,
-})) as unknown as Testimonial[];
+})) as unknown as Testimonial[]
 
 const getColorClasses = (color: string | object) => {
-  const colorStr = typeof color === 'string' ? color : rt(color as unknown as string);
+  const colorStr = typeof color === 'string' ? color : rt(color as unknown as string)
   switch (colorStr) {
     case 'pink':
-      return 'bg-pink-500/15 text-pink-500';
+      return 'bg-pink-500/15 text-pink-500'
     case 'blue':
-      return 'bg-blue-500/15 text-blue-500';
+      return 'bg-blue-500/15 text-blue-500'
     case 'purple':
-      return 'bg-purple-500/15 text-purple-500';
+      return 'bg-purple-500/15 text-purple-500'
     case 'amber':
-      return 'bg-amber-500/15 text-amber-500';
+      return 'bg-amber-500/15 text-amber-500'
     case 'emerald':
-      return 'bg-emerald-500/15 text-emerald-500';
+      return 'bg-emerald-500/15 text-emerald-500'
     default:
-      return 'bg-primary/15 text-primary';
+      return 'bg-primary/15 text-primary'
   }
-};
+}
 </script>
 
 <style scoped>

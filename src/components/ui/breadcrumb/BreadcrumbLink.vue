@@ -2,8 +2,8 @@
 defineProps<{
   to:
     | string
-    | { name: string; params?: Record<string, string | number>; query?: Record<string, string> };
-}>();
+    | { name: string; params?: Record<string, string | number>; query?: Record<string, string> }
+}>()
 </script>
 
 <template>

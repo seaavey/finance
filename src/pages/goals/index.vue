@@ -20,20 +20,34 @@
     <!-- Summary Stats — bento top row -->
     <div v-if="goals.length > 0" class="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.total_goals') }}</p>
+        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+          {{ $t('goals.total_goals') }}
+        </p>
         <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">{{ goals.length }}</p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.completed') }}</p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-emerald-600">{{ completedCount }}</p>
+        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+          {{ $t('goals.completed') }}
+        </p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-emerald-600">
+          {{ completedCount }}
+        </p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.total_target') }}</p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">{{ formatCurrency(totalTarget) }}</p>
+        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+          {{ $t('goals.total_target') }}
+        </p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">
+          {{ formatCurrency(totalTarget) }}
+        </p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{{ $t('goals.total_saved') }}</p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-primary">{{ formatCurrency(totalSaved) }}</p>
+        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
+          {{ $t('goals.total_saved') }}
+        </p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-primary">
+          {{ formatCurrency(totalSaved) }}
+        </p>
       </div>
     </div>
 
@@ -44,7 +58,10 @@
         <Skeleton v-for="i in 4" :key="i" class="h-24 rounded-3xl bg-muted/50" />
       </div>
       <!-- Cards grid -->
-      <div class="grid gap-4" :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }">
+      <div
+        class="grid gap-4"
+        :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }"
+      >
         <Skeleton v-for="i in 4" :key="i" class="h-[220px] rounded-3xl bg-muted/50" />
       </div>
     </div>
@@ -55,7 +72,9 @@
         v-if="goals.length === 0"
         class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
       >
-        <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+        <div
+          class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+        >
           <AppIcon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
         </div>
         <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('goals.empty') }}</h3>
@@ -72,7 +91,11 @@
       </div>
 
       <!-- BENTO AUTO-FIT GRID -->
-      <div v-else class="grid gap-4" :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }">
+      <div
+        v-else
+        class="grid gap-4"
+        :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }"
+      >
         <div
           v-for="goal in goals"
           :key="goal.id"
@@ -84,12 +107,20 @@
           <!-- Featured hero card (image background) -->
           <template v-if="getIsFeatured(goal)">
             <div class="absolute inset-0">
-              <img :src="goal.image_url ?? ''" :alt="goal.name" class="h-full w-full object-cover" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+              <img
+                :src="goal.image_url ?? ''"
+                :alt="goal.name"
+                class="h-full w-full object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10"
+              />
             </div>
             <div class="relative z-10 mt-auto flex flex-col p-6 text-white">
               <div class="mb-2 flex items-center gap-2">
-                <div class="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                <div
+                  class="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm"
+                >
                   {{ $t('goals.featured') }}
                 </div>
                 <div
@@ -105,13 +136,19 @@
               </p>
               <div class="mt-4 space-y-1.5">
                 <div class="flex justify-between text-xs font-bold">
-                  <span>{{ formatCurrency(Number(goal.current_amount)) }} / {{ formatCurrency(Number(goal.target_amount)) }}</span>
+                  <span
+                    >{{ formatCurrency(Number(goal.current_amount)) }} /
+                    {{ formatCurrency(Number(goal.target_amount)) }}</span
+                  >
                   <span>{{ getPercentage(goal) }}%</span>
                 </div>
                 <div class="h-2.5 overflow-hidden rounded-full bg-white/20">
                   <div
                     class="h-full rounded-full transition-all duration-700"
-                    :style="{ width: `${Math.min(getPercentage(goal), 100)}%`, backgroundColor: goal.color || '#ec4899' }"
+                    :style="{
+                      width: `${Math.min(getPercentage(goal), 100)}%`,
+                      backgroundColor: goal.color || '#ec4899',
+                    }"
                   />
                 </div>
               </div>
@@ -122,12 +159,16 @@
           <template v-else-if="getPercentage(goal) >= 100">
             <div class="flex h-full flex-col p-5">
               <div class="mb-3 flex items-center gap-3">
-                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
+                <div
+                  class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10"
+                >
                   <AppIcon name="hugeicons:tick-01" :size="20" class="text-emerald-500" />
                 </div>
                 <div class="min-w-0 flex-1">
                   <h3 class="truncate text-sm font-bold text-foreground">{{ goal.name }}</h3>
-                  <p class="text-[10px] font-medium text-emerald-600">{{ $t('goals.completed') }}</p>
+                  <p class="text-[10px] font-medium text-emerald-600">
+                    {{ $t('goals.completed') }}
+                  </p>
                 </div>
               </div>
               <p class="mt-auto text-2xl font-black tracking-tighter text-foreground">
@@ -146,13 +187,24 @@
                     :style="{ backgroundColor: (goal.color || '#ec4899') + '20' }"
                   >
                     <div v-if="goal.image_url" class="h-full w-full overflow-hidden rounded-xl">
-                      <img :src="goal.image_url" :alt="goal.name" class="h-full w-full object-cover" />
+                      <img
+                        :src="goal.image_url"
+                        :alt="goal.name"
+                        class="h-full w-full object-cover"
+                      />
                     </div>
-                    <div v-else class="size-3.5 rounded-full" :style="{ backgroundColor: goal.color || '#ec4899' }" />
+                    <div
+                      v-else
+                      class="size-3.5 rounded-full"
+                      :style="{ backgroundColor: goal.color || '#ec4899' }"
+                    />
                   </div>
                   <div class="min-w-0">
                     <h3 class="truncate text-sm font-bold text-foreground">{{ goal.name }}</h3>
-                    <p v-if="goal.deadline" class="truncate text-[10px] font-medium text-muted-foreground">
+                    <p
+                      v-if="goal.deadline"
+                      class="truncate text-[10px] font-medium text-muted-foreground"
+                    >
                       {{ formatDate(goal.deadline) }}
                     </p>
                   </div>
@@ -161,8 +213,12 @@
 
               <div class="mt-4 space-y-1.5">
                 <div class="flex justify-between text-xs">
-                  <span class="font-bold text-foreground">{{ formatCurrency(Number(goal.current_amount)) }}</span>
-                  <span class="font-black" :style="{ color: goal.color }">{{ getPercentage(goal) }}%</span>
+                  <span class="font-bold text-foreground">{{
+                    formatCurrency(Number(goal.current_amount))
+                  }}</span>
+                  <span class="font-black" :style="{ color: goal.color }"
+                    >{{ getPercentage(goal) }}%</span
+                  >
                 </div>
                 <Progress :model-value="getPercentage(goal)" class="h-2.5">
                   <template #indicator>
@@ -205,50 +261,53 @@
 defineOptions({
   name: 'PagesGoalsIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
-import type { Goal } from '@/composables/useGoals';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Progress } from '@/components/ui/progress'
+import type { Goal } from '@/composables/useGoals'
 
-const router = useRouter();
-const { goals, loading, fetchGoals } = useGoals();
-const { formatCurrency } = useCurrency();
+const router = useRouter()
+const { goals, loading, fetchGoals } = useGoals()
+const { formatCurrency } = useCurrency()
 
-const completedCount = computed(() => goals.value.filter((g) => {
-  const target = Number(g.target_amount);
-  const current = Number(g.current_amount);
-  return target > 0 && current >= target;
-}).length);
+const completedCount = computed(
+  () =>
+    goals.value.filter((g) => {
+      const target = Number(g.target_amount)
+      const current = Number(g.current_amount)
+      return target > 0 && current >= target
+    }).length,
+)
 
-const totalTarget = computed(() => goals.value.reduce((sum, g) => sum + Number(g.target_amount), 0));
-const totalSaved = computed(() => goals.value.reduce((sum, g) => sum + Number(g.current_amount), 0));
+const totalTarget = computed(() => goals.value.reduce((sum, g) => sum + Number(g.target_amount), 0))
+const totalSaved = computed(() => goals.value.reduce((sum, g) => sum + Number(g.current_amount), 0))
 
 // Pick first goal with an image as the featured hero card
 const featuredGoalId = computed(() => {
-  return goals.value.find((g) => !!g.image_url)?.id || null;
-});
+  return goals.value.find((g) => !!g.image_url)?.id || null
+})
 
 function getIsFeatured(goal: Goal): boolean {
-  return goal.id === featuredGoalId.value;
+  return goal.id === featuredGoalId.value
 }
 
 function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 function getPercentage(goal: Goal): number {
-  const target = Number(goal.target_amount);
-  const current = Number(goal.current_amount);
-  if (!target || target <= 0) return 0;
-  return Math.round((current / target) * 100);
+  const target = Number(goal.target_amount)
+  const current = Number(goal.current_amount)
+  if (!target || target <= 0) return 0
+  return Math.round((current / target) * 100)
 }
 
 function remainingFor(goal: Goal): number {
-  return Math.max(0, Number(goal.target_amount) - Number(goal.current_amount));
+  return Math.max(0, Number(goal.target_amount) - Number(goal.current_amount))
 }
 
 onMounted(() => {
-  fetchGoals();
-});
+  fetchGoals()
+})
 </script>

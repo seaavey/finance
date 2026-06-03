@@ -7,17 +7,17 @@
             <AppIcon name="hugeicons:wallet-01" :size="24" class="text-primary" />
           </div>
           <h1 class="font-heading text-2xl font-bold tracking-tight text-foreground">
-            {{ $t('auth.login_title')}}
+            {{ $t('auth.login_title') }}
           </h1>
           <p class="mt-2 text-sm text-muted-foreground">
-            {{ $t('auth.login_subtitle')}}
+            {{ $t('auth.login_subtitle') }}
           </p>
         </div>
 
         <div class="mt-8">
           <Button class="w-full gap-2 rounded-xl" size="lg" @click="signInWithGoogle">
             <AppIcon name="hugeicons:google" :size="20" />
-            {{ $t('auth.login_google')}}
+            {{ $t('auth.login_google') }}
           </Button>
         </div>
       </div>
@@ -27,7 +27,7 @@
           to="/"
           class="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          {{ $t('auth.back')}}
+          {{ $t('auth.back') }}
         </router-link>
       </p>
     </div>
@@ -38,23 +38,23 @@
 defineOptions({
   name: 'PagesAuthLogin',
 })
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 
-const { signInWithGoogle, getSession, user, loading } = useAuth();
-const router = useRouter();
+const { signInWithGoogle, getSession, user, loading } = useAuth()
+const router = useRouter()
 
-const { t: tSeo } = useI18n();
+const { t: tSeo } = useI18n()
 useSeoMeta({
   title: tSeo('auth.login_title'),
   ogTitle: tSeo('auth.login_title'),
   description: tSeo('auth.login_subtitle'),
   ogDescription: tSeo('auth.login_subtitle'),
-});
+})
 
 onMounted(async () => {
-  await getSession();
+  await getSession()
   if (user.value) {
-    await router.replace('/dashboard');
+    await router.replace('/dashboard')
   }
-});
+})
 </script>

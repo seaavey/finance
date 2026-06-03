@@ -1,7 +1,7 @@
-import { createI18n } from 'vue-i18n';
-import { ref, type Ref } from 'vue';
-import id from '../locales/id.json';
-import en from '../locales/en.json';
+import { createI18n } from 'vue-i18n'
+import { ref, type Ref } from 'vue'
+import id from '../locales/id.json'
+import en from '../locales/en.json'
 
 const i18n = createI18n({
   legacy: false,
@@ -12,17 +12,17 @@ const i18n = createI18n({
     id,
     en,
   },
-});
+})
 
 interface I18nGlobal {
-  locales: Ref<{ code: string; name: string }[]>;
+  locales: Ref<{ code: string; name: string }[]>
 }
 
 // Inject locales into the global instance so our useI18n mock can find them
 // This mimics how Nuxt I18n works
-(i18n.global as unknown as I18nGlobal).locales = ref([
+;(i18n.global as unknown as I18nGlobal).locales = ref([
   { code: 'id', name: 'Indonesia' },
-  { code: 'en', name: 'English' }
-]);
+  { code: 'en', name: 'English' },
+])
 
-export default i18n;
+export default i18n

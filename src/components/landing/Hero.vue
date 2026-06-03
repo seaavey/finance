@@ -57,7 +57,7 @@
         <p
           class="mx-auto mt-8 max-w-2xl text-lg font-medium leading-relaxed text-muted-foreground md:text-xl lg:text-2xl"
         >
-          {{ $t('landing.hero_desc')}}
+          {{ $t('landing.hero_desc') }}
         </p>
       </div>
 
@@ -68,7 +68,7 @@
           size="lg"
           @click="goToLogin"
         >
-          {{ $t('landing.hero_cta')}}
+          {{ $t('landing.hero_cta') }}
           <AppIcon name="hugeicons:arrow-right-01" :size="22" class="animate-bounce-x" />
         </Button>
         <Button
@@ -78,7 +78,7 @@
           @click="scrollToFeatures"
         >
           <AppIcon name="hugeicons:play-circle" :size="22" />
-          {{ $t('landing.hero_demo')}}
+          {{ $t('landing.hero_demo') }}
         </Button>
       </div>
 
@@ -92,7 +92,7 @@
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
-          {{ $t('landing.hero_free')}}</span
+          {{ $t('landing.hero_free') }}</span
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
@@ -100,7 +100,7 @@
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
-          {{ $t('landing.hero_noads')}}</span
+          {{ $t('landing.hero_noads') }}</span
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
@@ -108,7 +108,7 @@
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
-          {{ $t('landing.hero_secure')}}</span
+          {{ $t('landing.hero_secure') }}</span
         >
       </div>
 
@@ -150,14 +150,14 @@
                 <p
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
-                  {{ $t('landing.hero_preview.balance')}}
+                  {{ $t('landing.hero_preview.balance') }}
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
                 <div
                   class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-700 uppercase tracking-widest"
                 >
                   <AppIcon name="hugeicons:arrow-up-01" :size="12" />
-                  <span>{{ $t('landing.hero_preview.trend')}}</span>
+                  <span>{{ $t('landing.hero_preview.trend') }}</span>
                 </div>
               </div>
 
@@ -168,7 +168,7 @@
                 <p
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
-                  {{ $t('landing.hero_preview.income')}}
+                  {{ $t('landing.hero_preview.income') }}
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
                   Rp 18.200.000
@@ -187,7 +187,7 @@
                 <p
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
                 >
-                  {{ $t('landing.hero_preview.expense')}}
+                  {{ $t('landing.hero_preview.expense') }}
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500">Rp 5.750.000</p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-rose-500/10">
@@ -203,12 +203,12 @@
               <div class="md:col-span-3 rounded-3xl border border-border/50 bg-muted/20 p-6">
                 <div class="flex items-center justify-between mb-8">
                   <p class="text-sm font-black uppercase tracking-widest text-foreground/80">
-                    {{ $t('landing.hero_preview.chart_title')}}
+                    {{ $t('landing.hero_preview.chart_title') }}
                   </p>
                   <div
                     class="rounded-xl bg-card px-3 py-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 shadow-sm border border-border/40"
                   >
-                    {{ $t('landing.hero_preview.chart_period')}}
+                    {{ $t('landing.hero_preview.chart_period') }}
                   </div>
                 </div>
                 <div class="flex items-end gap-3 h-32 px-2">
@@ -228,20 +228,20 @@
                 <div
                   class="flex justify-between mt-6 text-[9px] font-black text-muted-foreground uppercase tracking-widest px-1"
                 >
-                  <span>{{ $t('landing.hero_preview.days.mon')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.tue')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.wed')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.thu')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.fri')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.sat')}}</span>
-                  <span>{{ $t('landing.hero_preview.days.sun')}}</span>
+                  <span>{{ $t('landing.hero_preview.days.mon') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.tue') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.wed') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.thu') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.fri') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.sat') }}</span>
+                  <span>{{ $t('landing.hero_preview.days.sun') }}</span>
                 </div>
               </div>
 
               <!-- Simplified Transaction List -->
               <div class="md:col-span-2 rounded-3xl border border-border/50 bg-muted/20 p-6">
                 <p class="text-sm font-black uppercase tracking-widest text-foreground/80 mb-6">
-                  {{ $t('landing.hero_preview.recent_title')}}
+                  {{ $t('landing.hero_preview.recent_title') }}
                 </p>
                 <div class="space-y-4">
                   <div
@@ -259,12 +259,12 @@
                       <p
                         class="text-sm font-bold truncate group-hover/tx:text-primary transition-colors"
                       >
-                        {{ $t(tx.title)}}
+                        {{ $t(tx.title) }}
                       </p>
                       <p
                         class="text-[10px] font-black uppercase tracking-tight text-muted-foreground"
                       >
-                        {{ $t(tx.date)}}
+                        {{ $t(tx.date) }}
                       </p>
                     </div>
                     <span class="text-sm font-black tracking-tighter" :class="tx.amountColor">{{
@@ -289,7 +289,7 @@
             </div>
             <div>
               <p class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-widest">
-                {{ $t('landing.hero_preview.savings')}}
+                {{ $t('landing.hero_preview.savings') }}
               </p>
               <p class="text-2xl font-black tracking-tighter text-emerald-600">Rp 2.100.000</p>
             </div>
@@ -304,27 +304,27 @@
 defineOptions({
   name: 'ComponentsLandingHero',
 })
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { Button } from '@/components/ui/button';
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { Button } from '@/components/ui/button'
 
-const { t } = useI18n();
-const localePath = useLocalePath();
-const router = useRouter();
-const goToLogin = () => router.push(localePath('/auth/login'));
+const { t } = useI18n()
+const localePath = useLocalePath()
+const router = useRouter()
+const goToLogin = () => router.push(localePath('/auth/login'))
 const scrollToFeatures = () =>
-  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
 
 const heroTitleStart = computed(() => {
-  const full = t('landing.hero_title');
-  const idx = full.indexOf('tanpa');
-  return idx === -1 ? full : full.slice(0, idx);
-});
+  const full = t('landing.hero_title')
+  const idx = full.indexOf('tanpa')
+  return idx === -1 ? full : full.slice(0, idx)
+})
 const heroTitleHighlight = computed(() => {
-  const full = t('landing.hero_title');
-  const idx = full.indexOf('tanpa');
-  return idx === -1 ? '' : full.slice(idx);
-});
+  const full = t('landing.hero_title')
+  const idx = full.indexOf('tanpa')
+  return idx === -1 ? '' : full.slice(idx)
+})
 
 const previewTransactions = [
   {
@@ -354,7 +354,7 @@ const previewTransactions = [
     bg: 'bg-blue-500/10',
     amountColor: 'text-red-600',
   },
-];
+]
 </script>
 
 <style scoped>

@@ -3,10 +3,10 @@
     <!-- HEADER -->
     <div class="text-center md:text-left">
       <h1 class="text-4xl font-black tracking-tighter text-foreground">
-        {{ isEdit ? $t('transaction_form.title_edit') : $t('transaction_form.title_new')}}
+        {{ isEdit ? $t('transaction_form.title_edit') : $t('transaction_form.title_new') }}
       </h1>
       <p class="mt-1 font-medium text-muted-foreground">
-        {{ isEdit ? $t('transaction_form.subtitle_edit') : $t('transaction_form.subtitle')}}
+        {{ isEdit ? $t('transaction_form.subtitle_edit') : $t('transaction_form.subtitle') }}
       </p>
     </div>
 
@@ -15,33 +15,51 @@
       <Button
         variant="ghost"
         class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
-        :class="form.type === 'income' 
-          ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 border-emerald-500' 
-          : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'"
+        :class="
+          form.type === 'income'
+            ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 border-emerald-500'
+            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
+        "
         @click="form.type = 'income'"
       >
-        <div class="flex size-12 items-center justify-center rounded-2xl transition-colors"
-          :class="form.type === 'income' ? 'bg-white/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'"
+        <div
+          class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          :class="
+            form.type === 'income'
+              ? 'bg-white/20'
+              : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+          "
         >
           <AppIcon name="hugeicons:arrow-down-01" :size="28" />
         </div>
-        <span class="text-xs font-black uppercase tracking-widest">{{ $t('transaction_form.income')}}</span>
+        <span class="text-xs font-black uppercase tracking-widest">{{
+          $t('transaction_form.income')
+        }}</span>
       </Button>
-      
+
       <Button
         variant="ghost"
         class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
-        :class="form.type === 'expense' 
-          ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 border-rose-500' 
-          : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'"
+        :class="
+          form.type === 'expense'
+            ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 border-rose-500'
+            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
+        "
         @click="form.type = 'expense'"
       >
-        <div class="flex size-12 items-center justify-center rounded-2xl transition-colors"
-          :class="form.type === 'expense' ? 'bg-white/20' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'"
+        <div
+          class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          :class="
+            form.type === 'expense'
+              ? 'bg-white/20'
+              : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+          "
         >
           <AppIcon name="hugeicons:arrow-up-01" :size="28" />
         </div>
-        <span class="text-xs font-black uppercase tracking-widest">{{ $t('transaction_form.expense')}}</span>
+        <span class="text-xs font-black uppercase tracking-widest">{{
+          $t('transaction_form.expense')
+        }}</span>
       </Button>
     </div>
 
@@ -55,38 +73,56 @@
             :disabled="uploading || scanning"
           >
             <div class="flex items-center gap-3">
-              <div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary/20">
+              <div
+                class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:bg-primary/20"
+              >
                 <AppIcon
                   :name="scanning ? 'hugeicons:loading-03' : 'hugeicons:camera-01'"
                   :size="16"
                   :class="scanning ? 'animate-spin' : ''"
                 />
               </div>
-              <span>{{ scanning ? $t('transaction_form.scanning') : $t('transaction_form.scan_receipt') }}</span>
+              <span>{{
+                scanning ? $t('transaction_form.scanning') : $t('transaction_form.scan_receipt')
+              }}</span>
             </div>
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="center" class="min-w-48 p-2">
-          <DropdownMenuItem class="rounded-xl px-3 py-2.5 cursor-pointer" @select.prevent="cameraDialogOpen = true">
+          <DropdownMenuItem
+            class="rounded-xl px-3 py-2.5 cursor-pointer"
+            @select.prevent="cameraDialogOpen = true"
+          >
             <div class="flex items-center gap-3">
-              <div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div
+                class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary"
+              >
                 <AppIcon name="hugeicons:camera-01" :size="16" />
               </div>
               <div class="flex flex-col">
                 <span class="text-sm font-bold">{{ $t('transaction_form.scan_camera') }}</span>
-                <span class="text-xs text-muted-foreground">{{ $t('transaction_form.scan_camera_desc') }}</span>
+                <span class="text-xs text-muted-foreground">{{
+                  $t('transaction_form.scan_camera_desc')
+                }}</span>
               </div>
             </div>
           </DropdownMenuItem>
-          <DropdownMenuItem class="rounded-xl px-3 py-2.5 cursor-pointer" @select.prevent="fileInputRef?.click()">
+          <DropdownMenuItem
+            class="rounded-xl px-3 py-2.5 cursor-pointer"
+            @select.prevent="fileInputRef?.click()"
+          >
             <div class="flex items-center gap-3">
-              <div class="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <div
+                class="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+              >
                 <AppIcon name="hugeicons:folder-01" :size="16" />
               </div>
               <div class="flex flex-col">
                 <span class="text-sm font-bold">{{ $t('transaction_form.scan_gallery') }}</span>
-                <span class="text-xs text-muted-foreground">{{ $t('transaction_form.scan_gallery_desc') }}</span>
+                <span class="text-xs text-muted-foreground">{{
+                  $t('transaction_form.scan_gallery_desc')
+                }}</span>
               </div>
             </div>
           </DropdownMenuItem>
@@ -106,10 +142,16 @@
     </div>
 
     <!-- AMOUNT CARD -->
-    <div class="relative overflow-hidden rounded-4xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80">
-      <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{ $t('transaction_form.amount')}}</Label>
+    <div
+      class="relative overflow-hidden rounded-4xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80"
+    >
+      <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{
+        $t('transaction_form.amount')
+      }}</Label>
       <div class="mt-4 flex items-center gap-4">
-        <div class="flex h-14 items-center justify-center rounded-2xl bg-muted/50 px-5 text-xl font-black text-foreground shadow-inner">
+        <div
+          class="flex h-14 items-center justify-center rounded-2xl bg-muted/50 px-5 text-xl font-black text-foreground shadow-inner"
+        >
           {{ form.currency }}
         </div>
         <input
@@ -126,7 +168,12 @@
         v-if="hasDecimals(form.currency)"
         class="mt-2 text-[10px] font-medium text-muted-foreground/60 text-center"
       >
-        {{ $t('transaction_form.cents_hint', { value: '50000', formatted: formatNumberOnly(500, form.currency) }) }}
+        {{
+          $t('transaction_form.cents_hint', {
+            value: '50000',
+            formatted: formatNumberOnly(500, form.currency),
+          })
+        }}
       </p>
     </div>
 
@@ -134,8 +181,12 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <!-- Category & Account (Left Side) -->
       <div class="space-y-4">
-        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
-          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+        <div
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+        >
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
             <AppIcon name="hugeicons:grid-view" :size="12" />
             {{ $t('transaction_form.category') }}
           </Label>
@@ -147,13 +198,19 @@
           />
         </div>
 
-        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
-          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+        <div
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+        >
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
             <AppIcon name="hugeicons:wallet-01" :size="12" />
             {{ $t('transaction_form.select_account') }}
           </Label>
           <Select v-model="form.account_id">
-            <SelectTrigger class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80">
+            <SelectTrigger
+              class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80"
+            >
               <SelectValue :placeholder="$t('transaction_form.select_account')" />
             </SelectTrigger>
             <SelectContent class="rounded-2xl p-2">
@@ -175,18 +232,26 @@
 
       <!-- Currency & Date (Right Side) -->
       <div class="space-y-4">
-        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
-          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+        <div
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+        >
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
             <AppIcon name="hugeicons:coins-swap" :size="12" />
             {{ $t('transaction_form.currency') }}
           </Label>
           <Select v-model="form.currency">
-            <SelectTrigger class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80">
+            <SelectTrigger
+              class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent class="max-h-[300px] rounded-2xl p-2">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel class="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
+                <SelectLabel
+                  class="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50"
+                >
                   {{ group.label }}
                 </SelectLabel>
                 <SelectItem
@@ -197,7 +262,9 @@
                 >
                   <div class="flex items-center gap-2">
                     <span class="font-black text-foreground">{{ c.value }}</span>
-                    <span class="text-xs text-muted-foreground opacity-60"> - {{ c.label.split(' - ')[1] }}</span>
+                    <span class="text-xs text-muted-foreground opacity-60">
+                      - {{ c.label.split(' - ')[1] }}</span
+                    >
                   </div>
                 </SelectItem>
               </SelectGroup>
@@ -205,8 +272,12 @@
           </Select>
         </div>
 
-        <div class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30">
-          <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+        <div
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+        >
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
             <AppIcon name="hugeicons:calendar-01" :size="12" />
             {{ $t('transaction_form.select_date') }}
           </Label>
@@ -225,7 +296,9 @@
                 <AppIcon name="hugeicons:arrow-down-01" :size="16" class="ml-2 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent class="w-auto p-0 rounded-3xl border-border/50 shadow-2xl backdrop-blur-xl">
+            <PopoverContent
+              class="w-auto p-0 rounded-3xl border-border/50 shadow-2xl backdrop-blur-xl"
+            >
               <Calendar v-model="calendarDate" initial-focus class="rounded-3xl" />
             </PopoverContent>
           </Popover>
@@ -233,8 +306,12 @@
       </div>
 
       <!-- Notes (Full Width) -->
-      <div class="col-span-1 space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2">
-        <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+      <div
+        class="col-span-1 space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2"
+      >
+        <Label
+          class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+        >
           <AppIcon name="hugeicons:note-01" :size="12" />
           {{ $t('transaction_form.note_optional') }}
         </Label>
@@ -249,12 +326,12 @@
 
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-4 pt-4">
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         class="h-12 rounded-2xl px-8 font-black uppercase tracking-widest transition-all hover:bg-secondary/50"
         @click="$emit('cancel')"
       >
-        {{ $t('transaction_form.cancel')}}
+        {{ $t('transaction_form.cancel') }}
       </Button>
       <Button
         class="h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
@@ -268,60 +345,61 @@
 </template>
 
 <script setup lang="ts">
-import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
-import type { Transaction } from '@/composables/useTransactions';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Button } from '@/components/ui/button';
+import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
+import type { Transaction } from '@/composables/useTransactions'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-import { useReceipts } from '@/composables/useReceipts';
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
+import { useReceipts } from '@/composables/useReceipts'
 
-const { locale } = useI18n();
+const { locale } = useI18n()
 
 const props = defineProps<{
-  transaction?: Transaction;
-}>();
+  transaction?: Transaction
+}>()
 
 const emit = defineEmits<{
-  cancel: [];
-  saved: [];
-  dirty: [value: boolean];
-}>();
+  cancel: []
+  saved: []
+  dirty: [value: boolean]
+}>()
 
-const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals } = useCurrency();
+const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals } =
+  useCurrency()
 
-const { addTransaction, updateTransaction } = useTransactions();
-const { accounts, fetchAccounts } = useAccounts();
+const { addTransaction, updateTransaction } = useTransactions()
+const { accounts, fetchAccounts } = useAccounts()
 
 onMounted(() => {
-  fetchAccounts();
-});
+  fetchAccounts()
+})
 
-const isEdit = computed(() => !!props.transaction);
+const isEdit = computed(() => !!props.transaction)
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
-});
+})
 
 const amountDisplay = computed({
   get: () => {
     if (!form.amount) {
-      return '';
+      return ''
     }
-    return formatNumberOnly(form.amount, form.currency);
+    return formatNumberOnly(form.amount, form.currency)
   },
   set: (val: string) => {
-    form.amount = parseLocalizedNumber(val, form.currency);
+    form.amount = parseLocalizedNumber(val, form.currency)
   },
-});
+})
 
-const todayDate = today(getLocalTimeZone()).toString();
+const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
   type: props.transaction?.type ?? ('expense' as 'income' | 'expense'),
@@ -331,9 +409,9 @@ const form = reactive({
   account_id: props.transaction?.account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
-});
+})
 
-const submitting = ref(false);
+const submitting = ref(false)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
@@ -365,7 +443,8 @@ function autoFillForm(receiptData: {
   if (receiptData.category) {
     const categoryName = receiptData.category.toLowerCase()
     const match = categories.value.find(
-      (c: { name: string; type: string }) => c.name.toLowerCase() === categoryName && c.type === form.type,
+      (c: { name: string; type: string }) =>
+        c.name.toLowerCase() === categoryName && c.type === form.type,
     )
     if (match) {
       form.category_id = match.id
@@ -381,7 +460,11 @@ function autoFillForm(receiptData: {
   }
 
   // merchant is appended to description if it exists and description doesn't already include it
-  if (receiptData.merchant && receiptData.description && !receiptData.description.includes(receiptData.merchant)) {
+  if (
+    receiptData.merchant &&
+    receiptData.description &&
+    !receiptData.description.includes(receiptData.merchant)
+  ) {
     form.description = `${receiptData.merchant} — ${receiptData.description}`
   }
 }
@@ -413,16 +496,16 @@ const calendarDate = computed({
   get: () => (form.date ? parseDate(form.date) : undefined),
   set: (val) => {
     if (val) {
-      form.date = val.toString();
+      form.date = val.toString()
     }
   },
-});
+})
 
 watch(
   () => ({ ...form }),
   (newForm) => {
     if (!props.transaction) {
-      return;
+      return
     }
     const initial = {
       type: props.transaction.type,
@@ -431,7 +514,7 @@ watch(
       category_id: props.transaction.category_id,
       description: props.transaction.description,
       date: props.transaction.date,
-    };
+    }
     const changed =
       newForm.type !== initial.type ||
       Number(newForm.amount) !== Number(initial.amount) ||
@@ -439,11 +522,11 @@ watch(
       newForm.category_id !== (initial.category_id ?? '') ||
       newForm.account_id !== ((initial as Record<string, unknown>).account_id ?? '') ||
       newForm.description !== (initial.description ?? '') ||
-      newForm.date !== initial.date;
-    emit('dirty', changed);
+      newForm.date !== initial.date
+    emit('dirty', changed)
   },
   { deep: true, immediate: true },
-);
+)
 
 const onNumberKeydown = (e: KeyboardEvent) => {
   const allowed = [
@@ -458,36 +541,36 @@ const onNumberKeydown = (e: KeyboardEvent) => {
     'ArrowDown',
     'Home',
     'End',
-  ];
+  ]
   if (allowed.includes(e.key)) {
-    return;
+    return
   }
   if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
-    return;
+    return
   }
   if (/^[0-9]$/.test(e.key)) {
-    return;
+    return
   }
   // Prevent decimal separators to reinforce digits-only entry
   if (e.key === ',' || e.key === '.') {
-    e.preventDefault();
-    return;
+    e.preventDefault()
+    return
   }
-  e.preventDefault();
-};
+  e.preventDefault()
+}
 
 const onAmountInput = (e: Event) => {
-  const input = e.target as HTMLInputElement;
+  const input = e.target as HTMLInputElement
   // Strip non-digits from paste via context menu / middle-click
-  input.value = input.value.replace(/\D/g, '');
-};
+  input.value = input.value.replace(/\D/g, '')
+}
 
 const onSubmit = async () => {
   if (submitting.value) {
-    return;
+    return
   }
 
-  submitting.value = true;
+  submitting.value = true
   try {
     const payload = {
       type: form.type,
@@ -497,17 +580,17 @@ const onSubmit = async () => {
       account_id: form.account_id || null,
       description: form.description || null,
       date: form.date!,
-    };
+    }
 
     const result = props.transaction
       ? await updateTransaction(props.transaction.id, payload)
-      : await addTransaction(payload);
+      : await addTransaction(payload)
 
     if (!result.error) {
-      emit('saved');
+      emit('saved')
     }
   } finally {
-    submitting.value = false;
+    submitting.value = false
   }
-};
+}
 </script>

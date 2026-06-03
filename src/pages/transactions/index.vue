@@ -4,10 +4,10 @@
     <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
         <h2 class="text-4xl font-bold tracking-tighter text-foreground">
-          {{ $t('transactions.title')}}
+          {{ $t('transactions.title') }}
         </h2>
         <p class="mt-1 font-medium text-muted-foreground">
-          {{ filteredTransactions.length }} {{ $t('transactions.title').toLowerCase()}}
+          {{ filteredTransactions.length }} {{ $t('transactions.title').toLowerCase() }}
         </p>
       </div>
       <Button
@@ -15,7 +15,7 @@
         @click="router.push('/transactions/new')"
       >
         <AppIcon name="hugeicons:add-01" :size="18" />
-        <span>{{ $t('topbar.add')}}</span>
+        <span>{{ $t('topbar.add') }}</span>
       </Button>
     </div>
 
@@ -69,9 +69,9 @@
                 <SelectValue :placeholder="$t('transactions.all_types')" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{{ $t('transactions.all_types')}}</SelectItem>
-                <SelectItem value="income">{{ $t('transactions.income')}}</SelectItem>
-                <SelectItem value="expense">{{ $t('transactions.expense')}}</SelectItem>
+                <SelectItem value="all">{{ $t('transactions.all_types') }}</SelectItem>
+                <SelectItem value="income">{{ $t('transactions.income') }}</SelectItem>
+                <SelectItem value="expense">{{ $t('transactions.expense') }}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -93,7 +93,7 @@
                   <span v-if="dateRange.start && dateRange.end" class="truncate">
                     {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
                   </span>
-                  <span v-else>{{ $t('transactions.select_date_range')}}</span>
+                  <span v-else>{{ $t('transactions.select_date_range') }}</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-[calc(100vw-32px)] p-0 sm:w-auto" align="start">
@@ -117,8 +117,8 @@
                 size="sm"
                 class="flex-1 rounded-lg h-9 text-xs font-bold"
                 @click="
-                  ownerFilter = opt.value;
-                  applyFilters();
+                  ownerFilter = opt.value
+                  applyFilters()
                 "
               >
                 {{ opt.label }}
@@ -141,7 +141,7 @@
           <p
             class="mt-4 text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase"
           >
-            {{ $t('transactions.income')}}
+            {{ $t('transactions.income') }}
           </p>
           <div v-for="(total, cur) in incomeByCurrency" :key="cur">
             <p class="text-2xl font-black tracking-tighter text-foreground truncate">
@@ -169,7 +169,7 @@
           <p
             class="mt-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
           >
-            {{ $t('transactions.expense')}}
+            {{ $t('transactions.expense') }}
           </p>
           <div v-for="(total, cur) in expenseByCurrency" :key="cur">
             <p class="text-2xl font-black tracking-tighter text-foreground truncate">
@@ -192,15 +192,15 @@
         <div class="flex items-center justify-between border-b border-border/50 p-6 md:p-8">
           <div>
             <h3 class="text-xl font-black tracking-tighter text-foreground">
-              {{ $t('transactions.title')}}
+              {{ $t('transactions.title') }}
             </h3>
             <p class="text-sm font-medium text-muted-foreground">
-              {{ $t('dashboard.latest_activity')}}
+              {{ $t('dashboard.latest_activity') }}
             </p>
           </div>
           <div class="text-right">
             <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
-              {{ $t('transactions.difference')}}
+              {{ $t('transactions.difference') }}
             </p>
             <div v-for="(total, cur) in balanceByCurrency" :key="cur">
               <p
@@ -233,10 +233,10 @@
             </div>
             <div>
               <p class="text-base font-black text-foreground tracking-tight">
-                {{ $t('transactions.empty')}}
+                {{ $t('transactions.empty') }}
               </p>
               <p class="text-sm font-medium text-muted-foreground">
-                {{ $t('dashboard.empty_desc')}}
+                {{ $t('dashboard.empty_desc') }}
               </p>
             </div>
           </div>
@@ -276,7 +276,9 @@
             </div>
             <div v-else-if="loadingMore" class="flex justify-center pb-4">
               <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <div class="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                <div
+                  class="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                />
                 {{ $t('transactions.loading') }}
               </div>
             </div>
@@ -291,25 +293,26 @@
 defineOptions({
   name: 'PagesTransactionsIndex',
 })
-import { Input } from '@/components/ui/input';
-import type { TransactionFilters } from '@/composables/useTransactions';
+import { Input } from '@/components/ui/input'
+import type { TransactionFilters } from '@/composables/useTransactions'
 
 interface CalendarDateLike {
-  year: number;
-  month: number;
-  day: number;
+  year: number
+  month: number
+  day: number
 }
 
-const { transactions, loading, hasMore, loadingMore, fetchTransactions, loadMore } = useTransactions();
-const { fetchCategories } = useCategories();
-const { partner, isPartnered, fetchPartner } = usePartner();
+const { transactions, loading, hasMore, loadingMore, fetchTransactions, loadMore } =
+  useTransactions()
+const { fetchCategories } = useCategories()
+const { partner, isPartnered, fetchPartner } = usePartner()
 
-const router = useRouter();
-const { t } = useI18n();
-const { formatCurrency, defaultCurrency } = useCurrency();
-const { user } = useAuth();
+const router = useRouter()
+const { t } = useI18n()
+const { formatCurrency, defaultCurrency } = useCurrency()
+const { user } = useAuth()
 
-const ownerFilter = ref<'all' | 'mine' | 'partner'>('all');
+const ownerFilter = ref<'all' | 'mine' | 'partner'>('all')
 
 const ownerOptions = computed(() => [
   { value: 'all' as const, label: t('transactions.owner_filter_all') },
@@ -318,139 +321,139 @@ const ownerOptions = computed(() => [
     value: 'partner' as const,
     label: partner.value?.display_name?.split(' ')[0] || t('transactions.owner_filter_partner'),
   },
-]);
+])
 
 const filteredTransactions = computed(() => {
-  const all = transactions.value;
+  const all = transactions.value
   if (!isPartnered.value || ownerFilter.value === 'all') {
-    return all;
+    return all
   }
   if (ownerFilter.value === 'mine') {
-    return all.filter((tx) => tx.user_id === user.value?.id);
+    return all.filter((tx) => tx.user_id === user.value?.id)
   }
   // ownerFilter is 'partner'
-  return all.filter((tx) => tx.user_id === partner.value?.id);
-});
+  return all.filter((tx) => tx.user_id === partner.value?.id)
+})
 
 const incomeByCurrency = computed(() => {
-  const totals: Record<string, number> = {};
+  const totals: Record<string, number> = {}
   for (const tx of filteredTransactions.value) {
     if (tx.type === 'income') {
-      const cur = tx.currency || defaultCurrency.value;
-      totals[cur] = (totals[cur] || 0) + tx.amount;
+      const cur = tx.currency || defaultCurrency.value
+      totals[cur] = (totals[cur] || 0) + tx.amount
     }
   }
-  return totals;
-});
+  return totals
+})
 
 const expenseByCurrency = computed(() => {
-  const totals: Record<string, number> = {};
+  const totals: Record<string, number> = {}
   for (const tx of filteredTransactions.value) {
     if (tx.type === 'expense') {
-      const cur = tx.currency || defaultCurrency.value;
-      totals[cur] = (totals[cur] || 0) + tx.amount;
+      const cur = tx.currency || defaultCurrency.value
+      totals[cur] = (totals[cur] || 0) + tx.amount
     }
   }
-  return totals;
-});
+  return totals
+})
 
 const balanceByCurrency = computed(() => {
-  const totals: Record<string, number> = { ...incomeByCurrency.value };
+  const totals: Record<string, number> = { ...incomeByCurrency.value }
   for (const [cur, total] of Object.entries(expenseByCurrency.value)) {
-    totals[cur] = (totals[cur] || 0) - total;
+    totals[cur] = (totals[cur] || 0) - total
   }
-  return totals;
-});
+  return totals
+})
 
-const showFilters = ref(false);
+const showFilters = ref(false)
 const filters = reactive({
   search: '',
   type: '',
   category_id: '',
-});
+})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const dateRange = ref<any>({ start: undefined, end: undefined });
+const dateRange = ref<any>({ start: undefined, end: undefined })
 
-let debounceTimer: ReturnType<typeof setTimeout>;
+let debounceTimer: ReturnType<typeof setTimeout>
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()]);
-});
+  await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()])
+})
 
 const debouncedFetch = () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => applyFilters(), 300);
-};
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => applyFilters(), 300)
+}
 
 const onDateRangeChange = () => {
-  applyFilters();
-};
+  applyFilters()
+}
 
 const formatDate = (date: CalendarDateLike) => {
   return new Date(date.year, date.month - 1, date.day).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-  });
-};
+  })
+}
 
 const dateValueToString = (date: CalendarDateLike) => {
-  const y = date.year;
-  const m = String(date.month).padStart(2, '0');
-  const d = String(date.day).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-};
+  const y = date.year
+  const m = String(date.month).padStart(2, '0')
+  const d = String(date.day).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
 
 const applyFilters = () => {
-  const f: TransactionFilters = {};
+  const f: TransactionFilters = {}
   if (filters.search) {
-    f.search = filters.search;
+    f.search = filters.search
   }
   if (filters.type && filters.type !== 'all') {
-    f.type = filters.type as 'income' | 'expense';
+    f.type = filters.type as 'income' | 'expense'
   }
   if (filters.category_id) {
-    f.category_id = filters.category_id;
+    f.category_id = filters.category_id
   }
   if (dateRange.value.start) {
-    f.dateFrom = dateValueToString(dateRange.value.start);
+    f.dateFrom = dateValueToString(dateRange.value.start)
   }
   if (dateRange.value.end) {
-    f.dateTo = dateValueToString(dateRange.value.end);
+    f.dateTo = dateValueToString(dateRange.value.end)
   }
-  fetchTransactions(f);
-};
+  fetchTransactions(f)
+}
 
 const groupedTransactions = computed(() => {
-  const groups: Record<string, typeof filteredTransactions.value> = {};
+  const groups: Record<string, typeof filteredTransactions.value> = {}
   for (const tx of filteredTransactions.value) {
-    const date = tx.date;
+    const date = tx.date
     if (!groups[date]) {
-      groups[date] = [];
+      groups[date] = []
     }
-    groups[date].push(tx);
+    groups[date].push(tx)
   }
-  return groups;
-});
+  return groups
+})
 
 const formatGroupDate = (date: string) => {
-  const d = new Date(date);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  const d = new Date(date)
+  const today = new Date()
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
 
   if (d.toDateString() === today.toDateString()) {
-    return t('transactions.today');
+    return t('transactions.today')
   }
   if (d.toDateString() === yesterday.toDateString()) {
-    return t('transactions.yesterday');
+    return t('transactions.yesterday')
   }
   return d.toLocaleDateString('id-ID', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  });
-};
+  })
+}
 </script>

@@ -2,12 +2,12 @@
 defineOptions({
   name: 'AppIcon',
 })
-import { Icon as IconifyIcon } from '@iconify/vue';
+import { Icon as IconifyIcon } from '@iconify/vue'
 
 defineProps<{
-  name: string;
-  size?: number | string;
-}>();
+  name: string
+  size?: number | string
+}>()
 </script>
 
 <template>

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
+import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
 
-import type { HTMLAttributes } from 'vue';
-import { reactiveOmit } from '@vueuse/core';
-import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import DialogOverlay from './DialogOverlay.vue';
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
+import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import DialogOverlay from './DialogOverlay.vue'
 
 defineOptions({
   inheritAttrs: false,
-});
+})
 
 const props = withDefaults(
   defineProps<
@@ -19,12 +19,12 @@ const props = withDefaults(
   {
     showCloseButton: true,
   },
-);
-const emits = defineEmits<DialogContentEmits>();
+)
+const emits = defineEmits<DialogContentEmits>()
 
-const delegatedProps = reactiveOmit(props, 'class');
+const delegatedProps = reactiveOmit(props, 'class')
 
-const forwarded = useForwardPropsEmits(delegatedProps, emits);
+const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
@@ -45,7 +45,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       <DialogClose v-if="showCloseButton" data-slot="dialog-close" as-child>
         <Button variant="ghost" class="absolute top-4 right-4" size="icon-sm">
           <AppIcon name="hugeicons:cancel-01" />
-          <span class="sr-only">{{ $t('common.close')}}</span>
+          <span class="sr-only">{{ $t('common.close') }}</span>
         </Button>
       </DialogClose>
     </DialogContent>

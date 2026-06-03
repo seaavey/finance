@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import type { AcceptableValue } from 'reka-ui';
+import type { AcceptableValue } from 'reka-ui'
 
-import type { HTMLAttributes } from 'vue';
-import { reactiveOmit, useVModel } from '@vueuse/core';
-import { cn } from '@/lib/utils';
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit, useVModel } from '@vueuse/core'
+import { cn } from '@/lib/utils'
 
 defineOptions({
   inheritAttrs: false,
-});
+})
 
 const props = defineProps<{
-  modelValue?: AcceptableValue | AcceptableValue[];
-  class?: HTMLAttributes['class'];
-  size?: 'sm' | 'default';
-}>();
+  modelValue?: AcceptableValue | AcceptableValue[]
+  class?: HTMLAttributes['class']
+  size?: 'sm' | 'default'
+}>()
 
 const emit = defineEmits<{
-  'update:modelValue': AcceptableValue;
-}>();
+  'update:modelValue': AcceptableValue
+}>()
 
 const modelValue = useVModel(props, 'modelValue', emit, {
   passive: true,
   defaultValue: '',
-});
+})
 
-const delegatedProps = reactiveOmit(props, 'class', 'size');
+const delegatedProps = reactiveOmit(props, 'class', 'size')
 </script>
 
 <template>

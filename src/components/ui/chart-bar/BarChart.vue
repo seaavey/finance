@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue';
-import type { ChartConfig } from '../chart';
+import type { HTMLAttributes } from 'vue'
+import type { ChartConfig } from '../chart'
 import {
   VisAxis,
   VisCrosshair,
@@ -8,27 +8,27 @@ import {
   VisStackedBar,
   VisTooltip,
   VisXYContainer,
-} from '@unovis/vue';
-import { ChartContainer, ChartTooltipContent } from '../chart';
-import { componentToString } from '../chart/utils';
-import { cn } from '@/lib/utils';
+} from '@unovis/vue'
+import { ChartContainer, ChartTooltipContent } from '../chart'
+import { componentToString } from '../chart/utils'
+import { cn } from '@/lib/utils'
 
 const props = withDefaults(
   defineProps<{
-    data: Record<string, unknown>[];
-    config: ChartConfig;
-    index: string;
-    categories: string[];
-    class?: HTMLAttributes['class'];
-    type?: 'grouped' | 'stacked';
-    showXAxis?: boolean;
-    showYAxis?: boolean;
-    showGridLine?: boolean;
-    showTooltip?: boolean;
-    showLegend?: boolean;
-    xFormatter?: (tick: string | number) => string;
-    yFormatter?: (tick: string | number) => string;
-    roundedCorners?: number;
+    data: Record<string, unknown>[]
+    config: ChartConfig
+    index: string
+    categories: string[]
+    class?: HTMLAttributes['class']
+    type?: 'grouped' | 'stacked'
+    showXAxis?: boolean
+    showYAxis?: boolean
+    showGridLine?: boolean
+    showTooltip?: boolean
+    showLegend?: boolean
+    xFormatter?: (tick: string | number) => string
+    yFormatter?: (tick: string | number) => string
+    roundedCorners?: number
   }>(),
   {
     type: 'grouped',
@@ -39,15 +39,15 @@ const props = withDefaults(
     showLegend: true,
     roundedCorners: 0,
   },
-);
+)
 
-const x = (d: Record<string, unknown>) => d[props.index];
-const y = props.categories.map((category) => (d: Record<string, unknown>) => d[category]);
+const x = (d: Record<string, unknown>) => d[props.index]
+const y = props.categories.map((category) => (d: Record<string, unknown>) => d[category])
 
 const color = (_d: Record<string, unknown>, i: number) => {
-  const category = props.categories[i];
-  return `var(--color-${category})`;
-};
+  const category = props.categories[i]
+  return `var(--color-${category})`
+}
 </script>
 
 <template>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 defineOptions({
   name: 'ComponentsUiBreadcrumbBreadcrumb',
-})</script>
+})
+</script>
 
 <template>
   <nav aria-label="breadcrumb">

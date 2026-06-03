@@ -5,11 +5,11 @@
       <div>
         <ClientOnly>
           <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
-            {{ $t('dashboard.greeting')}}, {{ displayName }}
+            {{ $t('dashboard.greeting') }}, {{ displayName }}
           </h2>
           <template #fallback>
             <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
-              {{ $t('dashboard.greeting_loading')}}
+              {{ $t('dashboard.greeting_loading') }}
             </h2>
           </template>
         </ClientOnly>
@@ -295,7 +295,11 @@
             class="flex flex-col items-center gap-4 py-12 text-center"
           >
             <div class="flex size-16 items-center justify-center rounded-full bg-muted/50">
-              <AppIcon name="hugeicons:arrow-left-right" :size="32" class="text-muted-foreground/30" />
+              <AppIcon
+                name="hugeicons:arrow-left-right"
+                :size="32"
+                class="text-muted-foreground/30"
+              />
             </div>
             <div>
               <p class="text-base font-black text-foreground tracking-tight">
@@ -458,38 +462,38 @@
 defineOptions({
   name: 'DashboardPage',
 })
-import { Button } from '@/components/ui/button';
-import type { BudgetWithProgress } from '@/composables/useBudgets';
-import type { AccountWithBalance } from '@/composables/useAccounts';
-import BillDashboardWidget from '@/components/BillDashboardWidget.vue';
+import { Button } from '@/components/ui/button'
+import type { BudgetWithProgress } from '@/composables/useBudgets'
+import type { AccountWithBalance } from '@/composables/useAccounts'
+import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
 
-const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'));
+const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'))
 
-const router = useRouter();
-const { user } = useAuth();
-const { transactions, fetchTransactions } = useTransactions();
-const { categories, fetchCategories } = useCategories();
-const { formatCurrency, defaultCurrency, convertTo } = useCurrency();
-const { t, locale } = useI18n();
-const { fetchPartner, partner, isPartnered } = usePartner();
-const { fetchBudgetWithProgress } = useBudgets();
-const { fetchAccounts, getAccountBalances } = useAccounts();
-const { currentNetWorth, fetchNetWorthHistory } = useNetWorth();
-const { fetchRecurring } = useRecurring();
-useReminders();
+const router = useRouter()
+const { user } = useAuth()
+const { transactions, fetchTransactions } = useTransactions()
+const { categories, fetchCategories } = useCategories()
+const { formatCurrency, defaultCurrency, convertTo } = useCurrency()
+const { t, locale } = useI18n()
+const { fetchPartner, partner, isPartnered } = usePartner()
+const { fetchBudgetWithProgress } = useBudgets()
+const { fetchAccounts, getAccountBalances } = useAccounts()
+const { currentNetWorth, fetchNetWorthHistory } = useNetWorth()
+const { fetchRecurring } = useRecurring()
+useReminders()
 
-const loading = ref(true);
-const viewMode = ref<'mine' | 'partner'>('mine');
-const period = ref<'1d' | '7d' | '30d' | 'all'>('7d');
-const budgetSummaries = ref<BudgetWithProgress[]>([]);
-const accountBalances = ref<AccountWithBalance[]>([]);
+const loading = ref(true)
+const viewMode = ref<'mine' | 'partner'>('mine')
+const period = ref<'1d' | '7d' | '30d' | 'all'>('7d')
+const budgetSummaries = ref<BudgetWithProgress[]>([])
+const accountBalances = ref<AccountWithBalance[]>([])
 
 const periodOptions = [
   { value: '1d' as const, label: '1D' },
   { value: '7d' as const, label: '7D' },
   { value: '30d' as const, label: '30D' },
   { value: 'all' as const, label: 'ALL' },
-];
+]
 
 const viewModes = computed(() => [
   { value: 'mine' as const, label: displayName.value },
@@ -497,182 +501,184 @@ const viewModes = computed(() => [
     value: 'partner' as const,
     label: partner.value?.display_name?.split(' ')[0] || t('sidebar.partner'),
   },
-]);
+])
 
 const filteredTransactions = computed(() => {
-  let list = transactions.value;
+  let list = transactions.value
 
   // 1. View Mode Filter (Self/Partner)
   if (isPartnered.value) {
-    const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id;
+    const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id
     if (targetUserId) {
-      list = list.filter((tx) => tx.user_id === targetUserId);
+      list = list.filter((tx) => tx.user_id === targetUserId)
     }
   }
 
   // 2. Period Filter
   if (period.value !== 'all') {
-    const now = new Date();
-    const daysMap = { '1d': 1, '7d': 7, '30d': 30 };
-    const cutoff = new Date(now.getTime() - daysMap[period.value] * 24 * 60 * 60 * 1000);
-    list = list.filter((tx) => new Date(tx.date) >= cutoff);
+    const now = new Date()
+    const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
+    const cutoff = new Date(now.getTime() - daysMap[period.value] * 24 * 60 * 60 * 1000)
+    list = list.filter((tx) => new Date(tx.date) >= cutoff)
   }
 
-  return list;
-});
+  return list
+})
 
 const displayName = computed(() => {
-  const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || '';
+  const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
   if (!name) {
-    return t('dashboard.user');
+    return t('dashboard.user')
   }
-  return name.split(' ')[0];
-});
+  return name.split(' ')[0]
+})
 
 // Determine which currency to use based on view mode
 const activeCurrency = computed(() => {
   if (viewMode.value === 'partner' && isPartnered.value && partner.value?.currency) {
-    return partner.value.currency;
+    return partner.value.currency
   }
-  return defaultCurrency.value;
-});
+  return defaultCurrency.value
+})
 
 // Convert a transaction amount to active currency using exchange rates
 const convertAmount = (amount: number, fromCurrency: string, toCurrency: string): number => {
-  if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount;
-  const converted = convertTo(amount, fromCurrency, toCurrency);
-  if (converted !== null) return converted;
+  if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount
+  const converted = convertTo(amount, fromCurrency, toCurrency)
+  if (converted !== null) return converted
   // If conversion fails (rates not loaded), fall back to 0 rather than silently using wrong currency
-  console.warn(`Currency conversion failed: ${fromCurrency}→${toCurrency} for amount ${amount}`);
-  return 0;
-};
+  console.warn(`Currency conversion failed: ${fromCurrency}→${toCurrency} for amount ${amount}`)
+  return 0
+}
 
 const monthLabel = computed(() => {
   if (period.value === '1d') {
-    return t('dashboard.today');
+    return t('dashboard.today')
   }
   if (period.value === '7d') {
-    return t('dashboard.last_7_days');
+    return t('dashboard.last_7_days')
   }
   if (period.value === '30d') {
-    return t('dashboard.last_30_days');
+    return t('dashboard.last_30_days')
   }
-  return t('dashboard.all_time');
-});
+  return t('dashboard.all_time')
+})
 
 const formatRelativeDate = (date: string) => {
-  const now = new Date();
-  const d = new Date(date);
-  const diffMs = now.getTime() - d.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const now = new Date()
+  const d = new Date(date)
+  const diffMs = now.getTime() - d.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
   if (diffDays === 0) {
-    return t('dashboard.today');
+    return t('dashboard.today')
   }
   if (diffDays === 1) {
-    return t('dashboard.yesterday');
+    return t('dashboard.yesterday')
   }
   if (diffDays < 7) {
-    return t('dashboard.days_ago', { days: diffDays });
+    return t('dashboard.days_ago', { days: diffDays })
   }
   return d.toLocaleDateString(locale.value, {
     day: 'numeric',
     month: 'short',
-  });
-};
+  })
+}
 
 const categoryMap = computed(() => {
-  const map = new Map<string, { name: string; color: string }>();
+  const map = new Map<string, { name: string; color: string }>()
   for (const cat of categories.value) {
-    map.set(cat.id, { name: cat.name, color: cat.color });
+    map.set(cat.id, { name: cat.name, color: cat.color })
   }
-  return map;
-});
+  return map
+})
 
 const getCategoryName = (id: string | null) => {
   if (!id) {
-    return '';
+    return ''
   }
-  return categoryMap.value.get(id)?.name || '';
-};
+  return categoryMap.value.get(id)?.name || ''
+}
 
 const totalIncome = computed(() =>
   filteredTransactions.value
     .filter((t) => t.type === 'income')
     .reduce(
-      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
+      (s, t) =>
+        s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
       0,
     ),
-);
+)
 
 const totalExpense = computed(() =>
   filteredTransactions.value
     .filter((t) => t.type === 'expense')
     .reduce(
-      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
+      (s, t) =>
+        s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
       0,
     ),
-);
+)
 
-const balance = computed(() => totalIncome.value - totalExpense.value);
+const balance = computed(() => totalIncome.value - totalExpense.value)
 
 const trendBalance = computed(() => {
   if (period.value === 'all') {
-    return 0;
+    return 0
   }
 
-  const now = new Date();
-  const daysMap = { '1d': 1, '7d': 7, '30d': 30 };
-  const days = daysMap[period.value];
+  const now = new Date()
+  const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
+  const days = daysMap[period.value]
 
-  const currentCutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-  const prevCutoff = new Date(now.getTime() - days * 2 * 24 * 60 * 60 * 1000);
+  const currentCutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
+  const prevCutoff = new Date(now.getTime() - days * 2 * 24 * 60 * 60 * 1000)
 
   const prevTransactions = transactions.value.filter((tx) => {
-    const d = new Date(tx.date);
-    return d >= prevCutoff && d < currentCutoff;
-  });
+    const d = new Date(tx.date)
+    return d >= prevCutoff && d < currentCutoff
+  })
 
-  const activeCur = activeCurrency.value;
+  const activeCur = activeCurrency.value
   const prevIncome = prevTransactions
     .filter((tx) => tx.type === 'income')
     .reduce(
       (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
       0,
-    );
+    )
   const prevExpense = prevTransactions
     .filter((tx) => tx.type === 'expense')
     .reduce(
       (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
       0,
-    );
+    )
 
-  const prevBalance = prevIncome - prevExpense;
+  const prevBalance = prevIncome - prevExpense
   if (prevBalance === 0) {
-    return balance.value !== 0 ? null : 0;
+    return balance.value !== 0 ? null : 0
   }
-  return Math.round(((balance.value - prevBalance) / prevBalance) * 100);
-});
+  return Math.round(((balance.value - prevBalance) / prevBalance) * 100)
+})
 
 const recentTransactions = computed(() =>
   [...filteredTransactions.value]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5),
-);
+)
 
 const monthlyData = computed(() => {
   // If viewing 1D or 7D, show daily granularity. If 30D or ALL, show monthly.
   if (period.value === '1d' || period.value === '7d') {
-    const days = period.value === '1d' ? 1 : 7;
-    const data: { label: string; income: number; expense: number }[] = [];
+    const days = period.value === '1d' ? 1 : 7
+    const data: { label: string; income: number; expense: number }[] = []
 
     for (let i = days - 1; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const label = d.toLocaleDateString(locale.value, { weekday: 'short', day: 'numeric' });
-      const dateStr = d.toISOString().split('T')[0];
+      const d = new Date()
+      d.setDate(d.getDate() - i)
+      const label = d.toLocaleDateString(locale.value, { weekday: 'short', day: 'numeric' })
+      const dateStr = d.toISOString().split('T')[0]
 
-      const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr);
-      const activeCur = activeCurrency.value;
+      const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr)
+      const activeCur = activeCurrency.value
       data.push({
         label,
         income: dayTx
@@ -687,29 +693,29 @@ const monthlyData = computed(() => {
             (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
             0,
           ),
-      });
+      })
     }
-    return data;
+    return data
   }
 
   // Monthly logic for 30D and ALL
-  const months: { label: string; income: number; expense: number }[] = [];
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
+  const months: { label: string; income: number; expense: number }[] = []
+  const now = new Date()
+  const currentMonth = now.getMonth()
+  const currentYear = now.getFullYear()
 
   for (let i = 5; i >= 0; i--) {
-    const d = new Date(currentYear, currentMonth - i, 1);
-    const label = d.toLocaleDateString(locale.value, { month: 'short' });
-    const m = d.getMonth();
-    const y = d.getFullYear();
+    const d = new Date(currentYear, currentMonth - i, 1)
+    const label = d.toLocaleDateString(locale.value, { month: 'short' })
+    const m = d.getMonth()
+    const y = d.getFullYear()
 
     const monthTx = transactions.value.filter((tx) => {
-      const td = new Date(tx.date);
-      return td.getMonth() === m && td.getFullYear() === y;
-    });
+      const td = new Date(tx.date)
+      return td.getMonth() === m && td.getFullYear() === y
+    })
 
-    const activeCur = activeCurrency.value;
+    const activeCur = activeCurrency.value
     months.push({
       label,
       income: monthTx
@@ -724,16 +730,16 @@ const monthlyData = computed(() => {
           (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
           0,
         ),
-    });
+    })
   }
-  return months;
-});
+  return months
+})
 
 onMounted(async () => {
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-  const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1).toISOString().split('T')[0];
+  const now = new Date()
+  const currentMonth = now.getMonth()
+  const currentYear = now.getFullYear()
+  const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1).toISOString().split('T')[0]
 
   await Promise.all([
     fetchTransactions({ dateFrom: sixMonthsAgo }),
@@ -742,15 +748,12 @@ onMounted(async () => {
     fetchNetWorthHistory(),
     fetchRecurring(),
     loadCurrency(),
-  ]);
+  ])
 
-  const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
-  const [budgets] = await Promise.all([
-    fetchBudgetWithProgress(monthStr),
-    fetchAccounts(),
-  ]);
-  budgetSummaries.value = budgets;
-  accountBalances.value = await getAccountBalances();
-  loading.value = false;
-});
+  const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`
+  const [budgets] = await Promise.all([fetchBudgetWithProgress(monthStr), fetchAccounts()])
+  budgetSummaries.value = budgets
+  accountBalances.value = await getAccountBalances()
+  loading.value = false
+})
 </script>

@@ -104,8 +104,8 @@
             class="rounded-xl px-3 text-xs font-bold transition-all md:px-4"
             :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
             @click="
-              activeTab = tab.value;
-              applyFilters();
+              activeTab = tab.value
+              applyFilters()
             "
           >
             <AppIcon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
@@ -139,8 +139,8 @@
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === '' ? 'shadow-sm' : 'text-muted-foreground'"
             @click="
-              filterAction = '';
-              applyFilters();
+              filterAction = ''
+              applyFilters()
             "
           >
             {{ $t('activities.filter_all') }}
@@ -151,8 +151,8 @@
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === 'created' ? 'shadow-sm' : 'text-muted-foreground'"
             @click="
-              filterAction = 'created';
-              applyFilters();
+              filterAction = 'created'
+              applyFilters()
             "
           >
             <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
@@ -164,8 +164,8 @@
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === 'deleted' ? 'shadow-sm' : 'text-muted-foreground'"
             @click="
-              filterAction = 'deleted';
-              applyFilters();
+              filterAction = 'deleted'
+              applyFilters()
             "
           >
             <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
@@ -193,7 +193,6 @@
       </div>
 
       <template v-else>
-
         <!-- Activity Feed Bento Card -->
         <div class="rounded-3xl border border-border/50 bg-card shadow-sm sm:rounded-4xl">
           <!-- Feed Header -->

@@ -2,10 +2,10 @@
 defineOptions({
   name: 'LoginPage',
 })
-const router = useRouter();
+const router = useRouter()
 onMounted(() => {
-  router.replace('/auth/login');
-});
+  router.replace('/auth/login')
+})
 </script>
 
 <template>

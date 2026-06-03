@@ -2,53 +2,53 @@
 defineOptions({
   name: 'PagesRecurringIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Switch } from '@/components/ui/switch';
-import type { RecurringTransaction } from '@/composables/useRecurring';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Switch } from '@/components/ui/switch'
+import type { RecurringTransaction } from '@/composables/useRecurring'
 
-const router = useRouter();
-const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring();
-const { categories, fetchCategories } = useCategories();
-const { formatCurrency } = useCurrency();
-const { t, locale } = useI18n();
+const router = useRouter()
+const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring()
+const { categories, fetchCategories } = useCategories()
+const { formatCurrency } = useCurrency()
+const { t, locale } = useI18n()
 
 const monthlyExpense = computed(() =>
   recurring.value
     .filter((r) => r.type === 'expense' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') return s + r.amount * 30;
-      if (r.frequency === 'weekly') return s + r.amount * 4;
-      if (r.frequency === 'yearly') return s + r.amount / 12;
-      return s + r.amount;
+      if (r.frequency === 'daily') return s + r.amount * 30
+      if (r.frequency === 'weekly') return s + r.amount * 4
+      if (r.frequency === 'yearly') return s + r.amount / 12
+      return s + r.amount
     }, 0),
-);
+)
 
 const monthlyIncome = computed(() =>
   recurring.value
     .filter((r) => r.type === 'income' && r.active)
     .reduce((s, r) => {
-      if (r.frequency === 'daily') return s + r.amount * 30;
-      if (r.frequency === 'weekly') return s + r.amount * 4;
-      if (r.frequency === 'yearly') return s + r.amount / 12;
-      return s + r.amount;
+      if (r.frequency === 'daily') return s + r.amount * 30
+      if (r.frequency === 'weekly') return s + r.amount * 4
+      if (r.frequency === 'yearly') return s + r.amount / 12
+      return s + r.amount
     }, 0),
-);
+)
 
 const categoryMap = computed(() => {
-  const map = new Map<string, string>();
-  for (const cat of categories.value) map.set(cat.id, cat.name);
-  return map;
-});
+  const map = new Map<string, string>()
+  for (const cat of categories.value) map.set(cat.id, cat.name)
+  return map
+})
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchRecurring()]);
-});
+  await Promise.all([fetchCategories(), fetchRecurring()])
+})
 
 const categoryName = (id: string | null) => {
-  if (!id) return '';
-  return categoryMap.value.get(id) ?? '';
-};
+  if (!id) return ''
+  return categoryMap.value.get(id) ?? ''
+}
 
 const frequencyLabel = (f: string) => {
   const map: Record<string, string> = {
@@ -56,47 +56,47 @@ const frequencyLabel = (f: string) => {
     weekly: t('recurring.weekly'),
     monthly: t('recurring.monthly'),
     yearly: t('recurring.yearly'),
-  };
-  return map[f] ?? f;
-};
+  }
+  return map[f] ?? f
+}
 
 const formatNextDate = (date: string) => {
-  const d = new Date(date);
-  const today = new Date();
-  const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  const d = new Date(date)
+  const today = new Date()
+  const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-  if (diff === 0) return t('recurring.today');
-  if (diff === 1) return t('recurring.tomorrow');
-  if (diff < 7) return `${diff} ${t('recurring.days_left')}`;
-  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
-};
+  if (diff === 0) return t('recurring.today')
+  if (diff === 1) return t('recurring.tomorrow')
+  if (diff < 7) return `${diff} ${t('recurring.days_left')}`
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
+}
 
-const showDeleteDialog = ref(false);
-const deletingItem = ref<RecurringTransaction | undefined>();
+const showDeleteDialog = ref(false)
+const deletingItem = ref<RecurringTransaction | undefined>()
 
 const deleteDescription = computed(() => {
-  const name = deletingItem.value?.description || t('recurring.no_description');
-  return `${t('recurring.delete_confirm')} "${name}"?`;
-});
+  const name = deletingItem.value?.description || t('recurring.no_description')
+  return `${t('recurring.delete_confirm')} "${name}"?`
+})
 
-const goToNew = () => router.push('/recurring/new');
+const goToNew = () => router.push('/recurring/new')
 
 const goToEdit = (item: RecurringTransaction) => {
-  router.push(`/recurring/${item.id}/edit`);
-};
+  router.push(`/recurring/${item.id}/edit`)
+}
 
 const onDelete = (item: RecurringTransaction) => {
-  deletingItem.value = item;
-  showDeleteDialog.value = true;
-};
+  deletingItem.value = item
+  showDeleteDialog.value = true
+}
 
 const confirmDelete = async () => {
   if (deletingItem.value) {
-    await deleteRecurring(deletingItem.value.id);
+    await deleteRecurring(deletingItem.value.id)
   }
-  showDeleteDialog.value = false;
-  deletingItem.value = undefined;
-};
+  showDeleteDialog.value = false
+  deletingItem.value = undefined
+}
 </script>
 
 <template>
@@ -105,10 +105,10 @@ const confirmDelete = async () => {
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
         <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('recurring.title')}}
+          {{ $t('recurring.title') }}
         </h1>
         <p class="mt-1 font-medium text-muted-foreground">
-          {{ recurring.length }} {{ $t('recurring.schedule_active')}}
+          {{ recurring.length }} {{ $t('recurring.schedule_active') }}
         </p>
       </div>
       <Button
@@ -116,7 +116,7 @@ const confirmDelete = async () => {
         @click="goToNew"
       >
         <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('topbar.add')}}</span>
+        <span>{{ $t('topbar.add') }}</span>
       </Button>
     </div>
 
@@ -127,7 +127,7 @@ const confirmDelete = async () => {
       >
         <div class="relative z-10">
           <p class="text-[10px] font-black uppercase tracking-widest text-rose-500/70">
-            {{ $t('recurring.expense')}}
+            {{ $t('recurring.expense') }}
           </p>
           <h3 class="mt-2 text-3xl font-black tracking-tighter text-rose-500">
             {{ formatCurrency(monthlyExpense) }}
@@ -146,7 +146,7 @@ const confirmDelete = async () => {
       >
         <div class="relative z-10">
           <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600">
-            {{ $t('recurring.income')}}
+            {{ $t('recurring.income') }}
           </p>
           <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
             {{ formatCurrency(monthlyIncome) }}
@@ -184,16 +184,16 @@ const confirmDelete = async () => {
       >
         <AppIcon name="hugeicons:repeat" :size="40" class="text-muted-foreground/80" />
       </div>
-      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty')}}</h3>
+      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty') }}</h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-        {{ $t('recurring.empty_desc')}}
+        {{ $t('recurring.empty_desc') }}
       </p>
       <Button
         variant="outline"
         class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
         @click="goToNew"
       >
-        {{ $t('recurring.add')}}
+        {{ $t('recurring.add') }}
       </Button>
     </div>
 
@@ -264,7 +264,7 @@ const confirmDelete = async () => {
           </div>
           <div class="text-right">
             <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              {{ $t('recurring.amount')}}
+              {{ $t('recurring.amount') }}
             </p>
             <p
               class="text-xl font-black tracking-tighter"

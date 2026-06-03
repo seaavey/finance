@@ -159,7 +159,9 @@ export function useCamera(): UseCameraReturn {
     } catch (err: unknown) {
       // If OverconstrainedError, retry without facingMode
       if (err instanceof DOMException && err.name === 'OverconstrainedError') {
-        console.warn('[useCamera] OverconstrainedError with facingMode, retrying without facingMode')
+        console.warn(
+          '[useCamera] OverconstrainedError with facingMode, retrying without facingMode',
+        )
       } else {
         // Map other errors immediately, but still try fallback
         // Only NotAllowedError/NotFoundError are terminal — keep the first error
@@ -167,7 +169,10 @@ export function useCamera(): UseCameraReturn {
         const firstErrKey = getErrorMessage(err)
 
         // If it's a permanent error, don't bother with fallback
-        if (firstErrKey === 'camera_error_not_allowed' || firstErrKey === 'camera_error_not_found') {
+        if (
+          firstErrKey === 'camera_error_not_allowed' ||
+          firstErrKey === 'camera_error_not_found'
+        ) {
           error.value = firstErrKey
           isActive.value = false
           return

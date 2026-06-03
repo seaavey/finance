@@ -16,13 +16,13 @@
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <AppIcon name="hugeicons:help-circle" :size="14" />
-          {{ $t('landing.nav_faq')}}
+          {{ $t('landing.nav_faq') }}
         </div>
         <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl lg:text-6xl">
-          {{ $t('landing.faq_title')}}
+          {{ $t('landing.faq_title') }}
         </h2>
         <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          {{ $t('landing.faq_desc')}}
+          {{ $t('landing.faq_desc') }}
         </p>
       </div>
 
@@ -44,13 +44,13 @@
                   >
                     <AppIcon :name="item.icon" :size="20" />
                   </div>
-                  {{ $t(item.questionKey)}}
+                  {{ $t(item.questionKey) }}
                 </div>
               </AccordionTrigger>
               <AccordionContent
                 class="px-6 pb-6 text-sm font-medium leading-relaxed text-muted-foreground md:px-8 md:pb-8 md:pl-[4.5rem] md:text-base"
               >
-                {{ $t(item.answerKey)}}
+                {{ $t(item.answerKey) }}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -66,17 +66,17 @@
         />
         <div class="relative z-10">
           <p class="mb-2 text-lg font-black tracking-tight text-foreground">
-            {{ $t('landing.faq_support_title')}}
+            {{ $t('landing.faq_support_title') }}
           </p>
           <p class="mb-8 text-sm font-medium text-muted-foreground">
-            {{ $t('landing.faq_support_desc')}}
+            {{ $t('landing.faq_support_desc') }}
           </p>
           <Button
             variant="default"
             class="h-auto min-h-12 w-full sm:w-auto gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-3.5 text-sm font-black uppercase tracking-wide sm:tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-normal"
           >
             <AppIcon name="hugeicons:customer-service" :size="20" class="shrink-0" />
-            <span class="flex-1 sm:flex-none">{{ $t('landing.faq_support_button')}}</span>
+            <span class="flex-1 sm:flex-none">{{ $t('landing.faq_support_button') }}</span>
           </Button>
         </div>
       </div>
@@ -93,8 +93,8 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 
 const faqItems = [
   {
@@ -133,5 +133,5 @@ const faqItems = [
     answerKey: 'landing.faq_a_category',
     icon: 'hugeicons:grid-view',
   },
-];
+]
 </script>

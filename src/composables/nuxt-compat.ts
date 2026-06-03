@@ -1,10 +1,10 @@
-import { computed, reactive, watch, type Ref } from 'vue';
-import { useI18n as useVueI18n } from 'vue-i18n';
-import { useColorMode as useVueUseColorMode, type BasicColorMode } from '@vueuse/core';
+import { computed, reactive, watch, type Ref } from 'vue'
+import { useI18n as useVueI18n } from 'vue-i18n'
+import { useColorMode as useVueUseColorMode, type BasicColorMode } from '@vueuse/core'
 
 interface I18nLocale {
-  code: string;
-  name: string;
+  code: string
+  name: string
 }
 
 /**
@@ -12,16 +12,16 @@ interface I18nLocale {
  * Resolves ESLint 'any' warnings by using proper interfaces and unknown casts.
  */
 export const useI18n = () => {
-  const i18n = useVueI18n();
-  
+  const i18n = useVueI18n()
+
   // Custom interface for the injected properties on i18n instance
   interface CustomI18n {
-    locales?: Ref<I18nLocale[]>;
-    messages?: Ref<Record<string, Record<string, unknown>>>;
+    locales?: Ref<I18nLocale[]>
+    messages?: Ref<Record<string, Record<string, unknown>>>
   }
 
-  const customI18n = i18n as unknown as CustomI18n;
-  
+  const customI18n = i18n as unknown as CustomI18n
+
   return {
     locale: i18n.locale,
     // Access the locales we injected in src/plugins/i18n.ts
@@ -29,69 +29,75 @@ export const useI18n = () => {
     t: i18n.t,
     // Mock Nuxt's tm (translate message) and rt (resolve translation)
     tm: (key: string): unknown[] => {
-      const messages = customI18n.messages?.value || {};
-      const currentMessages = messages[i18n.locale.value] || {};
-      
-      const keys = key.split('.');
-      let result: unknown = currentMessages;
-      
+      const messages = customI18n.messages?.value || {}
+      const currentMessages = messages[i18n.locale.value] || {}
+
+      const keys = key.split('.')
+      let result: unknown = currentMessages
+
       for (const k of keys) {
         if (result && typeof result === 'object' && k in result) {
-          result = (result as Record<string, unknown>)[k];
+          result = (result as Record<string, unknown>)[k]
         } else {
-          return []; // Return empty array if not found, common for lists
+          return [] // Return empty array if not found, common for lists
         }
       }
-      return Array.isArray(result) ? result : [];
+      return Array.isArray(result) ? result : []
     },
     rt: (val: unknown): string => {
-      return typeof val === 'string' ? val : (val?.toString() || '');
+      return typeof val === 'string' ? val : val?.toString() || ''
     },
     setLocale: (code: string) => {
-      i18n.locale.value = code;
-    }
-  };
-};
+      i18n.locale.value = code
+    },
+  }
+}
 
 export const useLocalePath = () => {
-  return (path: string) => path;
-};
+  return (path: string) => path
+}
 
 // Global state for color mode to act as a singleton like in Nuxt
 const mode = useVueUseColorMode({
   emitAuto: true,
   storageKey: 'vueuse-color-scheme',
-});
+})
 
 interface ColorModeState {
-  preference: string;
-  value: BasicColorMode | string;
-  unknown: boolean;
+  preference: string
+  value: BasicColorMode | string
+  unknown: boolean
 }
 
 const colorModeState = reactive<ColorModeState>({
   preference: mode.value as string,
   value: mode.value as BasicColorMode,
   unknown: false,
-});
+})
 
 // Sync preference change to actual mode
-watch(() => colorModeState.preference, (newPref) => {
-  mode.value = newPref as BasicColorMode;
-});
+watch(
+  () => colorModeState.preference,
+  (newPref) => {
+    mode.value = newPref as BasicColorMode
+  },
+)
 
 // Update value when mode changes externally
 watch(mode, (newMode) => {
-  colorModeState.value = newMode;
-});
+  colorModeState.value = newMode
+})
 
 // Allow external writes to colorModeState.value (e.g. toggle dark/light)
-watch(() => colorModeState.value, (newVal) => {
-  if (newVal !== mode.value) {
-    mode.value = newVal as BasicColorMode;
-  }
-});
+watch(
+  () => colorModeState.value,
+  (newVal) => {
+    if (newVal !== mode.value) {
+      mode.value = newVal as BasicColorMode
+    }
+  },
+)
 
 export const useColorMode = () => {
-  return colorModeState;
-};
+  return colorModeState
+}

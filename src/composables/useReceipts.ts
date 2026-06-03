@@ -33,7 +33,10 @@ export interface UseReceiptsReturn {
   scanning: Ref<boolean>
   statusMessage: Ref<string>
   lastResult: Ref<ScanResult | null>
-  scanReceiptFromFile: (file: File, options?: { skipCompression?: boolean }) => Promise<ReceiptData | null>
+  scanReceiptFromFile: (
+    file: File,
+    options?: { skipCompression?: boolean },
+  ) => Promise<ReceiptData | null>
   reset: () => void
 }
 
@@ -155,7 +158,10 @@ export const useReceipts = (): UseReceiptsReturn => {
       if (error.message?.includes('23505')) {
         // Duplicate — extremely unlikely with UUID, but retry once
         // Remove the orphan file before retrying
-        await supabase.storage.from('receipts').remove([path]).catch(() => {});
+        await supabase.storage
+          .from('receipts')
+          .remove([path])
+          .catch(() => {})
         const retryUuid = crypto.randomUUID()
         const retryPath = `receipts/${userId}/${retryUuid}.jpg`
         const { error: retryError } = await supabase.storage
@@ -180,9 +186,7 @@ export const useReceipts = (): UseReceiptsReturn => {
     }
 
     // Use signed URL (10 min expiry) so Edge Function can access private bucket files
-    const { data: urlData } = await supabase.storage
-      .from('receipts')
-      .createSignedUrl(path, 600)
+    const { data: urlData } = await supabase.storage.from('receipts').createSignedUrl(path, 600)
 
     if (!urlData) {
       throw new Error('Failed to create signed URL for receipt upload')
@@ -198,7 +202,9 @@ export const useReceipts = (): UseReceiptsReturn => {
     const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL as string
 
     // Get the user's session token for Edge Function auth
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
     const token = session?.access_token
 
     const res = await fetch(`${supabaseUrl}/functions/v1/ocr-receipt`, {
@@ -217,7 +223,11 @@ export const useReceipts = (): UseReceiptsReturn => {
         return { status: 'error', data: null, error: t('transaction_form.scan_error_format') }
       }
       if (res.status === 422) {
-        return { status: 'error', data: null, error: result.error || t('transaction_form.scan_error') }
+        return {
+          status: 'error',
+          data: null,
+          error: result.error || t('transaction_form.scan_error'),
+        }
       }
       return { status: 'error', data: null, error: t('transaction_form.scan_error_network') }
     }
@@ -229,7 +239,10 @@ export const useReceipts = (): UseReceiptsReturn => {
    * Main entry point: select file → validate → compress → upload → scan → return data.
    * Returns ReceiptData on success, null on failure (toast already shown).
    */
-  async function scanReceiptFromFile(file: File, options?: { skipCompression?: boolean }): Promise<ReceiptData | null> {
+  async function scanReceiptFromFile(
+    file: File,
+    options?: { skipCompression?: boolean },
+  ): Promise<ReceiptData | null> {
     // Reset previous state
     lastResult.value = null
     const validationError = validateFile(file)

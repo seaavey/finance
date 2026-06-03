@@ -38,13 +38,13 @@
           <div class="flex size-14 items-center justify-center rounded-2xl bg-red-500/10">
             <AppIcon name="hugeicons:alert-circle" :size="28" class="text-red-600" />
           </div>
-          <h3 class="text-lg font-semibold">{{ $t('transaction_edit.error_title')}}</h3>
-          <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.error_desc')}}</p>
+          <h3 class="text-lg font-semibold">{{ $t('transaction_edit.error_title') }}</h3>
+          <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.error_desc') }}</p>
           <div class="flex gap-3">
             <Button variant="outline" @click="router.push('/transactions')">{{
               $t('transaction_edit.back')
             }}</Button>
-            <Button @click="loadTransaction">{{ $t('transaction_edit.retry')}}</Button>
+            <Button @click="loadTransaction">{{ $t('transaction_edit.retry') }}</Button>
           </div>
         </div>
       </div>
@@ -54,8 +54,8 @@
           <div class="flex size-14 items-center justify-center rounded-2xl bg-muted">
             <AppIcon name="hugeicons:alert-circle" :size="28" class="text-muted-foreground" />
           </div>
-          <h3 class="text-lg font-semibold">{{ $t('transaction_edit.not_found')}}</h3>
-          <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found_desc')}}</p>
+          <h3 class="text-lg font-semibold">{{ $t('transaction_edit.not_found') }}</h3>
+          <p class="text-sm text-muted-foreground">{{ $t('transaction_edit.not_found_desc') }}</p>
           <Button variant="outline" @click="router.push('/transactions')">{{
             $t('transaction_edit.back')
           }}</Button>
@@ -66,7 +66,7 @@
         <!-- Back link -->
         <Button variant="outline" size="icon" @click="router.push('/transactions')">
           <AppIcon name="hugeicons:arrow-left-01" :size="16" />
-          {{ $t('transaction_edit.back')}}
+          {{ $t('transaction_edit.back') }}
         </Button>
 
         <!-- Header card -->
@@ -90,7 +90,7 @@
             </div>
             <div class="space-y-0.5">
               <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {{ $t('transaction_edit.edit_label')}}
+                {{ $t('transaction_edit.edit_label') }}
               </p>
               <p class="text-xl font-bold">
                 {{ formatCurrency(transaction.amount, transaction.currency) }}
@@ -102,7 +102,7 @@
           </div>
           <Button variant="destructive" size="sm" @click="showDeleteDialog = true">
             <AppIcon name="hugeicons:delete-01" :size="16" />
-            {{ $t('transaction_edit.delete')}}
+            {{ $t('transaction_edit.delete') }}
           </Button>
         </div>
 
@@ -142,111 +142,111 @@
 defineOptions({
   name: 'PagesTransactionsDetailEdit',
 })
-import { onBeforeRouteLeave } from 'vue-router';
-import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
-import type { Transaction } from '@/composables/useTransactions';
-import TransactionForm from '@/components/TransactionForm.vue';
+import { onBeforeRouteLeave } from 'vue-router'
+import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
+import type { Transaction } from '@/composables/useTransactions'
+import TransactionForm from '@/components/TransactionForm.vue'
 
-const router = useRouter();
-const { locale } = useI18n();
-const route = useRoute();
-const { getTransaction, deleteTransaction } = useTransactions();
-const { fetchCategories, categories } = useCategories();
-const { formatCurrency } = useCurrency();
+const router = useRouter()
+const { locale } = useI18n()
+const route = useRoute()
+const { getTransaction, deleteTransaction } = useTransactions()
+const { fetchCategories, categories } = useCategories()
+const { formatCurrency } = useCurrency()
 
-const transaction = ref<Transaction | null>(null);
-const loading = ref(true);
-const fetchError = ref(false);
-const showDeleteDialog = ref(false);
+const transaction = ref<Transaction | null>(null)
+const loading = ref(true)
+const fetchError = ref(false)
+const showDeleteDialog = ref(false)
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
-});
+})
 
 const categoryName = computed(() => {
   if (!transaction.value?.category_id) {
-    return '-';
+    return '-'
   }
-  const cat = categories.value.find((c) => c.id === transaction.value!.category_id);
-  return cat?.name || '-';
-});
+  const cat = categories.value.find((c) => c.id === transaction.value!.category_id)
+  return cat?.name || '-'
+})
 
 const formattedDate = computed(() => {
   if (!transaction.value?.date) {
-    return '';
+    return ''
   }
   try {
-    return df.format(parseDate(transaction.value.date).toDate(getLocalTimeZone()));
+    return df.format(parseDate(transaction.value.date).toDate(getLocalTimeZone()))
   } catch {
-    return transaction.value.date;
+    return transaction.value.date
   }
-});
+})
 
-const formRef = ref<InstanceType<typeof TransactionForm>>();
-const isDirty = ref(false);
-const showUnsavedDialog = ref(false);
+const formRef = ref<InstanceType<typeof TransactionForm>>()
+const isDirty = ref(false)
+const showUnsavedDialog = ref(false)
 
 onBeforeRouteLeave((to, from, next) => {
   if (isDirty.value) {
-    next(false);
-    showUnsavedDialog.value = true;
+    next(false)
+    showUnsavedDialog.value = true
   } else {
-    next();
+    next()
   }
-});
+})
 
 const confirmLeave = () => {
-  showUnsavedDialog.value = false;
-  isDirty.value = false;
-  router.push('/transactions');
-};
+  showUnsavedDialog.value = false
+  isDirty.value = false
+  router.push('/transactions')
+}
 
 onMounted(() => {
-  window.addEventListener('beforeunload', handleBeforeUnload);
-});
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
 
 onUnmounted(() => {
-  window.removeEventListener('beforeunload', handleBeforeUnload);
-});
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+})
 
 const handleBeforeUnload = (e: BeforeUnloadEvent) => {
   if (isDirty.value) {
-    e.preventDefault();
+    e.preventDefault()
   }
-};
+}
 
 const loadTransaction = async () => {
-  loading.value = true;
-  fetchError.value = false;
+  loading.value = true
+  fetchError.value = false
   try {
-    const id = route.params.id as string;
-    const { data } = await getTransaction(id);
-    transaction.value = data;
+    const id = route.params.id as string
+    const { data } = await getTransaction(id)
+    transaction.value = data
   } catch {
-    fetchError.value = true;
+    fetchError.value = true
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), loadTransaction()]);
-});
+  await Promise.all([fetchCategories(), loadTransaction()])
+})
 
 const onSaved = () => {
-  isDirty.value = false;
-  router.push('/transactions');
-};
+  isDirty.value = false
+  router.push('/transactions')
+}
 
 const onDelete = async () => {
   if (!transaction.value) {
-    return;
+    return
   }
-  await deleteTransaction(transaction.value.id);
-  showDeleteDialog.value = false;
-  isDirty.value = false;
-  router.push('/transactions');
-};
+  await deleteTransaction(transaction.value.id)
+  showDeleteDialog.value = false
+  isDirty.value = false
+  router.push('/transactions')
+}
 </script>
 
 <style scoped>

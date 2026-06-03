@@ -2,65 +2,65 @@
 defineOptions({
   name: 'PagesBudgetDetailDetail',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { BudgetWithProgress } from '@/composables/useBudgets';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { BudgetWithProgress } from '@/composables/useBudgets'
 
-const router = useRouter();
-const route = useRoute();
-useI18n();
-const { fetchBudgetWithProgress, getProgress, deleteBudget } = useBudgets();
-const { formatCurrency: fmtCurrency } = useCurrency();
+const router = useRouter()
+const route = useRoute()
+useI18n()
+const { fetchBudgetWithProgress, getProgress, deleteBudget } = useBudgets()
+const { formatCurrency: fmtCurrency } = useCurrency()
 
-const budgetDetail = ref<BudgetWithProgress | null>(null);
-const loading = ref(true);
-const showDeleteDialog = ref(false);
+const budgetDetail = ref<BudgetWithProgress | null>(null)
+const loading = ref(true)
+const showDeleteDialog = ref(false)
 
-const month = ref(route.query.month as string || '');
-const budgetId = route.params.id as string;
+const month = ref((route.query.month as string) || '')
+const budgetId = route.params.id as string
 
 const progress = computed(() => {
-  if (!budgetDetail.value) return { percentage: 0, remaining: 0, overspent: 0 };
-  return getProgress(budgetDetail.value);
-});
+  if (!budgetDetail.value) return { percentage: 0, remaining: 0, overspent: 0 }
+  return getProgress(budgetDetail.value)
+})
 
-const hasValidIcon = computed(
-  () => budgetDetail.value?.category_icon?.startsWith('hugeicons:'),
-);
+const hasValidIcon = computed(() => budgetDetail.value?.category_icon?.startsWith('hugeicons:'))
 
 const progressColor = computed(() => {
-  if (progress.value.overspent > 0) return 'bg-red-500';
-  if (progress.value.percentage >= 80) return 'bg-amber-500';
-  return 'bg-primary';
-});
+  if (progress.value.overspent > 0) return 'bg-red-500'
+  if (progress.value.percentage >= 80) return 'bg-amber-500'
+  return 'bg-primary'
+})
 
 const loadBudget = async () => {
-  loading.value = true;
+  loading.value = true
   // Default to current month if not specified
   if (!month.value) {
-    const d = new Date();
-    month.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+    const d = new Date()
+    month.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
   }
-  const list = await fetchBudgetWithProgress(month.value);
-  budgetDetail.value = list.find((b) => b.id === budgetId) || null;
-  loading.value = false;
-};
+  const list = await fetchBudgetWithProgress(month.value)
+  budgetDetail.value = list.find((b) => b.id === budgetId) || null
+  loading.value = false
+}
 
 const handleDelete = async () => {
-  if (!budgetDetail.value) return;
-  const { error } = await deleteBudget(budgetDetail.value.id, month.value);
+  if (!budgetDetail.value) return
+  const { error } = await deleteBudget(budgetDetail.value.id, month.value)
   if (!error) {
-    router.push('/budget');
+    router.push('/budget')
   }
-  showDeleteDialog.value = false;
-};
+  showDeleteDialog.value = false
+}
 
 const goToEdit = () => {
-  if (!budgetDetail.value) return;
-  router.push(`/budget/edit?category=${budgetDetail.value.category_id}&month=${month.value}&amount=${budgetDetail.value.amount}`);
-};
+  if (!budgetDetail.value) return
+  router.push(
+    `/budget/edit?category=${budgetDetail.value.category_id}&month=${month.value}&amount=${budgetDetail.value.amount}`,
+  )
+}
 
-onMounted(loadBudget);
+onMounted(loadBudget)
 </script>
 
 <template>
@@ -86,7 +86,9 @@ onMounted(loadBudget);
       v-else-if="!budgetDetail"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <AppIcon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">
@@ -192,7 +194,11 @@ onMounted(loadBudget);
             class="mt-2 text-2xl font-black tracking-tighter"
             :class="progress.overspent > 0 ? 'text-red-600' : 'text-foreground'"
           >
-            {{ progress.overspent > 0 ? fmtCurrency(progress.overspent) : fmtCurrency(progress.remaining) }}
+            {{
+              progress.overspent > 0
+                ? fmtCurrency(progress.overspent)
+                : fmtCurrency(progress.remaining)
+            }}
           </p>
         </div>
       </div>

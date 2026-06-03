@@ -2,27 +2,27 @@
 defineOptions({
   name: 'DefaultLayout',
 })
-import { ref, onMounted, watch } from 'vue';
-import { useMediaQuery } from '@vueuse/core';
+import { ref, onMounted, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 
-const isDesktop = useMediaQuery('(min-width: 1024px)');
-const sidebarOpen = ref(false);
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+const sidebarOpen = ref(false)
 
 // Auto open sidebar on desktop if not manually closed (simplified for now)
 onMounted(() => {
   if (isDesktop.value) {
-    sidebarOpen.value = true;
+    sidebarOpen.value = true
   }
-});
+})
 
 // Watch for desktop switch to auto-open
 watch(isDesktop, (val) => {
   if (val) {
-    sidebarOpen.value = true;
+    sidebarOpen.value = true
   } else {
-    sidebarOpen.value = false;
+    sidebarOpen.value = false
   }
-});
+})
 </script>
 
 <template>

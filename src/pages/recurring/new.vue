@@ -2,29 +2,29 @@
 defineOptions({
   name: 'PagesRecurringNew',
 })
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
+import { cn } from '@/lib/utils'
 
-const router = useRouter();
-const { locale } = useI18n();
-const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency();
-const { addRecurring } = useRecurring();
-const { fetchCategories } = useCategories();
+const router = useRouter()
+const { locale } = useI18n()
+const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency()
+const { addRecurring } = useRecurring()
+const { fetchCategories } = useCategories()
 
-const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' });
-const todayDate = today(getLocalTimeZone()).toString();
+const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' })
+const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
   type: 'expense' as 'income' | 'expense',
@@ -34,35 +34,54 @@ const form = reactive({
   description: '',
   frequency: 'monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly',
   next_date: todayDate,
-});
+})
 
 const amountDisplay = computed({
   get: () => (form.amount ? formatNumberOnly(form.amount, form.currency) : ''),
-  set: (val: string) => { form.amount = parseLocalizedNumber(val, form.currency); },
-});
+  set: (val: string) => {
+    form.amount = parseLocalizedNumber(val, form.currency)
+  },
+})
 
 const calendarDate = computed({
   get: () => (form.next_date ? parseDate(form.next_date) : undefined),
-  set: (val) => { if (val) form.next_date = val.toString(); },
-});
+  set: (val) => {
+    if (val) form.next_date = val.toString()
+  },
+})
 
 const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = ['Backspace','Delete','Tab','Escape','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'];
-  if (allowed.includes(e.key)) return;
-  if ((e.ctrlKey || e.metaKey) && ['a','c','v','x'].includes(e.key.toLowerCase())) return;
-  if (/^[0-9]$/.test(e.key)) return;
-  if (e.key === ',' || e.key === '.') { e.preventDefault(); return; }
-  e.preventDefault();
-};
+  const allowed = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+  ]
+  if (allowed.includes(e.key)) return
+  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return
+  if (/^[0-9]$/.test(e.key)) return
+  if (e.key === ',' || e.key === '.') {
+    e.preventDefault()
+    return
+  }
+  e.preventDefault()
+}
 
-const isFormValid = computed(() => form.amount > 0 && form.next_date);
+const isFormValid = computed(() => form.amount > 0 && form.next_date)
 
 onMounted(() => {
-  fetchCategories();
-});
+  fetchCategories()
+})
 
 const onSubmit = async () => {
-  if (!isFormValid.value) return;
+  if (!isFormValid.value) return
   await addRecurring({
     type: form.type,
     amount: Number(form.amount),
@@ -72,9 +91,9 @@ const onSubmit = async () => {
     frequency: form.frequency,
     next_date: form.next_date,
     active: true,
-  });
-  router.push('/recurring');
-};
+  })
+  router.push('/recurring')
+}
 </script>
 
 <template>
@@ -90,14 +109,27 @@ const onSubmit = async () => {
       <p class="mt-1 font-medium text-muted-foreground">{{ $t('recurring.empty_desc') }}</p>
     </div>
 
-    <form class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm" @submit.prevent="onSubmit">
+    <form
+      class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm"
+      @submit.prevent="onSubmit"
+    >
       <div class="space-y-2">
         <Label>{{ $t('recurring_form.type') }}</Label>
         <div class="flex gap-2">
-          <Button type="button" :variant="form.type === 'income' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'income'">
+          <Button
+            type="button"
+            :variant="form.type === 'income' ? 'default' : 'outline'"
+            class="flex-1"
+            @click="form.type = 'income'"
+          >
             {{ $t('recurring_form.income') }}
           </Button>
-          <Button type="button" :variant="form.type === 'expense' ? 'default' : 'outline'" class="flex-1" @click="form.type = 'expense'">
+          <Button
+            type="button"
+            :variant="form.type === 'expense' ? 'default' : 'outline'"
+            class="flex-1"
+            @click="form.type = 'expense'"
+          >
             {{ $t('recurring_form.expense') }}
           </Button>
         </div>
@@ -105,7 +137,14 @@ const onSubmit = async () => {
 
       <div class="space-y-2">
         <Label>{{ $t('recurring_form.amount') }}</Label>
-        <Input v-model="amountDisplay" type="text" inputmode="numeric" :placeholder="$t('transaction_form.amount_placeholder')" required @keydown="onNumberKeydown" />
+        <Input
+          v-model="amountDisplay"
+          type="text"
+          inputmode="numeric"
+          :placeholder="$t('transaction_form.amount_placeholder')"
+          required
+          @keydown="onNumberKeydown"
+        />
       </div>
 
       <div class="space-y-2">
@@ -115,14 +154,20 @@ const onSubmit = async () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">{{ c.label }}</SelectItem>
+            <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">{{
+              c.label
+            }}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div class="space-y-2">
         <Label>{{ $t('recurring_form.category') }}</Label>
-        <CategoryPicker v-model="form.category_id" :type="form.type" :placeholder="$t('recurring_form.select_category')" />
+        <CategoryPicker
+          v-model="form.category_id"
+          :type="form.type"
+          :placeholder="$t('recurring_form.select_category')"
+        />
       </div>
 
       <div class="space-y-2">
@@ -149,12 +194,28 @@ const onSubmit = async () => {
         <Label>{{ $t('recurring_form.next_date') }}</Label>
         <Popover>
           <PopoverTrigger as-child>
-            <Button variant="outline" :class="cn('w-full justify-between text-left font-medium', !form.next_date && 'text-muted-foreground')">
+            <Button
+              variant="outline"
+              :class="
+                cn(
+                  'w-full justify-between text-left font-medium',
+                  !form.next_date && 'text-muted-foreground',
+                )
+              "
+            >
               <div class="flex items-center">
                 <AppIcon name="hugeicons:calendar-01" :size="16" class="mr-2" />
-                {{ form.next_date ? df.format(calendarDate!.toDate(getLocalTimeZone())) : $t('recurring_form.select_date') }}
+                {{
+                  form.next_date
+                    ? df.format(calendarDate!.toDate(getLocalTimeZone()))
+                    : $t('recurring_form.select_date')
+                }}
               </div>
-              <AppIcon name="hugeicons:arrow-down-01" :size="16" class="text-muted-foreground opacity-50" />
+              <AppIcon
+                name="hugeicons:arrow-down-01"
+                :size="16"
+                class="text-muted-foreground opacity-50"
+              />
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-auto p-0">

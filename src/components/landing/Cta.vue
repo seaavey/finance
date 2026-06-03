@@ -18,10 +18,10 @@
 
         <div class="relative z-10 mx-auto max-w-2xl">
           <h2 class="mb-6 text-4xl font-black tracking-tighter text-foreground md:text-6xl">
-            {{ $t('landing.cta_title')}}
+            {{ $t('landing.cta_title') }}
           </h2>
           <p class="mb-10 text-lg font-medium leading-relaxed text-muted-foreground md:text-xl">
-            {{ $t('landing.cta_desc')}}
+            {{ $t('landing.cta_desc') }}
           </p>
 
           <div class="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -31,7 +31,7 @@
               as-child
             >
               <router-link to="/auth/login">
-                {{ $t('landing.cta_button')}}
+                {{ $t('landing.cta_button') }}
                 <AppIcon
                   name="hugeicons:arrow-right-01"
                   :size="20"
@@ -42,7 +42,7 @@
           </div>
 
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-            {{ $t('landing.cta_footer')}}
+            {{ $t('landing.cta_footer') }}
           </p>
         </div>
       </div>
@@ -54,5 +54,5 @@
 defineOptions({
   name: 'ComponentsLandingCta',
 })
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 </script>

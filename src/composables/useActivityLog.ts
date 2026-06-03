@@ -49,7 +49,11 @@ export const useActivityLog = () => {
 
   const currentFilters = ref<ActivityLogFilters>({})
 
-  const { data: logData, isLoading: loading, refetch: refetchLogs } = useQuery({
+  const {
+    data: logData,
+    isLoading: loading,
+    refetch: refetchLogs,
+  } = useQuery({
     queryKey: ['activity_logs', computed(() => user.value?.id), currentFilters],
     queryFn: async () => {
       if (!user.value) return { logs: [], total: 0 }
@@ -59,7 +63,9 @@ export const useActivityLog = () => {
 
       let query = supabase
         .from('activity_logs')
-        .select('id, user_id, entity_type, entity_id, action, metadata, created_at', { count: 'exact' })
+        .select('id, user_id, entity_type, entity_id, action, metadata, created_at', {
+          count: 'exact',
+        })
         .eq('user_id', user.value.id)
         .order('created_at', { ascending: false })
         .range((safePage - 1) * limit, safePage * limit - 1)
@@ -86,10 +92,10 @@ export const useActivityLog = () => {
       }
 
       const { data, count } = await query
-      
+
       return {
         logs: (data as ActivityLog[]) || [],
-        total: count || 0
+        total: count || 0,
       }
     },
     enabled: computed(() => !!user.value),
@@ -100,16 +106,19 @@ export const useActivityLog = () => {
   // This approach is a bit tricky with useQuery directly, so we manage a local ref
   // synced with query results for pagination support.
   const accumulatedLogs = ref<ActivityLog[]>([])
-  
-  watch(() => logData.value, (newData) => {
-    if (!newData) return
-    const isFirstPage = (currentFilters.value.page || 1) === 1
-    if (isFirstPage) {
-      accumulatedLogs.value = newData.logs
-    } else {
-      accumulatedLogs.value = [...accumulatedLogs.value, ...newData.logs]
-    }
-  })
+
+  watch(
+    () => logData.value,
+    (newData) => {
+      if (!newData) return
+      const isFirstPage = (currentFilters.value.page || 1) === 1
+      if (isFirstPage) {
+        accumulatedLogs.value = newData.logs
+      } else {
+        accumulatedLogs.value = [...accumulatedLogs.value, ...newData.logs]
+      }
+    },
+  )
 
   const logs = computed(() => accumulatedLogs.value)
   const total = computed(() => logData.value?.total || 0)
@@ -158,7 +167,7 @@ export const useActivityLog = () => {
 
         return (data as ActivityLog[]) || []
       },
-      staleTime: 10_000
+      staleTime: 10_000,
     })
   }
 

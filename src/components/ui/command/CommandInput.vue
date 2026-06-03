@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import type { ListboxFilterProps } from 'reka-ui';
+import type { ListboxFilterProps } from 'reka-ui'
 
-import type { HTMLAttributes } from 'vue';
-import { reactiveOmit } from '@vueuse/core';
-import { ListboxFilter, useForwardProps } from 'reka-ui';
-import { cn } from '@/lib/utils';
-import { InputGroup, InputGroupAddon } from '@/components/ui/input-group';
-import { useCommand } from './CommandContext';
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
+import { ListboxFilter, useForwardProps } from 'reka-ui'
+import { cn } from '@/lib/utils'
+import { InputGroup, InputGroupAddon } from '@/components/ui/input-group'
+import { useCommand } from './CommandContext'
 
 defineOptions({
   inheritAttrs: false,
-});
+})
 
 const props = defineProps<
   ListboxFilterProps & {
-    class?: HTMLAttributes['class'];
+    class?: HTMLAttributes['class']
   }
->();
+>()
 
-const delegatedProps = reactiveOmit(props, 'class');
+const delegatedProps = reactiveOmit(props, 'class')
 
-const forwardedProps = useForwardProps(delegatedProps);
+const forwardedProps = useForwardProps(delegatedProps)
 
-const { filterState } = useCommand();
+const { filterState } = useCommand()
 </script>
 
 <template>

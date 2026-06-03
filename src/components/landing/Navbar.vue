@@ -38,7 +38,11 @@
           <Button
             v-for="(item, index) in navItems"
             :key="item.href"
-            :ref="(el: any) => { if (el) navRefs[index] = el as HTMLElement  }"
+            :ref="
+              (el: any) => {
+                if (el) navRefs[index] = el as HTMLElement
+              }
+            "
             variant="ghost"
             class="relative z-10 px-6 py-2 text-xs font-black uppercase tracking-widest whitespace-nowrap rounded-full transition-all duration-300"
             :class="[
@@ -46,11 +50,13 @@
                 ? 'text-white'
                 : 'text-muted-foreground/90 hover:text-foreground',
               // Fallback for better visibility if the reddish pill is not yet visible
-              activeSection === item.href.replace('#', '') && !pillStyle.opacity ? 'text-primary' : '',
+              activeSection === item.href.replace('#', '') && !pillStyle.opacity
+                ? 'text-primary'
+                : '',
             ]"
             @click="scrollToSection(item.href)"
           >
-            {{ $t(item.label)}}
+            {{ $t(item.label) }}
           </Button>
         </div>
       </nav>
@@ -115,14 +121,14 @@
             class="rounded-2xl px-5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
             @click="goToLogin"
           >
-            {{ $t('auth.login_title')}}
+            {{ $t('auth.login_title') }}
           </Button>
           <Button
             size="sm"
             class="rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all duration-300"
             @click="goToLogin"
           >
-            {{ $t('auth.register')}}
+            {{ $t('auth.register') }}
           </Button>
         </div>
 
@@ -158,7 +164,7 @@
                 <p
                   class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-[0.2em] px-2 mb-3"
                 >
-                  {{ $t('landing.navigation')}}
+                  {{ $t('landing.navigation') }}
                 </p>
                 <SheetClose v-for="item in navItems" :key="item.href" as-child>
                   <Button
@@ -166,7 +172,7 @@
                     class="group w-full justify-between h-14 rounded-3xl px-4 hover:bg-muted/50 transition-all duration-300"
                     @click="scrollToSection(item.href)"
                   >
-                    <span class="text-sm font-bold">{{ $t(item.label)}}</span>
+                    <span class="text-sm font-bold">{{ $t(item.label) }}</span>
                     <AppIcon
                       name="hugeicons:arrow-right-01"
                       :size="20"
@@ -180,7 +186,7 @@
                 <p
                   class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-[0.2em] px-2 mb-1"
                 >
-                  {{ $t('settings.preferences')}}
+                  {{ $t('settings.preferences') }}
                 </p>
                 <div
                   class="flex items-center justify-between px-5 py-4 rounded-4xl bg-muted/30 border border-border/50"
@@ -190,21 +196,21 @@
                       class="size-9 rounded-xl bg-card flex items-center justify-center shadow-sm"
                     >
                       <AppIcon
-                        :name="colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'"
+                        :name="
+                          colorMode.value === 'dark' ? 'hugeicons:sun-01' : 'hugeicons:moon-01'
+                        "
                         :size="18"
                         class="text-primary"
                       />
                     </div>
-                    <span class="text-sm font-bold">{{ $t('settings.theme')}}</span>
-                    </div>
-                    <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleTheme" />
-                    </div>
+                    <span class="text-sm font-bold">{{ $t('settings.theme') }}</span>
+                  </div>
+                  <Switch :checked="colorMode.value === 'dark'" @update:checked="toggleTheme" />
+                </div>
 
                 <div class="flex flex-col gap-3 px-1">
-                  <p
-                    class="text-[10px] font-black text-muted-foreground uppercase tracking-widest"
-                  >
-                    {{ $t('settings.language')}}
+                  <p class="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    {{ $t('settings.language') }}
                   </p>
                   <div class="flex gap-2">
                     <Button
@@ -232,14 +238,14 @@
                 class="w-full h-14 rounded-3xl bg-linear-to-b from-primary to-primary/90 text-base font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]"
                 @click="goToLogin"
               >
-                {{ $t('auth.register')}}
+                {{ $t('auth.register') }}
               </Button>
               <Button
                 variant="ghost"
                 class="w-full h-14 rounded-3xl text-base font-bold text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
                 @click="goToLogin"
               >
-                {{ $t('auth.login_title')}}
+                {{ $t('auth.login_title') }}
               </Button>
             </div>
           </SheetContent>
@@ -253,124 +259,122 @@
 defineOptions({
   name: 'ComponentsLandingNavbar',
 })
-const { locale: currentLocale, locales, setLocale, t } = useI18n();
-const localePath = useLocalePath();
-const router = useRouter();
-const colorMode = useColorMode();
-const { y } = useWindowScroll();
+const { locale: currentLocale, locales, setLocale, t } = useI18n()
+const localePath = useLocalePath()
+const router = useRouter()
+const colorMode = useColorMode()
+const { y } = useWindowScroll()
 
 const brandParts = computed(() => {
-  const full = t('sidebar.finance');
-  const parts = full.split(' ');
+  const full = t('sidebar.finance')
+  const parts = full.split(' ')
   if (parts.length > 1) {
     return {
       first: parts[0],
       rest: ' ' + parts.slice(1).join(' '),
-    };
+    }
   }
-  return { first: full, rest: '' };
-});
+  return { first: full, rest: '' }
+})
 
-const isScrolled = computed(() => y.value > 20);
-const activeSection = ref('');
-const navRefs = ref<HTMLElement[]>([]);
+const isScrolled = computed(() => y.value > 20)
+const activeSection = ref('')
+const navRefs = ref<HTMLElement[]>([])
 
 // Cached nav positions to avoid forced reflow from offsetWidth/offsetLeft reads
-const navPositions = ref<{ width: number; left: number }[]>([]);
-const pageHeight = ref(0);
+const navPositions = ref<{ width: number; left: number }[]>([])
+const pageHeight = ref(0)
 
 const updateCachedLayout = () => {
-  pageHeight.value = document.documentElement.scrollHeight;
+  pageHeight.value = document.documentElement.scrollHeight
   navPositions.value = navRefs.value.map((el) => ({
     width: el.offsetWidth,
     left: el.offsetLeft,
-  }));
-};
+  }))
+}
 
 // Clear active section when at the top, and handle bottom of page for FAQ
 watch(y, (newY) => {
   if (newY < 200) {
-    activeSection.value = '';
-    return;
+    activeSection.value = ''
+    return
   }
 
   // Detect if we are at the bottom of the page
   // Use cached scrollHeight + fast window.innerHeight instead of reading DOM layout
   if (newY + window.innerHeight >= pageHeight.value - 100) {
-    activeSection.value = 'faq';
+    activeSection.value = 'faq'
   }
-});
+})
 
 const navItems = [
   { label: 'landing.nav_features', href: '#features' },
   { label: 'landing.nav_testimonials', href: '#testimonials' },
   { label: 'landing.nav_faq', href: '#faq' },
-];
+]
 
 const availableLocales = computed(() => {
   return (locales.value as { code: string; name: string }[]).filter(
     (l) => l.code !== currentLocale.value,
-  );
-});
+  )
+})
 
 const toggleTheme = () => {
-  (colorMode ).preference = (colorMode ).value === 'dark' ? 'light' : 'dark';
-};
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
 
 const pillStyle = computed(() => {
   const activeIndex = navItems.findIndex(
     (item) => item.href.replace('#', '') === activeSection.value,
-  );
+  )
   if (activeIndex === -1 || !navPositions.value[activeIndex]) {
-    return { width: '0px', left: '0px', opacity: 0 };
+    return { width: '0px', left: '0px', opacity: 0 }
   }
 
-  const pos = navPositions.value[activeIndex];
+  const pos = navPositions.value[activeIndex]
   return {
     width: `${pos.width}px`,
     left: `${pos.left}px`,
     opacity: 1,
-  };
-});
+  }
+})
 
 const scrollToSection = (href: string) => {
-  const id = href.replace('#', '');
-  const element = document.getElementById(id);
+  const id = href.replace('#', '')
+  const element = document.getElementById(id)
   if (element) {
     element.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
-    });
+    })
   }
-};
+}
 
-const goToLogin = () => router.push(localePath('/auth/login'));
+const goToLogin = () => router.push(localePath('/auth/login'))
 
 onMounted(() => {
-  updateCachedLayout();
-  window.addEventListener('resize', updateCachedLayout);
+  updateCachedLayout()
+  window.addEventListener('resize', updateCachedLayout)
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          activeSection.value = entry.target.id;
+          activeSection.value = entry.target.id
         }
-      });
+      })
     },
     {
       threshold: 0.1,
       rootMargin: '-10% 0px -40% 0px',
     },
-  );
+  )
 
   navItems.forEach((item) => {
-    const el = document.getElementById(item.href.replace('#', ''));
+    const el = document.getElementById(item.href.replace('#', ''))
     if (el) {
-      observer.observe(el);
+      observer.observe(el)
     }
-  });
-});
+  })
+})
 </script>
-
-

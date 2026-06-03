@@ -23,7 +23,12 @@
     >
       <div class="space-y-2">
         <Label for="name">{{ $t('category_form.name') }}</Label>
-        <Input id="name" v-model="form.name" :placeholder="$t('category_form.name_placeholder')" required />
+        <Input
+          id="name"
+          v-model="form.name"
+          :placeholder="$t('category_form.name_placeholder')"
+          required
+        />
       </div>
 
       <div class="space-y-2">
@@ -70,57 +75,67 @@
 defineOptions({
   name: 'PagesCategoriesDetailEdit',
 })
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import type { Category } from '@/composables/useCategories';
+} from '@/components/ui/select'
+import type { Category } from '@/composables/useCategories'
 
-const router = useRouter();
-const route = useRoute();
-const { categories, fetchCategories, updateCategory } = useCategories();
+const router = useRouter()
+const route = useRoute()
+const { categories, fetchCategories, updateCategory } = useCategories()
 
-const categoryId = route.params.id as string;
-const loading = ref(true);
+const categoryId = route.params.id as string
+const loading = ref(true)
 
 const colorOptions = [
-  '#22c55e', '#3b82f6', '#8b5cf6', '#f97316', '#06b6d4',
-  '#ec4899', '#ef4444', '#a855f7', '#14b8a6', '#6b7280', '#eab308', '#f43f5e',
-];
+  '#22c55e',
+  '#3b82f6',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#ec4899',
+  '#ef4444',
+  '#a855f7',
+  '#14b8a6',
+  '#6b7280',
+  '#eab308',
+  '#f43f5e',
+]
 
 const form = reactive({
   name: '',
   type: 'expense' as 'income' | 'expense',
   icon: 'hugeicons:wallet-01',
   color: '#3b82f6',
-});
+})
 
 const onSubmit = async () => {
   const { error } = await updateCategory(categoryId, {
     name: form.name,
     color: form.color,
-  });
+  })
   if (!error) {
-    router.push('/categories');
+    router.push('/categories')
   }
-};
+}
 
 onMounted(async () => {
-  await fetchCategories();
-  const cat = categories.value.find((c: Category) => c.id === categoryId);
+  await fetchCategories()
+  const cat = categories.value.find((c: Category) => c.id === categoryId)
   if (cat) {
-    form.name = cat.name;
-    form.type = cat.type;
-    form.color = cat.color;
-    form.icon = cat.icon;
+    form.name = cat.name
+    form.type = cat.type
+    form.color = cat.color
+    form.icon = cat.icon
   }
-  loading.value = false;
-});
+  loading.value = false
+})
 </script>

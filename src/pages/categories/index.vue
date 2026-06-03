@@ -4,16 +4,16 @@
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
         <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('categories.title')}}
+          {{ $t('categories.title') }}
         </h1>
-        <p class="mt-1 font-medium text-muted-foreground">{{ $t('categories.subtitle')}}</p>
+        <p class="mt-1 font-medium text-muted-foreground">{{ $t('categories.subtitle') }}</p>
       </div>
       <Button
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="router.push('/categories/new')"
       >
         <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('categories.add')}}</span>
+        <span>{{ $t('categories.add') }}</span>
       </Button>
     </div>
 
@@ -62,17 +62,17 @@
           <AppIcon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
         </div>
         <h3 class="text-xl font-black tracking-tight text-foreground">
-          {{ $t('categories.empty')}}
+          {{ $t('categories.empty') }}
         </h3>
         <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-          {{ $t('categories.empty_desc')}}
+          {{ $t('categories.empty_desc') }}
         </p>
         <Button
           variant="outline"
           class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
           @click="router.push('/categories/new')"
         >
-          {{ $t('categories.add')}}
+          {{ $t('categories.add') }}
         </Button>
       </div>
 
@@ -107,7 +107,8 @@
                       count: (categoryStats.get(cat.id) ?? { count: 0, total: 0 }).count,
                     })
                   }}
-                  · {{ formatCurrency((categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total) }}
+                  ·
+                  {{ formatCurrency((categoryStats.get(cat.id) ?? { count: 0, total: 0 }).total) }}
                 </p>
               </div>
             </div>
@@ -148,14 +149,14 @@
 defineOptions({
   name: 'PagesCategoriesIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Sortable } from 'sortablejs-vue3';
-import type { Category } from '@/composables/useCategories';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Sortable } from 'sortablejs-vue3'
+import type { Category } from '@/composables/useCategories'
 
-const router = useRouter();
-const { t, locale } = useI18n();
-const { formatCurrency } = useCurrency();
+const router = useRouter()
+const { t, locale } = useI18n()
+const { formatCurrency } = useCurrency()
 
 const {
   categories,
@@ -165,28 +166,28 @@ const {
   fetchCategories,
   seedDefaults,
   deleteCategory,
-} = useCategories();
-const { transactions, fetchTransactions } = useTransactions();
-const { user } = useAuth();
+} = useCategories()
+const { transactions, fetchTransactions } = useTransactions()
+const { user } = useAuth()
 
 const categoryStats = computed(() => {
-  const map = new Map<string, { count: number; total: number }>();
+  const map = new Map<string, { count: number; total: number }>()
   for (const tx of transactions.value) {
-    if (!tx.category_id) continue;
-    const existing = map.get(tx.category_id);
+    if (!tx.category_id) continue
+    const existing = map.get(tx.category_id)
     if (existing) {
-      existing.count++;
-      existing.total += tx.amount;
+      existing.count++
+      existing.total += tx.amount
     } else {
-      map.set(tx.category_id, { count: 1, total: tx.amount });
+      map.set(tx.category_id, { count: 1, total: tx.amount })
     }
   }
-  return map;
-});
+  return map
+})
 
-const activeTab = ref<'income' | 'expense'>('expense');
-const showDeleteDialog = ref(false);
-const deletingCategory = ref<Category | undefined>();
+const activeTab = ref<'income' | 'expense'>('expense')
+const showDeleteDialog = ref(false)
+const deletingCategory = ref<Category | undefined>()
 
 const tabs = computed(() => [
   {
@@ -195,36 +196,36 @@ const tabs = computed(() => [
     count: expenseCategories.value.length,
   },
   { value: 'income' as const, label: t('categories.income'), count: incomeCategories.value.length },
-]);
+])
 
 const filteredCategories = computed(() =>
   activeTab.value === 'income' ? incomeCategories.value : expenseCategories.value,
-);
+)
 
 const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
-  const list = [...filteredCategories.value];
-  const [moved] = list.splice(evt.oldIndex, 1);
-  if (!moved) return;
-  list.splice(evt.newIndex, 0, moved);
-};
+  const list = [...filteredCategories.value]
+  const [moved] = list.splice(evt.oldIndex, 1)
+  if (!moved) return
+  list.splice(evt.newIndex, 0, moved)
+}
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchTransactions()]);
+  await Promise.all([fetchCategories(), fetchTransactions()])
   if (categories.value.length === 0 && user.value) {
-    await seedDefaults(user.value.id);
+    await seedDefaults(user.value.id)
   }
-});
+})
 
 const confirmDelete = (cat: Category) => {
-  deletingCategory.value = cat;
-  showDeleteDialog.value = true;
-};
+  deletingCategory.value = cat
+  showDeleteDialog.value = true
+}
 
 const onDelete = async () => {
   if (deletingCategory.value) {
-    await deleteCategory(deletingCategory.value.id);
+    await deleteCategory(deletingCategory.value.id)
   }
-  showDeleteDialog.value = false;
-  deletingCategory.value = undefined;
-};
+  showDeleteDialog.value = false
+  deletingCategory.value = undefined
+}
 </script>

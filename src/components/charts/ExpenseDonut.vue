@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { DonutChart } from '@/components/ui/chart-donut';
-import type { ChartConfig } from '@/components/ui/chart';
+import { DonutChart } from '@/components/ui/chart-donut'
+import type { ChartConfig } from '@/components/ui/chart'
 
 const props = defineProps<{
-  categories: { name: string; color: string; total: number }[];
-}>();
+  categories: { name: string; color: string; total: number }[]
+}>()
 
 const chartConfig = computed<ChartConfig>(() => {
-  const config: ChartConfig = {};
+  const config: ChartConfig = {}
   props.categories.forEach((c) => {
     config[c.name] = {
       label: c.name,
       color: c.color,
-    };
-  });
-  return config;
-});
+    }
+  })
+  return config
+})
 </script>
 
 <template>
@@ -29,7 +29,7 @@ const chartConfig = computed<ChartConfig>(() => {
       class="h-full w-full"
     />
     <div v-else class="flex size-full items-center justify-center">
-      <p class="text-xs text-muted-foreground">{{ $t('chart.no_data')}}</p>
+      <p class="text-xs text-muted-foreground">{{ $t('chart.no_data') }}</p>
     </div>
   </div>
 </template>

@@ -19,7 +19,7 @@
       </div>
       <div class="min-w-0">
         <h3 class="truncate font-medium text-foreground">
-          {{ transaction.description || categoryName || $t('transactions.no_description')}}
+          {{ transaction.description || categoryName || $t('transactions.no_description') }}
         </h3>
         <p class="mt-1 text-sm text-muted-foreground">{{ formattedDate }}</p>
         <p v-if="accountName" class="mt-1 text-xs text-muted-foreground/90">
@@ -35,44 +35,44 @@
         {{ transaction.type === 'income' ? '+' : '-' }}{{ formatted }}
       </p>
       <p class="mt-1 text-xs text-muted-foreground md:text-sm">
-        {{ transaction.type === 'income' ? $t('transactions.income') : $t('transactions.expense')}}
+        {{ transaction.type === 'income' ? $t('transactions.income') : $t('transactions.expense') }}
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '@/composables/useTransactions';
+import type { Transaction } from '@/composables/useTransactions'
 
 const props = defineProps<{
-  transaction: Transaction;
-}>();
+  transaction: Transaction
+}>()
 
-const { formatCurrency } = useCurrency();
-const { locale } = useI18n();
-const { categories } = useCategories();
-const { accounts } = useAccounts();
-const { partner, isPartnered, partnerDisplayName } = usePartner();
+const { formatCurrency } = useCurrency()
+const { locale } = useI18n()
+const { categories } = useCategories()
+const { accounts } = useAccounts()
+const { partner, isPartnered, partnerDisplayName } = usePartner()
 
-const isPartnerOwned = computed(() => partner.value?.id === props.transaction.user_id);
-const partnerInitial = computed(() => partnerDisplayName.value?.charAt(0)?.toUpperCase() || 'P');
+const isPartnerOwned = computed(() => partner.value?.id === props.transaction.user_id)
+const partnerInitial = computed(() => partnerDisplayName.value?.charAt(0)?.toUpperCase() || 'P')
 
 const category = computed(() =>
   categories.value.find((c) => c.id === props.transaction.category_id),
-);
-const categoryName = computed(() => category.value?.name ?? '');
-const categoryColor = computed(() => category.value?.color);
+)
+const categoryName = computed(() => category.value?.name ?? '')
+const categoryColor = computed(() => category.value?.color)
 const accountName = computed(() => {
   if (!props.transaction.account_id) {
-    return '';
+    return ''
   }
-  return accounts.value.find((a) => a.id === props.transaction.account_id)?.name ?? '';
-});
+  return accounts.value.find((a) => a.id === props.transaction.account_id)?.name ?? ''
+})
 const formatted = computed(() =>
   formatCurrency(Number(props.transaction.amount), props.transaction.currency),
-);
+)
 const formattedDate = computed(() => {
-  const d = new Date(props.transaction.date);
-  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short', year: 'numeric' });
-});
+  const d = new Date(props.transaction.date)
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short', year: 'numeric' })
+})
 </script>

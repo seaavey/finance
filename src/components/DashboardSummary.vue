@@ -2,7 +2,7 @@
   <div class="grid grid-cols-3 gap-3">
     <Card class="col-span-1">
       <CardContent class="p-3">
-        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.income')}}</p>
+        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.income') }}</p>
         <p class="text-sm font-bold text-green-600">{{ formatCurrency(summary.income) }}</p>
         <p v-if="convertedIncome !== null" class="text-[9px] text-muted-foreground">
           ≈ {{ formatCurrency(convertedIncome, 'USD') }}
@@ -11,7 +11,7 @@
     </Card>
     <Card class="col-span-1">
       <CardContent class="p-3">
-        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.expense')}}</p>
+        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.expense') }}</p>
         <p class="text-sm font-bold text-red-600">{{ formatCurrency(summary.expense) }}</p>
         <p v-if="convertedExpense !== null" class="text-[9px] text-muted-foreground">
           ≈ {{ formatCurrency(convertedExpense, 'USD') }}
@@ -20,7 +20,7 @@
     </Card>
     <Card class="col-span-1">
       <CardContent class="p-3">
-        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.balance')}}</p>
+        <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.balance') }}</p>
         <p
           class="text-sm font-bold"
           :class="summary.balance >= 0 ? 'text-green-600' : 'text-red-600'"
@@ -37,12 +37,18 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  summary: { income: number; expense: number; balance: number };
-}>();
+  summary: { income: number; expense: number; balance: number }
+}>()
 
-const { formatCurrency, convertTo, defaultCurrency } = useCurrency();
+const { formatCurrency, convertTo, defaultCurrency } = useCurrency()
 
-const convertedIncome = computed(() => convertTo(props.summary.income, defaultCurrency.value, 'USD'));
-const convertedExpense = computed(() => convertTo(props.summary.expense, defaultCurrency.value, 'USD'));
-const convertedBalance = computed(() => convertTo(props.summary.balance, defaultCurrency.value, 'USD'));
+const convertedIncome = computed(() =>
+  convertTo(props.summary.income, defaultCurrency.value, 'USD'),
+)
+const convertedExpense = computed(() =>
+  convertTo(props.summary.expense, defaultCurrency.value, 'USD'),
+)
+const convertedBalance = computed(() =>
+  convertTo(props.summary.balance, defaultCurrency.value, 'USD'),
+)
 </script>

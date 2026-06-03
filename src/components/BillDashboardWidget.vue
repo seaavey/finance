@@ -6,7 +6,10 @@
       <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
         {{ $t('bills.title') }}
       </h3>
-      <router-link to="/bills" class="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors">
+      <router-link
+        to="/bills"
+        class="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors"
+      >
         {{ $t('dashboard.view_all') }}
       </router-link>
     </div>
@@ -19,7 +22,11 @@
         <!-- Icon remains left-aligned -->
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl"
-          :class="isOverdue(bill.due_date) ? 'bg-rose-500/10 text-rose-600' : 'bg-amber-500/10 text-amber-600'"
+          :class="
+            isOverdue(bill.due_date)
+              ? 'bg-rose-500/10 text-rose-600'
+              : 'bg-amber-500/10 text-amber-600'
+          "
         >
           <AppIcon name="hugeicons:calendar-03" :size="20" />
         </div>
@@ -67,55 +74,55 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import type { Bill } from '@/composables/useBills';
+import { Button } from '@/components/ui/button'
+import type { Bill } from '@/composables/useBills'
 
-const { toast } = useToast();
-const { t } = useI18n();
+const { toast } = useToast()
+const { t } = useI18n()
 
-const { bills, fetchBills, markAsPaid } = useBills();
-const { formatCurrency } = useCurrency();
+const { bills, fetchBills, markAsPaid } = useBills()
+const { formatCurrency } = useCurrency()
 
 const upcomingBills = computed(() =>
   [...bills.value]
     .filter((b: Bill) => !b.is_paid)
     .sort((a: Bill, b: Bill) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())
     .slice(0, 3),
-);
+)
 
 const getDaysUntilDue = (dueDate: string): number => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
-  return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-};
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)
+  const due = new Date(dueDate)
+  due.setHours(0, 0, 0, 0)
+  return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+}
 
-const isOverdue = (dueDate: string): boolean => getDaysUntilDue(dueDate) < 0;
+const isOverdue = (dueDate: string): boolean => getDaysUntilDue(dueDate) < 0
 
 const getDueDateText = (dueDate: string): string => {
-  const days = getDaysUntilDue(dueDate);
-  if (days === 0) return t('bills.due_today');
-  if (days < 0) return t('bills.overdue');
-  return t('bills.due_in_days', { days });
-};
+  const days = getDaysUntilDue(dueDate)
+  if (days === 0) return t('bills.due_today')
+  if (days < 0) return t('bills.overdue')
+  return t('bills.due_in_days', { days })
+}
 
 const getDueDateClass = (dueDate: string): string => {
-  const days = getDaysUntilDue(dueDate);
-  if (days === 0) return 'text-amber-500 dark:text-amber-400';
-  if (days < 0) return 'text-rose-500 dark:text-rose-400';
-  return 'text-muted-foreground';
-};
+  const days = getDaysUntilDue(dueDate)
+  if (days === 0) return 'text-amber-500 dark:text-amber-400'
+  if (days < 0) return 'text-rose-500 dark:text-rose-400'
+  return 'text-muted-foreground'
+}
 
 const handleMarkPaid = async (id: string) => {
   try {
-    await markAsPaid(id);
+    await markAsPaid(id)
   } catch {
-    toast.error('Failed to mark bill as paid');
+    toast.error('Failed to mark bill as paid')
   }
-};
+}
 
 onMounted(() => {
-  fetchBills();
-});
+  fetchBills()
+})
 </script>

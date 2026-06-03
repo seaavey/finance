@@ -2,19 +2,19 @@
 defineOptions({
   name: 'PagesAccountsIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { AccountWithBalance } from '@/composables/useAccounts';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { AccountWithBalance } from '@/composables/useAccounts'
 
-const router = useRouter();
-useI18n();
-const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts();
-const { fetchCategories } = useCategories();
-const { formatCurrency, convertTo, defaultCurrency } = useCurrency();
+const router = useRouter()
+useI18n()
+const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts()
+const { fetchCategories } = useCategories()
+const { formatCurrency, convertTo, defaultCurrency } = useCurrency()
 
-const accountList = ref<AccountWithBalance[]>([]);
-const showDeleteDialog = ref(false);
-const deletingAccount = ref<AccountWithBalance | null>(null);
+const accountList = ref<AccountWithBalance[]>([])
+const showDeleteDialog = ref(false)
+const deletingAccount = ref<AccountWithBalance | null>(null)
 
 const typeLabels: Record<string, string> = {
   bank: 'accounts.bank',
@@ -22,48 +22,48 @@ const typeLabels: Record<string, string> = {
   cash: 'accounts.cash',
   investment: 'accounts.investment',
   liability: 'accounts.liability',
-};
+}
 
 const loadData = async () => {
-  await Promise.all([fetchAccounts(), fetchCategories()]);
-  accountList.value = await getAccountBalances();
-};
+  await Promise.all([fetchAccounts(), fetchCategories()])
+  accountList.value = await getAccountBalances()
+}
 
 onMounted(() => {
-  loadData();
-});
+  loadData()
+})
 
 const onDeleteRequest = (account: AccountWithBalance) => {
-  deletingAccount.value = account;
-  showDeleteDialog.value = true;
-};
+  deletingAccount.value = account
+  showDeleteDialog.value = true
+}
 
 const onDeleteConfirm = async () => {
-  if (!deletingAccount.value) return;
-  await deleteAccount(deletingAccount.value.id);
-  accountList.value = await getAccountBalances();
-  showDeleteDialog.value = false;
-  deletingAccount.value = null;
-};
+  if (!deletingAccount.value) return
+  await deleteAccount(deletingAccount.value.id)
+  accountList.value = await getAccountBalances()
+  showDeleteDialog.value = false
+  deletingAccount.value = null
+}
 
-const goToNew = () => router.push('/accounts/new');
+const goToNew = () => router.push('/accounts/new')
 
 const goToEdit = (account: AccountWithBalance) => {
-  router.push(`/accounts/${account.id}/edit`);
-};
+  router.push(`/accounts/${account.id}/edit`)
+}
 
 const goToDetail = (account: AccountWithBalance) => {
-  router.push(`/accounts/${account.id}`);
-};
+  router.push(`/accounts/${account.id}`)
+}
 
 const totalBalance = computed(() => {
-  let total = 0;
+  let total = 0
   for (const a of accountList.value) {
-    const converted = convertTo(a.balance, a.currency, defaultCurrency.value);
-    total += converted ?? a.balance;
+    const converted = convertTo(a.balance, a.currency, defaultCurrency.value)
+    total += converted ?? a.balance
   }
-  return total;
-});
+  return total
+})
 </script>
 
 <template>
@@ -158,8 +158,16 @@ const totalBalance = computed(() => {
           <div class="ml-3 shrink-0 text-right">
             <p class="font-semibold">{{ formatCurrency(account.balance, account.currency) }}</p>
           </div>
-          <div class="ml-2 flex shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
-            <Button variant="ghost" size="icon" class="size-8 rounded-xl" @click="goToEdit(account)">
+          <div
+            class="ml-2 flex shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            @click.stop
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-8 rounded-xl"
+              @click="goToEdit(account)"
+            >
               <AppIcon name="hugeicons:pencil-edit-01" :size="16" />
             </Button>
             <Button

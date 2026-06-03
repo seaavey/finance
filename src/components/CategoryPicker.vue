@@ -16,30 +16,30 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue?: string;
-  type?: 'income' | 'expense';
-  placeholder?: string;
-}>();
+  modelValue?: string
+  type?: 'income' | 'expense'
+  placeholder?: string
+}>()
 
 defineEmits<{
-  'update:modelValue': [value: string | number | boolean | null];
-}>();
+  'update:modelValue': [value: string | number | boolean | null]
+}>()
 
-const { categories, incomeCategories, expenseCategories, fetchCategories } = useCategories();
+const { categories, incomeCategories, expenseCategories, fetchCategories } = useCategories()
 
 const filteredCategories = computed(() => {
   if (props.type === 'income') {
-    return incomeCategories.value;
+    return incomeCategories.value
   }
   if (props.type === 'expense') {
-    return expenseCategories.value;
+    return expenseCategories.value
   }
-  return categories.value;
-});
+  return categories.value
+})
 
 onMounted(() => {
   if (categories.value.length === 0) {
-    fetchCategories();
+    fetchCategories()
   }
-});
+})
 </script>

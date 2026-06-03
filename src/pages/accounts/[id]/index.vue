@@ -2,16 +2,16 @@
 defineOptions({
   name: 'PagesAccountsDetailIndex',
 })
-import type { AccountWithBalance } from '@/composables/useAccounts';
+import type { AccountWithBalance } from '@/composables/useAccounts'
 
-const router = useRouter();
-const route = useRoute();
-const { fetchAccounts, getAccountBalances } = useAccounts();
-const { formatCurrency } = useCurrency();
+const router = useRouter()
+const route = useRoute()
+const { fetchAccounts, getAccountBalances } = useAccounts()
+const { formatCurrency } = useCurrency()
 
-const accountId = route.params.id as string;
-const accountDetail = ref<AccountWithBalance | null>(null);
-const loading = ref(true);
+const accountId = route.params.id as string
+const accountDetail = ref<AccountWithBalance | null>(null)
+const loading = ref(true)
 
 const typeLabels: Record<string, string> = {
   bank: 'accounts.bank',
@@ -19,14 +19,14 @@ const typeLabels: Record<string, string> = {
   cash: 'accounts.cash',
   investment: 'accounts.investment',
   liability: 'accounts.liability',
-};
+}
 
 onMounted(async () => {
-  await fetchAccounts();
-  const list = await getAccountBalances();
-  accountDetail.value = list.find((a) => a.id === accountId) || null;
-  loading.value = false;
-});
+  await fetchAccounts()
+  const list = await getAccountBalances()
+  accountDetail.value = list.find((a) => a.id === accountId) || null
+  loading.value = false
+})
 </script>
 
 <template>
@@ -53,7 +53,9 @@ onMounted(async () => {
       v-else-if="!accountDetail"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <AppIcon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('accounts.empty') }}</h3>
@@ -92,7 +94,12 @@ onMounted(async () => {
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" class="rounded-xl" @click="router.push(`/accounts/${accountDetail.id}/edit`)">
+          <Button
+            variant="outline"
+            size="sm"
+            class="rounded-xl"
+            @click="router.push(`/accounts/${accountDetail.id}/edit`)"
+          >
             <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
             {{ $t('accounts.edit') }}
           </Button>

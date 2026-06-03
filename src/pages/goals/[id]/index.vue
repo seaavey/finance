@@ -21,7 +21,9 @@
       v-else-if="!goalDetail"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
-      <div class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
+      <div
+        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
+      >
         <AppIcon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('goals.empty') }}</h3>
@@ -42,12 +44,28 @@
           <div class="flex items-center gap-4">
             <div
               class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
-              :style="!goalDetail.image_url ? { backgroundColor: (goalDetail.color || '#ec4899') + '20' } : {}"
+              :style="
+                !goalDetail.image_url
+                  ? { backgroundColor: (goalDetail.color || '#ec4899') + '20' }
+                  : {}
+              "
             >
-              <AspectRatio v-if="goalDetail.image_url" :ratio="16 / 9" class="overflow-hidden rounded-xl">
-                <img :src="goalDetail.image_url" :alt="goalDetail.name" class="h-full w-full object-cover" />
+              <AspectRatio
+                v-if="goalDetail.image_url"
+                :ratio="16 / 9"
+                class="overflow-hidden rounded-xl"
+              >
+                <img
+                  :src="goalDetail.image_url"
+                  :alt="goalDetail.name"
+                  class="h-full w-full object-cover"
+                />
               </AspectRatio>
-              <div v-else class="size-4 rounded-full" :style="{ backgroundColor: goalDetail.color || '#ec4899' }" />
+              <div
+                v-else
+                class="size-4 rounded-full"
+                :style="{ backgroundColor: goalDetail.color || '#ec4899' }"
+              />
             </div>
             <div>
               <h2 class="text-2xl font-black tracking-tighter text-foreground">
@@ -59,7 +77,12 @@
             </div>
           </div>
           <div class="flex gap-2">
-            <Button variant="outline" size="sm" class="rounded-xl" @click="router.push(`/goals/${goalDetail.id}/edit`)">
+            <Button
+              variant="outline"
+              size="sm"
+              class="rounded-xl"
+              @click="router.push(`/goals/${goalDetail.id}/edit`)"
+            >
               <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
               {{ $t('goal_form.title_edit') }}
             </Button>
@@ -78,11 +101,10 @@
         <div class="mt-8 space-y-2">
           <div class="flex justify-between text-sm">
             <span class="font-bold text-foreground">
-              {{ formatCurrency(Number(goalDetail.current_amount)) }} / {{ formatCurrency(Number(goalDetail.target_amount)) }}
+              {{ formatCurrency(Number(goalDetail.current_amount)) }} /
+              {{ formatCurrency(Number(goalDetail.target_amount)) }}
             </span>
-            <span class="font-black" :style="{ color: goalDetail.color }">
-              {{ percentage }}%
-            </span>
+            <span class="font-black" :style="{ color: goalDetail.color }"> {{ percentage }}% </span>
           </div>
           <Progress :model-value="percentage" class="h-4">
             <template #indicator>
@@ -143,7 +165,10 @@
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
             {{ $t('goals.deadline') }}
           </p>
-          <p class="mt-2 text-2xl font-black tracking-tighter" :class="goalDetail.deadline ? 'text-foreground' : 'text-muted-foreground'">
+          <p
+            class="mt-2 text-2xl font-black tracking-tighter"
+            :class="goalDetail.deadline ? 'text-foreground' : 'text-muted-foreground'"
+          >
             {{ goalDetail.deadline ? formatDate(goalDetail.deadline) : '-' }}
           </p>
         </div>
@@ -173,57 +198,63 @@
 defineOptions({
   name: 'PagesGoalsDetailIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import type { Goal } from '@/composables/useGoals';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Progress } from '@/components/ui/progress'
+import { AspectRatio } from '@/components/ui/aspect-ratio'
+import type { Goal } from '@/composables/useGoals'
 
-const router = useRouter();
-const route = useRoute();
-const { goals, fetchGoals, deleteGoal } = useGoals();
-const { formatCurrency } = useCurrency();
+const router = useRouter()
+const route = useRoute()
+const { goals, fetchGoals, deleteGoal } = useGoals()
+const { formatCurrency } = useCurrency()
 
-const goalId = route.params.id as string;
-const goalDetail = ref<Goal | null>(null);
-const loading = ref(true);
-const showDeleteDialog = ref(false);
-const showFundsDialog = ref(false);
+const goalId = route.params.id as string
+const goalDetail = ref<Goal | null>(null)
+const loading = ref(true)
+const showDeleteDialog = ref(false)
+const showFundsDialog = ref(false)
 
 const percentage = computed(() => {
-  if (!goalDetail.value || !goalDetail.value.target_amount || goalDetail.value.target_amount <= 0) return 0;
-  return Math.round((Number(goalDetail.value.current_amount) / Number(goalDetail.value.target_amount)) * 100);
-});
+  if (!goalDetail.value || !goalDetail.value.target_amount || goalDetail.value.target_amount <= 0)
+    return 0
+  return Math.round(
+    (Number(goalDetail.value.current_amount) / Number(goalDetail.value.target_amount)) * 100,
+  )
+})
 
 const remaining = computed(() => {
-  if (!goalDetail.value) return 0;
-  return Math.max(0, Number(goalDetail.value.target_amount) - Number(goalDetail.value.current_amount));
-});
+  if (!goalDetail.value) return 0
+  return Math.max(
+    0,
+    Number(goalDetail.value.target_amount) - Number(goalDetail.value.current_amount),
+  )
+})
 
 function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 const onFundsSaved = () => {
-  showFundsDialog.value = false;
+  showFundsDialog.value = false
   // Refresh goal detail
-  const updated = goals.value.find((g) => g.id === goalId);
-  if (updated) goalDetail.value = { ...updated };
-};
+  const updated = goals.value.find((g) => g.id === goalId)
+  if (updated) goalDetail.value = { ...updated }
+}
 
 const handleDelete = async () => {
-  if (!goalDetail.value) return;
-  const { error } = await deleteGoal(goalDetail.value.id);
+  if (!goalDetail.value) return
+  const { error } = await deleteGoal(goalDetail.value.id)
   if (!error) {
-    router.push('/goals');
+    router.push('/goals')
   }
-  showDeleteDialog.value = false;
-};
+  showDeleteDialog.value = false
+}
 
 onMounted(async () => {
-  await fetchGoals();
-  goalDetail.value = goals.value.find((g) => g.id === goalId) || null;
-  loading.value = false;
-});
+  await fetchGoals()
+  goalDetail.value = goals.value.find((g) => g.id === goalId) || null
+  loading.value = false
+})
 </script>

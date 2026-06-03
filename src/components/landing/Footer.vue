@@ -129,51 +129,51 @@
 defineOptions({
   name: 'ComponentsLandingFooter',
 })
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
-const { t } = useI18n();
+const { t } = useI18n()
 
 const brandParts = computed(() => {
-  const full = t('sidebar.finance');
-  const parts = full.split(' ');
+  const full = t('sidebar.finance')
+  const parts = full.split(' ')
   if (parts.length > 1) {
     return {
       first: parts[0],
       rest: ' ' + parts.slice(1).join(' '),
-    };
+    }
   }
-  return { first: full, rest: '' };
-});
+  return { first: full, rest: '' }
+})
 
 const socialLinks = [
   { labelKey: 'footer_github', href: 'https://github.com/seaavey', icon: 'hugeicons:github' },
-];
+]
 
 const productLinks = [
   { labelKey: 'landing.nav_features', href: '#features' },
   { labelKey: 'landing.nav_testimonials', href: '#testimonials' },
   { labelKey: 'landing.nav_faq', href: '#faq' },
-];
+]
 
 const companyLinks = [
   { labelKey: 'landing.footer_about', href: '/about' },
   { labelKey: 'landing.footer_contact', href: '/contact' },
-];
+]
 
 const legalLinks = [
   { labelKey: 'landing.footer_privacy', href: '/privacy-policy' },
   { labelKey: 'landing.footer_terms', href: '/terms-of-service' },
-];
+]
 
 const scrollToSection = (href: string) => {
-  const id = href.replace('#', '');
-  const element = document.getElementById(id);
+  const id = href.replace('#', '')
+  const element = document.getElementById(id)
   if (element) {
     element.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
-    });
+    })
   }
-};
+}
 </script>

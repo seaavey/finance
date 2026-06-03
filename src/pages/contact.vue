@@ -9,10 +9,10 @@
         <!-- Hero Section -->
         <div class="mb-16 text-center md:mb-24">
           <h1 class="text-5xl font-black tracking-tighter md:text-7xl leading-none mb-6">
-            {{ $t('contact.hero_title')}}
+            {{ $t('contact.hero_title') }}
           </h1>
           <p class="mx-auto max-w-2xl text-lg font-medium text-muted-foreground md:text-xl">
-            {{ $t('contact.hero_desc')}}
+            {{ $t('contact.hero_desc') }}
           </p>
         </div>
 
@@ -23,7 +23,7 @@
               <h2
                 class="mb-8 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/90"
               >
-                {{ $t('contact.info_title')}}
+                {{ $t('contact.info_title') }}
               </h2>
 
               <div class="space-y-8">
@@ -37,7 +37,7 @@
                     <p
                       class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
-                      {{ $t('contact.email_label')}}
+                      {{ $t('contact.email_label') }}
                     </p>
                     <a
                       href="mailto:me@seaavey.com"
@@ -57,10 +57,10 @@
                     <p
                       class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
-                      {{ $t('contact.support_label')}}
+                      {{ $t('contact.support_label') }}
                     </p>
                     <p class="text-lg font-black text-foreground">
-                      {{ $t('contact.support_hours')}}
+                      {{ $t('contact.support_hours') }}
                     </p>
                   </div>
                 </div>
@@ -75,7 +75,7 @@
                     <p
                       class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1"
                     >
-                      {{ $t('contact.social_label')}}
+                      {{ $t('contact.social_label') }}
                     </p>
                     <div class="flex gap-3 mt-2">
                       <a
@@ -96,7 +96,7 @@
           <!-- Right Column: Form -->
           <div class="rounded-4xl border border-border/50 bg-card p-8 md:p-12 shadow-xl">
             <h2 class="mb-8 text-2xl font-black tracking-tighter text-foreground">
-              {{ $t('contact.form_title')}}
+              {{ $t('contact.form_title') }}
             </h2>
 
             <form @submit.prevent="handleSubmit" class="space-y-6">
@@ -104,7 +104,7 @@
                 <Label
                   for="name"
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
-                  >{{ $t('contact.form_name')}}</Label
+                  >{{ $t('contact.form_name') }}</Label
                 >
                 <Input
                   id="name"
@@ -118,7 +118,7 @@
                 <Label
                   for="email"
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
-                  >{{ $t('contact.form_email')}}</Label
+                  >{{ $t('contact.form_email') }}</Label
                 >
                 <Input
                   id="email"
@@ -133,7 +133,7 @@
                 <Label
                   for="message"
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 ml-1"
-                  >{{ $t('contact.form_message')}}</Label
+                  >{{ $t('contact.form_message') }}</Label
                 >
                 <Textarea
                   id="message"
@@ -148,7 +148,7 @@
                 :disabled="loading"
                 class="h-14 w-full rounded-2xl bg-linear-to-b from-primary to-primary/90 text-base font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                <span v-if="!loading">{{ $t('contact.form_submit')}}</span>
+                <span v-if="!loading">{{ $t('contact.form_submit') }}</span>
                 <AppIcon v-else name="hugeicons:loading-01" class="animate-spin" :size="24" />
               </Button>
             </form>
@@ -165,32 +165,31 @@
 defineOptions({
   name: 'ContactPage',
 })
-const { toast } = useToast();
-const { t } = useI18n();
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import LandingNavbar from '@/components/landing/Navbar.vue';
-import LandingFooter from '@/components/landing/Footer.vue';
+const { toast } = useToast()
+const { t } = useI18n()
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import LandingNavbar from '@/components/landing/Navbar.vue'
+import LandingFooter from '@/components/landing/Footer.vue'
 
+const loading = ref(false)
 
-const loading = ref(false);
-
-const socials = [{ icon: 'hugeicons:github', href: 'https://github.com/seaavey' }];
+const socials = [{ icon: 'hugeicons:github', href: 'https://github.com/seaavey' }]
 
 const handleSubmit = async () => {
-  loading.value = true;
+  loading.value = true
   // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  loading.value = false;
-toast.success(t('contact.success'));
-};
+  await new Promise((resolve) => setTimeout(resolve, 1500))
+  loading.value = false
+  toast.success(t('contact.success'))
+}
 
 useSeoMeta({
   title: t('contact.title'),
   ogTitle: t('contact.title'),
   description: t('contact.subtitle'),
   ogDescription: t('contact.subtitle'),
-});
+})
 </script>

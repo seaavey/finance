@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import { useToast } from '@/composables/useToast';
+import { useToast } from '@/composables/useToast'
 
-type ToastType = 'success' | 'error' | 'info';
+type ToastType = 'success' | 'error' | 'info'
 
 interface Toast {
-  id: number;
-  message: string;
-  type: ToastType;
+  id: number
+  message: string
+  type: ToastType
 }
 
-const { register } = useToast();
-const toasts = ref<Toast[]>([]);
-let counter = 0;
+const { register } = useToast()
+const toasts = ref<Toast[]>([])
+let counter = 0
 
 const addToast = (message: string, type: ToastType = 'info') => {
-  const id = ++counter;
-  toasts.value.push({ id, message, type });
+  const id = ++counter
+  toasts.value.push({ id, message, type })
   setTimeout(() => {
-    toasts.value = toasts.value.filter((t) => t.id !== id);
-  }, 3000);
-};
+    toasts.value = toasts.value.filter((t) => t.id !== id)
+  }, 3000)
+}
 
 onMounted(() => {
-  register(addToast);
-});
+  register(addToast)
+})
 
 const iconMap = {
   success: 'hugeicons:checkmark-circle-02',
   error: 'hugeicons:cancel-circle',
   info: 'hugeicons:information-circle',
-};
+}
 
 const colorMap = {
   success: 'bg-green-50 border-green-200 text-green-800',
   error: 'bg-red-50 border-red-200 text-red-800',
   info: 'bg-blue-50 border-blue-200 text-blue-800',
-};
+}
 
-defineExpose({ addToast });
+defineExpose({ addToast })
 </script>
 
 <template>

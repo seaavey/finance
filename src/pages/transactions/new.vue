@@ -6,14 +6,14 @@
 defineOptions({
   name: 'PagesTransactionsNew',
 })
-const router = useRouter();
-const { fetchCategories } = useCategories();
+const router = useRouter()
+const { fetchCategories } = useCategories()
 
 onMounted(async () => {
-  await fetchCategories();
-});
+  await fetchCategories()
+})
 
 const onSaved = () => {
-  router.push('/transactions');
-};
+  router.push('/transactions')
+}
 </script>

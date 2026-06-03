@@ -9,10 +9,10 @@
         <!-- Hero Section -->
         <div class="mb-16 text-center md:mb-24">
           <h1 class="text-5xl font-black tracking-tighter md:text-7xl leading-none mb-6">
-            {{ $t('terms.hero_title')}}
+            {{ $t('terms.hero_title') }}
           </h1>
           <p class="mx-auto max-w-2xl text-lg font-medium text-muted-foreground md:text-xl">
-            {{ $t('terms.last_updated')}}
+            {{ $t('terms.last_updated') }}
           </p>
         </div>
 
@@ -30,17 +30,17 @@
               <span
                 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-2 block"
               >
-                {{ $t(section.sectionKey)}}
+                {{ $t(section.sectionKey) }}
               </span>
               <h2 class="text-2xl font-black tracking-tight text-foreground md:text-3xl mb-6">
-                {{ $t(section.titleKey)}}
+                {{ $t(section.titleKey) }}
               </h2>
               <div
                 v-if="section.paragraphs"
                 class="space-y-4 text-base font-medium leading-relaxed text-muted-foreground md:text-lg"
               >
                 <p v-for="(p, i) in section.paragraphs.length" :key="i">
-                  {{ $t((section.paragraphs[i] || ""))}}
+                  {{ $t(section.paragraphs[i] || '') }}
                 </p>
               </div>
               <ul v-if="section.list" class="space-y-3">
@@ -54,7 +54,7 @@
                     :size="22"
                     class="mt-0.5 shrink-0 text-primary"
                   />
-                  <span>{{ $t((section.list[i] || ""))}}</span>
+                  <span>{{ $t(section.list[i] || '') }}</span>
                 </li>
               </ul>
             </div>
@@ -64,17 +64,17 @@
         <!-- Contact Section -->
         <div class="mt-12 rounded-4xl border border-border/50 bg-muted/20 p-8 md:p-12 text-center">
           <h2 class="text-2xl font-black tracking-tight text-foreground md:text-3xl mb-4">
-            {{ $t('terms.contact_title')}}
+            {{ $t('terms.contact_title') }}
           </h2>
           <p class="text-base font-medium leading-relaxed text-muted-foreground md:text-lg mb-6">
-            {{ $t('terms.contact_desc')}}
+            {{ $t('terms.contact_desc') }}
           </p>
           <a
             href="mailto:me@seaavey.com"
             class="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 font-black text-sm text-white shadow-lg shadow-primary/20 hover:scale-[1.05] active:scale-[0.95] transition-all"
           >
             <AppIcon name="hugeicons:mail-01" :size="20" />
-            {{ $t('contact.email_label')}}
+            {{ $t('contact.email_label') }}
           </a>
         </div>
       </div>
@@ -85,9 +85,8 @@
 </template>
 
 <script setup lang="ts">
-import LandingNavbar from '@/components/landing/Navbar.vue';
-import LandingFooter from '@/components/landing/Footer.vue';
-
+import LandingNavbar from '@/components/landing/Navbar.vue'
+import LandingFooter from '@/components/landing/Footer.vue'
 
 const sections = [
   {
@@ -133,13 +132,13 @@ const sections = [
     titleKey: 'terms.changes_title',
     paragraphs: ['terms.changes_p1'],
   },
-];
+]
 
-const { t: tSeo } = useI18n();
+const { t: tSeo } = useI18n()
 useSeoMeta({
   title: tSeo('terms_of_service.title'),
   ogTitle: tSeo('terms_of_service.title'),
   description: tSeo('terms_of_service.intro_desc'),
   ogDescription: tSeo('terms_of_service.intro_desc'),
-});
+})
 </script>

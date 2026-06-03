@@ -112,12 +112,7 @@
 
         <!-- Actions -->
         <div class="flex shrink-0 items-center gap-2" @click.stop>
-          <Button
-            v-if="!bill.is_paid"
-            variant="outline"
-            size="sm"
-            @click="handleMarkPaid(bill.id)"
-          >
+          <Button v-if="!bill.is_paid" variant="outline" size="sm" @click="handleMarkPaid(bill.id)">
             {{ $t('bills.mark_paid') }}
           </Button>
           <Button
@@ -138,88 +133,88 @@
 defineOptions({
   name: 'PagesBillsIndex',
 })
-import { Button } from '@/components/ui/button';
-import type { Bill } from '@/composables/useBills';
+import { Button } from '@/components/ui/button'
+import type { Bill } from '@/composables/useBills'
 
-const router = useRouter();
-const { bills, fetchBills, markAsPaid, deleteBill, loading } = useBills();
-const { formatCurrency } = useCurrency();
-const { t } = useI18n();
+const router = useRouter()
+const { bills, fetchBills, markAsPaid, deleteBill, loading } = useBills()
+const { formatCurrency } = useCurrency()
+const { t } = useI18n()
 
-const filter = ref<'all' | 'unpaid' | 'paid'>('unpaid');
+const filter = ref<'all' | 'unpaid' | 'paid'>('unpaid')
 
 const filterTabs = computed(() => [
   { value: 'all' as const, label: t('bills.all') },
   { value: 'unpaid' as const, label: t('bills.unpaid') },
   { value: 'paid' as const, label: t('bills.paid') },
-]);
+])
 
 const filteredBills = computed(() => {
   if (filter.value === 'all') {
-    return bills.value;
+    return bills.value
   }
   if (filter.value === 'unpaid') {
-    return bills.value.filter((b) => !b.is_paid);
+    return bills.value.filter((b) => !b.is_paid)
   }
-  return bills.value.filter((b) => b.is_paid);
-});
+  return bills.value.filter((b) => b.is_paid)
+})
 
 function getDaysUntilDue(dueDate: string): number {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
-  return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)
+  const due = new Date(dueDate)
+  due.setHours(0, 0, 0, 0)
+  return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
 function getDueDateText(bill: Bill): string {
   if (bill.is_paid) {
-    return t('bills.paid');
+    return t('bills.paid')
   }
-  const days = getDaysUntilDue(bill.due_date);
+  const days = getDaysUntilDue(bill.due_date)
   if (days === 0) {
-    return t('bills.due_today');
+    return t('bills.due_today')
   }
   if (days < 0) {
-    return t('bills.overdue');
+    return t('bills.overdue')
   }
-  return t('bills.due_in_days', { days });
+  return t('bills.due_in_days', { days })
 }
 
 function getDueDateClass(bill: Bill): string {
   if (bill.is_paid) {
-    return 'text-emerald-600 dark:text-emerald-400';
+    return 'text-emerald-600 dark:text-emerald-400'
   }
-  const days = getDaysUntilDue(bill.due_date);
+  const days = getDaysUntilDue(bill.due_date)
   if (days === 0) {
-    return 'text-amber-500 dark:text-amber-400';
+    return 'text-amber-500 dark:text-amber-400'
   }
   if (days < 0) {
-    return 'text-rose-500 dark:text-rose-400';
+    return 'text-rose-500 dark:text-rose-400'
   }
-  return 'text-muted-foreground';
+  return 'text-muted-foreground'
 }
 
 function getIconClass(bill: Bill): string {
   if (bill.is_paid) {
-    return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+    return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
   }
-  const days = getDaysUntilDue(bill.due_date);
+  const days = getDaysUntilDue(bill.due_date)
   if (days <= 0) {
-    return 'bg-rose-500/10 text-rose-600 dark:text-rose-400';
+    return 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
   }
-  return 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
+  return 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
 }
 
 async function handleMarkPaid(id: string) {
-  await markAsPaid(id);
+  await markAsPaid(id)
 }
 
 async function handleDelete(id: string) {
-  await deleteBill(id);
+  await deleteBill(id)
 }
 
 onMounted(() => {
-  fetchBills();
-});
+  fetchBills()
+})
 </script>

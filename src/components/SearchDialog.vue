@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date';
-import { useTransactions, type Transaction } from '@/composables/useTransactions';
+import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
+import { useTransactions, type Transaction } from '@/composables/useTransactions'
 
-const { searchTransactions } = useTransactions();
-const { formatCurrency } = useCurrency();
-const { categories } = useCategories();
-const { t, locale } = useI18n();
+const { searchTransactions } = useTransactions()
+const { formatCurrency } = useCurrency()
+const { categories } = useCategories()
+const { t, locale } = useI18n()
 
-const router = useRouter();
-const open = defineModel<boolean>('open', { default: false });
-const searchQuery = ref('');
-const results = ref<Transaction[]>([]);
-const loading = ref(false);
+const router = useRouter()
+const open = defineModel<boolean>('open', { default: false })
+const searchQuery = ref('')
+const results = ref<Transaction[]>([])
+const loading = ref(false)
 
 const suggestions = computed(() => [
   { label: t('sidebar.dashboard'), icon: 'hugeicons:home-03', to: '/dashboard' },
   { label: t('sidebar.transactions'), icon: 'hugeicons:arrow-left-right', to: '/transactions' },
   { label: t('sidebar.categories'), icon: 'hugeicons:grid-view', to: '/categories' },
   { label: t('sidebar.recurring'), icon: 'hugeicons:repeat', to: '/recurring' },
-]);
+])
 
 const quickActions = computed(() => [
   {
@@ -28,46 +28,46 @@ const quickActions = computed(() => [
   },
   { label: t('recurring.add'), icon: 'hugeicons:money-add-01', to: '/recurring' },
   { label: t('sidebar.settings'), icon: 'hugeicons:settings-01', to: '/settings', shortcut: '⌘S' },
-]);
+])
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   day: 'numeric',
   month: 'short',
-});
+})
 
-let debounceTimer: ReturnType<typeof setTimeout>;
+let debounceTimer: ReturnType<typeof setTimeout>
 
 const search = async (term: string) => {
   if (!term) {
-    results.value = [];
-    return;
+    results.value = []
+    return
   }
-  loading.value = true;
-  results.value = await searchTransactions(term);
-  loading.value = false;
-};
+  loading.value = true
+  results.value = await searchTransactions(term)
+  loading.value = false
+}
 
 const onInput = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  searchQuery.value = target.value;
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => search(searchQuery.value), 300);
-};
+  const target = e.target as HTMLInputElement
+  searchQuery.value = target.value
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => search(searchQuery.value), 300)
+}
 
 const select = (to: string) => {
-  open.value = false;
-  router.push(to);
-};
+  open.value = false
+  router.push(to)
+}
 
-const getCategory = (id: string | null) => categories.value.find((c) => c.id === id);
+const getCategory = (id: string | null) => categories.value.find((c) => c.id === id)
 
 const formatDate = (date: string) => {
   try {
-    return df.format(parseDate(date).toDate(getLocalTimeZone()));
+    return df.format(parseDate(date).toDate(getLocalTimeZone()))
   } catch {
-    return date;
+    return date
   }
-};
+}
 </script>
 
 <template>
@@ -75,11 +75,11 @@ const formatDate = (date: string) => {
     <CommandInput :placeholder="$t('topbar.search')" @input="onInput" />
     <CommandList>
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <p class="text-sm text-muted-foreground/90">{{ $t('topbar.searching')}}</p>
+        <p class="text-sm text-muted-foreground/90">{{ $t('topbar.searching') }}</p>
       </div>
 
       <CommandEmpty v-else-if="results.length === 0 && searchQuery">
-        {{ $t('topbar.no_results')}}
+        {{ $t('topbar.no_results') }}
       </CommandEmpty>
 
       <!-- RESULTS -->
@@ -105,7 +105,7 @@ const formatDate = (date: string) => {
             </p>
             <p class="text-xs text-muted-foreground">
               {{ formatDate(tx.date) }}
-              · {{ getCategory(tx.category_id)?.name || $t('transactions.all')}}
+              · {{ getCategory(tx.category_id)?.name || $t('transactions.all') }}
             </p>
           </div>
           <p

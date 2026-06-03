@@ -27,7 +27,7 @@ const brandColors: Record<string, { bg: string; text: string; label: string }> =
   bsi: { bg: '#006a67', text: '#ffffff', label: 'BSI' },
   jago: { bg: '#ff7a00', text: '#ffffff', label: 'J' },
   seabank: { bg: '#ff5722', text: '#ffffff', label: 'Sea' },
-  
+
   // E-Wallets
   gopay: { bg: '#00aed6', text: '#ffffff', label: 'GP' },
   ovo: { bg: '#4c2a86', text: '#ffffff', label: 'OVO' },
@@ -39,9 +39,12 @@ const brandColors: Record<string, { bg: string; text: string; label: string }> =
 
 const brandInfo = computed(() => brandColors[props.icon] || null)
 
-watch(() => props.icon, () => {
-  imageError.value = false
-})
+watch(
+  () => props.icon,
+  () => {
+    imageError.value = false
+  },
+)
 
 const handleImageError = () => {
   imageError.value = true
@@ -49,7 +52,7 @@ const handleImageError = () => {
 </script>
 
 <template>
-  <div 
+  <div
     class="flex items-center justify-center overflow-hidden shrink-0"
     :style="{ width: (Number(size) || 24) + 'px', height: (Number(size) || 24) + 'px' }"
   >
@@ -62,7 +65,7 @@ const handleImageError = () => {
       class="icon-component"
       :style="{ color: color }"
     />
-    
+
     <!-- Local brand PNG with fallback -->
     <template v-else-if="localIconPath">
       <img
@@ -72,33 +75,30 @@ const handleImageError = () => {
         :alt="icon"
         @error="handleImageError"
       />
-      
+
       <!-- Stylized SVG Placeholder -->
       <div
         v-else-if="brandInfo"
         class="flex size-full items-center justify-center rounded-lg font-black tracking-tighter shadow-inner"
-        :style="{ 
-          backgroundColor: brandInfo.bg, 
+        :style="{
+          backgroundColor: brandInfo.bg,
           color: brandInfo.text,
-          fontSize: (Number(size) * 0.4) + 'px'
+          fontSize: Number(size) * 0.4 + 'px',
         }"
       >
         {{ brandInfo.label }}
       </div>
-      
+
       <!-- Generic Fallback -->
-      <div
-        v-else
-        class="flex size-full items-center justify-center rounded-lg bg-muted/50"
-      >
-        <AppIcon 
-          :name="type === 'bank' ? 'hugeicons:bank' : 'hugeicons:wallet-03'" 
-          :size="Number(size) * 0.6" 
+      <div v-else class="flex size-full items-center justify-center rounded-lg bg-muted/50">
+        <AppIcon
+          :name="type === 'bank' ? 'hugeicons:bank' : 'hugeicons:wallet-03'"
+          :size="Number(size) * 0.6"
           class="text-muted-foreground/40"
         />
       </div>
     </template>
-    
+
     <!-- Fallback colored box -->
     <div
       v-else

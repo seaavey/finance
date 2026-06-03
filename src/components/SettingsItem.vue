@@ -35,12 +35,12 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  icon: 'user' | 'currency' | 'palette' | 'download' | 'language';
-  label: string;
-  value: string;
-}>();
+  icon: 'user' | 'currency' | 'palette' | 'download' | 'language'
+  label: string
+  value: string
+}>()
 
-defineEmits(['click']);
+defineEmits(['click'])
 
 const iconMap = {
   user: {
@@ -68,9 +68,9 @@ const iconMap = {
     bg: 'bg-cyan-100 dark:bg-cyan-950/50',
     color: 'text-cyan-600 dark:text-cyan-400',
   },
-};
+}
 
-const iconComponent = computed(() => iconMap[props.icon].component);
-const iconBg = computed(() => iconMap[props.icon].bg);
-const iconColor = computed(() => iconMap[props.icon].color);
+const iconComponent = computed(() => iconMap[props.icon].component)
+const iconBg = computed(() => iconMap[props.icon].bg)
+const iconColor = computed(() => iconMap[props.icon].color)
 </script>

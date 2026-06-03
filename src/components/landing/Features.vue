@@ -13,15 +13,15 @@
           class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md transition-all hover:bg-card/80 shadow-sm"
         >
           <AppIcon name="hugeicons:grid-view" :size="14" />
-          {{ $t('landing.features_title')}}
+          {{ $t('landing.features_title') }}
         </div>
         <h2
           class="mb-6 text-4xl font-black tracking-tighter text-foreground md:text-5xl lg:text-6xl"
         >
-          {{ $t('landing.features_heading')}}
+          {{ $t('landing.features_heading') }}
         </h2>
         <p class="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl">
-          {{ $t('landing.features_desc')}}
+          {{ $t('landing.features_desc') }}
         </p>
       </div>
 
@@ -59,12 +59,12 @@
             <h3
               class="mb-3 text-xl font-black tracking-tight text-foreground group-hover:text-primary transition-colors"
             >
-              {{ $t(feature.titleKey)}}
+              {{ $t(feature.titleKey) }}
             </h3>
             <p
               class="font-medium leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors"
             >
-              {{ $t(feature.descKey)}}
+              {{ $t(feature.descKey) }}
             </p>
           </div>
 
@@ -89,11 +89,11 @@ defineOptions({
   name: 'ComponentsLandingFeatures',
 })
 interface Feature {
-  titleKey: string;
-  descKey: string;
-  icon: string;
-  iconBg: string;
-  iconColor: string;
+  titleKey: string
+  descKey: string
+  icon: string
+  iconBg: string
+  iconColor: string
 }
 
 const features: Feature[] = [
@@ -139,5 +139,5 @@ const features: Feature[] = [
     iconBg: 'bg-cyan-500/10',
     iconColor: 'text-cyan-500',
   },
-];
+]
 </script>

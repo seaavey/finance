@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue';
-import type { ChartConfig } from '@/components/ui/chart';
-import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { componentToString } from '@/components/ui/chart/utils';
+import type { HTMLAttributes } from 'vue'
+import type { ChartConfig } from '@/components/ui/chart'
+import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
+import { componentToString } from '@/components/ui/chart/utils'
 
 const props = withDefaults(
   defineProps<{
-    data: Record<string, unknown>[];
-    config: ChartConfig;
-    index: string;
-    categories: string[];
-    class?: HTMLAttributes['class'];
-    showXAxis?: boolean;
-    showYAxis?: boolean;
-    showGridLine?: boolean;
-    showTooltip?: boolean;
-    showLegend?: boolean;
-    yFormatter?: (tick: string | number) => string;
+    data: Record<string, unknown>[]
+    config: ChartConfig
+    index: string
+    categories: string[]
+    class?: HTMLAttributes['class']
+    showXAxis?: boolean
+    showYAxis?: boolean
+    showGridLine?: boolean
+    showTooltip?: boolean
+    showLegend?: boolean
+    yFormatter?: (tick: string | number) => string
   }>(),
   {
     showXAxis: true,
@@ -26,9 +26,9 @@ const props = withDefaults(
     showTooltip: true,
     showLegend: true,
   },
-);
+)
 
-const x = (d: Record<string, unknown>) => d[props.index];
+const x = (d: Record<string, unknown>) => d[props.index]
 </script>
 
 <template>

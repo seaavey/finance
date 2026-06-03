@@ -9,11 +9,11 @@
         <!-- Hero Section -->
         <div class="mb-20 text-center md:mb-32">
           <h1 class="text-5xl font-black tracking-tighter md:text-7xl lg:text-8xl leading-none">
-            {{ $t('about.hero_title')}}
+            {{ $t('about.hero_title') }}
             <span
               class="block bg-linear-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent"
             >
-              {{ $t('about.hero_highlight')}}
+              {{ $t('about.hero_highlight') }}
             </span>
           </h1>
         </div>
@@ -28,13 +28,13 @@
 
           <div class="relative z-10 max-w-3xl">
             <h2 class="mb-8 text-3xl font-black tracking-tighter text-foreground md:text-5xl">
-              {{ $t('about.mission_title')}}
+              {{ $t('about.mission_title') }}
             </h2>
             <div
               class="space-y-6 text-lg font-medium leading-relaxed text-muted-foreground md:text-xl"
             >
-              <p>{{ $t('about.mission_desc_1')}}</p>
-              <p>{{ $t('about.mission_desc_2')}}</p>
+              <p>{{ $t('about.mission_desc_1') }}</p>
+              <p>{{ $t('about.mission_desc_2') }}</p>
             </div>
           </div>
         </div>
@@ -52,9 +52,9 @@
               <AppIcon :name="value.icon" :size="28" class="text-primary" />
             </div>
             <h3 class="mb-3 text-xl font-black tracking-tight text-foreground">
-              {{ $t(value.titleKey)}}
+              {{ $t(value.titleKey) }}
             </h3>
-            <p class="font-medium leading-relaxed text-muted-foreground">{{ $t(value.descKey)}}</p>
+            <p class="font-medium leading-relaxed text-muted-foreground">{{ $t(value.descKey) }}</p>
           </div>
         </div>
       </div>
@@ -68,9 +68,8 @@
 defineOptions({
   name: 'AboutPage',
 })
-import LandingNavbar from '@/components/landing/Navbar.vue';
-import LandingFooter from '@/components/landing/Footer.vue';
-
+import LandingNavbar from '@/components/landing/Navbar.vue'
+import LandingFooter from '@/components/landing/Footer.vue'
 
 const values = [
   {
@@ -88,13 +87,13 @@ const values = [
     descKey: 'about.value_modern_desc',
     icon: 'hugeicons:grid-view',
   },
-];
+]
 
-const { t: tSeo } = useI18n();
+const { t: tSeo } = useI18n()
 useSeoMeta({
   title: tSeo('about.title'),
   ogTitle: tSeo('about.title'),
   description: tSeo('about.mission_desc_1'),
   ogDescription: tSeo('about.mission_desc_1'),
-});
+})
 </script>

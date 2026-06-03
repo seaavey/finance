@@ -5,7 +5,7 @@
       <h1 class="text-4xl font-black tracking-tighter text-foreground">
         {{ $t('settings.account') }}
       </h1>
-      <p class="mt-1 font-medium text-muted-foreground">{{ $t('settings.preferences')}}</p>
+      <p class="mt-1 font-medium text-muted-foreground">{{ $t('settings.preferences') }}</p>
     </div>
 
     <!-- LOADING STATE -->
@@ -44,7 +44,7 @@
               <span
                 class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-primary"
               >
-                {{ isPartnered ? $t('settings.couple_mode') : $t('settings.personal_mode')}}
+                {{ isPartnered ? $t('settings.couple_mode') : $t('settings.personal_mode') }}
               </span>
               <span
                 v-if="user?.app_metadata?.provider"
@@ -62,7 +62,7 @@
         <h3
           class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
-          {{ $t('settings.preferences')}}
+          {{ $t('settings.preferences') }}
         </h3>
         <div
           class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
@@ -102,7 +102,7 @@
         <h3
           class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
-          {{ $t('sidebar.partner')}}
+          {{ $t('sidebar.partner') }}
         </h3>
 
         <!-- LOADING: PASANGAN -->
@@ -134,10 +134,10 @@
               </div>
               <div>
                 <p class="text-sm font-black text-foreground">
-                  {{ $t('settings.invite_partner_title')}}
+                  {{ $t('settings.invite_partner_title') }}
                 </p>
                 <p class="text-xs font-medium text-muted-foreground">
-                  {{ $t('settings.invite_partner_desc')}}
+                  {{ $t('settings.invite_partner_desc') }}
                 </p>
               </div>
             </div>
@@ -155,7 +155,7 @@
                 class="h-11 rounded-2xl bg-linear-to-b from-primary to-primary/90 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 @click="onSendInvite"
               >
-                {{ partnerSending ? $t('settings.inviting') : $t('settings.invite_button')}}
+                {{ partnerSending ? $t('settings.inviting') : $t('settings.invite_button') }}
               </Button>
             </div>
           </div>
@@ -168,7 +168,7 @@
             <p
               class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
             >
-              {{ $t('settings.sent_invitations_title')}}
+              {{ $t('settings.sent_invitations_title') }}
             </p>
             <div class="space-y-3">
               <div
@@ -198,7 +198,7 @@
                   class="rounded-xl text-xs font-bold text-muted-foreground hover:bg-muted"
                   @click="onCancelInvite(inv)"
                 >
-                  {{ $t('settings.cancel_invite')}}
+                  {{ $t('settings.cancel_invite') }}
                 </Button>
               </div>
             </div>
@@ -212,7 +212,7 @@
             <p
               class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
             >
-              {{ $t('settings.received_invitations_title')}}
+              {{ $t('settings.received_invitations_title') }}
             </p>
             <div class="space-y-3">
               <div
@@ -233,10 +233,10 @@
                   </Avatar>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-bold text-foreground">
-                      {{ inv.sender?.display_name || $t('settings.someone')}}
+                      {{ inv.sender?.display_name || $t('settings.someone') }}
                     </p>
                     <p class="text-[10px] font-medium text-muted-foreground">
-                      {{ $t('settings.invite_wants_to_connect')}}
+                      {{ $t('settings.invite_wants_to_connect') }}
                     </p>
                   </div>
                 </div>
@@ -247,14 +247,14 @@
                     class="rounded-xl font-bold text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
                     @click="onRejectInvite(inv)"
                   >
-                    {{ $t('settings.reject')}}
+                    {{ $t('settings.reject') }}
                   </Button>
                   <Button
                     size="sm"
                     class="rounded-xl bg-primary px-4 font-bold text-white shadow-sm hover:bg-primary/90"
                     @click="onAcceptInvite(inv)"
                   >
-                    {{ $t('settings.accept')}}
+                    {{ $t('settings.accept') }}
                   </Button>
                 </div>
               </div>
@@ -288,7 +288,7 @@
                     class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                   />
                   <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">
-                    {{ $t('settings.connected_status')}}
+                    {{ $t('settings.connected_status') }}
                   </p>
                 </div>
               </div>
@@ -309,10 +309,10 @@
                 </div>
                 <div class="min-w-0 text-left">
                   <p class="text-sm font-black text-rose-500 md:text-base">
-                    {{ $t('settings.disconnect_title')}}
+                    {{ $t('settings.disconnect_title') }}
                   </p>
                   <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60">
-                    {{ $t('settings.disconnect_desc')}}
+                    {{ $t('settings.disconnect_desc') }}
                   </p>
                 </div>
               </div>
@@ -331,7 +331,7 @@
         <h3
           class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
         >
-          {{ $t('settings.data')}}
+          {{ $t('settings.data') }}
         </h3>
         <div
           class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
@@ -350,7 +350,7 @@
         <h3
           class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 text-rose-500/60"
         >
-          {{ $t('settings.account')}}
+          {{ $t('settings.account') }}
         </h3>
         <div
           class="rounded-4xl border border-border/50 bg-card p-1.5 shadow-sm transition-all hover:shadow-md"
@@ -369,10 +369,10 @@
                 </div>
                 <div class="min-w-0 text-left">
                   <p class="text-sm font-black text-foreground md:text-base">
-                    {{ $t('settings.logout')}}
+                    {{ $t('settings.logout') }}
                   </p>
                   <p class="text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
-                    {{ $t('settings.logout_desc')}}
+                    {{ $t('settings.logout_desc') }}
                   </p>
                 </div>
               </div>
@@ -388,10 +388,10 @@
 
       <div class="flex flex-col items-center gap-2 pb-8 opacity-40">
         <p class="text-[10px] font-black uppercase tracking-[0.3em]">
-          {{ $t('settings.version')}}
+          {{ $t('settings.version') }}
         </p>
         <p class="text-[9px] font-medium tracking-tighter italic text-primary/80">
-          {{ $t('dashboard.made_with')}}
+          {{ $t('dashboard.made_with') }}
         </p>
       </div>
     </div>
@@ -400,7 +400,9 @@
     <AlertDialog v-model:open="showDisconnectDialog">
       <AlertDialogContent class="rounded-4xl">
         <AlertDialogHeader>
-          <AlertDialogTitle class="font-black tracking-tight">{{ $t('settings.dialog_disconnect_title') }}</AlertDialogTitle>
+          <AlertDialogTitle class="font-black tracking-tight">{{
+            $t('settings.dialog_disconnect_title')
+          }}</AlertDialogTitle>
           <AlertDialogDescription class="text-sm">
             {{ $t('settings.dialog_disconnect_desc') }}
           </AlertDialogDescription>
@@ -440,14 +442,14 @@
         </div>
         <div class="flex justify-end gap-2">
           <Button variant="ghost" class="rounded-xl font-bold" @click="editName = false">
-            {{ $t('settings.cancel')}}
+            {{ $t('settings.cancel') }}
           </Button>
           <Button
             class="rounded-xl bg-primary px-6 font-bold text-white shadow-lg shadow-primary/20"
             :disabled="saving"
             @click="saveProfile"
           >
-            {{ saving ? $t('settings.saving') : $t('settings.save')}}
+            {{ saving ? $t('settings.saving') : $t('settings.save') }}
           </Button>
         </div>
       </DialogContent>
@@ -498,23 +500,23 @@
 defineOptions({
   name: 'SettingsPage',
 })
-import { useExport } from "@/composables/useExport";
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useExport } from '@/composables/useExport'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { useSupabase } from '@/lib/supabase';
-import type { CoupleInvitation } from '@/composables/usePartner';
+} from '@/components/ui/dialog'
+import { useSupabase } from '@/lib/supabase'
+import type { CoupleInvitation } from '@/composables/usePartner'
 
-const { toast } = useToast();
-const supabase = useSupabase();
-const { user, signOut } = useAuth();
+const { toast } = useToast()
+const supabase = useSupabase()
+const { user, signOut } = useAuth()
 const {
   partner,
   sentInvitations,
@@ -530,79 +532,79 @@ const {
   rejectInvite,
   cancelInvite,
   disconnectPartner,
-} = usePartner();
-const { currencies, currencyGroups } = useCurrency();
-const colorMode = useColorMode();
-const { locale, setLocale, t } = useI18n();
+} = usePartner()
+const { currencies, currencyGroups } = useCurrency()
+const colorMode = useColorMode()
+const { locale, setLocale, t } = useI18n()
 
-const loading = ref(true);
-const saving = ref(false);
-const editName = ref(false);
-const editCurrency = ref(false);
-const inviteEmail = ref('');
+const loading = ref(true)
+const saving = ref(false)
+const editName = ref(false)
+const editCurrency = ref(false)
+const inviteEmail = ref('')
 
 const profile = reactive({
   display_name: '',
   currency: 'IDR',
-});
+})
 
 const selectedCurrencyLabel = computed(() => {
-  const c = currencies.find((c) => c.value === profile.currency);
-  return c ? c.label : 'IDR';
-});
+  const c = currencies.find((c) => c.value === profile.currency)
+  return c ? c.label : 'IDR'
+})
 
 const localeLabel = computed(() => {
-  const map: Record<string, string> = { id: t('settings.locale_id'), en: t('settings.locale_en') };
-  return map[locale.value] ?? t('settings.locale_id');
-});
+  const map: Record<string, string> = { id: t('settings.locale_id'), en: t('settings.locale_en') }
+  return map[locale.value] ?? t('settings.locale_id')
+})
 
 const cycleLanguage = async () => {
-  const locales = ['id', 'en'];
-  const idx = locales.indexOf(locale.value);
-  await setLocale((locales[(idx + 1) % locales.length] || "id"));
-};
+  const locales = ['id', 'en']
+  const idx = locales.indexOf(locale.value)
+  await setLocale(locales[(idx + 1) % locales.length] || 'id')
+}
 
 const themeLabel = computed(() => {
   const map: Record<string, string> = {
     light: t('theme.light'),
     dark: t('theme.dark'),
     system: t('theme.system'),
-  };
-  return map[colorMode.preference] ?? t('theme.system');
-});
+  }
+  return map[colorMode.preference] ?? t('theme.system')
+})
 
 const cycleTheme = () => {
-  const modes = ['system', 'light', 'dark'];
-  const idx = modes.indexOf(colorMode.preference);
-  colorMode.preference = modes[(idx + 1) % modes.length] || 'system';
-};
+  const modes = ['system', 'light', 'dark']
+  const idx = modes.indexOf(colorMode.preference)
+  colorMode.preference = modes[(idx + 1) % modes.length] || 'system'
+}
 
 onMounted(async () => {
   if (!user.value) {
-    return;
+    return
   }
 
   const { data } = await supabase
     .from('profiles')
     .select('display_name, currency')
     .eq('id', user.value.id)
-    .single();
+    .single()
 
   if (data) {
-    profile.display_name = data.display_name ?? '';
-    profile.currency = data.currency ?? 'IDR';
+    profile.display_name = data.display_name ?? ''
+    profile.currency = data.currency ?? 'IDR'
   }
-  loading.value = false;
+  loading.value = false
 
   // Fetch partner data
-  await Promise.all([fetchPartner(), fetchInvitations()]);
-});
+  await Promise.all([fetchPartner(), fetchInvitations()])
+})
 
 const saveProfile = async () => {
   if (!user.value) {
-    return;
+    return
   }
-  saving.value = true;
+  saving.value = true
 
   const { error } = await supabase
     .from('profiles')
@@ -610,77 +612,77 @@ const saveProfile = async () => {
       display_name: profile.display_name,
       currency: profile.currency,
     })
-    .eq('id', user.value.id);
+    .eq('id', user.value.id)
 
   if (!error) {
-    toast.success(t('settings.toast_saved'));
-    loadCurrency();
+    toast.success(t('settings.toast_saved'))
+    loadCurrency()
   } else {
-    toast.error(t('settings.toast_save_error'));
+    toast.error(t('settings.toast_save_error'))
   }
-  saving.value = false;
-  editName.value = false;
-};
+  saving.value = false
+  editName.value = false
+}
 
 const selectCurrency = async (value: string) => {
-  profile.currency = value;
-  editCurrency.value = false;
+  profile.currency = value
+  editCurrency.value = false
   if (!user.value) {
-    return;
+    return
   }
 
   const { error } = await supabase
     .from('profiles')
     .update({ currency: value })
-    .eq('id', user.value.id);
+    .eq('id', user.value.id)
 
   if (!error) {
-    toast.success(t('settings.toast_currency_updated'));
-    loadCurrency();
+    toast.success(t('settings.toast_currency_updated'))
+    loadCurrency()
   } else {
-    toast.error(t('settings.toast_currency_error'));
+    toast.error(t('settings.toast_currency_error'))
   }
-};
+}
 
-const { exportAllData, exporting } = useExport();
+const { exportAllData, exporting } = useExport()
 const exportLabel = computed(() =>
   exporting.value ? t('settings.exporting') : t('settings.export'),
-);
+)
 const exportData = () => {
-  exportAllData();
-};
+  exportAllData()
+}
 
 const onSignOut = async () => {
-  await signOut();
-};
+  await signOut()
+}
 
 // === Couple handlers ===
 const onSendInvite = async () => {
   if (!inviteEmail.value) {
-    return;
+    return
   }
-  const { error } = await sendInvite(inviteEmail.value);
+  const { error } = await sendInvite(inviteEmail.value)
   if (!error) {
-    inviteEmail.value = '';
+    inviteEmail.value = ''
   }
-};
+}
 
 const onAcceptInvite = async (inv: CoupleInvitation) => {
-  await acceptInvite(inv.id);
-};
+  await acceptInvite(inv.id)
+}
 
 const onRejectInvite = async (inv: CoupleInvitation) => {
-  await rejectInvite(inv.id);
-};
+  await rejectInvite(inv.id)
+}
 
 const onCancelInvite = async (inv: CoupleInvitation) => {
-  await cancelInvite(inv.id);
-};
+  await cancelInvite(inv.id)
+}
 
-const showDisconnectDialog = ref(false);
+const showDisconnectDialog = ref(false)
 
 const onConfirmDisconnect = async () => {
-  showDisconnectDialog.value = false;
-  await disconnectPartner();
-};
+  showDisconnectDialog.value = false
+  await disconnectPartner()
+}
 </script>

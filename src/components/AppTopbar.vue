@@ -36,7 +36,11 @@
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator class="hidden md:flex">
-                <AppIcon name="hugeicons:arrow-right-01" :size="10" class="text-muted-foreground/30" />
+                <AppIcon
+                  name="hugeicons:arrow-right-01"
+                  :size="10"
+                  class="text-muted-foreground/30"
+                />
               </BreadcrumbSeparator>
             </template>
           </template>
@@ -143,7 +147,11 @@
               </div>
             </template>
             <div v-else class="flex h-32 flex-col items-center justify-center space-y-2">
-              <AppIcon name="hugeicons:notification-03" :size="24" class="text-muted-foreground/30" />
+              <AppIcon
+                name="hugeicons:notification-03"
+                :size="24"
+                class="text-muted-foreground/30"
+              />
               <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/90">
                 {{ $t('topbar.no_notifications') }}
               </p>

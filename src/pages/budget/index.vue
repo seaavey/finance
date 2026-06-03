@@ -2,91 +2,91 @@
 defineOptions({
   name: 'PagesBudgetIndex',
 })
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { BudgetWithProgress } from '@/composables/useBudgets';
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { BudgetWithProgress } from '@/composables/useBudgets'
 
-const router = useRouter();
-const { locale } = useI18n();
-const { fetchCategories } = useCategories();
-const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets();
-const { formatCurrency: fmtCurrency } = useCurrency();
+const router = useRouter()
+const { locale } = useI18n()
+const { fetchCategories } = useCategories()
+const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets()
+const { formatCurrency: fmtCurrency } = useCurrency()
 
-const budgetList = ref<BudgetWithProgress[]>([]);
-const showDeleteDialog = ref(false);
-const deletingBudget = ref<BudgetWithProgress | null>(null);
+const budgetList = ref<BudgetWithProgress[]>([])
+const showDeleteDialog = ref(false)
+const deletingBudget = ref<BudgetWithProgress | null>(null)
 
 const totals = computed(() => {
-  const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0);
-  const totalSpent = budgetList.value.reduce((s, b) => s + b.spent, 0);
+  const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0)
+  const totalSpent = budgetList.value.reduce((s, b) => s + b.spent, 0)
   return {
     totalLimit,
     totalSpent,
     totalRemaining: Math.max(totalLimit - totalSpent, 0),
     totalOverspent: Math.max(totalSpent - totalLimit, 0),
-  };
-});
+  }
+})
 
 // Month Navigation
-const selectedDate = ref(new Date());
+const selectedDate = ref(new Date())
 const currentMonthStr = computed(() => {
-  const d = new Date(selectedDate.value.getFullYear(), selectedDate.value.getMonth(), 1);
-  return d.toISOString().slice(0, 10);
-});
+  const d = new Date(selectedDate.value.getFullYear(), selectedDate.value.getMonth(), 1)
+  return d.toISOString().slice(0, 10)
+})
 
 const monthLabel = computed(() => {
   return selectedDate.value.toLocaleDateString(locale.value, {
     month: 'long',
     year: 'numeric',
-  });
-});
+  })
+})
 
 const changeMonth = async (delta: number) => {
-  const d = new Date(selectedDate.value);
-  d.setMonth(d.getMonth() + delta);
-  selectedDate.value = d;
-  await loadBudget();
-};
+  const d = new Date(selectedDate.value)
+  d.setMonth(d.getMonth() + delta)
+  selectedDate.value = d
+  await loadBudget()
+}
 
 const loadData = async () => {
-  await fetchCategories();
-  await loadBudget();
-};
+  await fetchCategories()
+  await loadBudget()
+}
 
 const loadBudget = async () => {
-  budgetList.value = await fetchBudgetWithProgress(currentMonthStr.value);
-};
+  budgetList.value = await fetchBudgetWithProgress(currentMonthStr.value)
+}
 
 onMounted(() => {
-  loadData();
-});
+  loadData()
+})
 
 const onDeleteRequest = (budget: BudgetWithProgress) => {
-  deletingBudget.value = budget;
-  showDeleteDialog.value = true;
-};
+  deletingBudget.value = budget
+  showDeleteDialog.value = true
+}
 
 const onDeleteConfirm = async () => {
   if (!deletingBudget.value) {
-    return;
+    return
   }
-  await deleteBudget(deletingBudget.value.id, currentMonthStr.value);
-  await loadBudget();
-  showDeleteDialog.value = false;
-  deletingBudget.value = null;
-};
+  await deleteBudget(deletingBudget.value.id, currentMonthStr.value)
+  await loadBudget()
+  showDeleteDialog.value = false
+  deletingBudget.value = null
+}
 
 const goToNew = () => {
-  router.push(`/budget/new?month=${currentMonthStr.value}`);
-};
+  router.push(`/budget/new?month=${currentMonthStr.value}`)
+}
 
 const goToEdit = (budget: BudgetWithProgress) => {
-  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}`);
-};
+  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}`)
+}
 
 const goToDetail = (budget: BudgetWithProgress) => {
-  router.push(`/budget/detail/${budget.id}?month=${currentMonthStr.value}`);
-};
+  router.push(`/budget/detail/${budget.id}?month=${currentMonthStr.value}`)
+}
 </script>
 
 <template>
@@ -95,16 +95,16 @@ const goToDetail = (budget: BudgetWithProgress) => {
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
         <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('budget.title')}}
+          {{ $t('budget.title') }}
         </h1>
-        <p class="mt-1 font-medium text-muted-foreground">{{ $t('budget.subtitle')}}</p>
+        <p class="mt-1 font-medium text-muted-foreground">{{ $t('budget.subtitle') }}</p>
       </div>
       <Button
         class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
         @click="goToNew"
       >
         <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('budget.set_budget')}}</span>
+        <span>{{ $t('budget.set_budget') }}</span>
       </Button>
     </div>
 
@@ -148,17 +148,17 @@ const goToDetail = (budget: BudgetWithProgress) => {
         <AppIcon name="hugeicons:wallet-03" :size="40" class="text-muted-foreground/40" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">
-        {{ $t('budget.no_budgets')}}
+        {{ $t('budget.no_budgets') }}
       </h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-        {{ $t('budget.empty')}}
+        {{ $t('budget.empty') }}
       </p>
       <Button
         variant="outline"
         class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
         @click="goToNew"
       >
-        {{ $t('budget.set_budget')}}
+        {{ $t('budget.set_budget') }}
       </Button>
     </div>
 
@@ -166,9 +166,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
     <div v-else class="space-y-6">
       <!-- Summary Cards Row -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div
-          class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm"
-        >
+        <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
             {{ $t('budget.monthly_limit') }}
           </p>
@@ -176,9 +174,7 @@ const goToDetail = (budget: BudgetWithProgress) => {
             {{ fmtCurrency(totals.totalLimit) }}
           </p>
         </div>
-        <div
-          class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm"
-        >
+        <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
             {{ $t('budget.spent') }}
           </p>
@@ -197,7 +193,11 @@ const goToDetail = (budget: BudgetWithProgress) => {
             class="text-2xl font-black tracking-tighter"
             :class="totals.totalOverspent > 0 ? 'text-red-600' : 'text-foreground'"
           >
-            {{ totals.totalOverspent > 0 ? fmtCurrency(totals.totalOverspent) : fmtCurrency(totals.totalRemaining) }}
+            {{
+              totals.totalOverspent > 0
+                ? fmtCurrency(totals.totalOverspent)
+                : fmtCurrency(totals.totalRemaining)
+            }}
           </p>
         </div>
       </div>
@@ -210,71 +210,84 @@ const goToDetail = (budget: BudgetWithProgress) => {
           class="group rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm transition-all duration-300 hover:bg-card/25 hover:shadow-md cursor-pointer flex flex-col justify-between min-h-44"
           @click="goToDetail(budget)"
         >
-        <div class="flex items-start justify-between">
-          <div class="flex items-center gap-3">
-            <div
-              class="flex size-10 items-center justify-center rounded-xl"
-              :style="{ backgroundColor: budget.category_color + '20' }"
-            >
-              <AppIcon
-                v-if="budget.category_icon && budget.category_icon.startsWith('hugeicons:')"
-                :name="budget.category_icon"
-                :size="20"
-                :style="{ color: budget.category_color }"
-              />
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-3">
               <div
-                v-else
-                class="size-5 rounded-md"
-                :style="{ backgroundColor: budget.category_color }"
+                class="flex size-10 items-center justify-center rounded-xl"
+                :style="{ backgroundColor: budget.category_color + '20' }"
+              >
+                <AppIcon
+                  v-if="budget.category_icon && budget.category_icon.startsWith('hugeicons:')"
+                  :name="budget.category_icon"
+                  :size="20"
+                  :style="{ color: budget.category_color }"
+                />
+                <div
+                  v-else
+                  class="size-5 rounded-md"
+                  :style="{ backgroundColor: budget.category_color }"
+                />
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
+                <p class="text-xs text-muted-foreground">
+                  {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              @click.stop
+            >
+              <Button variant="ghost" size="icon" class="size-8" @click="goToEdit(budget)">
+                <AppIcon name="hugeicons:edit-01" :size="16" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="size-8 text-red-600 hover:text-red-600"
+                @click="onDeleteRequest(budget)"
+              >
+                <AppIcon name="hugeicons:delete-01" :size="16" />
+              </Button>
+            </div>
+          </div>
+
+          <div class="mt-4 space-y-1.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-muted-foreground">
+                {{ $t('budget.spent') }}: {{ fmtCurrency(budget.spent) }}
+              </span>
+              <span
+                :class="
+                  getProgress(budget).overspent > 0
+                    ? 'text-red-600 font-semibold'
+                    : 'text-muted-foreground'
+                "
+              >
+                {{
+                  getProgress(budget).overspent > 0
+                    ? $t('budget.overspent')
+                    : `${$t('budget.remaining')}: ${fmtCurrency(getProgress(budget).remaining)}`
+                }}
+              </span>
+            </div>
+            <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                :class="
+                  getProgress(budget).overspent > 0
+                    ? 'bg-red-500'
+                    : getProgress(budget).percentage >= 80
+                      ? 'bg-amber-500'
+                      : 'bg-primary'
+                "
+                :style="{ width: `${Math.min(getProgress(budget).percentage, 100)}%` }"
               />
             </div>
-            <div>
-              <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
-              <p class="text-xs text-muted-foreground">
-                {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
-              </p>
-            </div>
-          </div>
-          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
-            <Button variant="ghost" size="icon" class="size-8" @click="goToEdit(budget)">
-              <AppIcon name="hugeicons:edit-01" :size="16" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-8 text-red-600 hover:text-red-600"
-              @click="onDeleteRequest(budget)"
-            >
-              <AppIcon name="hugeicons:delete-01" :size="16" />
-            </Button>
-          </div>
-        </div>
-
-        <div class="mt-4 space-y-1.5">
-          <div class="flex justify-between text-xs">
-            <span class="text-muted-foreground">
-              {{ $t('budget.spent') }}: {{ fmtCurrency(budget.spent) }}
-            </span>
-            <span
-              :class="getProgress(budget).overspent > 0 ? 'text-red-600 font-semibold' : 'text-muted-foreground'"
-            >
-              {{
-                getProgress(budget).overspent > 0
-                  ? $t('budget.overspent')
-                  : `${$t('budget.remaining')}: ${fmtCurrency(getProgress(budget).remaining)}`
-              }}
-            </span>
-          </div>
-          <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              class="h-full rounded-full transition-all duration-500"
-              :class="getProgress(budget).overspent > 0 ? 'bg-red-500' : getProgress(budget).percentage >= 80 ? 'bg-amber-500' : 'bg-primary'"
-              :style="{ width: `${Math.min(getProgress(budget).percentage, 100)}%` }"
-            />
           </div>
         </div>
       </div>
-    </div>
     </div>
 
     <!-- Delete Confirmation -->
