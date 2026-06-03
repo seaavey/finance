@@ -147,6 +147,11 @@ const onSubmit = async () => {
     router.push('/accounts')
   }
 }
+
+const selectBrand = (brandId: string, brandLabel: string) => {
+  form.icon = brandId
+  form.name = brandLabel
+}
 </script>
 
 <template>
@@ -218,10 +223,7 @@ const onSubmit = async () => {
                 ? 'border-primary bg-primary/5 shadow-xl shadow-primary/10'
                 : 'border-border/40 bg-background/40 hover:border-border/80'
             "
-            @click="
-              form.icon = brand.id
-              form.name = brand.label
-            "
+            @click="selectBrand(brand.id, brand.label)"
           >
             <div class="flex size-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm">
               <img
@@ -251,10 +253,7 @@ const onSubmit = async () => {
                 ? 'border-primary bg-primary/5 shadow-xl shadow-primary/10'
                 : 'border-border/40 bg-background/40 hover:border-border/80'
             "
-            @click="
-              form.icon = brand.id
-              form.name = brand.label
-            "
+            @click="selectBrand(brand.id, brand.label)"
           >
             <div class="flex size-12 items-center justify-center rounded-xl bg-white p-2 shadow-sm">
               <img

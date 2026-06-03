@@ -103,10 +103,7 @@
             size="sm"
             class="rounded-xl px-3 text-xs font-bold transition-all md:px-4"
             :class="activeTab === tab.value ? 'shadow-sm' : 'text-muted-foreground'"
-            @click="
-              activeTab = tab.value
-              applyFilters()
-            "
+            @click="handleTabClick(tab.value)"
           >
             <AppIcon v-if="tab.icon" :name="tab.icon" :size="14" class="mr-1" />
             {{ tab.label }}
@@ -138,10 +135,7 @@
             size="sm"
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === '' ? 'shadow-sm' : 'text-muted-foreground'"
-            @click="
-              filterAction = ''
-              applyFilters()
-            "
+            @click="handleActionFilterChange('')"
           >
             {{ $t('activities.filter_all') }}
           </Button>
@@ -150,10 +144,7 @@
             size="sm"
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === 'created' ? 'shadow-sm' : 'text-muted-foreground'"
-            @click="
-              filterAction = 'created'
-              applyFilters()
-            "
+            @click="handleActionFilterChange('created')"
           >
             <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
             {{ $t('activities.filter_created') }}
@@ -163,10 +154,7 @@
             size="sm"
             class="rounded-xl px-3 text-xs font-bold transition-all"
             :class="filterAction === 'deleted' ? 'shadow-sm' : 'text-muted-foreground'"
-            @click="
-              filterAction = 'deleted'
-              applyFilters()
-            "
+            @click="handleActionFilterChange('deleted')"
           >
             <AppIcon name="hugeicons:delete-01" :size="14" class="mr-1" />
             {{ $t('activities.filter_deleted') }}
@@ -505,6 +493,16 @@ const applyFilters = () => {
     entityType: activeTab.value !== 'all' ? (activeTab.value as EntityType) : undefined,
     action: (filterAction.value as ActionType) || undefined,
   })
+}
+
+const handleTabClick = (tabValue: string) => {
+  activeTab.value = tabValue
+  applyFilters()
+}
+
+const handleActionFilterChange = (val: string) => {
+  filterAction.value = val
+  applyFilters()
 }
 
 const loadMore = async () => {

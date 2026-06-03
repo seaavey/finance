@@ -116,10 +116,7 @@
                 :variant="ownerFilter === opt.value ? 'default' : 'ghost'"
                 size="sm"
                 class="flex-1 rounded-lg h-9 text-xs font-bold"
-                @click="
-                  ownerFilter = opt.value
-                  applyFilters()
-                "
+                @click="handleOwnerFilterChange(opt.value)"
               >
                 {{ opt.label }}
               </Button>
@@ -423,6 +420,11 @@ const applyFilters = () => {
     f.dateTo = dateValueToString(dateRange.value.end)
   }
   fetchTransactions(f)
+}
+
+const handleOwnerFilterChange = (val: 'all' | 'mine' | 'partner') => {
+  ownerFilter.value = val
+  applyFilters()
 }
 
 const groupedTransactions = computed(() => {
