@@ -154,6 +154,8 @@ export const useReceipts = (): UseReceiptsReturn => {
     if (error) {
       if (error.message?.includes('23505')) {
         // Duplicate — extremely unlikely with UUID, but retry once
+        // Remove the orphan file before retrying
+        await supabase.storage.from('receipts').remove([path]).catch(() => {});
         const retryUuid = crypto.randomUUID()
         const retryPath = `receipts/${userId}/${retryUuid}.jpg`
         const { error: retryError } = await supabase.storage

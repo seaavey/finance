@@ -4,6 +4,7 @@ export const useExport = () => {
   const supabase = useSupabase();
   const { t } = useI18n();
   const { toast } = useToast();
+  const { user } = useAuth();
   const exporting = ref(false);
 
   const convertToCSV = (rows: Record<string, unknown>[]) => {
@@ -30,7 +31,6 @@ export const useExport = () => {
   const exportAllData = async () => {
     exporting.value = true;
     try {
-      const { user } = useAuth();
       if (!user.value) {
         toast.error(t('toast.login_required'));
         return;

@@ -128,13 +128,19 @@ export const useGoals = () => {
   };
 
   const deleteGoalImage = async (url: string) => {
-    const prefix = '/object/public/goal-images/';
-    const idx = url.indexOf(prefix);
-    if (idx === -1) {
-      return;
+    let path: string;
+    try {
+      const parsed = new URL(url);
+      path = parsed.pathname.replace(/^\/object\/public\/goal-images\//, '');
+    } catch {
+      // Fallback for malformed URLs or relative paths
+      const prefix = '/object/public/goal-images/';
+      const idx = url.indexOf(prefix);
+      if (idx === -1) return;
+      path = url.slice(idx + prefix.length);
     }
-    const path = url.slice(idx + prefix.length);
 
+    if (!path) return;
     await supabase.storage.from('goal-images').remove([path]);
   };
 

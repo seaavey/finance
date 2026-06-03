@@ -177,7 +177,11 @@ export const usePartner = () => {
       invitation_id: invitationId,
     });
 
-    const err = data?.error || error?.message;
+    const err =
+      data?.error ||               // RPC returned { error: string }
+      error?.message ||            // Supabase client error
+      (error as { details?: string })?.details || // Postgres error detail
+      null;
     if (!err) {
       queryClient.invalidateQueries({ queryKey: ['partner'] });
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
@@ -220,7 +224,11 @@ export const usePartner = () => {
   const disconnectPartner = async () => {
     const { data, error } = await supabase.rpc('disconnect_partner');
 
-    const err = data?.error || error?.message;
+    const err =
+      data?.error ||               // RPC returned { error: string }
+      error?.message ||            // Supabase client error
+      (error as { details?: string })?.details || // Postgres error detail
+      null;
     if (!err) {
       queryClient.invalidateQueries({ queryKey: ['partner'] });
       queryClient.invalidateQueries({ queryKey: ['accounts'] });

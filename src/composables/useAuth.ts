@@ -24,18 +24,22 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    const currentUserId = user.value?.id;
+    // Log activity BEFORE signOut — RLS needs the session
+    try {
+      if (user.value?.id) {
+        await supabase.from('activity_logs').insert({
+          user_id: user.value.id,
+          entity_type: 'auth',
+          action: 'logout',
+          metadata: {}
+        });
+      }
+    } catch {
+      // Best-effort — don't block signOut if logging fails
+    }
     await supabase.auth.signOut();
     user.value = null;
     loginLogged = false;
-    if (currentUserId) {
-      supabase.from('activity_logs').insert({
-        user_id: currentUserId,
-        entity_type: 'auth',
-        action: 'logout',
-        metadata: {}
-      }).then();
-    }
     if (router) await router.push('/auth/login');
   };
 

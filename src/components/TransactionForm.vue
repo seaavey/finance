@@ -88,6 +88,7 @@
           :placeholder="$t('transaction_form.amount_placeholder')"
           class="w-full border-none bg-transparent text-5xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 md:text-6xl"
           @keydown="onNumberKeydown"
+          @input="onAmountInput"
         />
       </div>
       <p
@@ -412,6 +413,12 @@ const onNumberKeydown = (e: KeyboardEvent) => {
     return;
   }
   e.preventDefault();
+};
+
+const onAmountInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  // Strip non-digits from paste via context menu / middle-click
+  input.value = input.value.replace(/\D/g, '');
 };
 
 const onSubmit = async () => {

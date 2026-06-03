@@ -81,7 +81,7 @@ const goToNew = () => {
 };
 
 const goToEdit = (budget: BudgetWithProgress) => {
-  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}&amount=${budget.amount}`);
+  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}`);
 };
 
 const goToDetail = (budget: BudgetWithProgress) => {
