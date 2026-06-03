@@ -76,30 +76,29 @@ export const useBudgets = () => {
 
         const categoryIds = budgetsList.map((b) => b.category_id);
 
-        const { data: categoriesData } = await supabase
-          .from('categories')
-          .select('id, name, color, icon')
-          .in('id', categoryIds);
+        const [year, mon] = month.split('-').map(Number);
+        const date = new Date(year as number, (mon as number) - 1, 1);
+        date.setMonth(date.getMonth() + 1);
+        const nextMonth = date.toISOString().slice(0, 10);
+
+        // Parallel: fetch categories + transaction spending
+        const [{ data: categoriesData }, { data: txData }] = await Promise.all([
+          supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),
+          supabase
+            .from('transactions')
+            .select('category_id, amount')
+            .eq('user_id', user.value!.id)
+            .eq('type', 'expense')
+            .gte('date', month)
+            .lt('date', nextMonth)
+            .in('category_id', categoryIds),
+        ]);
 
         const categoryMap = new Map(
           (categoriesData || []).map(
             (c: { id: string; name: string; color: string; icon: string }) => [c.id, c],
           ),
         );
-
-        const [year, mon] = month.split('-').map(Number);
-        const date = new Date(year as number, (mon as number) - 1, 1);
-        date.setMonth(date.getMonth() + 1);
-        const nextMonth = date.toISOString().slice(0, 10);
-
-        const { data: txData } = await supabase
-          .from('transactions')
-          .select('category_id, amount')
-          .eq('user_id', user.value!.id)
-          .eq('type', 'expense')
-          .gte('date', month)
-          .lt('date', nextMonth)
-          .in('category_id', categoryIds);
 
         const spentMap = new Map<string, number>();
         for (const tx of (txData || []) as { category_id: string; amount: number }[]) {

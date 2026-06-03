@@ -745,8 +745,11 @@ onMounted(async () => {
   ]);
 
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
-  budgetSummaries.value = await fetchBudgetWithProgress(monthStr);
-  await fetchAccounts();
+  const [budgets] = await Promise.all([
+    fetchBudgetWithProgress(monthStr),
+    fetchAccounts(),
+  ]);
+  budgetSummaries.value = budgets;
   accountBalances.value = await getAccountBalances();
   loading.value = false;
 });

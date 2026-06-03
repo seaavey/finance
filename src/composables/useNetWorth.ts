@@ -61,49 +61,75 @@ export const useNetWorth = () => {
             return converted ?? amount;
           };
 
+          // Build month boundaries (oldest → newest)
+          const monthBoundaries: { end: Date; label: string; dateStr: string }[] = [];
+          for (let i = months - 1; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+            monthBoundaries.push({
+              end: d,
+              label: d.toLocaleDateString(locale.value, { month: 'short' }),
+              dateStr: d.toISOString().split('T')[0] || '',
+            });
+          }
+
+          // Sort transactions once by date ascending for single-pass processing
+          const sortedTxs = (transactions || [])
+            .filter((tx: { date: string }) => tx.date)
+            .sort((a: { date: string }, b: { date: string }) => a.date.localeCompare(b.date));
+
+          // Per-account running balance (initialized from account creation)
+          const runningBalances = new Map<string, number>();
+          const isLiability = new Map<string, boolean>();
+          const accountCurrency = new Map<string, string>();
+          const accountCreated = new Map<string, Date>();
+          for (const acc of accounts) {
+            runningBalances.set(acc.id, Number(acc.initial_balance));
+            isLiability.set(acc.id, acc.type === 'liability');
+            accountCurrency.set(acc.id, acc.currency || 'IDR');
+            accountCreated.set(acc.id, new Date(acc.created_at));
+          }
+
+          let txIdx = 0;
           const result: NetWorthData[] = [];
 
-          for (let i = months - 1; i >= 0; i--) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i + 1, 0); // Last day of month
-            const dateStr = d.toISOString().split('T')[0];
-            const label = d.toLocaleDateString(locale.value, { month: 'short' });
+          for (const mb of monthBoundaries) {
+            // Single-pass: apply all transactions up to this month's end
+            while (txIdx < sortedTxs.length) {
+              const tx = sortedTxs[txIdx] as
+                | { account_id: string; type: string; amount: number; date: string }
+                | undefined;
+              if (!tx || !tx.date || new Date(tx.date) > mb.end) break;
+              const prev = runningBalances.get(tx.account_id) ?? 0;
+              runningBalances.set(
+                tx.account_id,
+                tx.type === 'income' ? prev + Number(tx.amount) : prev - Number(tx.amount),
+              );
+              txIdx++;
+            }
 
+            // Convert & sum up all account balances — skip accounts not yet created
             let totalAssets = 0;
             let totalDebts = 0;
 
             for (const acc of accounts) {
-              const accCreatedAt = new Date(acc.created_at);
-              let balance = accCreatedAt <= d ? Number(acc.initial_balance) : 0;
+              if ((accountCreated.get(acc.id) ?? new Date()) > mb.end) continue;
 
-              const accTxs = (transactions || []).filter(
-                (tx: { account_id: string; date: string }) =>
-                  tx.account_id === acc.id && new Date(tx.date) <= d,
-              );
+              const balance = runningBalances.get(acc.id) ?? 0;
+              const converted = convertAmount(balance, accountCurrency.get(acc.id) || 'IDR');
 
-              for (const tx of accTxs as { type: string; amount: number }[]) {
-                if (tx.type === 'income') {
-                  balance += Number(tx.amount);
-                } else {
-                  balance -= Number(tx.amount);
-                }
-              }
-
-              // Convert to base currency (IDR)
-              const convertedBalance = convertAmount(balance, acc.currency || 'IDR');
-
-              if (acc.type === 'liability') {
-                totalDebts += convertedBalance;
+              if (isLiability.get(acc.id)) {
+                totalDebts += converted;
               } else {
-                totalAssets += convertedBalance;
+                totalAssets += converted;
               }
             }
 
             result.push({
-              label,
+              label: mb.label,
               assets: totalAssets,
               debts: totalDebts,
               netWorth: totalAssets - totalDebts,
-              date: dateStr || '',
+              date: mb.dateStr,
             });
           }
 
