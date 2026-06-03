@@ -16,9 +16,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: routes.map((route) => {
     // Check if this route should be blank
-    const isBlank =
-      blankLayoutRoutes.includes(route.path) ||
-      (route.name && blankLayoutRoutes.includes(`/${String(route.name)}`))
+    const isBlank = blankLayoutRoutes.includes(route.path)
 
     return {
       ...route,

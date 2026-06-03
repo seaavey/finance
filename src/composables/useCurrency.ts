@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useSupabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/vue-query';
 import { user } from './useAuth';
@@ -40,7 +40,7 @@ export const useCurrency = () => {
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 
-  const exchangeRates = computed(() => ratesData.value || null);
+  const exchangeRates = ratesData;
 
   const convertTo = (
     amount: number,

@@ -36,17 +36,12 @@ export const useExport = () => {
         return;
       }
 
-      const [txResult, _recurringResult, catResult] = await Promise.all([
+      const [txResult, catResult] = await Promise.all([
         supabase
           .from('transactions')
           .select('*')
           .eq('user_id', user.value.id)
           .order('date', { ascending: false }),
-        supabase
-          .from('recurring_transactions')
-          .select('*')
-          .eq('user_id', user.value.id)
-          .order('next_date', { ascending: true }),
         supabase.from('categories').select('*').eq('user_id', user.value.id),
       ]);
 
