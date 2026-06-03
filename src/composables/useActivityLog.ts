@@ -92,7 +92,8 @@ export const useActivityLog = () => {
         total: count || 0
       }
     },
-    enabled: computed(() => !!user.value)
+    enabled: computed(() => !!user.value),
+    staleTime: 5_000, // 5s — activity log refreshes frequently but avoid refetch on every mount
   })
 
   // Append logic - we keep existing logs if page > 1, otherwise we replace
