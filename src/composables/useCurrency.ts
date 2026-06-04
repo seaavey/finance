@@ -20,6 +20,33 @@ export const loadCurrency = async () => {
   }
 }
 
+// In-memory fallback cache for exchange rates fetched directly from the API
+// when the Supabase exchange_rates table is missing a needed currency.
+const fallbackRates = ref<Record<string, number> | null>(null)
+let fallbackFetchPromise: Promise<void> | null = null
+
+const fetchFallbackRates = async () => {
+  if (fallbackFetchPromise) return fallbackFetchPromise
+  fallbackFetchPromise = (async () => {
+    try {
+      const res = await fetch('https://api.exchangerate.fun/latest?base=IDR')
+      if (!res.ok) return
+      const data = await res.json()
+      if (data?.rates) {
+        // Add the base currency itself (1 IDR = 1 IDR)
+        fallbackRates.value = { IDR: 1, ...data.rates }
+      }
+    } catch {
+      // Reset so next attempt can retry
+      fallbackFetchPromise = null
+    }
+  })()
+  await fallbackFetchPromise
+}
+
+// Eagerly kick off the fallback fetch so rates are ready ASAP
+fetchFallbackRates()
+
 export const useCurrency = () => {
   // --- Exchange rates from Supabase (synced via Edge Function) ---
   const { data: ratesData } = useQuery({
@@ -35,25 +62,43 @@ export const useCurrency = () => {
       return map
     },
     staleTime: 1000 * 60 * 60, // 1 hour
+    retry: 2,
   })
 
   const exchangeRates = ratesData
 
   const convertTo = (amount: number, fromCurrency: string, toCurrency: string): number | null => {
-    if (!exchangeRates.value || amount === 0) return null
-    if (fromCurrency === toCurrency) return amount
+    if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount
+    if (amount === 0) return 0
 
     const baseCurrency = defaultCurrency.value
 
-    // All stored rates are: 1 baseCurrency = X targetCurrency
-    const rateFrom = exchangeRates.value[fromCurrency]
-    const rateTo = exchangeRates.value[toCurrency]
+    // Try DB-stored rates first
+    const stored = exchangeRates.value
+    if (stored) {
+      const rateFrom = stored[fromCurrency]
+      const rateTo = stored[toCurrency]
+      if (rateFrom && rateTo) {
+        const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom
+        return toCurrency === baseCurrency ? inBase : inBase * rateTo
+      }
+    }
 
-    if (!rateFrom || !rateTo) return null
+    // Fallback: try API-fetched rates (cached in memory)
+    const fb = fallbackRates.value
+    if (fb) {
+      const rateFrom = fb[fromCurrency]
+      const rateTo = fb[toCurrency]
+      if (rateFrom && rateTo) {
+        const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom
+        return toCurrency === baseCurrency ? inBase : inBase * rateTo
+      }
+    }
 
-    // Convert fromCurrency → baseCurrency first, then → toCurrency
-    const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom
-    return toCurrency === baseCurrency ? inBase : inBase * rateTo
+    // Neither source has the rate — trigger a one-shot API fetch for next time
+    fetchFallbackRates()
+
+    return null
   }
 
   const noDecimalCurrencies = ['IDR', 'JPY', 'KRW', 'VND', 'KHR', 'LAK', 'MMK']

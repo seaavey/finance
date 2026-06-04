@@ -77,12 +77,25 @@ export function useCamera(): UseCameraReturn {
   let permissionStatus: PermissionStatus | null = null
 
   /**
+   * Helper: set srcObject and explicitly play the video.
+   * On mobile Safari, `autoplay` alone doesn't work for MediaStream —
+   * need an explicit `.play()` call.
+   */
+  function attachStream(el: HTMLVideoElement, mediaStream: MediaStream) {
+    el.srcObject = mediaStream
+    el.play().catch(() => {
+      // Silently ignore — play() can reject if user hasn't interacted yet,
+      // but the stream is still attached and will play once the browser allows it.
+    })
+  }
+
+  /**
    * Register a video element so `captureImage` can draw from it.
    */
   function setVideoElement(el: HTMLVideoElement | null) {
     videoElement = el
     if (el && stream.value) {
-      el.srcObject = stream.value
+      attachStream(el, stream.value)
     }
   }
 
@@ -137,6 +150,15 @@ export function useCamera(): UseCameraReturn {
       return
     }
 
+    // iOS standalone (PWA) mode — getUserMedia doesn't work on iOS < 16
+    if (
+      'standalone' in window.navigator && (window.navigator as Navigator & { standalone: boolean }).standalone &&
+      !/iphone os (1[6-9]|[2-9]\d)/i.test(navigator.userAgent)
+    ) {
+      error.value = 'camera_error_unsupported'
+      return
+    }
+
     if (facingModeOverride) {
       facingMode.value = facingModeOverride
     }
@@ -153,7 +175,7 @@ export function useCamera(): UseCameraReturn {
       permissionState.value = 'granted'
 
       if (videoElement) {
-        videoElement.srcObject = mediaStream
+        attachStream(videoElement, mediaStream)
       }
       return
     } catch (err: unknown) {
@@ -196,7 +218,7 @@ export function useCamera(): UseCameraReturn {
         permissionState.value = 'granted'
 
         if (videoElement) {
-          videoElement.srcObject = fallbackStream
+          attachStream(videoElement, fallbackStream)
         }
         return
       } catch (fallbackErr: unknown) {
