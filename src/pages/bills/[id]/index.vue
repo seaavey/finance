@@ -356,6 +356,8 @@ async function handleMarkPaid(id: string) {
       description: billDetail.value.title,
       date: new Date().toISOString(),
       account_id: selectedAccountId.value,
+      image_url: null,
+      splits: [],
     })
   }
 

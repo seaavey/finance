@@ -468,7 +468,7 @@
               :name="splitTotalMismatch ? 'hugeicons:alert-circle' : 'hugeicons:tick-01'"
               :size="14"
             />
-            {{ formatCurrency(splitTotal, form.currency) }} / {{ formatCurrency(form.amount, form.currency) }}
+            {{ formattedSplitTotal }} / {{ formattedAmount }}
           </div>
           <div class="flex-1" />
           <Button
@@ -520,7 +520,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useReceipts } from '@/composables/useReceipts'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 const props = defineProps<{
   transaction?: Transaction
@@ -532,8 +532,8 @@ const emit = defineEmits<{
   dirty: [value: boolean]
 }>()
 
-const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals } =
-  useCurrency()
+const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals, formatCurrency } = useCurrency()
+const { toast } = useToast()
 
 const { addTransaction, updateTransaction } = useTransactions()
 const { uploadTransactionImage, deleteTransactionImage } = useTransactions()
@@ -697,6 +697,9 @@ const splitTotal = computed(() =>
 
 const splitTotalMismatch = computed(() => splitItems.value.length > 0 && splitTotal.value !== Number(form.amount))
 
+const formattedSplitTotal = computed(() => formatCurrency(splitTotal.value, form.currency))
+const formattedAmount = computed(() => formatCurrency(form.amount, form.currency))
+
 function toggleSplit() {
   splitEnabled.value = !splitEnabled.value
   if (!splitEnabled.value) {
@@ -715,7 +718,13 @@ function removeSplit(index: number) {
 function onSplitAmountInput(event: Event, index: number) {
   const input = event.target as HTMLInputElement
   input.value = input.value.replace(/\D/g, '')
-  splitItems.value[index] = { ...splitItems.value[index], amount: Number(input.value) || 0 }
+  const item = splitItems.value[index]
+  if (item) {
+    splitItems.value[index] = {
+      ...item,
+      amount: Number(input.value) || 0,
+    }
+  }
 }
 
 // Initialize splits from existing transaction
