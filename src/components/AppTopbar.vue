@@ -277,6 +277,11 @@ const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
     return items
   }
 
+  if (path.startsWith('/schedule')) {
+    items.push({ label: t('topbar.schedule') })
+    return items
+  }
+
   if (path.startsWith('/settings')) {
     items.push({ label: t('topbar.settings') })
     return items
