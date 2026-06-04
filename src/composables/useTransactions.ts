@@ -21,6 +21,10 @@ export interface TransactionFilters {
   search?: string
   dateFrom?: string
   dateTo?: string
+  amountMin?: number
+  amountMax?: number
+  account_id?: string
+  currency?: string
 }
 
 const PAGE_SIZE = 50
@@ -60,6 +64,10 @@ export const useTransactions = () => {
       if (filters?.dateFrom) query = query.gte('date', filters.dateFrom)
       if (filters?.dateTo) query = query.lte('date', filters.dateTo)
       if (filters?.search) query = query.ilike('description', `%${filters.search}%`)
+      if (filters?.amountMin) query = query.gte('amount', filters.amountMin)
+      if (filters?.amountMax) query = query.lte('amount', filters.amountMax)
+      if (filters?.account_id) query = query.eq('account_id', filters.account_id)
+      if (filters?.currency) query = query.eq('currency', filters.currency)
 
       const { data, error } = await query
       if (error) throw error

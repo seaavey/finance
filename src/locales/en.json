@@ -74,7 +74,11 @@
     "all": "All",
     "owner_filter_all": "All",
     "owner_filter_mine": "Mine",
-    "owner_filter_partner": "Partner"
+    "owner_filter_partner": "Partner",
+    "amount_min": "Min Amount",
+    "amount_max": "Max Amount",
+    "all_accounts": "All accounts",
+    "all_currencies": "All currencies"
   },
   "transaction_form": {
     "title_new": "Add Transaction",

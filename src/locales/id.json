@@ -74,7 +74,11 @@
     "all": "Semua",
     "owner_filter_all": "Semua",
     "owner_filter_mine": "Saya",
-    "owner_filter_partner": "Pasangan"
+    "owner_filter_partner": "Pasangan",
+    "amount_min": "Nominal Min",
+    "amount_max": "Nominal Max",
+    "all_accounts": "Semua akun",
+    "all_currencies": "Semua mata uang"
   },
   "transaction_form": {
     "title_new": "Tambah Transaksi",

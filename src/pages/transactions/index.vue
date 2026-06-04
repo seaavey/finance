@@ -22,8 +22,8 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
       <!-- Search & Filters Bento Card (Full on xs/md, 4 cols on lg) -->
       <div
-        class="flex flex-col rounded-4xl border border-border/50 bg-card p-4 shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-2 lg:col-span-4"
-        :class="showFilters ? 'gap-4' : 'gap-0'"
+        class="flex flex-col rounded-4xl border border-border/50 bg-card p-6 shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-2 lg:col-span-4"
+        :class="showFilters ? 'gap-4 justify-start' : 'gap-0 justify-center'"
       >
         <div class="flex items-center gap-3">
           <div class="relative flex-1">
@@ -106,9 +106,76 @@
               </PopoverContent>
             </Popover>
 
+            <div class="relative">
+              <AppIcon
+                name="hugeicons:money-01"
+                :size="16"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none"
+              />
+              <Input
+                v-model.number="filters.amountMin"
+                type="number"
+                min="0"
+                :placeholder="$t('transactions.amount_min')"
+                class="h-11 rounded-xl border-border/50 bg-muted/30 pl-9"
+                @input="applyFilters"
+              />
+            </div>
+
+            <div class="relative">
+              <AppIcon
+                name="hugeicons:money-02"
+                :size="16"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none"
+              />
+              <Input
+                v-model.number="filters.amountMax"
+                type="number"
+                min="0"
+                :placeholder="$t('transactions.amount_max')"
+                class="h-11 rounded-xl border-border/50 bg-muted/30 pl-9"
+                @input="applyFilters"
+              />
+            </div>
+
+            <Select v-model="filters.account_id" @update:model-value="applyFilters">
+              <SelectTrigger class="h-11 rounded-xl border-border/50 bg-muted/30">
+                <SelectValue :placeholder="$t('transactions.all_accounts')" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{{ $t('transactions.all_accounts') }}</SelectItem>
+                <SelectItem
+                  v-for="acc in accounts"
+                  :key="acc.id"
+                  :value="acc.id"
+                >
+                  <div class="flex items-center gap-2">
+                    <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color }" />
+                    {{ acc.name }}
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select v-model="filters.currency" @update:model-value="applyFilters">
+              <SelectTrigger class="h-11 rounded-xl border-border/50 bg-muted/30">
+                <SelectValue :placeholder="$t('transactions.all_currencies')" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{{ $t('transactions.all_currencies') }}</SelectItem>
+                <SelectItem
+                  v-for="cur in currencies"
+                  :key="cur.value"
+                  :value="cur.value"
+                >
+                  {{ cur.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
             <div
               v-if="isPartnered"
-              class="flex items-center gap-1 rounded-xl bg-muted/50 p-1 sm:col-span-2 lg:col-span-3"
+              class="flex items-center gap-1 rounded-xl bg-muted/50 p-1"
             >
               <Button
                 v-for="opt in ownerOptions"
@@ -303,10 +370,11 @@ const { transactions, loading, hasMore, loadingMore, fetchTransactions, loadMore
   useTransactions()
 const { fetchCategories } = useCategories()
 const { partner, isPartnered, fetchPartner } = usePartner()
+const { accounts } = useAccounts()
 
 const router = useRouter()
 const { t } = useI18n()
-const { formatCurrency, defaultCurrency } = useCurrency()
+const { formatCurrency, defaultCurrency, currencies } = useCurrency()
 const { user } = useAuth()
 
 const ownerFilter = ref<'all' | 'mine' | 'partner'>('all')
@@ -367,6 +435,10 @@ const filters = reactive({
   search: '',
   type: '',
   category_id: '',
+  amountMin: undefined as number | undefined,
+  amountMax: undefined as number | undefined,
+  account_id: '',
+  currency: '',
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -418,6 +490,18 @@ const applyFilters = () => {
   }
   if (dateRange.value.end) {
     f.dateTo = dateValueToString(dateRange.value.end)
+  }
+  if (filters.amountMin !== undefined && filters.amountMin > 0) {
+    f.amountMin = filters.amountMin
+  }
+  if (filters.amountMax !== undefined && filters.amountMax > 0) {
+    f.amountMax = filters.amountMax
+  }
+  if (filters.account_id && filters.account_id !== 'all') {
+    f.account_id = filters.account_id
+  }
+  if (filters.currency && filters.currency !== 'all') {
+    f.currency = filters.currency
   }
   fetchTransactions(f)
 }
