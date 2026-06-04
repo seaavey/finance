@@ -7,14 +7,31 @@ import { Skeleton } from '@/components/ui/skeleton'
 import type { BudgetWithProgress } from '@/composables/useBudgets'
 
 const router = useRouter()
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 const { fetchCategories } = useCategories()
 const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets()
+const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency: fmtCurrency } = useCurrency()
+const { user } = useAuth()
 
-const budgetList = ref<BudgetWithProgress[]>([])
+const myBudgetList = ref<BudgetWithProgress[]>([])
+const partnerBudgetList = ref<BudgetWithProgress[]>([])
 const showDeleteDialog = ref(false)
 const deletingBudget = ref<BudgetWithProgress | null>(null)
+
+const ownerFilter = ref<'mine' | 'partner' | 'all'>('all')
+
+const budgetList = computed(() => {
+  switch (ownerFilter.value) {
+    case 'mine':
+      return myBudgetList.value
+    case 'partner':
+      return partnerBudgetList.value
+    case 'all':
+    default:
+      return [...myBudgetList.value, ...partnerBudgetList.value]
+  }
+})
 
 const totals = computed(() => {
   const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0)
@@ -54,12 +71,21 @@ const loadData = async () => {
 }
 
 const loadBudget = async () => {
-  budgetList.value = await fetchBudgetWithProgress(currentMonthStr.value)
+  const [mine, partnerBudgets] = await Promise.all([
+    fetchBudgetWithProgress(currentMonthStr.value),
+    isPartnered.value && partner.value?.id
+      ? fetchBudgetWithProgress(currentMonthStr.value, partner.value.id)
+      : Promise.resolve([] as BudgetWithProgress[]),
+  ])
+  myBudgetList.value = mine
+  partnerBudgetList.value = partnerBudgets
 }
 
 onMounted(() => {
   loadData()
 })
+
+const partnerInitial = computed(() => partner.value?.display_name?.charAt(0)?.toUpperCase() || 'P')
 
 const onDeleteRequest = (budget: BudgetWithProgress) => {
   deletingBudget.value = budget
@@ -106,6 +132,34 @@ const goToDetail = (budget: BudgetWithProgress) => {
         <AppIcon name="hugeicons:add-01" :size="20" />
         <span>{{ $t('budget.set_budget') }}</span>
       </Button>
+    </div>
+
+    <!-- OWNER FILTER (when partnered) -->
+    <div
+      v-if="isPartnered"
+      class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1"
+    >
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'all' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'all'"
+      >
+        {{ $t('budget.shared_all') }}
+      </button>
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'mine' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'mine'"
+      >
+        {{ $t('budget.shared_mine') }}
+      </button>
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'partner' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'partner'"
+      >
+        {{ partnerDisplayName || $t('budget.shared_partner') }}
+      </button>
     </div>
 
     <!-- MONTH SELECTOR -->
@@ -232,6 +286,13 @@ const goToDetail = (budget: BudgetWithProgress) => {
                 <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
                 <p class="text-xs text-muted-foreground">
                   {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
+                  <span
+                    v-if="ownerFilter === 'all' && budget.user_id !== user?.id"
+                    class="ml-1.5 inline-flex items-center gap-1 rounded-md bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-bold text-sidebar-foreground"
+                  >
+                    <AppIcon name="hugeicons:user-01" :size="10" />
+                    {{ partnerInitial }}
+                  </span>
                 </p>
               </div>
             </div>

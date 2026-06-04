@@ -290,7 +290,10 @@
     "delete_error": "Failed to delete budget",
     "dashboard_title": "This Month's Budget",
     "no_limit": "No budget set",
-    "empty": "No budgets set yet"
+    "empty": "No budgets set yet",
+    "shared_all": "All",
+    "shared_mine": "Mine",
+    "shared_partner": "Partner"
   },
   "bills": {
     "title": "Bills",

@@ -290,7 +290,10 @@
     "delete_error": "Gagal menghapus budget",
     "dashboard_title": "Budget Bulan Ini",
     "no_limit": "Tidak ada budget",
-    "empty": "Belum ada budget yang diatur"
+    "empty": "Belum ada budget yang diatur",
+    "shared_all": "Semua",
+    "shared_mine": "Milik Saya",
+    "shared_partner": "Pasangan"
   },
   "bills": {
     "title": "Tagihan",

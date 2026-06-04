@@ -59,17 +59,20 @@ export const useBudgets = () => {
     await refetchBudgets()
   }
 
-  const fetchBudgetWithProgress = async (month: string): Promise<BudgetWithProgress[]> => {
-    if (!user.value) return []
+  const fetchBudgetWithProgress = async (
+    month: string,
+    userId?: string,
+  ): Promise<BudgetWithProgress[]> => {
+    const uid = userId || user.value?.id
+    if (!uid) return []
 
-    // Explicit direct fetch for fetchBudgetWithProgress as it's often used inline
     return queryClient.fetchQuery({
-      queryKey: ['budgets:with-progress', user.value.id, month],
+      queryKey: ['budgets:with-progress', uid, month],
       queryFn: async () => {
         const { data: budgetData } = await supabase
           .from('budgets')
           .select('id, user_id, category_id, month, amount, created_at')
-          .eq('user_id', user.value!.id)
+          .eq('user_id', uid)
           .eq('month', month)
 
         const budgetsList = (budgetData as Budget[]) || []
@@ -85,13 +88,12 @@ export const useBudgets = () => {
         date.setMonth(date.getMonth() + 1)
         const nextMonth = date.toISOString().slice(0, 10)
 
-        // Parallel: fetch categories + transaction spending
         const [{ data: categoriesData }, { data: txData }] = await Promise.all([
           supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),
           supabase
             .from('transactions')
             .select('category_id, amount')
-            .eq('user_id', user.value!.id)
+            .eq('user_id', uid)
             .eq('type', 'expense')
             .gte('date', month)
             .lt('date', nextMonth)
