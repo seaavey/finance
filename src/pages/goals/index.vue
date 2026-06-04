@@ -17,13 +17,41 @@
       </Button>
     </div>
 
+    <!-- OWNER FILTER (when partnered) -->
+    <div
+      v-if="isPartnered"
+      class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1"
+    >
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'all' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'all'"
+      >
+        {{ $t('goals.shared_all') }}
+      </button>
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'mine' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'mine'"
+      >
+        {{ $t('goals.shared_mine') }}
+      </button>
+      <button
+        class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
+        :class="ownerFilter === 'partner' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        @click="ownerFilter = 'partner'"
+      >
+        {{ partnerDisplayName || $t('goals.shared_partner') }}
+      </button>
+    </div>
+
     <!-- Summary Stats — bento top row -->
-    <div v-if="goals.length > 0" class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div v-if="allGoals.length > 0" class="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
           {{ $t('goals.total_goals') }}
         </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">{{ goals.length }}</p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">{{ allGoals.length }}</p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -69,7 +97,7 @@
     <template v-else>
       <!-- EMPTY STATE -->
       <div
-        v-if="goals.length === 0"
+        v-if="allGoals.length === 0"
         class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
       >
         <div
@@ -97,7 +125,7 @@
         :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }"
       >
         <div
-          v-for="goal in goals"
+          v-for="goal in allGoals"
           :key="goal.id"
           class="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/30 transition-all hover:border-border hover:bg-card/50 hover:shadow-lg"
           :class="{ 'md:col-span-2 md:row-span-2': getIsFeatured(goal) }"
@@ -207,6 +235,13 @@
                     >
                       {{ formatDate(goal.deadline) }}
                     </p>
+                    <span
+                      v-if="ownerFilter === 'all' && goal.user_id !== user?.id"
+                      class="inline-flex items-center gap-1 rounded-md bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-bold text-sidebar-foreground"
+                    >
+                      <AppIcon name="hugeicons:user-01" :size="10" />
+                      {{ partnerInitial }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -267,25 +302,47 @@ import { Progress } from '@/components/ui/progress'
 import type { Goal } from '@/composables/useGoals'
 
 const router = useRouter()
-const { goals, loading, fetchGoals } = useGoals()
+const { t } = useI18n()
+const { goals, loading, fetchGoals, fetchUserGoals } = useGoals()
+const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency } = useCurrency()
+const { user } = useAuth()
+
+const myGoalsList = ref<Goal[]>([])
+const partnerGoalsList = ref<Goal[]>([])
+const ownerFilter = ref<'mine' | 'partner' | 'all'>('all')
+
+const allGoals = computed(() => {
+  // Filter local goals list based on owner filter
+  switch (ownerFilter.value) {
+    case 'mine':
+      return myGoalsList.value
+    case 'partner':
+      return partnerGoalsList.value
+    case 'all':
+    default:
+      return [...myGoalsList.value, ...partnerGoalsList.value]
+  }
+})
 
 const completedCount = computed(
   () =>
-    goals.value.filter((g) => {
+    allGoals.value.filter((g) => {
       const target = Number(g.target_amount)
       const current = Number(g.current_amount)
       return target > 0 && current >= target
     }).length,
 )
 
-const totalTarget = computed(() => goals.value.reduce((sum, g) => sum + Number(g.target_amount), 0))
-const totalSaved = computed(() => goals.value.reduce((sum, g) => sum + Number(g.current_amount), 0))
+const totalTarget = computed(() => allGoals.value.reduce((sum, g) => sum + Number(g.target_amount), 0))
+const totalSaved = computed(() => allGoals.value.reduce((sum, g) => sum + Number(g.current_amount), 0))
 
 // Pick first goal with an image as the featured hero card
 const featuredGoalId = computed(() => {
-  return goals.value.find((g) => !!g.image_url)?.id || null
+  return allGoals.value.find((g) => !!g.image_url)?.id || null
 })
+
+const partnerInitial = computed(() => partner.value?.display_name?.charAt(0)?.toUpperCase() || 'P')
 
 function getIsFeatured(goal: Goal): boolean {
   return goal.id === featuredGoalId.value
@@ -307,7 +364,20 @@ function remainingFor(goal: Goal): number {
   return Math.max(0, Number(goal.target_amount) - Number(goal.current_amount))
 }
 
+const loadData = async () => {
+  await fetchGoals()
+  // Sync to local refs
+  myGoalsList.value = [...goals.value]
+  if (isPartnered.value && partner.value?.id) {
+    try {
+      partnerGoalsList.value = await fetchUserGoals(partner.value.id)
+    } catch {
+      partnerGoalsList.value = []
+    }
+  }
+}
+
 onMounted(() => {
-  fetchGoals()
+  loadData()
 })
 </script>

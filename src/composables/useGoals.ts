@@ -51,6 +51,22 @@ export const useGoals = () => {
 
   const goals = computed(() => goalsData.value || [])
 
+  /**
+   * Fetch goals for a specific user (used for partner goals)
+   */
+  const fetchUserGoals = async (userId: string): Promise<Goal[]> => {
+    const { data, error } = await supabase
+      .from('goals')
+      .select(
+        'id, user_id, name, target_amount, current_amount, deadline, icon, color, image_url, created_at',
+      )
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return (data as Goal[]) || []
+  }
+
   const addGoal = async (
     goal: Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'current_amount'>,
   ) => {
@@ -177,6 +193,7 @@ export const useGoals = () => {
     goals,
     loading,
     fetchGoals,
+    fetchUserGoals,
     addGoal,
     updateGoal,
     addFunds,

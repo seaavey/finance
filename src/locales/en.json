@@ -270,7 +270,10 @@
     "total_goals": "Total Goals",
     "total_target": "Total Target",
     "total_saved": "Total Saved",
-    "featured": "Featured"
+    "featured": "Featured",
+    "shared_all": "All",
+    "shared_mine": "Mine",
+    "shared_partner": "Partner"
   },
   "budget": {
     "title": "Budget",

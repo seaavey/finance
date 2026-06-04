@@ -270,7 +270,10 @@
     "total_goals": "Total Target",
     "total_target": "Total Nominal",
     "total_saved": "Total Terkumpul",
-    "featured": "Utama"
+    "featured": "Utama",
+    "shared_all": "Semua",
+    "shared_mine": "Milik Saya",
+    "shared_partner": "Pasangan"
   },
   "budget": {
     "title": "Budget",
