@@ -296,7 +296,9 @@
     "empty": "Belum ada budget yang diatur",
     "shared_all": "Semua",
     "shared_mine": "Milik Saya",
-    "shared_partner": "Pasangan"
+    "shared_partner": "Pasangan",
+    "rollover_remaining": "Sisa bulan lalu",
+    "rollover_overspent": "Kelebihan bulan lalu"
   },
   "bills": {
     "title": "Tagihan",

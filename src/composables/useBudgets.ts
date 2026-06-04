@@ -17,6 +17,7 @@ export interface BudgetWithProgress extends Budget {
   category_color: string
   category_icon: string
   spent: number
+  rollover: number // remaining from previous month (positive) or overspent (negative)
 }
 
 export const useBudgets = () => {
@@ -88,6 +89,11 @@ export const useBudgets = () => {
         date.setMonth(date.getMonth() + 1)
         const nextMonth = date.toISOString().slice(0, 10)
 
+        // Previous month range for rollover calculation
+        const prevDate = new Date(year as number, (mon as number) - 1, 1)
+        prevDate.setMonth(prevDate.getMonth() - 1)
+        const prevMonth = prevDate.toISOString().slice(0, 10)
+
         const [{ data: categoriesData }, { data: txData }] = await Promise.all([
           supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),
           supabase
@@ -111,6 +117,51 @@ export const useBudgets = () => {
           spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount))
         }
 
+        // Compute rollover: fetch previous month budgets + spending for same categories
+        const rolloverMap = new Map<string, number>()
+        const { data: prevBudgetData } = await supabase
+          .from('budgets')
+          .select('category_id, amount')
+          .eq('user_id', uid)
+          .eq('month', prevMonth)
+          .in('category_id', categoryIds)
+
+        if (prevBudgetData && prevBudgetData.length > 0) {
+          const prevCatIds = [
+            ...new Set(prevBudgetData.map((pb: { category_id: string }) => pb.category_id)),
+          ]
+
+          const prevBudgetMap = new Map<string, number>()
+          for (const pb of prevBudgetData as { category_id: string; amount: number }[]) {
+            // If duplicate categories (shouldn't happen but be safe), take the last one
+            prevBudgetMap.set(pb.category_id, Number(pb.amount))
+          }
+
+          if (prevCatIds.length > 0) {
+            const { data: prevTxData } = await supabase
+              .from('transactions')
+              .select('category_id, amount')
+              .eq('user_id', uid)
+              .eq('type', 'expense')
+              .gte('date', prevMonth)
+              .lt('date', month)
+              .in('category_id', prevCatIds)
+
+            const prevSpentMap = new Map<string, number>()
+            for (const tx of (prevTxData || []) as { category_id: string; amount: number }[]) {
+              prevSpentMap.set(tx.category_id, (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount))
+            }
+
+            for (const catId of prevCatIds) {
+              const prevAmount = prevBudgetMap.get(catId) || 0
+              const prevSpent = prevSpentMap.get(catId) || 0
+              // Positive rollover = leftover from last month
+              // Negative rollover = overspent last month
+              rolloverMap.set(catId, Number(prevAmount) - prevSpent)
+            }
+          }
+        }
+
         return budgetsList.map((b) => {
           const cat = categoryMap.get(b.category_id)
           return {
@@ -119,6 +170,7 @@ export const useBudgets = () => {
             category_color: cat?.color || '#6b7280',
             category_icon: cat?.icon || '',
             spent: spentMap.get(b.category_id) || 0,
+            rollover: rolloverMap.get(b.category_id) || 0,
           }
         })
       },
@@ -189,10 +241,14 @@ export const useBudgets = () => {
   const getProgress = (budget: BudgetWithProgress) => {
     const pct = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0
     const diff = budget.amount - budget.spent
+    const effectiveAmount = budget.amount + budget.rollover
+    const effectiveDiff = effectiveAmount - budget.spent
     return {
       percentage: Math.min(pct, 100),
       remaining: Math.max(diff, 0),
       overspent: Math.max(-diff, 0),
+      effectiveRemaining: Math.max(effectiveDiff, 0),
+      effectiveOverspent: Math.max(-effectiveDiff, 0),
     }
   }
 

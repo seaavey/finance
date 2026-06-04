@@ -35,12 +35,18 @@ const budgetList = computed(() => {
 
 const totals = computed(() => {
   const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0)
+  const totalRollover = budgetList.value.reduce((s, b) => s + b.rollover, 0)
   const totalSpent = budgetList.value.reduce((s, b) => s + b.spent, 0)
+  const effectiveLimit = totalLimit + totalRollover
   return {
     totalLimit,
+    totalRollover,
     totalSpent,
     totalRemaining: Math.max(totalLimit - totalSpent, 0),
     totalOverspent: Math.max(totalSpent - totalLimit, 0),
+    effectiveLimit: Math.max(effectiveLimit, 0),
+    effectiveRemaining: Math.max(effectiveLimit - totalSpent, 0),
+    effectiveOverspent: Math.max(totalSpent - effectiveLimit, 0),
   }
 })
 
@@ -293,6 +299,18 @@ const goToDetail = (budget: BudgetWithProgress) => {
                     <AppIcon name="hugeicons:user-01" :size="10" />
                     {{ partnerInitial }}
                   </span>
+                </p>
+                <p
+                  v-if="budget.rollover !== 0"
+                  class="mt-0.5 text-[10px] font-semibold"
+                  :class="budget.rollover > 0 ? 'text-emerald-600' : 'text-red-500'"
+                >
+                  <template v-if="budget.rollover > 0">
+                    +{{ fmtCurrency(budget.rollover) }} {{ $t('budget.rollover_remaining') }}
+                  </template>
+                  <template v-else>
+                    {{ fmtCurrency(budget.rollover) }} {{ $t('budget.rollover_overspent') }}
+                  </template>
                 </p>
               </div>
             </div>
