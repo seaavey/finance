@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import type { SplitItem } from './useTransactions'
 
 export interface Budget {
   id: string
@@ -98,12 +99,11 @@ export const useBudgets = () => {
           supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),
           supabase
             .from('transactions')
-            .select('category_id, amount')
+            .select('category_id, amount, splits')
             .eq('user_id', uid)
             .eq('type', 'expense')
             .gte('date', month)
-            .lt('date', nextMonth)
-            .in('category_id', categoryIds),
+            .lt('date', nextMonth),
         ])
 
         const categoryMap = new Map(
@@ -113,8 +113,24 @@ export const useBudgets = () => {
         )
 
         const spentMap = new Map<string, number>()
-        for (const tx of (txData || []) as { category_id: string; amount: number }[]) {
-          spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount))
+        for (const tx of (txData || []) as {
+          category_id: string
+          amount: number
+          splits: SplitItem[] | null
+        }[]) {
+          const splitArr = tx.splits
+          if (splitArr && splitArr.length > 0) {
+            // Transaction is split — apply each split to its category
+            for (const split of splitArr) {
+              const key = split.category_id
+              if (categoryIds.includes(key)) {
+                spentMap.set(key, (spentMap.get(key) || 0) + Number(split.amount))
+              }
+            }
+          } else if (tx.category_id && categoryIds.includes(tx.category_id)) {
+            // Normal transaction — direct category
+            spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount))
+          }
         }
 
         // Compute rollover: fetch previous month budgets + spending for same categories
@@ -140,16 +156,29 @@ export const useBudgets = () => {
           if (prevCatIds.length > 0) {
             const { data: prevTxData } = await supabase
               .from('transactions')
-              .select('category_id, amount')
+              .select('category_id, amount, splits')
               .eq('user_id', uid)
               .eq('type', 'expense')
               .gte('date', prevMonth)
               .lt('date', month)
-              .in('category_id', prevCatIds)
 
             const prevSpentMap = new Map<string, number>()
-            for (const tx of (prevTxData || []) as { category_id: string; amount: number }[]) {
-              prevSpentMap.set(tx.category_id, (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount))
+            for (const tx of (prevTxData || []) as {
+              category_id: string
+              amount: number
+              splits: SplitItem[] | null
+            }[]) {
+              const splitArr = tx.splits
+              if (splitArr && splitArr.length > 0) {
+                for (const split of splitArr) {
+                  const key = split.category_id
+                  if (prevCatIds.includes(key)) {
+                    prevSpentMap.set(key, (prevSpentMap.get(key) || 0) + Number(split.amount))
+                  }
+                }
+              } else if (tx.category_id && prevCatIds.includes(tx.category_id)) {
+                prevSpentMap.set(tx.category_id, (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount))
+              }
             }
 
             for (const catId of prevCatIds) {

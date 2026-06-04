@@ -155,7 +155,16 @@
     "attachment_add": "Tambah Lampiran",
     "attachment_change": "Ganti",
     "attachment_remove": "Hapus",
-    "attachment_uploading": "Mengupload..."
+    "attachment_uploading": "Mengupload...",
+    "split_transaction": "Split Transaksi",
+    "split_desc": "Bagi transaksi ke beberapa kategori",
+    "split_enable": "Aktifkan Split",
+    "split_disable": "Nonaktifkan Split",
+    "split_category": "Kategori",
+    "split_amount": "Nominal",
+    "split_add": "Tambah Split",
+    "split_remove": "Hapus",
+    "split_total_mismatch": "Total split harus sama dengan nominal transaksi"
   },
   "transaction_edit": {
     "not_found": "Transaksi tidak ditemukan",

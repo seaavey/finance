@@ -146,7 +146,7 @@ declare global {
   export type { Reminder } from './composables/useReminders'
   import('./composables/useReminders')
   // @ts-ignore
-  export type { Transaction, TransactionFilters } from './composables/useTransactions'
+  export type { SplitItem, Transaction, TransactionFilters } from './composables/useTransactions'
   import('./composables/useTransactions')
 }
 

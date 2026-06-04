@@ -2,6 +2,12 @@ import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
+export interface SplitItem {
+  category_id: string
+  amount: number
+  description?: string
+}
+
 export interface Transaction {
   id: string
   user_id: string
@@ -13,6 +19,7 @@ export interface Transaction {
   date: string
   account_id: string | null
   image_url: string | null
+  splits: SplitItem[]
   created_at: string
 }
 
@@ -50,7 +57,7 @@ export const useTransactions = () => {
     let query = supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
       )
       .order('date', { ascending: false })
 
@@ -236,7 +243,7 @@ export const useTransactions = () => {
     const { data, error } = await supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
       )
       .eq('id', id)
       .single()
@@ -251,7 +258,7 @@ export const useTransactions = () => {
     const { data, error } = await supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
       )
       .ilike('description', `%${term}%`)
       .order('date', { ascending: false })

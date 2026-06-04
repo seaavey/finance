@@ -155,7 +155,16 @@
     "attachment_add": "Add Attachment",
     "attachment_change": "Change",
     "attachment_remove": "Remove",
-    "attachment_uploading": "Uploading..."
+    "attachment_uploading": "Uploading...",
+    "split_transaction": "Split Transaction",
+    "split_desc": "Split transaction across multiple categories",
+    "split_enable": "Enable Split",
+    "split_disable": "Disable Split",
+    "split_category": "Category",
+    "split_amount": "Amount",
+    "split_add": "Add Split",
+    "split_remove": "Remove",
+    "split_total_mismatch": "Total split must equal transaction amount"
   },
   "transaction_edit": {
     "not_found": "Transaction not found",

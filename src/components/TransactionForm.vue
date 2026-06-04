@@ -394,6 +394,96 @@
       </div>
     </div>
 
+    <!-- SPLIT TRANSACTION -->
+    <div
+      class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
+    >
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
+            <AppIcon name="hugeicons:share-07" :size="12" />
+            {{ $t('transaction_form.split_transaction') }}
+          </Label>
+          <p class="mt-1 text-xs text-muted-foreground">{{ $t('transaction_form.split_desc') }}</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-8 rounded-xl px-3 text-xs font-bold shrink-0"
+          :class="splitEnabled ? 'border-primary/40 bg-primary/5 text-primary' : ''"
+          @click="toggleSplit"
+        >
+          {{ splitEnabled ? $t('transaction_form.split_disable') : $t('transaction_form.split_enable') }}
+        </Button>
+      </div>
+
+      <template v-if="splitEnabled">
+        <div
+          v-for="(split, index) in splitItems"
+          :key="index"
+          class="flex flex-col gap-2 rounded-2xl border border-border/30 bg-background/30 p-3 md:flex-row md:items-center"
+        >
+          <div class="flex-1">
+            <CategoryPicker
+              v-model="split.category_id"
+              :type="form.type"
+              :placeholder="$t('transaction_form.split_category')"
+            />
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1 md:w-36">
+              <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">
+                {{ form.currency }}
+              </span>
+              <input
+                v-model="split.amount"
+                type="text"
+                inputmode="numeric"
+                :placeholder="$t('transaction_form.split_amount')"
+                class="h-10 w-full rounded-xl border border-border/50 bg-background/50 pl-10 pr-3 text-sm font-bold outline-none transition-all focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
+                @keydown="onNumberKeydown"
+                @input="onSplitAmountInput($event, index)"
+              />
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="h-10 w-10 shrink-0 rounded-xl text-muted-foreground hover:text-destructive"
+              @click="removeSplit(index)"
+            >
+              <AppIcon name="hugeicons:delete-01" :size="16" />
+            </Button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3">
+          <div
+            v-if="splitItems.length > 0"
+            class="flex items-center gap-2 text-xs font-medium"
+            :class="splitTotalMismatch ? 'text-destructive' : 'text-muted-foreground'"
+          >
+            <AppIcon
+              :name="splitTotalMismatch ? 'hugeicons:alert-circle' : 'hugeicons:tick-01'"
+              :size="14"
+            />
+            {{ formatCurrency(splitTotal, form.currency) }} / {{ formatCurrency(form.amount, form.currency) }}
+          </div>
+          <div class="flex-1" />
+          <Button
+            variant="outline"
+            size="sm"
+            class="h-8 rounded-xl border-dashed px-3 text-xs font-bold"
+            @click="addSplit"
+          >
+            <AppIcon name="hugeicons:plus-sign" :size="14" class="mr-1" />
+            {{ $t('transaction_form.split_add') }}
+          </Button>
+        </div>
+      </template>
+    </div>
+
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3 md:gap-4 pt-4">
       <Button
@@ -417,6 +507,7 @@
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import type { Transaction } from '@/composables/useTransactions'
+import type { SplitItem } from '@/composables/useTransactions'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
@@ -596,6 +687,49 @@ async function removeAttachment() {
   form.image_url = null
 }
 
+// --- Split transaction logic ---
+const splitEnabled = ref(false)
+const splitItems = ref<SplitItem[]>([])
+
+const splitTotal = computed(() =>
+  splitItems.value.reduce((sum, s) => sum + (Number(s.amount) || 0), 0),
+)
+
+const splitTotalMismatch = computed(() => splitItems.value.length > 0 && splitTotal.value !== Number(form.amount))
+
+function toggleSplit() {
+  splitEnabled.value = !splitEnabled.value
+  if (!splitEnabled.value) {
+    splitItems.value = []
+  }
+}
+
+function addSplit() {
+  splitItems.value.push({ category_id: '', amount: 0 })
+}
+
+function removeSplit(index: number) {
+  splitItems.value.splice(index, 1)
+}
+
+function onSplitAmountInput(event: Event, index: number) {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/\D/g, '')
+  splitItems.value[index] = { ...splitItems.value[index], amount: Number(input.value) || 0 }
+}
+
+// Initialize splits from existing transaction
+watch(
+  () => props.transaction,
+  (tx) => {
+    if (tx?.splits && tx.splits.length > 0) {
+      splitItems.value = tx.splits.map((s) => ({ ...s }))
+      splitEnabled.value = true
+    }
+  },
+  { immediate: true },
+)
+
 const calendarDate = computed({
   get: () => (form.date ? parseDate(form.date) : undefined),
   set: (val) => {
@@ -676,6 +810,11 @@ const onSubmit = async () => {
 
   submitting.value = true
   try {
+    if (splitEnabled.value && splitTotalMismatch.value) {
+      toast.error(t('transaction_form.split_total_mismatch'))
+      submitting.value = false
+      return
+    }
     const payload = {
       type: form.type,
       amount: Number(form.amount),
@@ -685,6 +824,7 @@ const onSubmit = async () => {
       description: form.description || null,
       date: form.date!,
       image_url: form.image_url,
+      splits: splitEnabled.value ? splitItems.value : [],
     }
 
     const result = props.transaction
