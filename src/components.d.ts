@@ -132,8 +132,6 @@ declare module 'vue' {
     PaginationFirst: typeof import('./components/ui/pagination/PaginationFirst.vue')['default']
     PaginationItem: typeof import('./components/ui/pagination/PaginationItem.vue')['default']
     PaginationLast: typeof import('./components/ui/pagination/PaginationLast.vue')['default']
-    PaginationList: typeof import('./components/ui/pagination/PaginationList.vue')['default']
-    PaginationListItem: typeof import('./components/ui/pagination/PaginationListItem.vue')['default']
     PaginationNext: typeof import('./components/ui/pagination/PaginationNext.vue')['default']
     PaginationPrev: typeof import('./components/ui/pagination/PaginationPrev.vue')['default']
     PaginationPrevious: typeof import('./components/ui/pagination/PaginationPrevious.vue')['default']
