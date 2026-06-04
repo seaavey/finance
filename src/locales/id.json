@@ -699,7 +699,8 @@
     "login_subtitle": "Catat keuangan sendiri atau bareng",
     "login_google": "Login dengan Google",
     "back": "← Kembali",
-    "register": "Daftar"
+    "register": "Daftar",
+    "authenticating": "Mengautentikasi..."
   },
   "confirm": {
     "title": "Konfirmasi",

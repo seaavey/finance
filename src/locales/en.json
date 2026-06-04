@@ -699,7 +699,8 @@
     "login_subtitle": "Track your finances solo or together",
     "login_google": "Sign in with Google",
     "back": "← Back",
-    "register": "Sign Up"
+    "register": "Sign Up",
+    "authenticating": "Authenticating..."
   },
   "confirm": {
     "title": "Confirm",

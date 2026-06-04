@@ -10,6 +10,7 @@ const blankLayoutRoutes = [
   '/privacy-policy',
   '/terms-of-service',
   '/auth/login',
+  '/auth/callback',
 ]
 
 const router = createRouter({
@@ -32,6 +33,7 @@ const router = createRouter({
 const publicRoutes = [
   '/',
   '/auth/login',
+  '/auth/callback',
   '/login',
   '/about',
   '/contact',
