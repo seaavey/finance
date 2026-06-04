@@ -19,6 +19,8 @@ export type ActionType =
   | 'created'
   | 'updated'
   | 'deleted'
+  | 'bulk_updated'
+  | 'bulk_deleted'
   | 'login'
   | 'logout'
   | 'connected'

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Transition mode="out-in" name="fade-up">
-      <div v-if="loading" key="loading" class="mx-auto w-full max-w-3xl space-y-6">
+      <div v-if="loading" key="loading" class="mx-auto w-full space-y-4 md:space-y-6">
         <Skeleton class="h-4 w-48 rounded-lg" />
         <div class="flex items-center justify-between rounded-3xl border border-border/50 p-6">
           <div class="flex items-center gap-4">
@@ -62,16 +62,16 @@
         </div>
       </div>
 
-      <div v-else key="content" class="mx-auto w-full max-w-3xl space-y-6">
+      <div v-else key="content" class="mx-auto w-full space-y-4 md:space-y-6">
         <!-- Back link -->
-        <Button variant="outline" size="icon" @click="router.push('/transactions')">
-          <AppIcon name="hugeicons:arrow-left-01" :size="16" />
+        <Button variant="ghost" size="sm" @click="router.push('/transactions')">
+          <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
           {{ $t('transaction_edit.back') }}
         </Button>
 
         <!-- Header card -->
         <div
-          class="flex items-center justify-between rounded-3xl border border-border/50 bg-card/40 p-6"
+          class="flex items-center justify-between rounded-3xl border border-border/50 bg-card/40 p-4 md:p-6"
         >
           <div class="flex items-center gap-4">
             <div

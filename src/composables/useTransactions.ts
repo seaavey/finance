@@ -40,43 +40,68 @@ export const useTransactions = () => {
   const currentFilters = ref<TransactionFilters | undefined>(undefined)
   const currentPage = ref(1)
   const loadedTransactions = ref<Transaction[]>([])
-  const hasMore = ref(true)
-  const loadingMore = ref(false)
+  const totalCount = ref(0)
+
+  const pageSize = ref(10)
+  const totalPages = computed(() => Math.max(1, Math.ceil(totalCount.value / pageSize.value)))
+
+  const buildQuery = (filters?: TransactionFilters) => {
+    let query = supabase
+      .from('transactions')
+      .select(
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, created_at',
+      )
+      .order('date', { ascending: false })
+
+    if (filters?.type) query = query.eq('type', filters.type)
+    if (filters?.category_id) query = query.eq('category_id', filters.category_id)
+    if (filters?.dateFrom) query = query.gte('date', filters.dateFrom)
+    if (filters?.dateTo) query = query.lte('date', filters.dateTo)
+    if (filters?.search) query = query.ilike('description', `%${filters.search}%`)
+    if (filters?.amountMin) query = query.gte('amount', filters.amountMin)
+    if (filters?.amountMax) query = query.lte('amount', filters.amountMax)
+    if (filters?.account_id) query = query.eq('account_id', filters.account_id)
+    if (filters?.currency) query = query.eq('currency', filters.currency)
+    return query
+  }
+
+  const buildCountQuery = (filters?: TransactionFilters) => {
+    let query = supabase
+      .from('transactions')
+      .select('*', { count: 'exact', head: true })
+
+    if (filters?.type) query = query.eq('type', filters.type)
+    if (filters?.category_id) query = query.eq('category_id', filters.category_id)
+    if (filters?.dateFrom) query = query.gte('date', filters.dateFrom)
+    if (filters?.dateTo) query = query.lte('date', filters.dateTo)
+    if (filters?.search) query = query.ilike('description', `%${filters.search}%`)
+    if (filters?.amountMin) query = query.gte('amount', filters.amountMin)
+    if (filters?.amountMax) query = query.lte('amount', filters.amountMax)
+    if (filters?.account_id) query = query.eq('account_id', filters.account_id)
+    if (filters?.currency) query = query.eq('currency', filters.currency)
+    return query
+  }
 
   const { isLoading: loading, refetch: refetchTransactions } = useQuery({
-    queryKey: ['transactions', computed(() => user.value?.id), currentFilters, currentPage],
+    queryKey: ['transactions', computed(() => user.value?.id), currentFilters, currentPage, pageSize],
     queryFn: async () => {
       const page = currentPage.value
-      const from = (page - 1) * PAGE_SIZE
-      const to = from + PAGE_SIZE - 1
-
-      let query = supabase
-        .from('transactions')
-        .select(
-          'id, user_id, type, amount, currency, category_id, description, date, account_id, created_at',
-        )
-        .order('date', { ascending: false })
-        .range(from, to)
+      const from = (page - 1) * pageSize.value
+      const to = from + pageSize.value - 1
 
       const filters = currentFilters.value
-      if (filters?.type) query = query.eq('type', filters.type)
-      if (filters?.category_id) query = query.eq('category_id', filters.category_id)
-      if (filters?.dateFrom) query = query.gte('date', filters.dateFrom)
-      if (filters?.dateTo) query = query.lte('date', filters.dateTo)
-      if (filters?.search) query = query.ilike('description', `%${filters.search}%`)
-      if (filters?.amountMin) query = query.gte('amount', filters.amountMin)
-      if (filters?.amountMax) query = query.lte('amount', filters.amountMax)
-      if (filters?.account_id) query = query.eq('account_id', filters.account_id)
-      if (filters?.currency) query = query.eq('currency', filters.currency)
 
-      const { data, error } = await query
+      const [dataResult, countResult] = await Promise.all([
+        buildQuery(filters).range(from, to),
+        buildCountQuery(filters),
+      ])
+
+      const { data, error } = dataResult
       if (error) throw error
-      const items = (data as Transaction[]) || []
 
-      // If fewer items than page size, this was the last page
-      hasMore.value = items.length >= PAGE_SIZE
+      totalCount.value = countResult.count ?? 0
 
-      return items
+      return (data as Transaction[]) || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 30_000,
@@ -84,10 +109,9 @@ export const useTransactions = () => {
 
   const transactions = computed(() => loadedTransactions.value)
 
-  const fetchTransactions = async (filters?: TransactionFilters) => {
+  const fetchTransactions = async (filters?: TransactionFilters, page = 1) => {
     currentFilters.value = filters
-    currentPage.value = 1
-    hasMore.value = true
+    currentPage.value = page
     loadedTransactions.value = []
     const result = await refetchTransactions()
     if (result.data) {
@@ -95,15 +119,17 @@ export const useTransactions = () => {
     }
   }
 
-  const loadMore = async () => {
-    if (!hasMore.value || loadingMore.value || loading.value) return
-    loadingMore.value = true
-    currentPage.value += 1
+  const goToPage = async (page: number) => {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return
+    currentPage.value = page
     const result = await refetchTransactions()
     if (result.data) {
-      loadedTransactions.value = [...loadedTransactions.value, ...result.data]
+      loadedTransactions.value = result.data
     }
-    loadingMore.value = false
+  }
+
+  const changePage = async (delta: number) => {
+    await goToPage(currentPage.value + delta)
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
@@ -174,6 +200,37 @@ export const useTransactions = () => {
     return { error }
   }
 
+  const bulkUpdateTransactions = async (
+    ids: string[],
+    updates: Partial<Omit<Transaction, 'id' | 'user_id' | 'created_at'>>,
+  ) => {
+    if (ids.length === 0) return { error: null }
+    const { error } = await supabase.from('transactions').update(updates).in('id', ids)
+
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      toast.success(t('toast.bulk_transactions_updated', { count: ids.length }))
+      activity.log('transaction', 'bulk_updated', { count: ids.length, ...updates })
+    } else {
+      toast.error(t('toast.bulk_transactions_update_error'))
+    }
+    return { error }
+  }
+
+  const bulkDeleteTransactions = async (ids: string[]) => {
+    if (ids.length === 0) return { error: null }
+    const { error } = await supabase.from('transactions').delete().in('id', ids)
+
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      toast.success(t('toast.bulk_transactions_deleted', { count: ids.length }))
+      activity.log('transaction', 'bulk_deleted', { count: ids.length })
+    } else {
+      toast.error(t('toast.bulk_transactions_delete_error'))
+    }
+    return { error }
+  }
+
   const getTransaction = async (id: string) => {
     const { data, error } = await supabase
       .from('transactions')
@@ -225,14 +282,19 @@ export const useTransactions = () => {
   return {
     transactions,
     loading,
-    hasMore,
-    loadingMore,
+    totalCount,
+    totalPages,
+    currentPage,
+    pageSize,
     fetchTransactions,
-    loadMore,
+    goToPage,
+    changePage,
     searchTransactions,
     addTransaction,
     updateTransaction,
     deleteTransaction,
+    bulkUpdateTransactions,
+    bulkDeleteTransactions,
     getTransaction,
     monthlySummary,
   }

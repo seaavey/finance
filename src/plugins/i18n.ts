@@ -19,7 +19,6 @@ interface I18nGlobal {
 }
 
 // Inject locales into the global instance so our useI18n mock can find them
-// This mimics how Nuxt I18n works
 ;(i18n.global as unknown as I18nGlobal).locales = ref([
   { code: 'id', name: 'Indonesia' },
   { code: 'en', name: 'English' },

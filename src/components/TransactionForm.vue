@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto w-full max-w-2xl space-y-8">
+  <div class="mx-auto w-full space-y-5 md:space-y-8">
     <!-- HEADER -->
     <div class="text-center md:text-left">
       <h1 class="text-4xl font-black tracking-tighter text-foreground">
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-2 gap-4">
       <Button
         variant="ghost"
-        class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
+        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
         :class="
           form.type === 'income'
             ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 border-emerald-500'
@@ -39,7 +39,7 @@
 
       <Button
         variant="ghost"
-        class="group relative h-auto flex-col items-center gap-3 py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
+        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
         :class="
           form.type === 'expense'
             ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 border-rose-500'
@@ -143,14 +143,14 @@
 
     <!-- AMOUNT CARD -->
     <div
-      class="relative overflow-hidden rounded-4xl border border-border/50 bg-card/20 p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80"
+      class="relative overflow-hidden rounded-3xl md:rounded-4xl border border-border/50 bg-card/20 p-5 md:p-8 backdrop-blur-md shadow-2xl transition-all hover:border-border/80"
     >
       <Label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">{{
         $t('transaction_form.amount')
       }}</Label>
-      <div class="mt-4 flex items-center gap-4">
+      <div class="mt-3 md:mt-4 flex items-center gap-3 md:gap-4">
         <div
-          class="flex h-14 items-center justify-center rounded-2xl bg-muted/50 px-5 text-xl font-black text-foreground shadow-inner"
+          class="flex h-11 md:h-14 items-center justify-center rounded-xl md:rounded-2xl bg-muted/50 px-4 md:px-5 text-base md:text-xl font-black text-foreground shadow-inner"
         >
           {{ form.currency }}
         </div>
@@ -159,7 +159,7 @@
           type="text"
           inputmode="numeric"
           :placeholder="$t('transaction_form.amount_placeholder')"
-          class="w-full border-none bg-transparent text-5xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 md:text-6xl"
+          class="w-full border-none bg-transparent text-4xl md:text-6xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20"
           @keydown="onNumberKeydown"
           @input="onAmountInput"
         />
@@ -182,7 +182,7 @@
       <!-- Category & Account (Left Side) -->
       <div class="space-y-4">
         <div
-          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
           <Label
             class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
@@ -199,7 +199,7 @@
         </div>
 
         <div
-          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
           <Label
             class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
@@ -233,7 +233,7 @@
       <!-- Currency & Date (Right Side) -->
       <div class="space-y-4">
         <div
-          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
           <Label
             class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
@@ -273,7 +273,7 @@
         </div>
 
         <div
-          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30"
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
           <Label
             class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
@@ -307,7 +307,7 @@
 
       <!-- Notes (Full Width) -->
       <div
-        class="col-span-1 space-y-2 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2"
+        class="col-span-1 space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2"
       >
         <Label
           class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
@@ -319,22 +319,22 @@
           v-model="form.description"
           :placeholder="$t('transaction_form.note_optional')"
           rows="2"
-          class="min-h-[80px] rounded-2xl border-border/50 bg-background/50 p-4 font-medium transition-all hover:bg-background/80 focus-visible:ring-primary/20"
+          class="min-h-[68px] md:min-h-[80px] rounded-2xl border-border/50 bg-background/50 p-4 font-medium transition-all hover:bg-background/80 focus-visible:ring-primary/20"
         />
       </div>
     </div>
 
     <!-- ACTION BUTTONS -->
-    <div class="flex items-center justify-end gap-4 pt-4">
+    <div class="flex items-center justify-end gap-3 md:gap-4 pt-4">
       <Button
         variant="ghost"
-        class="h-12 rounded-2xl px-8 font-black uppercase tracking-widest transition-all hover:bg-secondary/50"
+        class="h-11 md:h-12 rounded-2xl px-6 md:px-8 font-black uppercase tracking-widest transition-all hover:bg-secondary/50"
         @click="$emit('cancel')"
       >
         {{ $t('transaction_form.cancel') }}
       </Button>
       <Button
-        class="h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+        class="h-11 md:h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 md:px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
         :disabled="submitting || !form.amount || !form.date"
         @click="onSubmit"
       >

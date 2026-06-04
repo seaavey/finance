@@ -10,395 +10,625 @@
           {{ filteredTransactions.length }} {{ $t('transactions.title').toLowerCase() }}
         </p>
       </div>
-      <Button
-        class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
-        @click="router.push('/transactions/new')"
-      >
-        <AppIcon name="hugeicons:add-01" :size="18" />
-        <span>{{ $t('topbar.add') }}</span>
-      </Button>
+      <div class="flex items-center gap-2">
+        <Button
+          class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
+          @click="router.push('/transactions/new')"
+        >
+          <AppIcon name="hugeicons:add-01" :size="18" />
+          <span>{{ $t('topbar.add') }}</span>
+        </Button>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-      <!-- Search & Filters Bento Card (Full on xs/md, 4 cols on lg) -->
-      <div
-        class="flex flex-col rounded-4xl border border-border/50 bg-card p-6 shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both md:col-span-2 lg:col-span-4"
-        :class="showFilters ? 'gap-4 justify-start' : 'gap-0 justify-center'"
-      >
-        <div class="flex items-center gap-3">
-          <div class="relative flex-1">
-            <AppIcon
-              name="hugeicons:search-01"
-              :size="22"
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50"
-            />
-            <Input
-              v-model="filters.search"
-              :placeholder="$t('transactions.search_placeholder')"
-              class="h-14 rounded-2xl border-none bg-muted/50 pl-12 pr-4 text-lg font-medium focus-visible:ring-primary/20"
-              @input="debouncedFetch"
-            />
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            class="size-14 rounded-2xl border-border/50 transition-all"
-            :class="
-              showFilters
-                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                : 'bg-muted/30'
-            "
-            @click="showFilters = !showFilters"
-          >
-            <AppIcon name="hugeicons:filter" :size="20" />
-          </Button>
+    <!-- Transactions Table Card -->
+    <div class="rounded-4xl border border-border/50 bg-card shadow-sm">
+      <!-- Card Header -->
+      <div class="flex items-center justify-between border-b border-border/50 p-6 md:p-8">
+        <div>
+          <h3 class="text-xl font-black tracking-tighter text-foreground">
+            {{ $t('transactions.title') }}
+          </h3>
+          <p class="text-sm font-medium text-muted-foreground">
+            {{ $t('dashboard.latest_activity') }}
+          </p>
         </div>
+        <div class="text-right">
+          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
+            {{ $t('transactions.difference') }}
+          </p>
+          <div v-for="(total, cur) in balanceByCurrency" :key="cur">
+            <p
+              class="text-lg font-black tracking-tighter"
+              :class="
+                total >= 0
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-rose-600 dark:text-rose-400'
+              "
+            >
+              {{ formatCurrency(total, cur) }}
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <!-- Expanded Filters -->
-        <Transition
-          enter-active-class="transition duration-300 ease-out"
-          enter-from-class="transform -translate-y-2 opacity-0"
-          enter-to-class="transform translate-y-0 opacity-100"
-          leave-active-class="transition duration-200 ease-in"
-          leave-from-class="transform translate-y-0 opacity-100"
-          leave-to-class="transform -translate-y-2 opacity-0"
+      <!-- Table Area -->
+      <div class="p-0 md:p-0">
+        <!-- Filter Bar -->
+        <div
+          class="flex flex-wrap items-center gap-3 border-b border-border/50 px-4 py-3 md:px-6"
         >
-          <div v-if="showFilters" class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2 lg:grid-cols-3">
-            <Select v-model="filters.type" @update:model-value="applyFilters">
-              <SelectTrigger class="h-11 rounded-xl border-border/50 bg-muted/30">
-                <SelectValue :placeholder="$t('transactions.all_types')" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{{ $t('transactions.all_types') }}</SelectItem>
-                <SelectItem value="income">{{ $t('transactions.income') }}</SelectItem>
-                <SelectItem value="expense">{{ $t('transactions.expense') }}</SelectItem>
-              </SelectContent>
-            </Select>
+          <Select v-model="categoryFilter">
+            <SelectTrigger class="h-8 w-44 rounded-xl text-xs font-medium">
+              <SelectValue :placeholder="$t('transactions.all_categories')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">
+                <span class="text-muted-foreground">{{ $t('transactions.all_categories') }}</span>
+              </SelectItem>
 
-            <CategoryPicker
-              v-model="filters.category_id"
-              :placeholder="$t('transactions.all_categories')"
-              class="h-11 rounded-xl border-border/50 bg-muted/30"
-              @update:model-value="applyFilters"
-            />
-
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button
-                  variant="outline"
-                  class="h-11 w-full justify-start rounded-xl border-border/50 bg-muted/30 text-left font-normal"
-                  :class="!dateRange.start && 'text-muted-foreground'"
-                >
-                  <AppIcon name="hugeicons:calendar-01" :size="16" class="mr-2" />
-                  <span v-if="dateRange.start && dateRange.end" class="truncate">
-                    {{ formatDate(dateRange.start) }} - {{ formatDate(dateRange.end) }}
-                  </span>
-                  <span v-else>{{ $t('transactions.select_date_range') }}</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent class="w-[calc(100vw-32px)] p-0 sm:w-auto" align="start">
-                <RangeCalendar
-                  v-model="dateRange"
-                  :number-of-months="1"
-                  locale="id-ID"
-                  @update:model-value="onDateRangeChange"
-                />
-              </PopoverContent>
-            </Popover>
-
-            <div class="relative">
-              <AppIcon
-                name="hugeicons:money-01"
-                :size="16"
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none"
-              />
-              <Input
-                v-model.number="filters.amountMin"
-                type="number"
-                min="0"
-                :placeholder="$t('transactions.amount_min')"
-                class="h-11 rounded-xl border-border/50 bg-muted/30 pl-9"
-                @input="applyFilters"
-              />
-            </div>
-
-            <div class="relative">
-              <AppIcon
-                name="hugeicons:money-02"
-                :size="16"
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none"
-              />
-              <Input
-                v-model.number="filters.amountMax"
-                type="number"
-                min="0"
-                :placeholder="$t('transactions.amount_max')"
-                class="h-11 rounded-xl border-border/50 bg-muted/30 pl-9"
-                @input="applyFilters"
-              />
-            </div>
-
-            <Select v-model="filters.account_id" @update:model-value="applyFilters">
-              <SelectTrigger class="h-11 rounded-xl border-border/50 bg-muted/30">
-                <SelectValue :placeholder="$t('transactions.all_accounts')" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{{ $t('transactions.all_accounts') }}</SelectItem>
+              <SelectGroup>
+                <SelectLabel class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5">
+                  {{ $t('transactions.income') }}
+                </SelectLabel>
                 <SelectItem
-                  v-for="acc in accounts"
-                  :key="acc.id"
-                  :value="acc.id"
+                  v-for="cat in incomeCategories"
+                  :key="cat.id"
+                  :value="cat.id"
+                  class="w-full"
                 >
-                  <div class="flex items-center gap-2">
-                    <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color }" />
-                    {{ acc.name }}
+                  <div class="flex w-full items-center gap-2">
+                    <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color }" />
+                    <span class="truncate">{{ cat.name }}</span>
+                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
                   </div>
                 </SelectItem>
-              </SelectContent>
-            </Select>
+              </SelectGroup>
 
-            <Select v-model="filters.currency" @update:model-value="applyFilters">
-              <SelectTrigger class="h-11 rounded-xl border-border/50 bg-muted/30">
-                <SelectValue :placeholder="$t('transactions.all_currencies')" />
+              <SelectSeparator class="mx-2 my-1" />
+
+              <SelectGroup>
+                <SelectLabel class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5">
+                  {{ $t('transactions.expense') }}
+                </SelectLabel>
+                <SelectItem
+                  v-for="cat in expenseCategories"
+                  :key="cat.id"
+                  :value="cat.id"
+                  class="w-full"
+                >
+                  <div class="flex w-full items-center gap-2">
+                    <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color }" />
+                    <span class="truncate">{{ cat.name }}</span>
+                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
+                  </div>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Select v-if="isPartnered" v-model="ownerFilter">
+            <SelectTrigger class="h-8 w-fit min-w-[100px] rounded-xl text-xs font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">
+                {{ $t('transactions.owner_filter_all') }}
+              </SelectItem>
+              <SelectItem value="mine">
+                <div class="flex items-center gap-2">
+                  <Avatar class="size-5">
+                    <AvatarImage :src="user?.user_metadata?.avatar_url ?? ''" />
+                    <AvatarFallback class="text-[9px]">
+                      {{ user?.email?.charAt(0)?.toUpperCase() || 'S' }}
+                    </AvatarFallback>
+                  </Avatar>
+                  {{ $t('transactions.owner_filter_mine') }}
+                </div>
+              </SelectItem>
+              <SelectItem value="partner">
+                <div class="flex items-center gap-2">
+                  <Avatar class="size-5">
+                    <AvatarImage :src="partner?.avatar_url ?? ''" />
+                    <AvatarFallback class="text-[9px]">
+                      {{ partnerInitial }}
+                    </AvatarFallback>
+                  </Avatar>
+                  {{ partnerDisplayName || $t('transactions.owner_filter_partner') }}
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                size="sm"
+                class="h-8 gap-1.5 rounded-xl border-border/50 text-xs font-medium"
+                :class="dateRange.start || dateRange.end ? 'border-primary/30 text-primary' : 'text-muted-foreground'"
+              >
+                <AppIcon name="hugeicons:calendar-01" :size="14" />
+                <span v-if="dateRange.start || dateRange.end" class="hidden sm:inline">
+                  {{ formatRangeLabel }}
+                </span>
+                <span v-else class="hidden sm:inline">{{ $t('transactions.select_date_range') }}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="w-auto p-0" align="start">
+              <RangeCalendar
+                v-model="dateRange"
+                :number-of-months="2"
+                @update:model-value="onDateRangeChange"
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        <!-- Top bar: info + per page -->
+        <div class="flex items-center justify-between border-b border-border/50 px-4 py-2 md:px-6">
+          <p class="text-sm font-medium text-muted-foreground">
+            <template v-if="totalCount > 0">
+              {{
+                $t('transactions.pagination', {
+                  start: (currentPage - 1) * pageSize + 1,
+                  end: Math.min(currentPage * pageSize, totalCount),
+                  total: totalCount,
+                })
+              }}
+            </template>
+            <template v-else>
+              {{ totalCount }} {{ $t('transactions.title').toLowerCase() }}
+            </template>
+          </p>
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-medium text-muted-foreground/60">{{ $t('transactions.per_page') }}</span>
+            <Select :model-value="pageSize" @update:model-value="pageSize = Number($event)">
+              <SelectTrigger class="h-7 w-16 rounded-lg text-xs font-medium">
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{{ $t('transactions.all_currencies') }}</SelectItem>
-                <SelectItem
-                  v-for="cur in currencies"
-                  :key="cur.value"
-                  :value="cur.value"
-                >
-                  {{ cur.label }}
+                <SelectItem v-for="n in [5, 10, 20, 50, 100]" :key="n" :value="n" class="text-xs">
+                  {{ n }}
                 </SelectItem>
               </SelectContent>
             </Select>
-
-            <div
-              v-if="isPartnered"
-              class="flex items-center gap-1 rounded-xl bg-muted/50 p-1"
-            >
-              <Button
-                v-for="opt in ownerOptions"
-                :key="opt.value"
-                :variant="ownerFilter === opt.value ? 'default' : 'ghost'"
-                size="sm"
-                class="flex-1 rounded-lg h-9 text-xs font-bold"
-                @click="handleOwnerFilterChange(opt.value)"
-              >
-                {{ opt.label }}
-              </Button>
-            </div>
           </div>
-        </Transition>
-      </div>
+        </div>
 
-      <!-- Quick Summary Cards (Side-by-side on md, 1 col each on lg) -->
-      <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-emerald-500/5 p-6 shadow-sm transition-all hover:bg-emerald-500/10 animate-in fade-in slide-in-from-bottom-6 delay-100 duration-700 fill-mode-both md:col-span-1 lg:col-span-1"
-      >
+        <!-- Loading State -->
+        <div v-if="loading" class="space-y-3 p-6">
+          <Skeleton v-for="i in 5" :key="i" class="h-16 w-full rounded-2xl" />
+        </div>
+
+        <!-- Empty State -->
         <div
-          class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
+          v-else-if="filteredTransactions.length === 0"
+          class="flex flex-col items-center justify-center py-16 text-center"
         >
-          <AppIcon name="hugeicons:arrow-down-01" :size="24" />
-        </div>
-        <div class="mt-auto">
-          <p
-            class="mt-4 text-[10px] font-black tracking-widest text-emerald-600 dark:text-emerald-400 uppercase"
-          >
-            {{ $t('transactions.income') }}
-          </p>
-          <div v-for="(total, cur) in incomeByCurrency" :key="cur">
-            <p class="text-2xl font-black tracking-tighter text-foreground truncate">
-              {{ formatCurrency(total, cur) }}
-            </p>
+          <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-muted/50">
+            <AppIcon name="hugeicons:inbox" :size="32" class="text-muted-foreground/30" />
           </div>
-          <p
-            v-if="Object.keys(incomeByCurrency).length === 0"
-            class="mt-1 text-2xl font-black tracking-tighter text-muted-foreground/50 truncate"
-          >
-            {{ formatCurrency(0) }}
-          </p>
-        </div>
-      </div>
-
-      <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-rose-500/5 p-6 shadow-sm transition-all hover:bg-rose-500/10 animate-in fade-in slide-in-from-bottom-6 delay-150 duration-700 fill-mode-both md:col-span-1 lg:col-span-1"
-      >
-        <div
-          class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
-        >
-          <AppIcon name="hugeicons:arrow-up-01" :size="24" />
-        </div>
-        <div class="mt-auto">
-          <p
-            class="mt-4 text-[10px] font-black tracking-widest text-rose-600 dark:text-rose-400 uppercase"
-          >
-            {{ $t('transactions.expense') }}
-          </p>
-          <div v-for="(total, cur) in expenseByCurrency" :key="cur">
-            <p class="text-2xl font-black tracking-tighter text-foreground truncate">
-              {{ formatCurrency(total, cur) }}
-            </p>
-          </div>
-          <p
-            v-if="Object.keys(expenseByCurrency).length === 0"
-            class="mt-1 text-2xl font-black tracking-tighter text-muted-foreground/50 truncate"
-          >
-            {{ formatCurrency(0) }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Transaction List Bento Card (Full Width - 2 cols on md, 6 cols on lg) -->
-      <div
-        class="rounded-4xl border border-border/50 bg-card shadow-sm transition-all animate-in fade-in slide-in-from-bottom-6 delay-200 duration-700 fill-mode-both md:col-span-2 lg:col-span-6"
-      >
-        <div class="flex items-center justify-between border-b border-border/50 p-6 md:p-8">
           <div>
-            <h3 class="text-xl font-black tracking-tighter text-foreground">
-              {{ $t('transactions.title') }}
-            </h3>
+            <p class="text-base font-black text-foreground tracking-tight">
+              {{ $t('transactions.empty') }}
+            </p>
             <p class="text-sm font-medium text-muted-foreground">
-              {{ $t('dashboard.latest_activity') }}
+              {{ $t('dashboard.empty_desc') }}
             </p>
-          </div>
-          <div class="text-right">
-            <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
-              {{ $t('transactions.difference') }}
-            </p>
-            <div v-for="(total, cur) in balanceByCurrency" :key="cur">
-              <p
-                class="text-lg font-black tracking-tighter"
-                :class="
-                  total >= 0
-                    ? 'text-emerald-600 dark:text-emerald-400'
-                    : 'text-rose-600 dark:text-rose-400'
-                "
-              >
-                {{ formatCurrency(total, cur) }}
-              </p>
-            </div>
           </div>
         </div>
 
-        <div class="p-4">
-          <!-- Loading State -->
-          <div v-if="loading" class="space-y-3">
-            <Skeleton v-for="i in 5" :key="i" class="h-20 rounded-3xl" />
-          </div>
-
-          <!-- Empty State -->
-          <div
-            v-else-if="filteredTransactions.length === 0"
-            class="flex flex-col items-center justify-center py-16 text-center"
-          >
-            <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-muted/50">
-              <AppIcon name="hugeicons:inbox" :size="32" class="text-muted-foreground/30" />
-            </div>
-            <div>
-              <p class="text-base font-black text-foreground tracking-tight">
-                {{ $t('transactions.empty') }}
-              </p>
-              <p class="text-sm font-medium text-muted-foreground">
-                {{ $t('dashboard.empty_desc') }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Grouped List -->
-          <div v-else class="space-y-8">
-            <div v-for="(group, date) in groupedTransactions" :key="date" class="space-y-3">
-              <div class="flex items-center gap-4 px-2">
-                <span
-                  class="text-xs font-black uppercase tracking-widest text-muted-foreground/90 whitespace-nowrap"
+        <!-- Table -->
+        <div v-else>
+          <Table>
+            <TableHeader>
+              <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                <TableHead
+                  v-for="header in headerGroup.headers"
+                  :key="header.id"
+                  :style="{ width: header.getSize() !== 150 ? header.getSize() + 'px' : undefined }"
+                  class="px-0"
+                  :class="header.column.columnDef.meta?.headerClass"
                 >
-                  {{ formatGroupDate(date as string) }}
-                </span>
-                <div class="h-px w-full bg-border/40" />
-              </div>
-              <div class="grid grid-cols-1 gap-1">
-                <router-link
-                  v-for="tx in group"
-                  :key="tx.id"
-                  :to="`/transactions/${tx.id}/edit`"
-                  class="group block"
-                >
-                  <TransactionItem :transaction="tx" />
-                </router-link>
-              </div>
-            </div>
-
-            <!-- Load More -->
-            <div v-if="hasMore && !loadingMore" class="flex justify-center pb-4">
-              <Button
-                variant="outline"
-                class="h-11 rounded-2xl border-border/50 px-8 font-bold text-muted-foreground"
-                @click="loadMore"
+                  <FlexRender
+                    :render="header.column.columnDef.header"
+                    :props="header.getContext()"
+                  />
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="row in table.getRowModel().rows"
+                :key="row.id"
+                :data-state="row.getIsSelected() ? 'selected' : undefined"
+                class="cursor-pointer hover:bg-muted/30 transition-colors"
+                @click="viewTransaction(row.original.id)"
               >
-                {{ $t('transactions.load_more') }}
-              </Button>
-            </div>
-            <div v-else-if="loadingMore" class="flex justify-center pb-4">
-              <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <div
-                  class="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                />
-                {{ $t('transactions.loading') }}
-              </div>
-            </div>
+                <TableCell
+                  v-for="cell in row.getVisibleCells()"
+                  :key="cell.id"
+                  :style="{
+                    width: cell.column.getSize() !== 150 ? cell.column.getSize() + 'px' : undefined,
+                  }"
+                  class="px-0"
+                  :class="cell.column.columnDef.meta?.cellClass"
+                >
+                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <!-- Pagination -->
+          <div
+            class="flex items-center justify-center border-t border-border/50 px-4 py-4 md:px-6"
+          >
+            <Pagination v-if="totalPages > 1"
+              :total="totalCount"
+              :items-per-page="pageSize"
+              :page="currentPage"
+              :sibling-count="1"
+              :show-edges="true"
+              @update:page="goToPage"
+            >
+              <PaginationFirst />
+              <PaginationPrev />
+              <PaginationContent v-slot="{ items }">
+                <template
+                  v-for="item in items"
+                  :key="item.type === 'page' ? `p-${item.value}` : `e-${Math.random()}`"
+                >
+                  <PaginationItem
+                    v-if="item.type === 'page'"
+                    :value="item.value"
+                    :is-active="item.value === currentPage"
+                  >
+                    <span class="text-xs font-bold">{{ item.value }}</span>
+                  </PaginationItem>
+                  <PaginationEllipsis v-else />
+                </template>
+              </PaginationContent>
+              <PaginationNext />
+              <PaginationLast />
+            </Pagination>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Floating bulk action bar -->
+  <Transition
+    enter-active-class="transition duration-300 ease-out"
+    enter-from-class="transform translate-y-4 opacity-0"
+    enter-to-class="transform translate-y-0 opacity-100"
+    leave-active-class="transition duration-200 ease-in"
+    leave-from-class="transform translate-y-0 opacity-100"
+    leave-to-class="transform translate-y-4 opacity-0"
+  >
+    <div
+      v-if="table.getSelectedRowModel().rows.length > 0"
+      class="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
+    >
+      <div
+        class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/95 px-5 py-3 shadow-2xl shadow-black/10 backdrop-blur-xl"
+      >
+        <span class="mr-2 whitespace-nowrap text-sm font-bold text-muted-foreground">
+          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
+        </span>
+
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-9 rounded-2xl border-border/50 text-xs font-bold"
+          @click="showBulkCategoryDialog = true"
+        >
+          <AppIcon name="hugeicons:folder-01" :size="16" class="mr-1" />
+          {{ $t('transactions.bulk_edit_category') }}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-9 rounded-2xl border-border/50 text-xs font-bold"
+          @click="showBulkAccountDialog = true"
+        >
+          <AppIcon name="hugeicons:bank" :size="16" class="mr-1" />
+          {{ $t('transactions.bulk_move_account') }}
+        </Button>
+
+        <div class="mx-1 h-8 w-px bg-border/50" />
+
+        <Button
+          variant="destructive"
+          size="sm"
+          class="h-9 rounded-2xl text-xs font-bold"
+          @click="showBulkDeleteDialog = true"
+        >
+          <AppIcon name="hugeicons:delete-01" :size="16" class="mr-1" />
+          {{ $t('transactions.bulk_delete') }}
+        </Button>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- Bulk Edit Category Dialog -->
+  <Dialog v-model:open="showBulkCategoryDialog">
+    <DialogContent class="sm:max-w-sm">
+      <DialogHeader>
+        <DialogTitle>{{ $t('transactions.bulk_edit_category') }}</DialogTitle>
+        <DialogDescription>
+          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
+        </DialogDescription>
+      </DialogHeader>
+      <div class="py-4">
+        <CategoryPicker v-model="bulkCategoryId" :placeholder="$t('transactions.category')" />
+      </div>
+      <DialogFooter>
+        <Button variant="outline" @click="showBulkCategoryDialog = false">
+          {{ $t('common.cancel') }}
+        </Button>
+        <Button @click="applyBulkCategory">
+          {{ $t('common.save') }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+
+  <!-- Bulk Move Account Dialog -->
+  <Dialog v-model:open="showBulkAccountDialog">
+    <DialogContent class="sm:max-w-sm">
+      <DialogHeader>
+        <DialogTitle>{{ $t('transactions.bulk_move_account') }}</DialogTitle>
+        <DialogDescription>
+          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
+        </DialogDescription>
+      </DialogHeader>
+      <div class="py-4">
+        <Select v-model="bulkAccountId">
+          <SelectTrigger class="w-full">
+            <SelectValue :placeholder="$t('transactions.all_accounts')" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="acc in accounts" :key="acc.id" :value="acc.id">
+              <div class="flex items-center gap-2">
+                <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color }" />
+                {{ acc.name }}
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" @click="showBulkAccountDialog = false">
+          {{ $t('common.cancel') }}
+        </Button>
+        <Button @click="applyBulkAccount">
+          {{ $t('common.save') }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+
+  <!-- Bulk Delete Confirmation -->
+  <ConfirmDialog
+    v-model:open="showBulkDeleteDialog"
+    :title="
+      $t('transactions.bulk_confirm_delete', { count: table.getSelectedRowModel().rows.length })
+    "
+    :description="$t('transactions.bulk_confirm_delete_desc')"
+    :confirm-text="$t('transactions.bulk_delete')"
+    variant="destructive"
+    @confirm="applyBulkDelete"
+  />
 </template>
 
 <script setup lang="ts">
+import { h, type VNode, type Ref } from 'vue'
+import { FlexRender, useVueTable, getCoreRowModel, getSortedRowModel, createColumnHelper } from '@tanstack/vue-table'
+import type { RowData, SortingState } from '@tanstack/vue-table'
+import type { DateRange } from 'reka-ui'
+import { getLocalTimeZone } from '@internationalized/date'
+import type { Transaction } from '@/composables/useTransactions'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import AppIcon from '@/components/Icon.vue'
+
+declare module '@tanstack/vue-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    headerClass?: string
+    cellClass?: string
+  }
+}
+
 defineOptions({
   name: 'PagesTransactionsIndex',
 })
-import { Input } from '@/components/ui/input'
-import type { TransactionFilters } from '@/composables/useTransactions'
 
-interface CalendarDateLike {
-  year: number
-  month: number
-  day: number
-}
-
-const { transactions, loading, hasMore, loadingMore, fetchTransactions, loadMore } =
-  useTransactions()
+const {
+  transactions,
+  loading,
+  totalCount,
+  totalPages,
+  currentPage,
+  pageSize,
+  fetchTransactions,
+  goToPage,
+  bulkUpdateTransactions,
+  bulkDeleteTransactions,
+} = useTransactions()
 const { fetchCategories } = useCategories()
-const { partner, isPartnered, fetchPartner } = usePartner()
+const { partner, isPartnered, fetchPartner, partnerDisplayName } = usePartner()
 const { accounts } = useAccounts()
 
 const router = useRouter()
 const { t } = useI18n()
-const { formatCurrency, defaultCurrency, currencies } = useCurrency()
+const { formatCurrency, defaultCurrency } = useCurrency()
 const { user } = useAuth()
+const { categories } = useCategories()
 
 const ownerFilter = ref<'all' | 'mine' | 'partner'>('all')
-
-const ownerOptions = computed(() => [
-  { value: 'all' as const, label: t('transactions.owner_filter_all') },
-  { value: 'mine' as const, label: t('transactions.owner_filter_mine') },
-  {
-    value: 'partner' as const,
-    label: partner.value?.display_name?.split(' ')[0] || t('transactions.owner_filter_partner'),
-  },
-])
+const sorting = ref<SortingState>([])
+const categoryFilter = ref('')
+const dateRange: Ref<DateRange> = shallowRef({ start: undefined, end: undefined } as DateRange)
 
 const filteredTransactions = computed(() => {
-  const all = transactions.value
-  if (!isPartnered.value || ownerFilter.value === 'all') {
-    return all
+  let all = transactions.value
+
+  // Owner filter
+  if (isPartnered.value && ownerFilter.value !== 'all') {
+    all = all.filter((tx) =>
+      ownerFilter.value === 'mine'
+        ? tx.user_id === user.value?.id
+        : tx.user_id === partner.value?.id,
+    )
   }
-  if (ownerFilter.value === 'mine') {
-    return all.filter((tx) => tx.user_id === user.value?.id)
+
+  // Category filter
+  if (categoryFilter.value && categoryFilter.value !== '__all__') {
+    all = all.filter((tx) => tx.category_id === categoryFilter.value)
   }
-  // ownerFilter is 'partner'
-  return all.filter((tx) => tx.user_id === partner.value?.id)
+
+  // Date range filter
+  if (dateRange.value.start) {
+    const startDate = dateRange.value.start.toDate(getLocalTimeZone())
+    all = all.filter((tx) => new Date(tx.date) >= startDate)
+  }
+  if (dateRange.value.end) {
+    const end = dateRange.value.end.toDate(getLocalTimeZone())
+    end.setHours(23, 59, 59, 999)
+    all = all.filter((tx) => new Date(tx.date) <= end)
+  }
+
+  return all
 })
+
+const formatRangeLabel = computed(() => {
+  const start = dateRange.value.start
+  const end = dateRange.value.end
+  if (!start && !end) return ''
+  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }
+  if (start && end) {
+    const startDate = start.toDate(getLocalTimeZone())
+    const endDate = end.toDate(getLocalTimeZone())
+    const sameMonth = startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()
+    if (sameMonth && startDate.getFullYear() === new Date().getFullYear()) {
+      return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
+    }
+    return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
+  }
+  if (start) return start.toDate(getLocalTimeZone()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (end) return end.toDate(getLocalTimeZone()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  return ''
+})
+
+const onDateRangeChange = () => {
+  // Triggered when range calendar selection changes
+}
+
+const incomeCategories = computed(() =>
+  categories.value.filter((c) => c.type === 'income'),
+)
+const expenseCategories = computed(() =>
+  categories.value.filter((c) => c.type === 'expense'),
+)
+
+const categoryCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  for (const tx of transactions.value) {
+    if (tx.category_id) {
+      counts[tx.category_id] = (counts[tx.category_id] || 0) + 1
+    }
+  }
+  return counts
+})
+
+// Category helpers
+function getCategoryColor(categoryId: string | null) {
+  if (!categoryId) return null
+  return categories.value.find((c) => c.id === categoryId)?.color ?? null
+}
+
+function getCategoryName(categoryId: string | null) {
+  if (!categoryId) return null
+  return categories.value.find((c) => c.id === categoryId)?.name ?? null
+}
+
+function getAccountName(accountId: string | null) {
+  if (!accountId) return null
+  return accounts.value.find((a) => a.id === accountId)?.name ?? null
+}
+
+function formatRowDate(date: string) {
+  const d = new Date(date)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  d.setHours(0, 0, 0, 0)
+  const diff = (today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24)
+
+  if (diff === 0) return t('transactions.today')
+  if (diff === 1) return t('transactions.yesterday')
+  return d.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+  })
+}
+
+const partnerInitial = computed(() => partner.value?.display_name?.charAt(0)?.toUpperCase() || 'P')
+
+// Bulk Dialogs
+const showBulkCategoryDialog = ref(false)
+const showBulkAccountDialog = ref(false)
+const showBulkDeleteDialog = ref(false)
+const bulkCategoryId = ref('')
+const bulkAccountId = ref('')
+
+function getSelectedIds() {
+  return table.getSelectedRowModel().rows.map((r) => r.original.id)
+}
+
+const applyBulkCategory = async () => {
+  if (!bulkCategoryId.value) return
+  const ids = getSelectedIds()
+  await bulkUpdateTransactions(ids, { category_id: bulkCategoryId.value })
+  showBulkCategoryDialog.value = false
+  bulkCategoryId.value = ''
+  table.resetRowSelection()
+}
+
+const applyBulkAccount = async () => {
+  if (!bulkAccountId.value) return
+  const ids = getSelectedIds()
+  await bulkUpdateTransactions(ids, { account_id: bulkAccountId.value })
+  showBulkAccountDialog.value = false
+  bulkAccountId.value = ''
+  table.resetRowSelection()
+}
+
+const applyBulkDelete = async () => {
+  const ids = getSelectedIds()
+  showBulkDeleteDialog.value = false
+  await bulkDeleteTransactions(ids)
+  table.resetRowSelection()
+}
 
 const incomeByCurrency = computed(() => {
   const totals: Record<string, number> = {}
@@ -430,116 +660,291 @@ const balanceByCurrency = computed(() => {
   return totals
 })
 
-const showFilters = ref(false)
-const filters = reactive({
-  search: '',
-  type: '',
-  category_id: '',
-  amountMin: undefined as number | undefined,
-  amountMax: undefined as number | undefined,
-  account_id: '',
-  currency: '',
-})
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const dateRange = ref<any>({ start: undefined, end: undefined })
-
-let debounceTimer: ReturnType<typeof setTimeout>
-
 onMounted(async () => {
   await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()])
 })
 
-const debouncedFetch = () => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => applyFilters(), 300)
-}
-
-const onDateRangeChange = () => {
-  applyFilters()
-}
-
-const formatDate = (date: CalendarDateLike) => {
-  return new Date(date.year, date.month - 1, date.day).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
-const dateValueToString = (date: CalendarDateLike) => {
-  const y = date.year
-  const m = String(date.month).padStart(2, '0')
-  const d = String(date.day).padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
-
-const applyFilters = () => {
-  const f: TransactionFilters = {}
-  if (filters.search) {
-    f.search = filters.search
-  }
-  if (filters.type && filters.type !== 'all') {
-    f.type = filters.type as 'income' | 'expense'
-  }
-  if (filters.category_id) {
-    f.category_id = filters.category_id
-  }
-  if (dateRange.value.start) {
-    f.dateFrom = dateValueToString(dateRange.value.start)
-  }
-  if (dateRange.value.end) {
-    f.dateTo = dateValueToString(dateRange.value.end)
-  }
-  if (filters.amountMin !== undefined && filters.amountMin > 0) {
-    f.amountMin = filters.amountMin
-  }
-  if (filters.amountMax !== undefined && filters.amountMax > 0) {
-    f.amountMax = filters.amountMax
-  }
-  if (filters.account_id && filters.account_id !== 'all') {
-    f.account_id = filters.account_id
-  }
-  if (filters.currency && filters.currency !== 'all') {
-    f.currency = filters.currency
-  }
-  fetchTransactions(f)
-}
-
-const handleOwnerFilterChange = (val: 'all' | 'mine' | 'partner') => {
-  ownerFilter.value = val
-  applyFilters()
-}
-
-const groupedTransactions = computed(() => {
-  const groups: Record<string, typeof filteredTransactions.value> = {}
-  for (const tx of filteredTransactions.value) {
-    const date = tx.date
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(tx)
-  }
-  return groups
+watch(pageSize, () => {
+  fetchTransactions()
 })
 
-const formatGroupDate = (date: string) => {
-  const d = new Date(date)
-  const today = new Date()
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-
-  if (d.toDateString() === today.toDateString()) {
-    return t('transactions.today')
-  }
-  if (d.toDateString() === yesterday.toDateString()) {
-    return t('transactions.yesterday')
-  }
-  return d.toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+const viewTransaction = (id: string) => {
+  router.push(`/transactions/${id}/edit`)
 }
+
+// --- TanStack Table Columns ---
+const columnHelper = createColumnHelper<Transaction>()
+
+const columns = [
+  columnHelper.display({
+    id: 'select',
+    header: ({ table }) =>
+      h(Checkbox, {
+        checked: table.getIsAllRowsSelected(),
+        'onUpdate:checked': () => table.toggleAllRowsSelected(),
+      }),
+    cell: ({ row }) =>
+      h(Checkbox, {
+        checked: row.getIsSelected(),
+        'onUpdate:checked': () => {
+          row.toggleSelected()
+        },
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation()
+        },
+      }),
+    enableSorting: false,
+    size: 48,
+    meta: {
+      headerClass: 'pl-4 w-[48px]',
+      cellClass: 'pl-4 w-[48px]',
+    },
+  }),
+  columnHelper.accessor('date', {
+    header: ({ column }) =>
+      h(
+        'button',
+        {
+          class:
+            'inline-flex items-center gap-1 whitespace-nowrap hover:text-foreground transition-colors ' +
+            (column.getIsSorted() ? 'text-foreground' : ''),
+          onClick: () => column.toggleSorting(),
+        },
+        [
+          t('transactions.date'),
+          h(AppIcon, {
+            name: column.getIsSorted() === 'asc'
+              ? 'hugeicons:arrow-up-01'
+              : 'hugeicons:arrow-down-01',
+            size: 14,
+            class: 'text-muted-foreground/40' + (column.getIsSorted() ? ' opacity-100' : ' opacity-0'),
+          }),
+        ],
+      ),
+    cell: ({ row }) =>
+      h(
+        'span',
+        { class: 'whitespace-nowrap text-sm font-medium text-muted-foreground' },
+        formatRowDate(row.original.date),
+      ),
+    size: 100,
+    meta: {
+      headerClass: 'hidden lg:table-cell',
+      cellClass: 'hidden lg:table-cell',
+    },
+  }),
+  columnHelper.accessor('description', {
+    header: () =>
+      h(
+        'button',
+        {
+          class:
+            'inline-flex items-center gap-1 whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors',
+        },
+        t('transactions.description_label'),
+      ),
+    cell: ({ row }) => {
+      const description = row.original.description || t('transactions.no_description')
+      const accountName = getAccountName(row.original.account_id)
+      const catName = getCategoryName(row.original.category_id)
+      const catColor = getCategoryColor(row.original.category_id)
+      const isPartnerTx = isPartnered.value && row.original.user_id === partner.value?.id
+
+      const children: (VNode | false)[] = [
+        h('div', { class: 'flex items-center gap-2' }, [
+          h('span', { class: 'truncate font-bold text-foreground' }, description),
+          isPartnerTx &&
+            h(
+              'div',
+              {
+                class:
+                  'flex size-4 shrink-0 items-center justify-center rounded-full bg-sidebar-accent',
+                title: t('transactions.owned_by', { name: partnerDisplayName.value }),
+              },
+              [
+                h(
+                  'span',
+                  { class: 'text-[8px] font-black text-sidebar-foreground' },
+                  partnerInitial.value,
+                ),
+              ],
+            ),
+        ]),
+      ]
+
+      const subItems: VNode[] = []
+
+      // Mobile-only: Date
+      subItems.push(h('span', { class: 'lg:hidden' }, formatRowDate(row.original.date)))
+
+      // Mobile-only: Account
+      if (accountName) {
+        subItems.push(
+          h('span', { class: 'lg:hidden' }, [
+            h('span', { class: 'mx-1 opacity-50' }, '·'),
+            accountName,
+          ]),
+        )
+      }
+
+      // Mobile-only: Category
+      if (catName) {
+        subItems.push(
+          h('span', { class: 'lg:hidden' }, [
+            h('span', { class: 'mx-1 opacity-50' }, '·'),
+            h('span', { style: { color: catColor || undefined } }, catName),
+          ]),
+        )
+      }
+
+      if (subItems.length > 0) {
+        children.push(
+          h(
+            'div',
+            {
+              class:
+                'flex items-center text-[11px] font-medium text-muted-foreground/60 mt-0.5 lg:hidden',
+            },
+            subItems,
+          ),
+        )
+      }
+
+      return h('div', { class: 'flex flex-col min-w-0 py-1' }, children)
+    },
+    size: 300,
+    meta: {
+      headerClass: 'pl-4 lg:pl-0',
+      cellClass: 'pl-4 lg:pl-0',
+    },
+  }),
+  columnHelper.accessor('category_id', {
+    header: () =>
+      h(
+        'button',
+        {
+          class:
+            'inline-flex items-center gap-1 whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors',
+        },
+        t('transactions.category'),
+      ),
+    cell: ({ row }) => {
+      const catColor = getCategoryColor(row.original.category_id)
+      const catName = getCategoryName(row.original.category_id) || '—'
+      const bgColor = (catColor ?? '#6b7280') + '20'
+
+      return h('div', { class: 'flex items-center gap-2' }, [
+        h(
+          'div',
+          {
+            class: 'flex size-6 items-center justify-center rounded-lg shrink-0',
+            style: { backgroundColor: bgColor },
+          },
+          [
+            h('div', {
+              class: 'size-2 rounded-full',
+              style: { backgroundColor: catColor ?? '#6b7280' },
+            }),
+          ],
+        ),
+        h('span', { class: 'truncate text-sm font-medium text-muted-foreground' }, catName),
+      ])
+    },
+    size: 160,
+    meta: {
+      headerClass: 'hidden lg:table-cell',
+      cellClass: 'hidden lg:table-cell',
+    },
+  }),
+  columnHelper.accessor('amount', {
+    header: ({ column }) =>
+      h(
+        'button',
+        {
+          class:
+            'inline-flex items-center gap-1 whitespace-nowrap ml-auto hover:text-foreground transition-colors ' +
+            (column.getIsSorted() ? 'text-foreground' : ''),
+          onClick: () => column.toggleSorting(),
+        },
+        [
+          t('transactions.amount'),
+          h(AppIcon, {
+            name: column.getIsSorted() === 'asc'
+              ? 'hugeicons:arrow-up-01'
+              : column.getIsSorted() === 'desc'
+                ? 'hugeicons:arrow-down-01'
+                : 'hugeicons:arrow-up-down',
+            size: 14,
+            class: 'text-muted-foreground/40',
+          }),
+        ],
+      ),
+    cell: ({ row }) => {
+      const isIncome = row.original.type === 'income'
+      const symbol = isIncome ? '+' : '-'
+      const colorClass = isIncome ? 'text-emerald-600' : 'text-red-600'
+      const amount = formatCurrency(Number(row.original.amount), row.original.currency)
+
+      return h('div', { class: 'text-right' }, [
+        h('p', { class: `text-base font-bold tabular-nums ${colorClass}` }, `${symbol}${amount}`),
+        h(
+          'p',
+          {
+            class: 'mt-0.5 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider',
+          },
+          isIncome ? t('transactions.income') : t('transactions.expense'),
+        ),
+      ])
+    },
+    size: 140,
+    meta: {
+      headerClass: 'pr-4 lg:pr-0',
+      cellClass: 'pr-4 lg:pr-0',
+    },
+  }),
+  columnHelper.display({
+    id: 'actions',
+    header: '',
+    cell: ({ row }) =>
+      h('div', { class: 'flex items-center justify-end gap-1' }, [
+        h(
+          'button',
+          {
+            class:
+              'flex size-9 items-center justify-center rounded-xl text-muted-foreground/40 hover:text-foreground hover:bg-muted/50 transition-all',
+            onClick: (e: MouseEvent) => {
+              e.stopPropagation()
+              router.push(`/transactions/${row.original.id}/edit`)
+            },
+          },
+          [h(AppIcon, { name: 'hugeicons:pencil-edit-01', size: 18 })],
+        ),
+      ]),
+    enableSorting: false,
+    size: 60,
+    meta: {
+      headerClass: 'pr-4 w-[60px] hidden md:table-cell',
+      cellClass: 'pr-4 w-[60px] hidden md:table-cell',
+    },
+  }),
+]
+
+const table = useVueTable({
+  get data() {
+    return filteredTransactions.value
+  },
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  enableRowSelection: true,
+  enableMultiRowSelection: true,
+  getRowId: (tx: Transaction) => tx.id,
+  state: {
+    rowSelection: {},
+    get sorting() { return sorting.value },
+  },
+  onSortingChange: (updater) => {
+    sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater
+  },
+})
 </script>

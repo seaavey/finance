@@ -32,7 +32,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       </SelectItemIndicator>
     </span>
 
-    <SelectItemText>
+    <SelectItemText class="flex-1 min-w-0">
       <slot />
     </SelectItemText>
   </SelectItem>
