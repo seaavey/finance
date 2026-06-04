@@ -12,6 +12,7 @@ export interface Transaction {
   description: string | null
   date: string
   account_id: string | null
+  image_url: string | null
   created_at: string
 }
 
@@ -49,7 +50,7 @@ export const useTransactions = () => {
     let query = supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
       )
       .order('date', { ascending: false })
 
@@ -235,7 +236,7 @@ export const useTransactions = () => {
     const { data, error } = await supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
       )
       .eq('id', id)
       .single()
@@ -250,12 +251,47 @@ export const useTransactions = () => {
     const { data, error } = await supabase
       .from('transactions')
       .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, created_at',
+        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, created_at',
       )
       .ilike('description', `%${term}%`)
       .order('date', { ascending: false })
       .limit(10)
     return error || !data ? [] : (data as Transaction[])
+  }
+
+  const deleteTransactionImage = async (url: string) => {
+    let path: string
+    try {
+      const parsed = new URL(url)
+      path = parsed.pathname.replace(/^\/object\/public\/transaction-images\//, '')
+    } catch {
+      const prefix = '/object/public/transaction-images/'
+      const idx = url.indexOf(prefix)
+      if (idx === -1) return
+      path = url.slice(idx + prefix.length)
+    }
+
+    if (!path) return
+    await supabase.storage.from('transaction-images').remove([path])
+  }
+
+  const uploadTransactionImage = async (file: File): Promise<string | null> => {
+    if (!user.value) return null
+
+    const ext = file.name.split('.').pop() || 'png'
+    const filePath = `${user.value.id}/${crypto.randomUUID()}.${ext}`
+
+    const { error } = await supabase.storage
+      .from('transaction-images')
+      .upload(filePath, file, { upsert: false })
+
+    if (error) {
+      toast.error(t('toast.upload_error'))
+      return null
+    }
+
+    const { data } = supabase.storage.from('transaction-images').getPublicUrl(filePath)
+    return data.publicUrl
   }
 
   const monthlySummary = computed(() => {
@@ -296,6 +332,8 @@ export const useTransactions = () => {
     bulkUpdateTransactions,
     bulkDeleteTransactions,
     getTransaction,
+    uploadTransactionImage,
+    deleteTransactionImage,
     monthlySummary,
   }
 }

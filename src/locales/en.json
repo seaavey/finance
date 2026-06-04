@@ -149,7 +149,13 @@
     "camera_permission_denied_desc": "Open your browser settings, look for \"Site Settings\" or \"Permissions\", then allow camera access for this site. On Chrome: {icon} ⋮ → Settings → Site Settings → Camera → Allow.",
     "camera_error_blocked": "Camera access has been permanently blocked. Open browser settings to allow camera access, or upload a photo from your gallery instead.",
     "camera_error_constraint": "Camera does not meet requirements.",
-    "camera_error_generic": "Failed to access camera."
+    "camera_error_generic": "Failed to access camera.",
+    "attachment": "Attachment",
+    "attachment_desc": "Upload receipt or invoice photo",
+    "attachment_add": "Add Attachment",
+    "attachment_change": "Change",
+    "attachment_remove": "Remove",
+    "attachment_uploading": "Uploading..."
   },
   "transaction_edit": {
     "not_found": "Transaction not found",

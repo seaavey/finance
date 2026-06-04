@@ -149,7 +149,13 @@
     "camera_permission_denied_desc": "Buka pengaturan browser, cari \"Setelan Situs\" atau \"Izin\", lalu izinkan akses kamera untuk situs ini. Di Chrome: {icon} ⋮ → Setelan → Setelan Situs → Kamera → Izinkan.",
     "camera_error_blocked": "Akses kamera telah diblokir permanen. Buka pengaturan browser untuk mengizinkan akses kamera, atau gunakan gallery sebagai alternatif.",
     "camera_error_constraint": "Kamera tidak memenuhi persyaratan.",
-    "camera_error_generic": "Gagal mengakses kamera."
+    "camera_error_generic": "Gagal mengakses kamera.",
+    "attachment": "Lampiran",
+    "attachment_desc": "Upload foto atau invoice transaksi",
+    "attachment_add": "Tambah Lampiran",
+    "attachment_change": "Ganti",
+    "attachment_remove": "Hapus",
+    "attachment_uploading": "Mengupload..."
   },
   "transaction_edit": {
     "not_found": "Transaksi tidak ditemukan",

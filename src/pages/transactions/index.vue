@@ -818,6 +818,26 @@ const columns = [
       cellClass: 'pl-4 lg:pl-0',
     },
   }),
+  columnHelper.display({
+    id: 'attachment',
+    header: () => null,
+    cell: ({ row }) => {
+      const tx = row.original
+      if (!tx.image_url) return null
+      return h('div', { class: 'flex justify-center' }, [
+        h('img', {
+          src: tx.image_url,
+          class: 'size-7 rounded-lg object-cover border border-border/50',
+          alt: '',
+        }),
+      ])
+    },
+    size: 36,
+    meta: {
+      headerClass: 'w-[36px]',
+      cellClass: 'px-0',
+    },
+  }),
   columnHelper.accessor('category_id', {
     header: () =>
       h(

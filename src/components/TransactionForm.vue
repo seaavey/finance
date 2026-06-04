@@ -322,6 +322,76 @@
           class="min-h-[68px] md:min-h-[80px] rounded-2xl border-border/50 bg-background/50 p-4 font-medium transition-all hover:bg-background/80 focus-visible:ring-primary/20"
         />
       </div>
+
+      <!-- Attachment (Full Width) -->
+      <div
+        class="col-span-1 space-y-3 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2"
+      >
+        <Label
+          class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+        >
+          <AppIcon name="hugeicons:image-01" :size="12" />
+          {{ $t('transaction_form.attachment') }}
+        </Label>
+        <p class="text-xs text-muted-foreground">{{ $t('transaction_form.attachment_desc') }}</p>
+
+        <!-- Existing image preview -->
+        <div
+          v-if="form.image_url && !uploadingImage"
+          class="relative overflow-hidden rounded-2xl border border-border/50"
+        >
+          <img
+            :src="form.image_url"
+            alt="Transaction attachment"
+            class="max-h-48 w-full object-cover"
+          />
+          <div class="absolute right-2 top-2 flex gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              class="h-8 rounded-xl px-3 text-xs font-bold shadow-sm backdrop-blur-sm"
+              @click="changeAttachment"
+            >
+              {{ $t('transaction_form.attachment_change') }}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              class="h-8 rounded-xl px-3 text-xs font-bold shadow-sm backdrop-blur-sm"
+              @click="removeAttachment"
+            >
+              {{ $t('transaction_form.attachment_remove') }}
+            </Button>
+          </div>
+        </div>
+
+        <!-- Upload area -->
+        <div v-else-if="!uploadingImage" class="flex items-center gap-3">
+          <input
+            ref="attachmentInputRef"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            class="hidden"
+            @change="onAttachmentSelected"
+          />
+          <Button
+            variant="outline"
+            class="h-10 rounded-2xl border-dashed border-border/50 px-5 text-xs font-bold"
+            @click="attachmentInputRef?.click()"
+          >
+            <AppIcon name="hugeicons:upload-01" :size="14" class="mr-1" />
+            {{ $t('transaction_form.attachment_add') }}
+          </Button>
+        </div>
+
+        <!-- Uploading state -->
+        <div v-else class="flex items-center gap-3 rounded-2xl bg-muted/30 px-4 py-3">
+          <AppIcon name="hugeicons:loading-03" :size="18" class="animate-spin text-primary" />
+          <span class="text-xs font-medium text-muted-foreground">
+            {{ $t('transaction_form.attachment_uploading') }}
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- ACTION BUTTONS -->
@@ -375,6 +445,7 @@ const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency,
   useCurrency()
 
 const { addTransaction, updateTransaction } = useTransactions()
+const { uploadTransactionImage, deleteTransactionImage } = useTransactions()
 const { accounts, fetchAccounts } = useAccounts()
 
 onMounted(() => {
@@ -409,11 +480,14 @@ const form = reactive({
   account_id: props.transaction?.account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
+  image_url: props.transaction?.image_url ?? null as string | null,
 })
 
 const submitting = ref(false)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
+const uploadingImage = ref(false)
+const attachmentInputRef = ref<HTMLInputElement | null>(null)
 
 const { uploading, scanning, scanReceiptFromFile } = useReceipts()
 
@@ -490,6 +564,36 @@ async function onCameraCaptured(file: File) {
   const receiptData = await scanReceiptFromFile(file, { skipCompression: true })
   if (!receiptData) return
   autoFillForm(receiptData)
+}
+
+async function onAttachmentSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  uploadingImage.value = true
+  try {
+    const url = await uploadTransactionImage(file)
+    if (url) {
+      form.image_url = url
+    }
+  } finally {
+    uploadingImage.value = false
+    if (attachmentInputRef.value) {
+      attachmentInputRef.value.value = ''
+    }
+  }
+}
+
+function changeAttachment() {
+  attachmentInputRef.value?.click()
+}
+
+async function removeAttachment() {
+  if (form.image_url) {
+    await deleteTransactionImage(form.image_url)
+  }
+  form.image_url = null
 }
 
 const calendarDate = computed({
@@ -580,6 +684,7 @@ const onSubmit = async () => {
       account_id: form.account_id || null,
       description: form.description || null,
       date: form.date!,
+      image_url: form.image_url,
     }
 
     const result = props.transaction
