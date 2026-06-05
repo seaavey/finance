@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import type { Database } from '@/types/database'
 
 export interface SplitItem {
   category_id: string
@@ -8,6 +9,7 @@ export interface SplitItem {
   description?: string
 }
 
+/** Maps to Database['public']['Tables']['transactions']['Row'] */
 export interface Transaction {
   id: string
   user_id: string
@@ -20,7 +22,7 @@ export interface Transaction {
   account_id: string | null
   image_url: string | null
   splits: SplitItem[]
-  created_at: string
+  created_at: string | null
 }
 
 export interface TransactionFilters {
