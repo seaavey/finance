@@ -109,6 +109,87 @@ export const useRecurring = () => {
     return updateRecurring(id, { active })
   }
 
+  /**
+   * Process due recurring transactions — creates actual transactions and
+   * advances next_date. Should be called on app startup and after toggling
+   * a recurring item active.
+   */
+  const processDueRecurring = async (): Promise<number> => {
+    if (!user.value) return 0
+
+    const today = new Date().toISOString().slice(0, 10)
+
+    // Fetch due + active recurring items
+    const { data: due, error: fetchError } = await supabase
+      .from('recurring_transactions')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .eq('active', true)
+      .lte('next_date', today)
+
+    if (fetchError || !due || due.length === 0) return 0
+
+    let created = 0
+
+    for (const item of due as RecurringTransaction[]) {
+      // 1. Create the actual transaction
+      const { error: txError } = await supabase.from('transactions').insert({
+        user_id: user.value.id,
+        type: item.type,
+        amount: item.amount,
+        currency: item.currency,
+        category_id: item.category_id,
+        description: `[Auto] ${item.description || ''}`.trim(),
+        date: today,
+        account_id: null,
+        image_url: null,
+        splits: [],
+      })
+
+      if (txError) {
+        console.error('Failed to create recurring transaction:', txError)
+        continue
+      }
+
+      // 2. Advance next_date based on frequency
+      const next = new Date(item.next_date)
+      switch (item.frequency) {
+        case 'daily':
+          next.setDate(next.getDate() + 1)
+          break
+        case 'weekly':
+          next.setDate(next.getDate() + 7)
+          break
+        case 'monthly':
+          next.setMonth(next.getMonth() + 1)
+          break
+        case 'yearly':
+          next.setFullYear(next.getFullYear() + 1)
+          break
+      }
+      const nextDate = next.toISOString().slice(0, 10)
+
+      const { error: updateError } = await supabase
+        .from('recurring_transactions')
+        .update({ next_date: nextDate })
+        .eq('id', item.id)
+
+      if (updateError) {
+        console.error('Failed to advance next_date:', updateError)
+      }
+
+      created++
+    }
+
+    if (created > 0) {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['recurring'] })
+      toast.success(t('toast.recurring_processed', { count: String(created) }))
+    }
+
+    return created
+  }
+
   return {
     recurring,
     loading,
@@ -117,5 +198,6 @@ export const useRecurring = () => {
     updateRecurring,
     deleteRecurring,
     toggleActive,
+    processDueRecurring,
   }
 }

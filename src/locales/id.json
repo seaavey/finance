@@ -805,6 +805,7 @@
     "recurring_update_error": "Gagal memperbarui transaksi rutin",
     "recurring_deleted": "Transaksi rutin berhasil dihapus",
     "recurring_delete_error": "Gagal menghapus transaksi rutin",
+    "recurring_processed": "{count} transaksi rutin berhasil dibuat otomatis",
     "goal_added": "Target berhasil ditambahkan",
     "goal_add_error": "Gagal menambahkan target",
     "goal_updated": "Target berhasil diperbarui",

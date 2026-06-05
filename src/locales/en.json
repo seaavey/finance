@@ -805,6 +805,7 @@
     "recurring_update_error": "Failed to update recurring transaction",
     "recurring_deleted": "Recurring transaction deleted successfully",
     "recurring_delete_error": "Failed to delete recurring transaction",
+    "recurring_processed": "{count} recurring transaction(s) created automatically",
     "goal_added": "Goal added successfully",
     "goal_add_error": "Failed to add goal",
     "goal_updated": "Goal updated successfully",

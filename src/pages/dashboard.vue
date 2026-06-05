@@ -263,6 +263,15 @@
               <p class="text-xs text-muted-foreground font-bold uppercase tracking-tight">
                 {{ $t('budget.empty') }}
               </p>
+              <Button
+                variant="outline"
+                size="sm"
+                class="mt-3 rounded-xl border-border/50 text-[10px] font-black uppercase tracking-widest"
+                @click="router.push(`/budget/new?month=${currentMonthStr}`)"
+              >
+                <AppIcon name="hugeicons:add-01" :size="14" class="mr-1" />
+                {{ $t('budget.set_budget') }}
+              </Button>
             </div>
           </div>
         </div>
@@ -479,7 +488,7 @@ const { fetchPartner, partner, isPartnered } = usePartner()
 const { fetchBudgetWithProgress } = useBudgets()
 const { fetchAccounts, getAccountBalances } = useAccounts()
 const { currentNetWorth, fetchNetWorthHistory } = useNetWorth()
-const { fetchRecurring } = useRecurring()
+const { fetchRecurring, processDueRecurring } = useRecurring()
 useReminders()
 
 const loading = ref(true)
@@ -621,6 +630,11 @@ const totalExpense = computed(() =>
 
 const balance = computed(() => totalIncome.value - totalExpense.value)
 
+const currentMonthStr = computed(() => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
+})
+
 const trendBalance = computed(() => {
   if (period.value === 'all') {
     return 0
@@ -749,6 +763,9 @@ onMounted(async () => {
     fetchRecurring(),
     loadCurrency(),
   ])
+
+  // Auto-process due recurring transactions
+  await processDueRecurring()
 
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`
   const [budgets] = await Promise.all([fetchBudgetWithProgress(monthStr), fetchAccounts()])

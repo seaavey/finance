@@ -8,10 +8,39 @@ import { Switch } from '@/components/ui/switch'
 import type { RecurringTransaction } from '@/composables/useRecurring'
 
 const router = useRouter()
-const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring } = useRecurring()
+const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring, processDueRecurring } = useRecurring()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
 const { t, locale } = useI18n()
+
+// --- Optimistic toggle state ---
+// Keeps the Switch responsive while the async DB call completes.
+const checkedStates = reactive<Record<string, boolean>>({})
+
+// Sync from server whenever recurring data refetches
+watch(
+  recurring,
+  (items) => {
+    for (const item of items) {
+      checkedStates[item.id] = item.active
+    }
+  },
+  { immediate: true },
+)
+
+const handleToggle = async (id: string, newActive: boolean) => {
+  const prev = checkedStates[id]
+  checkedStates[id] = newActive // optimistically update
+  const { error } = await toggleActive(id, newActive)
+  if (error && prev !== undefined) {
+    checkedStates[id] = prev // revert on error
+  } else if (error) {
+    delete checkedStates[id]
+  } else if (newActive) {
+    // Item was turned ON — process any due recurring right away
+    await processDueRecurring()
+  }
+}
 
 const monthlyExpense = computed(() =>
   recurring.value
@@ -203,7 +232,7 @@ const confirmDelete = async () => {
         v-for="item in recurring"
         :key="item.id"
         class="group flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:border-border/80 hover:shadow-md"
-        :class="{ 'opacity-50 grayscale-[0.5]': !item.active }"
+        :class="{ 'opacity-50 grayscale-[0.5]': !(checkedStates[item.id] ?? item.active) }"
       >
         <div class="flex items-start justify-between gap-4">
           <div class="flex items-center gap-4">
@@ -240,7 +269,7 @@ const confirmDelete = async () => {
               </div>
             </div>
           </div>
-          <Switch :checked="item.active" @update:checked="toggleActive(item.id, $event)" />
+          <Switch :checked="checkedStates[item.id] ?? item.active" @update:checked="handleToggle(item.id, $event)" />
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
