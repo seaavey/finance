@@ -13,7 +13,7 @@ export const useAuth = () => {
   const router = useRouter()
 
   const signInWithGoogle = async () => {
-    const redirectTo = `${window.location.origin}/dashboard`
+    const redirectTo = `${window.location.origin}/auth/callback`
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',

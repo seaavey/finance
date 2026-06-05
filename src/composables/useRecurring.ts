@@ -74,7 +74,14 @@ export const useRecurring = () => {
   }
 
   const updateRecurring = async (id: string, updates: Partial<RecurringTransaction>) => {
-    const { error } = await supabase.from('recurring_transactions').update(updates).eq('id', id)
+    let error: any
+    try {
+      const result = await supabase.from('recurring_transactions').update(updates).eq('id', id)
+      error = result.error
+    } catch (err) {
+      console.error('Update recurring threw:', err)
+      error = err
+    }
 
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['recurring'] })

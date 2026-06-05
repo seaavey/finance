@@ -479,7 +479,7 @@ import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
 const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'))
 
 const router = useRouter()
-const { user } = useAuth()
+const { user, getSession } = useAuth()
 const { transactions, fetchTransactions } = useTransactions()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency, defaultCurrency, convertTo } = useCurrency()
@@ -754,6 +754,9 @@ onMounted(async () => {
   const currentMonth = now.getMonth()
   const currentYear = now.getFullYear()
   const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1).toISOString().split('T')[0]
+
+  // Ensure session is loaded before fetching (defense-in-depth for OAuth redirect)
+  await getSession()
 
   await Promise.all([
     fetchTransactions({ dateFrom: sixMonthsAgo }),

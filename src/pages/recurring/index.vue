@@ -14,8 +14,7 @@ const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
 const { t, locale } = useI18n()
 
-// --- Optimistic toggle state ---
-// Keeps the Switch responsive while the async DB call completes.
+// Local reactive state for Switch v-model — synced from server data
 const checkedStates = reactive<Record<string, boolean>>({})
 
 // Sync from server whenever recurring data refetches
@@ -30,16 +29,20 @@ watch(
 )
 
 const handleToggle = async (id: string, newActive: boolean) => {
-  const prev = checkedStates[id]
-  checkedStates[id] = newActive // optimistically update
   const { error } = await toggleActive(id, newActive)
-  if (error && prev !== undefined) {
-    checkedStates[id] = prev // revert on error
-  } else if (error) {
-    delete checkedStates[id]
-  } else if (newActive) {
-    // Item was turned ON — process any due recurring right away
-    await processDueRecurring()
+  if (error) {
+    console.error('Toggle recurring failed:', error)
+    // Revert local state on error
+    const item = recurring.value.find((r) => r.id === id)
+    if (item) checkedStates[id] = item.active
+    return
+  }
+  // Item was turned ON — auto-process any due recurring right away.
+  // Don't wait for it; the toggle already persisted.
+  if (newActive) {
+    processDueRecurring().catch((err) =>
+      console.error('Auto-process after toggle failed (toggle persisted OK):', err),
+    )
   }
 }
 
@@ -270,10 +273,7 @@ const confirmDelete = async () => {
               </div>
             </div>
           </div>
-          <Switch
-            :checked="checkedStates[item.id] ?? item.active"
-            @update:checked="handleToggle(item.id, $event)"
-          />
+          <Switch v-model="checkedStates[item.id]" @update:modelValue="handleToggle(item.id, $event)" />
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
