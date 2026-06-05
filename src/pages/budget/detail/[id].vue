@@ -56,7 +56,7 @@ const handleDelete = async () => {
 const goToEdit = () => {
   if (!budgetDetail.value) return
   router.push(
-    `/budget/edit?category=${budgetDetail.value.category_id}&month=${month.value}&amount=${budgetDetail.value.amount}`,
+    `/budget/edit?id=${budgetDetail.value.id}&month=${month.value}`,
   )
 }
 
@@ -122,8 +122,11 @@ onMounted(loadBudget)
             </div>
             <div>
               <h2 class="text-2xl font-black tracking-tighter text-foreground">
-                {{ budgetDetail.category_name }}
+                {{ budgetDetail.name || budgetDetail.category_name }}
               </h2>
+              <p v-if="budgetDetail.name" class="text-sm font-medium text-muted-foreground">
+                {{ budgetDetail.category_name }}
+              </p>
               <p class="text-sm font-medium text-muted-foreground">
                 {{ month }}
               </p>

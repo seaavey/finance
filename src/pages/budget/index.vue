@@ -115,7 +115,7 @@ const goToNew = () => {
 }
 
 const goToEdit = (budget: BudgetWithProgress) => {
-  router.push(`/budget/edit?category=${budget.category_id}&month=${currentMonthStr.value}`)
+  router.push(`/budget/edit?id=${budget.id}&month=${currentMonthStr.value}`)
 }
 
 const goToDetail = (budget: BudgetWithProgress) => {
@@ -300,7 +300,8 @@ const goToDetail = (budget: BudgetWithProgress) => {
                 />
               </div>
               <div>
-                <p class="text-sm font-semibold text-foreground">{{ budget.category_name }}</p>
+                <p class="text-sm font-semibold text-foreground">{{ budget.name || budget.category_name }}</p>
+                <p v-if="budget.name" class="text-xs text-muted-foreground">{{ budget.category_name }}</p>
                 <p class="text-xs text-muted-foreground">
                   {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
                   <span

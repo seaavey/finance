@@ -5,24 +5,19 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
-const { categories, fetchCategories } = useCategories()
-const { setBudget, loading } = useBudgets()
+const { updateBudget, fetchBudgetWithProgress } = useBudgets()
 const { formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency()
 
-const selectedCategoryId = ref((route.query.category as string) || '')
-const rawAmount = ref(Number(route.query.amount) || 0)
+const budgetId = ref((route.query.id as string) || '')
+const selectedCategoryName = ref('')
+const rawAmount = ref(0)
+const budgetName = ref('')
 const month = ref((route.query.month as string) || '')
+const loadingData = ref(true)
 
 const amountDisplay = computed({
   get: () =>
@@ -56,23 +51,35 @@ const onNumberKeydown = (e: KeyboardEvent) => {
   e.preventDefault()
 }
 
-const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
-const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value > 0)
+const isFormValid = computed(() => rawAmount.value > 0)
 
 const handleSave = async () => {
-  if (!isFormValid.value || !month.value) return
-  const result = await setBudget(selectedCategoryId.value, month.value, rawAmount.value)
+  if (!isFormValid.value || !month.value || !budgetId.value) return
+  const result = await updateBudget(
+    budgetId.value,
+    { amount: rawAmount.value, name: budgetName.value || null },
+    month.value,
+  )
   if (!result.error) {
     router.push('/budget')
   }
 }
 
 onMounted(async () => {
-  await fetchCategories()
   if (!month.value) {
     const d = new Date()
     month.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
   }
+  if (budgetId.value) {
+    const list = await fetchBudgetWithProgress(month.value)
+    const budget = list.find((b) => b.id === budgetId.value)
+    if (budget) {
+      rawAmount.value = budget.amount
+      budgetName.value = budget.name || ''
+      selectedCategoryName.value = budget.category_name
+    }
+  }
+  loadingData.value = false
 })
 </script>
 
@@ -99,24 +106,18 @@ onMounted(async () => {
 
       <div class="space-y-2">
         <Label>{{ $t('categories.type_name') }}</Label>
-        <Select v-model="selectedCategoryId" :disabled="true">
-          <SelectTrigger>
-            <SelectValue :placeholder="t('categories.type_name')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="cat in expenseCategories" :key="cat.id" :value="cat.id">
-              <div class="flex items-center gap-2">
-                <AppIcon
-                  v-if="cat.icon?.startsWith('hugeicons:')"
-                  :name="cat.icon"
-                  :size="16"
-                  :style="{ color: cat.color }"
-                />
-                {{ cat.name }}
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <Input v-model="selectedCategoryName" type="text" :disabled="true" class="bg-muted/30" />
+      </div>
+
+      <div class="space-y-2">
+        <Label>{{ $t('budget.name_label') }}</Label>
+        <Input
+          v-model="budgetName"
+          type="text"
+          maxlength="100"
+          :placeholder="t('budget.name_placeholder')"
+        />
+        <p class="text-xs text-muted-foreground">{{ $t('budget.name_hint') }}</p>
       </div>
 
       <div class="space-y-2">
@@ -135,8 +136,8 @@ onMounted(async () => {
         <Button variant="outline" @click="router.push('/budget')">
           {{ $t('common.cancel') }}
         </Button>
-        <Button :disabled="loading || !isFormValid" @click="handleSave">
-          {{ loading ? $t('common.saving') : $t('budget.set_budget') }}
+        <Button :disabled="loadingData || !isFormValid" @click="handleSave">
+          {{ loadingData ? $t('common.loading') : $t('budget.edit_budget') }}
         </Button>
       </div>
     </div>

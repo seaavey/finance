@@ -17,11 +17,12 @@ const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 const { categories, fetchCategories } = useCategories()
-const { setBudget, loading } = useBudgets()
+const { createBudget, setBudget, loading } = useBudgets()
 const { formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency()
 
 const selectedCategoryId = ref('')
 const rawAmount = ref(0)
+const budgetName = ref('')
 const month = ref((route.query.month as string) || '')
 
 const amountDisplay = computed({
@@ -61,7 +62,7 @@ const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value >
 
 const handleSave = async () => {
   if (!isFormValid.value || !month.value) return
-  const result = await setBudget(selectedCategoryId.value, month.value, rawAmount.value)
+  const result = await createBudget(selectedCategoryId.value, month.value, rawAmount.value, budgetName.value || null)
   if (!result.error) {
     router.push('/budget')
   }
@@ -118,6 +119,17 @@ onMounted(async () => {
             </SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div class="space-y-2">
+        <Label>{{ $t('budget.name_label') }}</Label>
+        <Input
+          v-model="budgetName"
+          type="text"
+          maxlength="100"
+          :placeholder="t('budget.name_placeholder')"
+        />
+        <p class="text-xs text-muted-foreground">{{ $t('budget.name_hint') }}</p>
       </div>
 
       <div class="space-y-2">

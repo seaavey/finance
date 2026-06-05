@@ -333,6 +333,9 @@
     "shared_partner": "Partner",
     "rollover_remaining": "Last month leftover",
     "rollover_overspent": "Last month overspent",
+    "name_label": "Budget Name (optional)",
+    "name_placeholder": "e.g. Weekly, Monthly, Bonus...",
+    "name_hint": "Leave empty to use category name",
     "alert_warning": "{category} is at {percentage}% of budget",
     "alert_exceeded": "{category} has exceeded the budget!"
   },

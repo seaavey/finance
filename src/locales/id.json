@@ -333,6 +333,9 @@
     "shared_partner": "Pasangan",
     "rollover_remaining": "Sisa bulan lalu",
     "rollover_overspent": "Kelebihan bulan lalu",
+    "name_label": "Nama Budget (opsional)",
+    "name_placeholder": "Contoh: Mingguan, Bulanan, Bonus...",
+    "name_hint": "Kosongkan untuk pakai nama kategori",
     "alert_warning": "Kategori {category} sudah {percentage}% dari budget",
     "alert_exceeded": "Kategori {category} melebihi budget!"
   },

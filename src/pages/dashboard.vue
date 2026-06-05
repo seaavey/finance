@@ -240,10 +240,15 @@
                 class="mb-4 last:mb-0"
               >
                 <div class="flex items-center justify-between">
-                  <p class="text-xs font-bold text-foreground truncate pr-2">
-                    {{ sbudget.category_name }}
-                  </p>
-                  <p class="text-[10px] font-black text-muted-foreground">
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-foreground truncate">
+                      {{ sbudget.name || sbudget.category_name }}
+                    </p>
+                    <p v-if="sbudget.name" class="text-[10px] text-muted-foreground truncate">
+                      {{ sbudget.category_name }}
+                    </p>
+                  </div>
+                  <p class="text-[10px] font-black text-muted-foreground shrink-0 ml-2">
                     {{ Math.round((sbudget.spent / sbudget.amount) * 100) }}%
                   </p>
                 </div>

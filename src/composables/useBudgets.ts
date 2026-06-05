@@ -13,6 +13,7 @@ export interface Budget {
   category_id: string
   month: string
   amount: number
+  name?: string | null
   created_at: string
   updated_at: string
 }
@@ -23,6 +24,14 @@ export interface BudgetWithProgress extends Budget {
   category_icon: string
   spent: number
   rollover: number // remaining from previous month (positive) or overspent (negative)
+  name?: string | null
+}
+
+export interface BudgetInput {
+  category_id: string
+  month: string
+  amount: number
+  name?: string | null
 }
 
 export const useBudgets = () => {
@@ -45,7 +54,7 @@ export const useBudgets = () => {
       if (!user.value || !currentMonth.value) return []
       const { data, error } = await supabase
         .from('budgets')
-        .select('id, user_id, category_id, month, amount, created_at')
+        .select('id, user_id, category_id, month, amount, name, created_at')
         .eq('user_id', user.value.id)
         .eq('month', currentMonth.value)
         .order('created_at')
@@ -77,7 +86,7 @@ export const useBudgets = () => {
       queryFn: async () => {
         const { data: budgetData } = await supabase
           .from('budgets')
-          .select('id, user_id, category_id, month, amount, created_at')
+          .select('id, user_id, category_id, month, amount, name, created_at')
           .eq('user_id', uid)
           .eq('month', month)
 
@@ -153,8 +162,9 @@ export const useBudgets = () => {
 
           const prevBudgetMap = new Map<string, number>()
           for (const pb of prevBudgetData as { category_id: string; amount: number }[]) {
-            // If duplicate categories (shouldn't happen but be safe), take the last one
-            prevBudgetMap.set(pb.category_id, Number(pb.amount))
+            // Accumulate all budgets for the same category for rollover
+            const current = prevBudgetMap.get(pb.category_id) || 0
+            prevBudgetMap.set(pb.category_id, current + Number(pb.amount))
           }
 
           if (prevCatIds.length > 0) {
@@ -214,6 +224,34 @@ export const useBudgets = () => {
     })
   }
 
+  const createBudget = async (categoryId: string, month: string, amount: number, name?: string | null) => {
+    if (!user.value) {
+      toast.error(t('toast.login_required'))
+      return { error: new Error('Not authenticated') }
+    }
+
+    const { error } = await supabase.from('budgets').insert({
+      user_id: user.value.id,
+      category_id: categoryId,
+      month,
+      amount,
+      name: name || null,
+    })
+
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['budgets'] })
+      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      await fetchBudgets(month)
+      toast.success(t('budget.saved'))
+      const displayName = name || categoryId
+      activity.log('budget', 'created', { category_name: displayName, amount })
+    } else {
+      toast.error(t('budget.save_error'))
+    }
+
+    return { error }
+  }
+
   const setBudget = async (categoryId: string, month: string, amount: number) => {
     if (!user.value) {
       toast.error(t('toast.login_required'))
@@ -249,6 +287,27 @@ export const useBudgets = () => {
       queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
+    } else {
+      toast.error(t('budget.save_error'))
+    }
+
+    return { error }
+  }
+
+  const updateBudget = async (id: string, data: { amount?: number; name?: string | null }, month: string) => {
+    if (!user.value) {
+      toast.error(t('toast.login_required'))
+      return { error: new Error('Not authenticated') }
+    }
+
+    const { error } = await supabase.from('budgets').update(data).eq('id', id)
+
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['budgets'] })
+      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      await fetchBudgets(month)
+      toast.success(t('budget.saved'))
+      activity.log('budget', 'updated', { id, ...data })
     } else {
       toast.error(t('budget.save_error'))
     }
@@ -334,6 +393,8 @@ export const useBudgets = () => {
     fetchBudgets,
     fetchBudgetWithProgress,
     setBudget,
+    createBudget,
+    updateBudget,
     deleteBudget,
     getProgress,
     checkBudgetAlerts,
