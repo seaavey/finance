@@ -107,36 +107,13 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type {
-    Component,
-    Slot,
-    Slots,
-    ComponentPublicInstance,
-    ComputedRef,
-    DirectiveBinding,
-    ExtractDefaultPropTypes,
-    ExtractPropTypes,
-    ExtractPublicPropTypes,
-    InjectionKey,
-    PropType,
-    Ref,
-    ShallowRef,
-    MaybeRef,
-    MaybeRefOrGetter,
-    VNode,
-    WritableComputedRef,
-  } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
   export type { Account, AccountWithBalance } from './composables/useAccounts'
   import('./composables/useAccounts')
   // @ts-ignore
-  export type {
-    EntityType,
-    ActionType,
-    ActivityLog,
-    ActivityLogFilters,
-  } from './composables/useActivityLog'
+  export type { EntityType, ActionType, ActivityLog, ActivityLogFilters } from './composables/useActivityLog'
   import('./composables/useActivityLog')
   // @ts-ignore
   export type { Bill } from './composables/useBills'
@@ -178,107 +155,101 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
-    readonly EffectScope: UnwrapRef<(typeof import('vue'))['EffectScope']>
-    readonly cn: UnwrapRef<(typeof import('./lib/utils'))['cn']>
-    readonly computed: UnwrapRef<(typeof import('vue'))['computed']>
-    readonly createApp: UnwrapRef<(typeof import('vue'))['createApp']>
-    readonly customRef: UnwrapRef<(typeof import('vue'))['customRef']>
-    readonly defineAsyncComponent: UnwrapRef<(typeof import('vue'))['defineAsyncComponent']>
-    readonly defineComponent: UnwrapRef<(typeof import('vue'))['defineComponent']>
-    readonly effectScope: UnwrapRef<(typeof import('vue'))['effectScope']>
-    readonly getCurrentInstance: UnwrapRef<(typeof import('vue'))['getCurrentInstance']>
-    readonly getCurrentScope: UnwrapRef<(typeof import('vue'))['getCurrentScope']>
-    readonly getCurrentWatcher: UnwrapRef<(typeof import('vue'))['getCurrentWatcher']>
-    readonly getOgImageUrl: UnwrapRef<(typeof import('./lib/utils'))['getOgImageUrl']>
-    readonly h: UnwrapRef<(typeof import('vue'))['h']>
-    readonly inject: UnwrapRef<(typeof import('vue'))['inject']>
-    readonly isProxy: UnwrapRef<(typeof import('vue'))['isProxy']>
-    readonly isReactive: UnwrapRef<(typeof import('vue'))['isReactive']>
-    readonly isReadonly: UnwrapRef<(typeof import('vue'))['isReadonly']>
-    readonly isRef: UnwrapRef<(typeof import('vue'))['isRef']>
-    readonly isShallow: UnwrapRef<(typeof import('vue'))['isShallow']>
-    readonly loadCurrency: UnwrapRef<(typeof import('./composables/useCurrency'))['loadCurrency']>
-    readonly loading: UnwrapRef<(typeof import('./composables/useAuth'))['loading']>
-    readonly markRaw: UnwrapRef<(typeof import('vue'))['markRaw']>
-    readonly nextTick: UnwrapRef<(typeof import('vue'))['nextTick']>
-    readonly onActivated: UnwrapRef<(typeof import('vue'))['onActivated']>
-    readonly onBeforeMount: UnwrapRef<(typeof import('vue'))['onBeforeMount']>
-    readonly onBeforeRouteLeave: UnwrapRef<(typeof import('vue-router'))['onBeforeRouteLeave']>
-    readonly onBeforeRouteUpdate: UnwrapRef<(typeof import('vue-router'))['onBeforeRouteUpdate']>
-    readonly onBeforeUnmount: UnwrapRef<(typeof import('vue'))['onBeforeUnmount']>
-    readonly onBeforeUpdate: UnwrapRef<(typeof import('vue'))['onBeforeUpdate']>
-    readonly onDeactivated: UnwrapRef<(typeof import('vue'))['onDeactivated']>
-    readonly onErrorCaptured: UnwrapRef<(typeof import('vue'))['onErrorCaptured']>
-    readonly onMounted: UnwrapRef<(typeof import('vue'))['onMounted']>
-    readonly onRenderTracked: UnwrapRef<(typeof import('vue'))['onRenderTracked']>
-    readonly onRenderTriggered: UnwrapRef<(typeof import('vue'))['onRenderTriggered']>
-    readonly onScopeDispose: UnwrapRef<(typeof import('vue'))['onScopeDispose']>
-    readonly onServerPrefetch: UnwrapRef<(typeof import('vue'))['onServerPrefetch']>
-    readonly onUnmounted: UnwrapRef<(typeof import('vue'))['onUnmounted']>
-    readonly onUpdated: UnwrapRef<(typeof import('vue'))['onUpdated']>
-    readonly onWatcherCleanup: UnwrapRef<(typeof import('vue'))['onWatcherCleanup']>
-    readonly provide: UnwrapRef<(typeof import('vue'))['provide']>
-    readonly reactive: UnwrapRef<(typeof import('vue'))['reactive']>
-    readonly readonly: UnwrapRef<(typeof import('vue'))['readonly']>
-    readonly ref: UnwrapRef<(typeof import('vue'))['ref']>
-    readonly resolveComponent: UnwrapRef<(typeof import('vue'))['resolveComponent']>
-    readonly shallowReactive: UnwrapRef<(typeof import('vue'))['shallowReactive']>
-    readonly shallowReadonly: UnwrapRef<(typeof import('vue'))['shallowReadonly']>
-    readonly shallowRef: UnwrapRef<(typeof import('vue'))['shallowRef']>
-    readonly toRaw: UnwrapRef<(typeof import('vue'))['toRaw']>
-    readonly toRef: UnwrapRef<(typeof import('vue'))['toRef']>
-    readonly toRefs: UnwrapRef<(typeof import('vue'))['toRefs']>
-    readonly toValue: UnwrapRef<(typeof import('vue'))['toValue']>
-    readonly triggerRef: UnwrapRef<(typeof import('vue'))['triggerRef']>
-    readonly unref: UnwrapRef<(typeof import('vue'))['unref']>
-    readonly useAccounts: UnwrapRef<(typeof import('./composables/useAccounts'))['useAccounts']>
-    readonly useActivityLog: UnwrapRef<
-      (typeof import('./composables/useActivityLog'))['useActivityLog']
-    >
-    readonly useAttrs: UnwrapRef<(typeof import('vue'))['useAttrs']>
-    readonly useAuth: UnwrapRef<(typeof import('./composables/useAuth'))['useAuth']>
-    readonly useBills: UnwrapRef<(typeof import('./composables/useBills'))['useBills']>
-    readonly useBudgets: UnwrapRef<(typeof import('./composables/useBudgets'))['useBudgets']>
-    readonly useCamera: UnwrapRef<(typeof import('./composables/useCamera'))['useCamera']>
-    readonly useCategories: UnwrapRef<
-      (typeof import('./composables/useCategories'))['useCategories']
-    >
-    readonly useColorMode: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useColorMode']>
-    readonly useCssModule: UnwrapRef<(typeof import('vue'))['useCssModule']>
-    readonly useCssVars: UnwrapRef<(typeof import('vue'))['useCssVars']>
-    readonly useCurrency: UnwrapRef<(typeof import('./composables/useCurrency'))['useCurrency']>
-    readonly useDark: UnwrapRef<(typeof import('@vueuse/core'))['useDark']>
-    readonly useExport: UnwrapRef<(typeof import('./composables/useExport'))['useExport']>
-    readonly useGoals: UnwrapRef<(typeof import('./composables/useGoals'))['useGoals']>
-    readonly useHead: UnwrapRef<(typeof import('@unhead/vue'))['useHead']>
-    readonly useI18n: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useI18n']>
-    readonly useId: UnwrapRef<(typeof import('vue'))['useId']>
-    readonly useLink: UnwrapRef<(typeof import('vue-router'))['useLink']>
-    readonly useLocalePath: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useLocalePath']>
-    readonly useModel: UnwrapRef<(typeof import('vue'))['useModel']>
-    readonly useNetWorth: UnwrapRef<(typeof import('./composables/useNetWorth'))['useNetWorth']>
-    readonly useOnline: UnwrapRef<(typeof import('@vueuse/core'))['useOnline']>
-    readonly usePartner: UnwrapRef<(typeof import('./composables/usePartner'))['usePartner']>
-    readonly useReceipts: UnwrapRef<(typeof import('./composables/useReceipts'))['useReceipts']>
-    readonly useRecurring: UnwrapRef<(typeof import('./composables/useRecurring'))['useRecurring']>
-    readonly useReminders: UnwrapRef<(typeof import('./composables/useReminders'))['useReminders']>
-    readonly useRoute: UnwrapRef<(typeof import('vue-router'))['useRoute']>
-    readonly useRouter: UnwrapRef<(typeof import('vue-router'))['useRouter']>
-    readonly useSeoMeta: UnwrapRef<(typeof import('@unhead/vue'))['useSeoMeta']>
-    readonly useSlots: UnwrapRef<(typeof import('vue'))['useSlots']>
-    readonly useStorage: UnwrapRef<(typeof import('@vueuse/core'))['useStorage']>
-    readonly useSupabase: UnwrapRef<(typeof import('./lib/supabase'))['useSupabase']>
-    readonly useTemplateRef: UnwrapRef<(typeof import('vue'))['useTemplateRef']>
-    readonly useToast: UnwrapRef<(typeof import('./composables/useToast'))['useToast']>
-    readonly useToggle: UnwrapRef<(typeof import('@vueuse/core'))['useToggle']>
-    readonly useTransactions: UnwrapRef<
-      (typeof import('./composables/useTransactions'))['useTransactions']
-    >
-    readonly useWindowScroll: UnwrapRef<(typeof import('@vueuse/core'))['useWindowScroll']>
-    readonly user: UnwrapRef<(typeof import('./composables/useAuth'))['user']>
-    readonly watch: UnwrapRef<(typeof import('vue'))['watch']>
-    readonly watchEffect: UnwrapRef<(typeof import('vue'))['watchEffect']>
-    readonly watchPostEffect: UnwrapRef<(typeof import('vue'))['watchPostEffect']>
-    readonly watchSyncEffect: UnwrapRef<(typeof import('vue'))['watchSyncEffect']>
+    readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly cn: UnwrapRef<typeof import('./lib/utils')['cn']>
+    readonly computed: UnwrapRef<typeof import('vue')['computed']>
+    readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
+    readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
+    readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
+    readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
+    readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
+    readonly getOgImageUrl: UnwrapRef<typeof import('./lib/utils')['getOgImageUrl']>
+    readonly h: UnwrapRef<typeof import('vue')['h']>
+    readonly inject: UnwrapRef<typeof import('vue')['inject']>
+    readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
+    readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
+    readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
+    readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
+    readonly isShallow: UnwrapRef<typeof import('vue')['isShallow']>
+    readonly loadCurrency: UnwrapRef<typeof import('./composables/useCurrency')['loadCurrency']>
+    readonly loading: UnwrapRef<typeof import('./composables/useAuth')['loading']>
+    readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
+    readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
+    readonly onBeforeRouteLeave: UnwrapRef<typeof import('vue-router')['onBeforeRouteLeave']>
+    readonly onBeforeRouteUpdate: UnwrapRef<typeof import('vue-router')['onBeforeRouteUpdate']>
+    readonly onBeforeUnmount: UnwrapRef<typeof import('vue')['onBeforeUnmount']>
+    readonly onBeforeUpdate: UnwrapRef<typeof import('vue')['onBeforeUpdate']>
+    readonly onDeactivated: UnwrapRef<typeof import('vue')['onDeactivated']>
+    readonly onErrorCaptured: UnwrapRef<typeof import('vue')['onErrorCaptured']>
+    readonly onMounted: UnwrapRef<typeof import('vue')['onMounted']>
+    readonly onRenderTracked: UnwrapRef<typeof import('vue')['onRenderTracked']>
+    readonly onRenderTriggered: UnwrapRef<typeof import('vue')['onRenderTriggered']>
+    readonly onScopeDispose: UnwrapRef<typeof import('vue')['onScopeDispose']>
+    readonly onServerPrefetch: UnwrapRef<typeof import('vue')['onServerPrefetch']>
+    readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
+    readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
+    readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
+    readonly provide: UnwrapRef<typeof import('vue')['provide']>
+    readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
+    readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
+    readonly ref: UnwrapRef<typeof import('vue')['ref']>
+    readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
+    readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
+    readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
+    readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
+    readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
+    readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
+    readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
+    readonly unref: UnwrapRef<typeof import('vue')['unref']>
+    readonly useAccounts: UnwrapRef<typeof import('./composables/useAccounts')['useAccounts']>
+    readonly useActivityLog: UnwrapRef<typeof import('./composables/useActivityLog')['useActivityLog']>
+    readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useAuth: UnwrapRef<typeof import('./composables/useAuth')['useAuth']>
+    readonly useBills: UnwrapRef<typeof import('./composables/useBills')['useBills']>
+    readonly useBudgets: UnwrapRef<typeof import('./composables/useBudgets')['useBudgets']>
+    readonly useCamera: UnwrapRef<typeof import('./composables/useCamera')['useCamera']>
+    readonly useCategories: UnwrapRef<typeof import('./composables/useCategories')['useCategories']>
+    readonly useColorMode: UnwrapRef<typeof import('./composables/nuxt-compat')['useColorMode']>
+    readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
+    readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useCurrency: UnwrapRef<typeof import('./composables/useCurrency')['useCurrency']>
+    readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
+    readonly useExport: UnwrapRef<typeof import('./composables/useExport')['useExport']>
+    readonly useGoals: UnwrapRef<typeof import('./composables/useGoals')['useGoals']>
+    readonly useHead: UnwrapRef<typeof import('@unhead/vue')['useHead']>
+    readonly useI18n: UnwrapRef<typeof import('./composables/nuxt-compat')['useI18n']>
+    readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
+    readonly useLocalePath: UnwrapRef<typeof import('./composables/nuxt-compat')['useLocalePath']>
+    readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
+    readonly useNetWorth: UnwrapRef<typeof import('./composables/useNetWorth')['useNetWorth']>
+    readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
+    readonly usePartner: UnwrapRef<typeof import('./composables/usePartner')['usePartner']>
+    readonly useReceipts: UnwrapRef<typeof import('./composables/useReceipts')['useReceipts']>
+    readonly useRecurring: UnwrapRef<typeof import('./composables/useRecurring')['useRecurring']>
+    readonly useReminders: UnwrapRef<typeof import('./composables/useReminders')['useReminders']>
+    readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
+    readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
+    readonly useSeoMeta: UnwrapRef<typeof import('@unhead/vue')['useSeoMeta']>
+    readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useStorage: UnwrapRef<typeof import('@vueuse/core')['useStorage']>
+    readonly useSupabase: UnwrapRef<typeof import('./lib/supabase')['useSupabase']>
+    readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
+    readonly useToast: UnwrapRef<typeof import('./composables/useToast')['useToast']>
+    readonly useToggle: UnwrapRef<typeof import('@vueuse/core')['useToggle']>
+    readonly useTransactions: UnwrapRef<typeof import('./composables/useTransactions')['useTransactions']>
+    readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
+    readonly user: UnwrapRef<typeof import('./composables/useAuth')['user']>
+    readonly watch: UnwrapRef<typeof import('vue')['watch']>
+    readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
+    readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>
+    readonly watchSyncEffect: UnwrapRef<typeof import('vue')['watchSyncEffect']>
   }
 }
