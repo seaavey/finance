@@ -38,6 +38,7 @@ onMounted(async () => {
   if (route.meta.layout === 'blank') return
 
   const { useAuth } = await import('@/composables/useAuth')
+  const { formatDateSafe } = await import('@/lib/utils')
   const { user } = useAuth()
 
   watch(
@@ -45,7 +46,7 @@ onMounted(async () => {
     async (newUser) => {
       if (newUser) {
         await fetchBills()
-        const today = new Date().toISOString().split('T')[0]
+        const today = formatDateSafe(new Date())
         const dueToday = bills.value.filter((b) => b.due_date === today && !b.is_paid)
 
         if (dueToday.length > 0) {

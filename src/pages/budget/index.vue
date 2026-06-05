@@ -4,6 +4,7 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { formatDateSafe } from '@/lib/utils'
 import type { BudgetWithProgress } from '@/composables/useBudgets'
 
 const router = useRouter()
@@ -54,7 +55,7 @@ const totals = computed(() => {
 const selectedDate = ref(new Date())
 const currentMonthStr = computed(() => {
   const d = new Date(selectedDate.value.getFullYear(), selectedDate.value.getMonth(), 1)
-  return d.toISOString().slice(0, 10)
+  return formatDateSafe(d)
 })
 
 const monthLabel = computed(() => {

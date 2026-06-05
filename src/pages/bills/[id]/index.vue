@@ -271,6 +271,7 @@ import {
   NativeSelectOptGroup,
   NativeSelectOption,
 } from '@/components/ui/native-select'
+import { formatDateSafe } from '@/lib/utils'
 import type { Bill } from '@/composables/useBills'
 
 const router = useRouter()
@@ -354,7 +355,7 @@ async function handleMarkPaid(id: string) {
       currency: 'IDR',
       category_id: null,
       description: billDetail.value.title,
-      date: new Date().toISOString(),
+      date: formatDateSafe(new Date()),
       account_id: selectedAccountId.value,
       image_url: null,
       splits: [],

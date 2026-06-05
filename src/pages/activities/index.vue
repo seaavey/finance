@@ -330,6 +330,7 @@ defineOptions({
 })
 import { ref, computed } from 'vue'
 import { Button } from '@/components/ui/button'
+import { formatDateSafe } from '@/lib/utils'
 import type { EntityType, ActionType } from '@/composables/useActivityLog'
 
 const { logs, loading, total, fetchAll } = useActivityLog()
@@ -357,7 +358,7 @@ const filterTabs = computed(() => [
 ])
 
 const todayCount = computed(() => {
-  const today = new Date().toISOString().slice(0, 10)
+  const today = formatDateSafe(new Date())
   return logs.value.filter((l) => l.created_at.startsWith(today)).length
 })
 

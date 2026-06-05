@@ -1,6 +1,7 @@
 import type { PostgrestResponse } from '@supabase/supabase-js'
 import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
+import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 export interface RecurringTransaction {
@@ -124,7 +125,7 @@ export const useRecurring = () => {
   const processDueRecurring = async (): Promise<number> => {
     if (!user.value) return 0
 
-    const today = new Date().toISOString().slice(0, 10)
+    const today = formatDateSafe(new Date())
 
     // Fetch due + active recurring items
     const { data: due, error: fetchError } = await supabase
@@ -174,7 +175,7 @@ export const useRecurring = () => {
           next.setFullYear(next.getFullYear() + 1)
           break
       }
-      const nextDate = next.toISOString().slice(0, 10)
+      const nextDate = formatDateSafe(next)
 
       const { error: updateError } = await supabase
         .from('recurring_transactions')

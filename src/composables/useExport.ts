@@ -1,4 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
+import { formatDateSafe } from '@/lib/utils'
 
 export const useExport = () => {
   const supabase = useSupabase()
@@ -64,7 +65,7 @@ export const useExport = () => {
       }))
 
       const csvContent = convertToCSV(csvData)
-      const today = new Date().toISOString().split('T')[0]
+      const today = formatDateSafe(new Date())
 
       downloadFile(csvContent, `seaavey-export-${today}.csv`, 'text/csv;charset=utf-8;')
 

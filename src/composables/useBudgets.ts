@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { useSupabase } from '@/lib/supabase'
+import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import type { SplitItem } from './useTransactions'
 
@@ -88,12 +89,12 @@ export const useBudgets = () => {
         const [year, mon] = month.split('-').map(Number)
         const date = new Date(year as number, (mon as number) - 1, 1)
         date.setMonth(date.getMonth() + 1)
-        const nextMonth = date.toISOString().slice(0, 10)
+        const nextMonth = formatDateSafe(date)
 
         // Previous month range for rollover calculation
         const prevDate = new Date(year as number, (mon as number) - 1, 1)
         prevDate.setMonth(prevDate.getMonth() - 1)
-        const prevMonth = prevDate.toISOString().slice(0, 10)
+        const prevMonth = formatDateSafe(prevDate)
 
         const [{ data: categoriesData }, { data: txData }] = await Promise.all([
           supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),

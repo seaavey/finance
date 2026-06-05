@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
+import { formatDateSafe } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/vue-query'
 
 export interface NetWorthData {
@@ -44,9 +45,7 @@ export const useNetWorth = () => {
 
           // 2. Fetch transactions — bounded by months lookback so payload doesn't grow unboundedly
           const now = new Date()
-          const earliestDate = new Date(now.getFullYear(), now.getMonth() - months, 1)
-            .toISOString()
-            .split('T')[0]
+          const earliestDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth() - months, 1))
 
           const { data: transactions, error: txError } = await supabase
             .from('transactions')
@@ -70,7 +69,7 @@ export const useNetWorth = () => {
             monthBoundaries.push({
               end: d,
               label: d.toLocaleDateString(locale.value, { month: 'short' }),
-              dateStr: d.toISOString().split('T')[0] || '',
+              dateStr: formatDateSafe(d) || '',
             })
           }
 

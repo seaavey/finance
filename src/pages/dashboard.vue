@@ -472,6 +472,7 @@ defineOptions({
   name: 'DashboardPage',
 })
 import { Button } from '@/components/ui/button'
+import { formatDateSafe } from '@/lib/utils'
 import type { BudgetWithProgress } from '@/composables/useBudgets'
 import type { AccountWithBalance } from '@/composables/useAccounts'
 import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
@@ -689,7 +690,7 @@ const monthlyData = computed(() => {
       const d = new Date()
       d.setDate(d.getDate() - i)
       const label = d.toLocaleDateString(locale.value, { weekday: 'short', day: 'numeric' })
-      const dateStr = d.toISOString().split('T')[0]
+      const dateStr = formatDateSafe(d)
 
       const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr)
       const activeCur = activeCurrency.value
@@ -753,7 +754,7 @@ onMounted(async () => {
   const now = new Date()
   const currentMonth = now.getMonth()
   const currentYear = now.getFullYear()
-  const sixMonthsAgo = new Date(currentYear, currentMonth - 5, 1).toISOString().split('T')[0]
+  const sixMonthsAgo = formatDateSafe(new Date(currentYear, currentMonth - 5, 1))
 
   // Ensure session is loaded before fetching (defense-in-depth for OAuth redirect)
   await getSession()
