@@ -20,6 +20,7 @@ declare global {
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const getOgImageUrl: typeof import('./lib/utils').getOgImageUrl
+  const getPageTitleKey: typeof import('./lib/utils').getPageTitleKey
   const h: typeof import('vue').h
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
@@ -169,6 +170,7 @@ declare module 'vue' {
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
     readonly getOgImageUrl: UnwrapRef<typeof import('./lib/utils')['getOgImageUrl']>
+    readonly getPageTitleKey: UnwrapRef<typeof import('./lib/utils')['getPageTitleKey']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>

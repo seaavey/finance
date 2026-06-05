@@ -8,10 +8,19 @@ const BlankLayout = defineAsyncComponent(() => import('./layouts/blank.vue'))
 const AppToast = defineAsyncComponent(() => import('./components/AppToast.vue'))
 
 const route = useRoute()
-const { locale } = useI18n()
+const { t, locale } = useI18n()
+
+const pageTitle = computed(() => {
+  const titleKey = (route.meta.title as string) || ''
+  if (titleKey && titleKey !== '') {
+    return t(titleKey)
+  }
+  return ''
+})
 
 useHead({
-  titleTemplate: '%s | Aemy Finance',
+  title: pageTitle,
+  titleTemplate: (title) => (title ? `${title} | Aemy Finance` : 'Aemy Finance'),
   htmlAttrs: {
     lang: locale,
   },

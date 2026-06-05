@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from 'virtual:generated-pages'
+import { getPageTitleKey } from '@/lib/utils'
 
 // Define which paths should use the 'blank' layout
 const blankLayoutRoutes = [
@@ -24,6 +25,7 @@ const router = createRouter({
       meta: {
         ...route.meta,
         layout: isBlank ? 'blank' : 'default',
+        title: getPageTitleKey(route.path),
       },
     }
   }),
