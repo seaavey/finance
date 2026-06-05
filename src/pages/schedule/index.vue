@@ -69,7 +69,9 @@
 
     <div v-else class="rounded-3xl border border-border/50 bg-card shadow-sm">
       <!-- Calendar Header: Month + Navigation -->
-      <div class="flex flex-wrap items-center justify-center gap-3 border-b border-border/50 px-5 py-4 sm:justify-between md:px-8">
+      <div
+        class="flex flex-wrap items-center justify-center gap-3 border-b border-border/50 px-5 py-4 sm:justify-between md:px-8"
+      >
         <div class="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -192,13 +194,17 @@
     >
       <div v-if="selectedDayEvents.length > 0" class="mt-6">
         <div class="rounded-3xl border border-border/50 bg-card shadow-sm">
-          <div class="flex items-center justify-between border-b border-border/50 px-5 py-4 sm:px-6">
+          <div
+            class="flex items-center justify-between border-b border-border/50 px-5 py-4 sm:px-6"
+          >
             <h3 class="text-base font-black tracking-tighter text-foreground">
               {{ formatSelectedDate }}
             </h3>
             <span class="text-xs font-bold text-muted-foreground">
               {{ selectedDayEvents.length }}
-              {{ selectedDayEvents.length === 1 ? $t('schedule.no_events') : $t('schedule.no_events') }}
+              {{
+                selectedDayEvents.length === 1 ? $t('schedule.no_events') : $t('schedule.no_events')
+              }}
             </span>
           </div>
           <div class="divide-y divide-border/30">
@@ -212,9 +218,7 @@
               <div
                 class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
                 :class="
-                  bill.is_paid
-                    ? 'bg-green-500/10 text-green-600'
-                    : 'bg-amber-500/10 text-amber-600'
+                  bill.is_paid ? 'bg-green-500/10 text-green-600' : 'bg-amber-500/10 text-amber-600'
                 "
               >
                 <AppIcon name="hugeicons:receipt" :size="18" />
@@ -268,9 +272,7 @@
                 </p>
                 <p class="text-[10px] font-bold text-muted-foreground/60">
                   {{ $t('schedule.recurring_on') }}
-                  <span
-                    class="ml-1 rounded-lg bg-muted px-2 py-0.5 text-[9px] font-bold"
-                  >
+                  <span class="ml-1 rounded-lg bg-muted px-2 py-0.5 text-[9px] font-bold">
                     {{ frequencyLabel(rec.frequency) }}
                   </span>
                 </p>
@@ -279,7 +281,8 @@
                 class="shrink-0 text-sm font-black"
                 :class="rec.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
               >
-                {{ rec.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(rec.amount), rec.currency) }}
+                {{ rec.type === 'income' ? '+' : '-'
+                }}{{ formatCurrency(Number(rec.amount), rec.currency) }}
               </p>
             </div>
           </div>
@@ -361,11 +364,7 @@ function formatDateStr(year: number, month: number, day: number): string {
 
 function isToday(year: number, month: number, day: number): boolean {
   const today = new Date()
-  return (
-    year === today.getFullYear() &&
-    month === today.getMonth() &&
-    day === today.getDate()
-  )
+  return year === today.getFullYear() && month === today.getMonth() && day === today.getDate()
 }
 
 /**
@@ -422,8 +421,7 @@ function getOccurrencesInMonth(rec: RecurringTransaction): string[] {
       // Show on the day-of-month of next_date, if within current month
       const targetDay = nextDate.getDate()
       // Only show if this month is >= the month of next_date
-      const monthDiff =
-        (year - nextDate.getFullYear()) * 12 + (month - nextDate.getMonth())
+      const monthDiff = (year - nextDate.getFullYear()) * 12 + (month - nextDate.getMonth())
       if (monthDiff >= 0) {
         const targetDate = new Date(year, month, targetDay)
         // Handle short months (e.g., Jan 31 -> Feb 28)

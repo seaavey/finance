@@ -55,9 +55,7 @@
       <!-- Table Area -->
       <div class="p-0 md:p-0">
         <!-- Filter Bar -->
-        <div
-          class="flex flex-wrap items-center gap-3 border-b border-border/50 px-4 py-3 md:px-6"
-        >
+        <div class="flex flex-wrap items-center gap-3 border-b border-border/50 px-4 py-3 md:px-6">
           <Select v-model="categoryFilter">
             <SelectTrigger class="h-8 w-44 rounded-xl text-xs font-medium">
               <SelectValue :placeholder="$t('transactions.all_categories')" />
@@ -68,7 +66,9 @@
               </SelectItem>
 
               <SelectGroup>
-                <SelectLabel class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5">
+                <SelectLabel
+                  class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5"
+                >
                   {{ $t('transactions.income') }}
                 </SelectLabel>
                 <SelectItem
@@ -78,9 +78,14 @@
                   class="w-full"
                 >
                   <div class="flex w-full items-center gap-2">
-                    <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color }" />
+                    <div
+                      class="size-2.5 shrink-0 rounded-full"
+                      :style="{ backgroundColor: cat.color }"
+                    />
                     <span class="truncate">{{ cat.name }}</span>
-                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
+                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
+                      categoryCounts[cat.id] || 0
+                    }}</span>
                   </div>
                 </SelectItem>
               </SelectGroup>
@@ -88,7 +93,9 @@
               <SelectSeparator class="mx-2 my-1" />
 
               <SelectGroup>
-                <SelectLabel class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5">
+                <SelectLabel
+                  class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5"
+                >
                   {{ $t('transactions.expense') }}
                 </SelectLabel>
                 <SelectItem
@@ -98,9 +105,14 @@
                   class="w-full"
                 >
                   <div class="flex w-full items-center gap-2">
-                    <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color }" />
+                    <div
+                      class="size-2.5 shrink-0 rounded-full"
+                      :style="{ backgroundColor: cat.color }"
+                    />
                     <span class="truncate">{{ cat.name }}</span>
-                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
+                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
+                      categoryCounts[cat.id] || 0
+                    }}</span>
                   </div>
                 </SelectItem>
               </SelectGroup>
@@ -146,13 +158,19 @@
                 variant="outline"
                 size="sm"
                 class="h-8 gap-1.5 rounded-xl border-border/50 text-xs font-medium"
-                :class="dateRange.start || dateRange.end ? 'border-primary/30 text-primary' : 'text-muted-foreground'"
+                :class="
+                  dateRange.start || dateRange.end
+                    ? 'border-primary/30 text-primary'
+                    : 'text-muted-foreground'
+                "
               >
                 <AppIcon name="hugeicons:calendar-01" :size="14" />
                 <span v-if="dateRange.start || dateRange.end" class="hidden sm:inline">
                   {{ formatRangeLabel }}
                 </span>
-                <span v-else class="hidden sm:inline">{{ $t('transactions.select_date_range') }}</span>
+                <span v-else class="hidden sm:inline">{{
+                  $t('transactions.select_date_range')
+                }}</span>
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-auto p-0" align="start">
@@ -182,7 +200,9 @@
             </template>
           </p>
           <div class="flex items-center gap-1.5">
-            <span class="text-xs font-medium text-muted-foreground/60">{{ $t('transactions.per_page') }}</span>
+            <span class="text-xs font-medium text-muted-foreground/60">{{
+              $t('transactions.per_page')
+            }}</span>
             <Select :model-value="pageSize" @update:model-value="pageSize = Number($event)">
               <SelectTrigger class="h-7 w-16 rounded-lg text-xs font-medium">
                 <SelectValue />
@@ -262,10 +282,9 @@
           </Table>
 
           <!-- Pagination -->
-          <div
-            class="flex items-center justify-center border-t border-border/50 px-4 py-4 md:px-6"
-          >
-            <Pagination v-if="totalPages > 1"
+          <div class="flex items-center justify-center border-t border-border/50 px-4 py-4 md:px-6">
+            <Pagination
+              v-if="totalPages > 1"
               :total="totalCount"
               :items-per-page="pageSize"
               :page="currentPage"
@@ -427,7 +446,13 @@
 
 <script setup lang="ts">
 import { h, type VNode, type Ref } from 'vue'
-import { FlexRender, useVueTable, getCoreRowModel, getSortedRowModel, createColumnHelper } from '@tanstack/vue-table'
+import {
+  FlexRender,
+  useVueTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  createColumnHelper,
+} from '@tanstack/vue-table'
 import type { RowData, SortingState } from '@tanstack/vue-table'
 import type { DateRange } from 'reka-ui'
 import { getLocalTimeZone } from '@internationalized/date'
@@ -529,14 +554,22 @@ const formatRangeLabel = computed(() => {
   if (start && end) {
     const startDate = start.toDate(getLocalTimeZone())
     const endDate = end.toDate(getLocalTimeZone())
-    const sameMonth = startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()
+    const sameMonth =
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getFullYear() === endDate.getFullYear()
     if (sameMonth && startDate.getFullYear() === new Date().getFullYear()) {
       return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
     }
     return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
   }
-  if (start) return start.toDate(getLocalTimeZone()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-  if (end) return end.toDate(getLocalTimeZone()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (start)
+    return start
+      .toDate(getLocalTimeZone())
+      .toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (end)
+    return end
+      .toDate(getLocalTimeZone())
+      .toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
   return ''
 })
 
@@ -544,12 +577,8 @@ const onDateRangeChange = () => {
   // Triggered when range calendar selection changes
 }
 
-const incomeCategories = computed(() =>
-  categories.value.filter((c) => c.type === 'income'),
-)
-const expenseCategories = computed(() =>
-  categories.value.filter((c) => c.type === 'expense'),
-)
+const incomeCategories = computed(() => categories.value.filter((c) => c.type === 'income'))
+const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
 
 const categoryCounts = computed(() => {
   const counts: Record<string, number> = {}
@@ -713,11 +742,11 @@ const columns = [
         [
           t('transactions.date'),
           h(AppIcon, {
-            name: column.getIsSorted() === 'asc'
-              ? 'hugeicons:arrow-up-01'
-              : 'hugeicons:arrow-down-01',
+            name:
+              column.getIsSorted() === 'asc' ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01',
             size: 14,
-            class: 'text-muted-foreground/40' + (column.getIsSorted() ? ' opacity-100' : ' opacity-0'),
+            class:
+              'text-muted-foreground/40' + (column.getIsSorted() ? ' opacity-100' : ' opacity-0'),
           }),
         ],
       ),
@@ -889,11 +918,12 @@ const columns = [
         [
           t('transactions.amount'),
           h(AppIcon, {
-            name: column.getIsSorted() === 'asc'
-              ? 'hugeicons:arrow-up-01'
-              : column.getIsSorted() === 'desc'
-                ? 'hugeicons:arrow-down-01'
-                : 'hugeicons:arrow-up-down',
+            name:
+              column.getIsSorted() === 'asc'
+                ? 'hugeicons:arrow-up-01'
+                : column.getIsSorted() === 'desc'
+                  ? 'hugeicons:arrow-down-01'
+                  : 'hugeicons:arrow-up-down',
             size: 14,
             class: 'text-muted-foreground/40',
           }),
@@ -961,7 +991,9 @@ const table = useVueTable({
   getRowId: (tx: Transaction) => tx.id,
   state: {
     rowSelection: {},
-    get sorting() { return sorting.value },
+    get sorting() {
+      return sorting.value
+    },
   },
   onSortingChange: (updater) => {
     sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater

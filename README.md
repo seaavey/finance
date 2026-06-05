@@ -10,22 +10,26 @@ A modern personal finance app with multi-currency support, interactive visualiza
 
 ## ✨ Key Features
 
-| Feature                       | Description                                                                  |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| 💰 **Interactive Dashboard**  | Bento-grid layout with balance, charts, budget progress, recent transactions |
-| 💳 **Multi-Currency**         | Accounts in different currencies, auto-converted to base currency            |
-| 📊 **Charts**                 | Monthly income/expense bars, category donut, net worth line chart            |
-| 🏷️ **Categories**             | Indonesian defaults, fully customizable with icons & colors                  |
-| 📋 **Budget Planning**        | Per-category monthly budgets with progress tracking                          |
-| 🔁 **Recurring Transactions** | Daily / weekly / monthly / yearly                                            |
-| 🎯 **Goals Tracker**          | Financial targets with progress bar and image upload                         |
-| 💸 **Bills Manager**          | Bill tracking with paid/unpaid status and recurring support                  |
-| 👫 **Couple Mode**            | Share finances with a partner — invite via email                             |
-| 📈 **Net Worth**              | Track assets, debts, and net worth over time                                 |
-| 📥 **CSV Export**             | Export all transactions to CSV                                               |
-| 🔔 **Reminders**              | Upcoming bill notifications (7-day window)                                   |
-| 🌙 **Dark Mode**              | Light/dark theme toggle                                                      |
-| 🔒 **Secure**                 | Google OAuth, Row-Level Security on all data                                 |
+| Feature                            | Description                                                                  |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| 💰 **Interactive Dashboard**       | Bento-grid layout with balance, charts, budget progress, recent transactions |
+| 💳 **Multi-Currency**              | Accounts in different currencies, auto-converted to base currency            |
+| 📊 **Charts**                      | Monthly income/expense bars, category donut, net worth line chart            |
+| 🏷️ **Categories**                  | Indonesian defaults, fully customizable with icons & colors                  |
+| 📋 **Budget Planning**             | Per-category monthly budgets with progress tracking & rollover               |
+| 🔁 **Recurring Transactions**      | Daily / weekly / monthly / yearly — auto-creates transactions when due       |
+| 🎯 **Goals Tracker**               | Financial targets with progress bar and image upload                         |
+| 💸 **Bills Manager**               | Bill tracking with paid/unpaid status and recurring support                  |
+| 👫 **Couple Mode**                 | Share finances with a partner — invite via email                             |
+| 📈 **Net Worth**                   | Track assets, debts, and net worth over time                                 |
+| 📥 **CSV Export**                  | Export all transactions to CSV                                               |
+| 🔔 **Reminders**                   | Upcoming bill notifications (7-day window)                                   |
+| 📅 **Schedule Calendar**           | Monthly calendar view for bills & recurring transactions                     |
+| 📸 **OCR Receipt Scanning**        | AI-powered receipt scanning to auto-fill transactions                        |
+| 📎 **Transaction Attachments**     | Upload receipt/invoice images to transactions                                |
+| ✂️ **Split Transactions**          | Split one transaction across multiple categories                             |
+| 🌙 **Dark Mode**                   | Light/dark theme toggle                                                      |
+| 🔒 **Secure**                      | Google OAuth, Row-Level Security on all data                                 |
 
 ---
 
@@ -96,16 +100,17 @@ src/
 ├── composables/      # Domain logic (useAuth, useTransactions, etc.)
 ├── layouts/          # default.vue (sidebar), blank.vue (landing)
 ├── lib/              # supabase client, utility helpers
-├── pages/            # File-based routes (35 pages)
+├── pages/            # File-based routes (37 pages)
 ├── router/           # Router guard & layout assignment
 └── styles/           # Tailwind + CSS custom properties
 
 supabase/
 ├── functions/        # Edge Functions (Deno)
+│   ├── ocr-receipt/  # AI receipt scanning
 │   ├── sync-rates/   # Exchange rate sync
 │   ├── send-couple-invite/  # Partner invitation emails
 │   └── og-image/     # Dynamic Open Graph image
-└── migrations/       # 27 timestamped SQL migrations
+└── migrations/       # 36 timestamped SQL migrations
 ```
 
 ---
@@ -120,15 +125,35 @@ supabase/
 | `/transactions/new`      | Add transaction        | default |
 | `/transactions/:id/edit` | Edit transaction       | default |
 | `/categories`            | Category management    | default |
-| `/budget`                | Budget planning        | default |
+| `/categories/new`        | Add category           | default |
+| `/categories/:id/edit`   | Edit category          | default |
+| `/budget`                | Budget overview        | default |
+| `/budget/new`            | Add budget             | default |
+| `/budget/edit`           | Edit budget            | default |
+| `/budget/detail/:id`     | Budget detail          | default |
 | `/accounts`              | Account list           | default |
+| `/accounts/new`          | Add account            | default |
+| `/accounts/:id`          | Account detail         | default |
+| `/accounts/:id/edit`     | Edit account           | default |
 | `/bills`                 | Bill management        | default |
+| `/bills/new`             | Add bill               | default |
+| `/bills/:id`             | Bill detail            | default |
+| `/bills/:id/edit`        | Edit bill              | default |
 | `/recurring`             | Recurring transactions | default |
+| `/recurring/new`         | Add recurring          | default |
+| `/recurring/:id/edit`    | Edit recurring         | default |
+| `/schedule`              | Schedule calendar      | default |
 | `/goals`                 | Financial goals        | default |
+| `/goals/new`             | Add goal               | default |
+| `/goals/:id`             | Goal detail            | default |
+| `/goals/:id/edit`        | Edit goal              | default |
 | `/activities`            | Activity log           | default |
 | `/settings`              | User settings          | default |
 | `/auth/login`            | Login page             | blank   |
+| `/login`                 | Login (alias)          | blank   |
+| `/auth/callback`         | OAuth callback         | blank   |
 | `/about`                 | About                  | blank   |
+| `/contact`               | Contact                | blank   |
 | `/privacy-policy`        | Privacy policy         | blank   |
 | `/terms-of-service`      | Terms of service       | blank   |
 

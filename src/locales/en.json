@@ -84,7 +84,7 @@
     "amount_max": "Max Amount",
     "all_accounts": "All accounts",
     "all_currencies": "All currencies",
-"bulk_selected": "{count} selected",
+    "bulk_selected": "{count} selected",
     "bulk_edit_category": "Edit Category",
     "bulk_move_account": "Move Account",
     "bulk_delete": "Delete",

@@ -152,7 +152,8 @@ export function useCamera(): UseCameraReturn {
 
     // iOS standalone (PWA) mode — getUserMedia doesn't work on iOS < 16
     if (
-      'standalone' in window.navigator && (window.navigator as Navigator & { standalone: boolean }).standalone &&
+      'standalone' in window.navigator &&
+      (window.navigator as Navigator & { standalone: boolean }).standalone &&
       !/iphone os (1[6-9]|[2-9]\d)/i.test(navigator.userAgent)
     ) {
       error.value = 'camera_error_unsupported'

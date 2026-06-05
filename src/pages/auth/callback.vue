@@ -1,14 +1,8 @@
 <template>
   <div class="flex min-h-screen items-center justify-center bg-background">
     <div class="text-center">
-      <div
-        class="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10"
-      >
-        <AppIcon
-          name="hugeicons:loading-04"
-          :size="24"
-          class="text-primary animate-spin"
-        />
+      <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10">
+        <AppIcon name="hugeicons:loading-04" :size="24" class="text-primary animate-spin" />
       </div>
       <p class="text-sm text-muted-foreground">
         {{ $t('auth.authenticating') }}

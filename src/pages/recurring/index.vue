@@ -8,7 +8,8 @@ import { Switch } from '@/components/ui/switch'
 import type { RecurringTransaction } from '@/composables/useRecurring'
 
 const router = useRouter()
-const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring, processDueRecurring } = useRecurring()
+const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring, processDueRecurring } =
+  useRecurring()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
 const { t, locale } = useI18n()
@@ -269,7 +270,10 @@ const confirmDelete = async () => {
               </div>
             </div>
           </div>
-          <Switch :checked="checkedStates[item.id] ?? item.active" @update:checked="handleToggle(item.id, $event)" />
+          <Switch
+            :checked="checkedStates[item.id] ?? item.active"
+            @update:checked="handleToggle(item.id, $event)"
+          />
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">

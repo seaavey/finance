@@ -84,7 +84,7 @@
     "amount_max": "Nominal Max",
     "all_accounts": "Semua akun",
     "all_currencies": "Semua mata uang",
-"bulk_selected": "{count} dipilih",
+    "bulk_selected": "{count} dipilih",
     "bulk_edit_category": "Edit Kategori",
     "bulk_move_account": "Pindah Akun",
     "bulk_delete": "Hapus",

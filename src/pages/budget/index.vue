@@ -141,27 +141,36 @@ const goToDetail = (budget: BudgetWithProgress) => {
     </div>
 
     <!-- OWNER FILTER (when partnered) -->
-    <div
-      v-if="isPartnered"
-      class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1"
-    >
+    <div v-if="isPartnered" class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1">
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'all' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'all'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'all'"
       >
         {{ $t('budget.shared_all') }}
       </button>
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'mine' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'mine'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'mine'"
       >
         {{ $t('budget.shared_mine') }}
       </button>
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'partner' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'partner'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'partner'"
       >
         {{ partnerDisplayName || $t('budget.shared_partner') }}

@@ -74,9 +74,7 @@ export const useTransactions = () => {
   }
 
   const buildCountQuery = (filters?: TransactionFilters) => {
-    let query = supabase
-      .from('transactions')
-      .select('*', { count: 'exact', head: true })
+    let query = supabase.from('transactions').select('*', { count: 'exact', head: true })
 
     if (filters?.type) query = query.eq('type', filters.type)
     if (filters?.category_id) query = query.eq('category_id', filters.category_id)
@@ -91,7 +89,13 @@ export const useTransactions = () => {
   }
 
   const { isLoading: loading, refetch: refetchTransactions } = useQuery({
-    queryKey: ['transactions', computed(() => user.value?.id), currentFilters, currentPage, pageSize],
+    queryKey: [
+      'transactions',
+      computed(() => user.value?.id),
+      currentFilters,
+      currentPage,
+      pageSize,
+    ],
     queryFn: async () => {
       const page = currentPage.value
       const from = (page - 1) * pageSize.value

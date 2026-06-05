@@ -177,7 +177,10 @@ export const useBudgets = () => {
                   }
                 }
               } else if (tx.category_id && prevCatIds.includes(tx.category_id)) {
-                prevSpentMap.set(tx.category_id, (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount))
+                prevSpentMap.set(
+                  tx.category_id,
+                  (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount),
+                )
               }
             }
 

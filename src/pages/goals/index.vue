@@ -18,27 +18,36 @@
     </div>
 
     <!-- OWNER FILTER (when partnered) -->
-    <div
-      v-if="isPartnered"
-      class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1"
-    >
+    <div v-if="isPartnered" class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1">
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'all' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'all'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'all'"
       >
         {{ $t('goals.shared_all') }}
       </button>
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'mine' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'mine'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'mine'"
       >
         {{ $t('goals.shared_mine') }}
       </button>
       <button
         class="rounded-xl px-4 py-1.5 text-xs font-bold transition-all"
-        :class="ownerFilter === 'partner' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+        :class="
+          ownerFilter === 'partner'
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+        "
         @click="ownerFilter = 'partner'"
       >
         {{ partnerDisplayName || $t('goals.shared_partner') }}
@@ -51,7 +60,9 @@
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
           {{ $t('goals.total_goals') }}
         </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">{{ allGoals.length }}</p>
+        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">
+          {{ allGoals.length }}
+        </p>
       </div>
       <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
         <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
@@ -334,8 +345,12 @@ const completedCount = computed(
     }).length,
 )
 
-const totalTarget = computed(() => allGoals.value.reduce((sum, g) => sum + Number(g.target_amount), 0))
-const totalSaved = computed(() => allGoals.value.reduce((sum, g) => sum + Number(g.current_amount), 0))
+const totalTarget = computed(() =>
+  allGoals.value.reduce((sum, g) => sum + Number(g.target_amount), 0),
+)
+const totalSaved = computed(() =>
+  allGoals.value.reduce((sum, g) => sum + Number(g.current_amount), 0),
+)
 
 // Pick first goal with an image as the featured hero card
 const featuredGoalId = computed(() => {

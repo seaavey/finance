@@ -415,7 +415,11 @@
           :class="splitEnabled ? 'border-primary/40 bg-primary/5 text-primary' : ''"
           @click="toggleSplit"
         >
-          {{ splitEnabled ? $t('transaction_form.split_disable') : $t('transaction_form.split_enable') }}
+          {{
+            splitEnabled
+              ? $t('transaction_form.split_disable')
+              : $t('transaction_form.split_enable')
+          }}
         </Button>
       </div>
 
@@ -434,7 +438,9 @@
           </div>
           <div class="flex items-center gap-2">
             <div class="relative flex-1 md:w-36">
-              <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground"
+              >
                 {{ form.currency }}
               </span>
               <input
@@ -532,7 +538,14 @@ const emit = defineEmits<{
   dirty: [value: boolean]
 }>()
 
-const { currencyGroups, formatNumberOnly, parseLocalizedNumber, defaultCurrency, hasDecimals, formatCurrency } = useCurrency()
+const {
+  currencyGroups,
+  formatNumberOnly,
+  parseLocalizedNumber,
+  defaultCurrency,
+  hasDecimals,
+  formatCurrency,
+} = useCurrency()
 const { toast } = useToast()
 
 const { addTransaction, updateTransaction } = useTransactions()
@@ -571,7 +584,7 @@ const form = reactive({
   account_id: props.transaction?.account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
-  image_url: props.transaction?.image_url ?? null as string | null,
+  image_url: props.transaction?.image_url ?? (null as string | null),
 })
 
 const submitting = ref(false)
@@ -695,7 +708,9 @@ const splitTotal = computed(() =>
   splitItems.value.reduce((sum, s) => sum + (Number(s.amount) || 0), 0),
 )
 
-const splitTotalMismatch = computed(() => splitItems.value.length > 0 && splitTotal.value !== Number(form.amount))
+const splitTotalMismatch = computed(
+  () => splitItems.value.length > 0 && splitTotal.value !== Number(form.amount),
+)
 
 const formattedSplitTotal = computed(() => formatCurrency(splitTotal.value, form.currency))
 const formattedAmount = computed(() => formatCurrency(form.amount, form.currency))
