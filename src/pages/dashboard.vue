@@ -486,7 +486,7 @@ const { categories, fetchCategories } = useCategories()
 const { formatCurrency, defaultCurrency, convertTo } = useCurrency()
 const { t, locale } = useI18n()
 const { fetchPartner, partner, isPartnered } = usePartner()
-const { fetchBudgetWithProgress } = useBudgets()
+const { fetchBudgetWithProgress, checkBudgetAlerts } = useBudgets()
 const { fetchAccounts, getAccountBalances } = useAccounts()
 const { currentNetWorth, fetchNetWorthHistory } = useNetWorth()
 const { fetchRecurring, processDueRecurring } = useRecurring()
@@ -775,6 +775,10 @@ onMounted(async () => {
   const [budgets] = await Promise.all([fetchBudgetWithProgress(monthStr), fetchAccounts()])
   budgetSummaries.value = budgets
   accountBalances.value = await getAccountBalances()
+
+  // Check budget thresholds for alerts after fresh budget data is loaded
+  await checkBudgetAlerts(monthStr)
+
   loading.value = false
 })
 </script>

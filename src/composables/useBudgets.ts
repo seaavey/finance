@@ -4,6 +4,9 @@ import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import type { SplitItem } from './useTransactions'
 
+// Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
+const alertedThresholds = new Set<string>()
+
 export interface Budget {
   id: string
   user_id: string
@@ -285,6 +288,46 @@ export const useBudgets = () => {
     }
   }
 
+  /**
+   * Check all current-month budgets and alert if any are at or above thresholds.
+   * Toast at >=80% (info), toast at >=100% (error).
+   * Deduplicated per session — each budget+threshold alerts only once until refresh.
+   */
+  const checkBudgetAlerts = async (month: string): Promise<void> => {
+    if (!user.value) return
+
+    const budgets = await fetchBudgetWithProgress(month)
+    if (!budgets.length) return
+
+    for (const budget of budgets) {
+      if (budget.amount <= 0) continue
+
+      const rawPct = (budget.spent / budget.amount) * 100
+      const exceededKey = `${budget.id}:exceeded`
+      const warningKey = `${budget.id}:warning`
+
+      if (rawPct >= 100 && !alertedThresholds.has(exceededKey)) {
+        alertedThresholds.add(exceededKey)
+        alertedThresholds.add(warningKey) // skip warning since we already showed exceeded
+        toast.error(t('budget.alert_exceeded', { category: budget.category_name }))
+        activity.log('budget', 'alert_exceeded', {
+          category_name: budget.category_name,
+          percentage: Math.round(rawPct),
+        })
+      } else if (rawPct >= 80 && !alertedThresholds.has(warningKey)) {
+        alertedThresholds.add(warningKey)
+        toast.info(t('budget.alert_warning', {
+          category: budget.category_name,
+          percentage: Math.round(rawPct),
+        }))
+        activity.log('budget', 'alert_warning', {
+          category_name: budget.category_name,
+          percentage: Math.round(rawPct),
+        })
+      }
+    }
+  }
+
   return {
     budgets,
     loading,
@@ -293,5 +336,6 @@ export const useBudgets = () => {
     setBudget,
     deleteBudget,
     getProgress,
+    checkBudgetAlerts,
   }
 }

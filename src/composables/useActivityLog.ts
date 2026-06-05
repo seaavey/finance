@@ -25,6 +25,8 @@ export type ActionType =
   | 'logout'
   | 'connected'
   | 'disconnected'
+  | 'alert_warning'
+  | 'alert_exceeded'
 
 export interface ActivityLog {
   id: string

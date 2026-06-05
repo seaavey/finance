@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import type { RecurringTransaction } from '@/composables/useRecurring'
+import { formatDateSafe } from '@/lib/utils'
+import { useBudgets } from '@/composables/useBudgets'
 
 const router = useRouter()
 const { recurring, loading, fetchRecurring, toggleActive, deleteRecurring, processDueRecurring } =
   useRecurring()
+const { checkBudgetAlerts } = useBudgets()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
 const { t, locale } = useI18n()
@@ -40,9 +43,15 @@ const handleToggle = async (id: string, newActive: boolean) => {
   // Item was turned ON — auto-process any due recurring right away.
   // Don't wait for it; the toggle already persisted.
   if (newActive) {
-    processDueRecurring().catch((err) =>
-      console.error('Auto-process after toggle failed (toggle persisted OK):', err),
-    )
+    processDueRecurring()
+      .then(() => {
+        const now = new Date()
+        const monthStr = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
+        checkBudgetAlerts(monthStr).catch(() => {})
+      })
+      .catch((err) =>
+        console.error('Auto-process after toggle failed (toggle persisted OK):', err),
+      )
   }
 }
 

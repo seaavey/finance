@@ -523,8 +523,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
+import { formatDateSafe } from '@/lib/utils'
 import { useReceipts } from '@/composables/useReceipts'
+import { useBudgets } from '@/composables/useBudgets'
 
 const { locale, t } = useI18n()
 
@@ -551,6 +552,7 @@ const { toast } = useToast()
 const { addTransaction, updateTransaction } = useTransactions()
 const { uploadTransactionImage, deleteTransactionImage } = useTransactions()
 const { accounts, fetchAccounts } = useAccounts()
+const { checkBudgetAlerts } = useBudgets()
 
 onMounted(() => {
   fetchAccounts()
@@ -857,6 +859,10 @@ const onSubmit = async () => {
 
     if (!result.error) {
       emit('saved')
+      // Fire-and-forget: check budget thresholds without blocking navigation
+      const now = new Date()
+      const monthStr = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
+      checkBudgetAlerts(monthStr).catch(() => {})
     }
   } finally {
     submitting.value = false

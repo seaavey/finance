@@ -332,7 +332,9 @@
     "shared_mine": "Mine",
     "shared_partner": "Partner",
     "rollover_remaining": "Last month leftover",
-    "rollover_overspent": "Last month overspent"
+    "rollover_overspent": "Last month overspent",
+    "alert_warning": "{category} is at {percentage}% of budget",
+    "alert_exceeded": "{category} has exceeded the budget!"
   },
   "bills": {
     "title": "Bills",

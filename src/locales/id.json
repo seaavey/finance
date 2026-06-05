@@ -332,7 +332,9 @@
     "shared_mine": "Milik Saya",
     "shared_partner": "Pasangan",
     "rollover_remaining": "Sisa bulan lalu",
-    "rollover_overspent": "Kelebihan bulan lalu"
+    "rollover_overspent": "Kelebihan bulan lalu",
+    "alert_warning": "Kategori {category} sudah {percentage}% dari budget",
+    "alert_exceeded": "Kategori {category} melebihi budget!"
   },
   "bills": {
     "title": "Tagihan",
