@@ -507,7 +507,7 @@ const { accounts } = useAccounts()
 const router = useRouter()
 const { t } = useI18n()
 const { formatCurrency, defaultCurrency } = useCurrency()
-const { user } = useAuth()
+const { user, getSession } = useAuth()
 const { categories } = useCategories()
 
 const ownerFilter = ref<'all' | 'mine' | 'partner'>('all')
@@ -690,6 +690,7 @@ const balanceByCurrency = computed(() => {
 })
 
 onMounted(async () => {
+  await getSession()
   await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()])
 })
 

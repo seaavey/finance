@@ -13,7 +13,7 @@ const { fetchCategories } = useCategories()
 const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets()
 const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency: fmtCurrency } = useCurrency()
-const { user } = useAuth()
+const { user, getSession } = useAuth()
 
 const myBudgetList = ref<BudgetWithProgress[]>([])
 const partnerBudgetList = ref<BudgetWithProgress[]>([])
@@ -73,6 +73,7 @@ const changeMonth = async (delta: number) => {
 }
 
 const loadData = async () => {
+  await getSession()
   await fetchCategories()
   await loadBudget()
 }

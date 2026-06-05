@@ -516,7 +516,7 @@ import type { CoupleInvitation } from '@/composables/usePartner'
 
 const { toast } = useToast()
 const supabase = useSupabase()
-const { user, signOut } = useAuth()
+const { user, signOut, getSession } = useAuth()
 const {
   partner,
   sentInvitations,
@@ -580,6 +580,7 @@ const cycleTheme = () => {
 }
 
 onMounted(async () => {
+  await getSession()
   if (!user.value) {
     return
   }

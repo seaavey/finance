@@ -168,7 +168,7 @@ const {
   deleteCategory,
 } = useCategories()
 const { transactions, fetchTransactions } = useTransactions()
-const { user } = useAuth()
+const { user, getSession } = useAuth()
 
 const categoryStats = computed(() => {
   const map = new Map<string, { count: number; total: number }>()
@@ -210,6 +210,7 @@ const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
 }
 
 onMounted(async () => {
+  await getSession()
   await Promise.all([fetchCategories(), fetchTransactions()])
   if (categories.value.length === 0 && user.value) {
     await seedDefaults(user.value.id)

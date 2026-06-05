@@ -317,7 +317,7 @@ const { t } = useI18n()
 const { goals, loading, fetchGoals, fetchUserGoals } = useGoals()
 const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency } = useCurrency()
-const { user } = useAuth()
+const { user, getSession } = useAuth()
 
 const myGoalsList = ref<Goal[]>([])
 const partnerGoalsList = ref<Goal[]>([])
@@ -380,6 +380,7 @@ function remainingFor(goal: Goal): number {
 }
 
 const loadData = async () => {
+  await getSession()
   await fetchGoals()
   // Sync to local refs
   myGoalsList.value = [...goals.value]
