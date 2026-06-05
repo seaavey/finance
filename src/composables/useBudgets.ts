@@ -3,20 +3,13 @@ import { useSupabase } from '@/lib/supabase'
 import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import type { SplitItem } from './useTransactions'
+import type { Database } from '@/types/database'
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
 
-export interface Budget {
-  id: string
-  user_id: string
-  category_id: string
-  month: string
-  amount: number
-  name?: string | null
-  created_at: string
-  updated_at: string
-}
+/** Maps to Database['public']['Tables']['budgets']['Row'] */
+export type Budget = Database['public']['Tables']['budgets']['Row']
 
 export interface BudgetWithProgress extends Budget {
   category_name: string
@@ -24,7 +17,6 @@ export interface BudgetWithProgress extends Budget {
   category_icon: string
   spent: number
   rollover: number // remaining from previous month (positive) or overspent (negative)
-  name?: string | null
 }
 
 export interface BudgetInput {
