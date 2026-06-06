@@ -52,7 +52,13 @@ export const useAuth = () => {
     const {
       data: { session },
     } = await supabase.auth.getSession()
-    user.value = session?.user ?? null
+
+    const sessionUser = session?.user ?? null
+    // Only update if identity changed or logging in/out
+    if (!user.value || !sessionUser || user.value.id !== sessionUser.id) {
+      user.value = sessionUser
+    }
+
     if (session?.user && !loginLogged) {
       loginLogged = true
       supabase

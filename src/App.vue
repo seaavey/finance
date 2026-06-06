@@ -48,7 +48,10 @@ onMounted(async () => {
 
   const { useAuth } = await import('@/composables/useAuth')
   const { formatDateSafe } = await import('@/lib/utils')
+  const { useLocalStorage } = await import('@vueuse/core')
   const { user } = useAuth()
+
+  const lastBillAlertDate = useLocalStorage<string | null>('last-bill-alert-date', null)
 
   watch(
     () => user.value,
@@ -56,10 +59,15 @@ onMounted(async () => {
       if (newUser) {
         await fetchBills()
         const today = formatDateSafe(new Date())
+
+        // Only alert once per day
+        if (lastBillAlertDate.value === today) return
+
         const dueToday = bills.value.filter((b) => b.due_date === today && !b.is_paid)
 
         if (dueToday.length > 0) {
           toast.info(`You have ${dueToday.length} bill(s) due today!`)
+          lastBillAlertDate.value = today
         }
       }
     },
