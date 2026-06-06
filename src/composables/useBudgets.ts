@@ -1,9 +1,15 @@
 import { computed, ref } from 'vue'
-import { useSupabase } from '@/lib/supabase'
-import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { SplitItem } from './useTransactions'
-import type { Database } from '@/types/database'
+import {
+  queryBudgets,
+  createBudget as createBudgetService,
+  updateBudget as updateBudgetService,
+  deleteBudget as deleteBudgetService,
+  queryBudgetWithProgress as queryBudgetWithProgressService,
+  calculateProgress,
+} from '@/services/budget.service'
+import type { BudgetWithProgress } from '@/services/budget.service'
+import type { Database } from '@/types'
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
@@ -11,13 +17,7 @@ const alertedThresholds = new Set<string>()
 /** Maps to Database['public']['Tables']['budgets']['Row'] */
 export type Budget = Database['public']['Tables']['budgets']['Row']
 
-export interface BudgetWithProgress extends Budget {
-  category_name: string
-  category_color: string
-  category_icon: string
-  spent: number
-  rollover: number // remaining from previous month (positive) or overspent (negative)
-}
+export type { BudgetWithProgress }
 
 export interface BudgetInput {
   category_id: string
@@ -27,7 +27,6 @@ export interface BudgetInput {
 }
 
 export const useBudgets = () => {
-  const supabase = useSupabase()
   const queryClient = useQueryClient()
   const { t } = useI18n()
   const { toast } = useToast()
@@ -44,19 +43,12 @@ export const useBudgets = () => {
     queryKey: ['budgets', computed(() => user.value?.id), currentMonth],
     queryFn: async () => {
       if (!user.value || !currentMonth.value) return []
-      const { data, error } = await supabase
-        .from('budgets')
-        .select('id, user_id, category_id, month, amount, name, created_at')
-        .eq('user_id', user.value.id)
-        .eq('month', currentMonth.value)
-        .order('created_at')
-      if (error) {
-        throw error
-      }
-      return data as Budget[]
+      const result = await queryBudgets(user.value.id, currentMonth.value)
+      if (result.error) throw result.error
+      return result.data || []
     },
     enabled: computed(() => !!user.value && !!currentMonth.value),
-    staleTime: 60_000, // 1 min — budget amounts are monthly-static
+    staleTime: 60_000,
   })
 
   const budgets = computed(() => budgetsData.value || [])
@@ -76,172 +68,38 @@ export const useBudgets = () => {
     return queryClient.fetchQuery({
       queryKey: ['budgets:with-progress', uid, month],
       queryFn: async () => {
-        const { data: budgetData } = await supabase
-          .from('budgets')
-          .select('id, user_id, category_id, month, amount, name, created_at')
-          .eq('user_id', uid)
-          .eq('month', month)
-
-        const budgetsList = (budgetData as Budget[]) || []
-
-        if (budgetsList.length === 0) {
-          return []
-        }
-
-        const categoryIds = budgetsList.map((b) => b.category_id)
-
-        const [year, mon] = month.split('-').map(Number)
-        const date = new Date(year as number, (mon as number) - 1, 1)
-        date.setMonth(date.getMonth() + 1)
-        const nextMonth = formatDateSafe(date)
-
-        // Previous month range for rollover calculation
-        const prevDate = new Date(year as number, (mon as number) - 1, 1)
-        prevDate.setMonth(prevDate.getMonth() - 1)
-        const prevMonth = formatDateSafe(prevDate)
-
-        const [{ data: categoriesData }, { data: txData }] = await Promise.all([
-          supabase.from('categories').select('id, name, color, icon').in('id', categoryIds),
-          supabase
-            .from('transactions')
-            .select('category_id, amount, splits')
-            .eq('user_id', uid)
-            .eq('type', 'expense')
-            .gte('date', month)
-            .lt('date', nextMonth),
-        ])
-
-        const categoryMap = new Map(
-          (categoriesData || []).map(
-            (c: { id: string; name: string; color: string | null; icon: string | null }) => [c.id, c],
-          ),
-        )
-
-        const spentMap = new Map<string, number>()
-        for (const tx of (txData || []) as {
-          category_id: string
-          amount: number
-          splits: SplitItem[] | null
-        }[]) {
-          const splitArr = tx.splits
-          if (splitArr && splitArr.length > 0) {
-            // Transaction is split — apply each split to its category
-            for (const split of splitArr) {
-              const key = split.category_id
-              if (categoryIds.includes(key)) {
-                spentMap.set(key, (spentMap.get(key) || 0) + Number(split.amount))
-              }
-            }
-          } else if (tx.category_id && categoryIds.includes(tx.category_id)) {
-            // Normal transaction — direct category
-            spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount))
-          }
-        }
-
-        // Compute rollover: fetch previous month budgets + spending for same categories
-        const rolloverMap = new Map<string, number>()
-        const { data: prevBudgetData } = await supabase
-          .from('budgets')
-          .select('category_id, amount')
-          .eq('user_id', uid)
-          .eq('month', prevMonth)
-          .in('category_id', categoryIds)
-
-        if (prevBudgetData && prevBudgetData.length > 0) {
-          const prevCatIds = [
-            ...new Set(prevBudgetData.map((pb: { category_id: string }) => pb.category_id)),
-          ]
-
-          const prevBudgetMap = new Map<string, number>()
-          for (const pb of prevBudgetData as { category_id: string; amount: number }[]) {
-            // Accumulate all budgets for the same category for rollover
-            const current = prevBudgetMap.get(pb.category_id) || 0
-            prevBudgetMap.set(pb.category_id, current + Number(pb.amount))
-          }
-
-          if (prevCatIds.length > 0) {
-            const { data: prevTxData } = await supabase
-              .from('transactions')
-              .select('category_id, amount, splits')
-              .eq('user_id', uid)
-              .eq('type', 'expense')
-              .gte('date', prevMonth)
-              .lt('date', month)
-
-            const prevSpentMap = new Map<string, number>()
-            for (const tx of (prevTxData || []) as {
-              category_id: string
-              amount: number
-              splits: SplitItem[] | null
-            }[]) {
-              const splitArr = tx.splits
-              if (splitArr && splitArr.length > 0) {
-                for (const split of splitArr) {
-                  const key = split.category_id
-                  if (prevCatIds.includes(key)) {
-                    prevSpentMap.set(key, (prevSpentMap.get(key) || 0) + Number(split.amount))
-                  }
-                }
-              } else if (tx.category_id && prevCatIds.includes(tx.category_id)) {
-                prevSpentMap.set(
-                  tx.category_id,
-                  (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount),
-                )
-              }
-            }
-
-            for (const catId of prevCatIds) {
-              const prevAmount = prevBudgetMap.get(catId) || 0
-              const prevSpent = prevSpentMap.get(catId) || 0
-              // Positive rollover = leftover from last month
-              // Negative rollover = overspent last month
-              rolloverMap.set(catId, Number(prevAmount) - prevSpent)
-            }
-          }
-        }
-
-        return budgetsList.map((b) => {
-          const cat = categoryMap.get(b.category_id)
-          return {
-            ...b,
-            category_name: cat?.name || '-',
-            category_color: cat?.color || '#6b7280',
-            category_icon: cat?.icon || '',
-            spent: spentMap.get(b.category_id) || 0,
-            rollover: rolloverMap.get(b.category_id) || 0,
-          }
-        })
+        const result = await queryBudgetWithProgressService(uid, month)
+        if (result.error) throw result.error
+        return result.data || []
       },
       staleTime: 30_000,
     })
   }
 
-  const createBudget = async (categoryId: string, month: string, amount: number, name?: string | null) => {
+  const createBudget = async (
+    categoryId: string,
+    month: string,
+    amount: number,
+    name?: string | null,
+  ) => {
     if (!user.value) {
       toast.error(t('toast.login_required'))
       return { error: new Error('Not authenticated') }
     }
 
-    const { error } = await supabase.from('budgets').insert({
-      user_id: user.value.id,
-      category_id: categoryId,
-      month,
-      amount,
-      name: name || null,
-    })
+    const result = await createBudgetService(user.value.id, categoryId, month, amount, name)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })
       queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
-      const displayName = name || categoryId
-      activity.log('budget', 'created', { category_name: displayName, amount })
+      activity.log('budget', 'created', { category_name: name || categoryId, amount })
     } else {
       toast.error(t('budget.save_error'))
     }
 
-    return { error }
+    return { error: result.error }
   }
 
   const setBudget = async (categoryId: string, month: string, amount: number) => {
@@ -250,51 +108,46 @@ export const useBudgets = () => {
       return { error: new Error('Not authenticated') }
     }
 
-    const { data: existing } = await supabase
-      .from('budgets')
-      .select('id')
-      .eq('user_id', user.value.id)
-      .eq('category_id', categoryId)
-      .eq('month', month)
-      .maybeSingle()
+    // This one is slightly custom because of maybeSingle, keeping it simple by reusing service calls
+    const budgets = await fetchBudgetWithProgress(month)
+    const existing = budgets.find((b) => b.category_id === categoryId)
 
-    let error
+    let result
     if (existing) {
-      const result = await supabase.from('budgets').update({ amount }).eq('id', existing.id)
-      error = result.error
-      if (!error) activity.log('budget', 'updated', { category_name: categoryId, amount })
+      result = await updateBudgetService(existing.id, { amount })
     } else {
-      const result = await supabase.from('budgets').insert({
-        user_id: user.value.id,
-        category_id: categoryId,
-        month,
-        amount,
-      })
-      error = result.error
-      if (!error) activity.log('budget', 'created', { category_name: categoryId, amount })
+      result = await createBudgetService(user.value.id, categoryId, month, amount)
     }
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })
       queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
+      activity.log('budget', existing ? 'updated' : 'created', {
+        category_name: categoryId,
+        amount,
+      })
     } else {
       toast.error(t('budget.save_error'))
     }
 
-    return { error }
+    return { error: result.error }
   }
 
-  const updateBudget = async (id: string, data: { amount?: number; name?: string | null }, month: string) => {
+  const updateBudget = async (
+    id: string,
+    data: { amount?: number; name?: string | null },
+    month: string,
+  ) => {
     if (!user.value) {
       toast.error(t('toast.login_required'))
       return { error: new Error('Not authenticated') }
     }
 
-    const { error } = await supabase.from('budgets').update(data).eq('id', id)
+    const result = await updateBudgetService(id, data)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })
       queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
       await fetchBudgets(month)
@@ -304,15 +157,15 @@ export const useBudgets = () => {
       toast.error(t('budget.save_error'))
     }
 
-    return { error }
+    return { error: result.error }
   }
 
   const deleteBudget = async (id: string, month: string) => {
     const budget = budgets.value.find((b) => b.id === id)
     const categoryId = budget?.category_id || ''
-    const { error } = await supabase.from('budgets').delete().eq('id', id)
+    const result = await deleteBudgetService(id)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })
       queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
       await fetchBudgets(month)
@@ -322,21 +175,7 @@ export const useBudgets = () => {
       toast.error(t('budget.delete_error'))
     }
 
-    return { error }
-  }
-
-  const getProgress = (budget: BudgetWithProgress) => {
-    const pct = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0
-    const diff = budget.amount - budget.spent
-    const effectiveAmount = budget.amount + budget.rollover
-    const effectiveDiff = effectiveAmount - budget.spent
-    return {
-      percentage: Math.min(pct, 100),
-      remaining: Math.max(diff, 0),
-      overspent: Math.max(-diff, 0),
-      effectiveRemaining: Math.max(effectiveDiff, 0),
-      effectiveOverspent: Math.max(-effectiveDiff, 0),
-    }
+    return { error: result.error }
   }
 
   /**
@@ -346,13 +185,11 @@ export const useBudgets = () => {
    */
   const checkBudgetAlerts = async (month: string): Promise<void> => {
     if (!user.value) return
-
     const budgets = await fetchBudgetWithProgress(month)
     if (!budgets.length) return
 
     for (const budget of budgets) {
       if (budget.amount <= 0) continue
-
       const rawPct = (budget.spent / budget.amount) * 100
       const exceededKey = `${budget.id}:exceeded`
       const warningKey = `${budget.id}:warning`
@@ -367,10 +204,12 @@ export const useBudgets = () => {
         })
       } else if (rawPct >= 80 && !alertedThresholds.has(warningKey)) {
         alertedThresholds.add(warningKey)
-        toast.info(t('budget.alert_warning', {
-          category: budget.category_name,
-          percentage: Math.round(rawPct),
-        }))
+        toast.info(
+          t('budget.alert_warning', {
+            category: budget.category_name,
+            percentage: Math.round(rawPct),
+          }),
+        )
         activity.log('budget', 'alert_warning', {
           category_name: budget.category_name,
           percentage: Math.round(rawPct),
@@ -388,7 +227,7 @@ export const useBudgets = () => {
     createBudget,
     updateBudget,
     deleteBudget,
-    getProgress,
+    getProgress: calculateProgress,
     checkBudgetAlerts,
   }
 }

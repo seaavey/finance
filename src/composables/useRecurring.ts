@@ -1,18 +1,23 @@
-import type { PostgrestResponse } from '@supabase/supabase-js'
-import { computed } from 'vue'
-import { useSupabase } from '@/lib/supabase'
-import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-
+import { computed } from 'vue'
+import {
+  queryRecurring,
+  queryDueRecurring,
+  createRecurring as createRecurringService,
+  updateRecurring as updateRecurringService,
+  deleteRecurring as deleteRecurringService,
+} from '@/services/recurring.service'
+import type { RecurringRow as RecurringTransaction } from '@/services/recurring.service'
+import { createTransaction as createTxService } from '@/services/transaction.service'
+import { formatDateSafe } from '@/lib/utils'
 import type { Database } from '@/types'
 
-export type RecurringTransaction = Database['public']['Tables']['recurring_transactions']['Row']
+export type { RecurringTransaction }
 
 export const useRecurring = () => {
   const { t } = useI18n()
   const { toast } = useToast()
   const activity = useActivityLog()
-  const supabase = useSupabase()
   const queryClient = useQueryClient()
   const { user } = useAuth()
 
@@ -24,16 +29,12 @@ export const useRecurring = () => {
     queryKey: ['recurring', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) throw new Error('Not authenticated')
-      const { data, error } = await supabase
-        .from('recurring_transactions')
-        .select('*')
-        .eq('user_id', user.value.id)
-        .order('next_date', { ascending: true })
-      if (error) throw error
-      return data || []
+      const result = await queryRecurring(user.value.id)
+      if (result.error) throw result.error
+      return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 120_000, // 2 min — recurring rarely changes
+    staleTime: 120_000,
   })
 
   const recurring = computed(() => recurringData.value || [])
@@ -41,55 +42,56 @@ export const useRecurring = () => {
   const addRecurring = async (
     item: Omit<Database['public']['Tables']['recurring_transactions']['Insert'], 'user_id' | 'created_at'>,
   ) => {
-    if (!user.value) {
-      return
-    }
+    if (!user.value) return
 
-    const { error } = await supabase
-      .from('recurring_transactions')
-      .insert({ ...item, user_id: user.value.id } as Database['public']['Tables']['recurring_transactions']['Insert'])
+    const result = await createRecurringService({
+      ...item,
+      user_id: user.value.id,
+    } as Database['public']['Tables']['recurring_transactions']['Insert'])
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['recurring'] })
       toast.success(t('toast.recurring_added'))
-      activity.log('recurring', 'created', {
-        description: item.description || item.type,
-        amount: item.amount,
-      })
+      if (result.data) {
+        activity.log('recurring', 'created', {
+          description: result.data.description || result.data.type,
+          amount: result.data.amount,
+        })
+      }
     } else {
       toast.error(t('toast.recurring_add_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const updateRecurring = async (
     id: string,
     updates: Database['public']['Tables']['recurring_transactions']['Update'],
   ) => {
-    let error: any
-    try {
-      const result = await supabase.from('recurring_transactions').update(updates).eq('id', id)
-      error = result.error
-    } catch (err) {
-      console.error('Update recurring threw:', err)
-      error = err
-    }
+    const result = await updateRecurringService(id, updates)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['recurring'] })
       toast.success(t('toast.recurring_updated'))
-      activity.log('recurring', 'updated', { description: updates.description || updates.type }, id)
+      if (result.data) {
+        activity.log(
+          'recurring',
+          'updated',
+          { description: result.data.description || result.data.type },
+          id,
+        )
+      }
     } else {
       toast.error(t('toast.recurring_update_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const deleteRecurring = async (id: string) => {
     const recurringItem = recurring.value.find((r) => r.id === id)
-    const { error } = await supabase.from('recurring_transactions').delete().eq('id', id)
+    const result = await deleteRecurringService(id)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['recurring'] })
       toast.success(t('toast.recurring_deleted'))
       activity.log(
@@ -101,7 +103,7 @@ export const useRecurring = () => {
     } else {
       toast.error(t('toast.recurring_delete_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const toggleActive = async (id: string, active: boolean) => {
@@ -117,22 +119,15 @@ export const useRecurring = () => {
     if (!user.value) return 0
 
     const today = formatDateSafe(new Date())
+    const result = await queryDueRecurring(user.value.id, today)
 
-    // Fetch due + active recurring items
-    const { data: due, error: fetchError } = await supabase
-      .from('recurring_transactions')
-      .select('*')
-      .eq('user_id', user.value.id)
-      .eq('active', true)
-      .lte('next_date', today)
-
-    if (fetchError || !due || due.length === 0) return 0
+    if (result.error || !result.data || result.data.length === 0) return 0
 
     let created = 0
 
-    for (const item of due) {
+    for (const item of result.data) {
       // 1. Create the actual transaction
-      const { error: txError } = await supabase.from('transactions').insert({
+      const txResult = await createTxService({
         user_id: user.value.id,
         type: item.type,
         amount: item.amount,
@@ -143,10 +138,10 @@ export const useRecurring = () => {
         account_id: null,
         image_url: null,
         splits: [],
-      })
+      } as any)
 
-      if (txError) {
-        console.error('Failed to create recurring transaction:', txError)
+      if (txResult.error) {
+        console.error('Failed to create recurring transaction:', txResult.error)
         continue
       }
 
@@ -168,15 +163,7 @@ export const useRecurring = () => {
       }
       const nextDate = formatDateSafe(next)
 
-      const { error: updateError } = await supabase
-        .from('recurring_transactions')
-        .update({ next_date: nextDate })
-        .eq('id', item.id)
-
-      if (updateError) {
-        console.error('Failed to advance next_date:', updateError)
-      }
-
+      await updateRecurringService(item.id, { next_date: nextDate })
       created++
     }
 

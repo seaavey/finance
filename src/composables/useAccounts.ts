@@ -1,17 +1,18 @@
 import { computed } from 'vue'
-import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-
+import {
+  queryAccounts,
+  createAccount as createAccountService,
+  updateAccount as updateAccountService,
+  deleteAccount as deleteAccountService,
+  queryAccountBalances as queryAccountBalancesService,
+} from '@/services/account.service'
+import type { AccountRow as Account, AccountWithBalance } from '@/services/account.service'
 import type { Database } from '@/types'
 
-export type Account = Database['public']['Tables']['accounts']['Row']
-
-export interface AccountWithBalance extends Account {
-  balance: number
-}
+export type { Account, AccountWithBalance }
 
 export const useAccounts = () => {
-  const supabase = useSupabase()
   const queryClient = useQueryClient()
   const { t } = useI18n()
   const { toast } = useToast()
@@ -26,18 +27,12 @@ export const useAccounts = () => {
     queryKey: ['accounts', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) throw new Error('Not authenticated')
-      const { data, error } = await supabase
-        .from('accounts')
-        .select('*')
-        .eq('user_id', user.value.id)
-        .order('created_at')
-      if (error) {
-        throw error
-      }
-      return data || []
+      const result = await queryAccounts(user.value.id)
+      if (result.error) throw result.error
+      return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 120_000, // 2 min — account structure rarely changes
+    staleTime: 120_000,
   })
 
   const accounts = computed(() => accountsData.value || [])
@@ -48,36 +43,42 @@ export const useAccounts = () => {
     if (!user.value) {
       return { error: new Error('Not authenticated') }
     }
-    const { error } = await supabase.from('accounts').insert({ ...account, user_id: user.value.id } as Database['public']['Tables']['accounts']['Insert'])
-    if (!error) {
+    const result = await createAccountService({
+      ...account,
+      user_id: user.value.id,
+    } as Database['public']['Tables']['accounts']['Insert'])
+
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
       toast.success(t('accounts.saved'))
       activity.log('account', 'created', { name: account.name, type: account.type })
     } else {
       toast.error(t('accounts.save_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const updateAccount = async (
     id: string,
     updates: Database['public']['Tables']['accounts']['Update'],
   ) => {
-    const { error } = await supabase.from('accounts').update(updates).eq('id', id)
-    if (!error) {
+    const result = await updateAccountService(id, updates)
+
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
       toast.success(t('accounts.saved'))
-      activity.log('account', 'updated', { name: updates.name }, id)
+      if (result.data) activity.log('account', 'updated', { name: result.data.name }, id)
     } else {
       toast.error(t('accounts.save_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const deleteAccount = async (id: string) => {
     const accountName = accounts.value.find((a) => a.id === id)?.name || ''
-    const { error } = await supabase.from('accounts').delete().eq('id', id)
-    if (!error) {
+    const result = await deleteAccountService(id)
+
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
       toast.success(t('accounts.deleted'))
@@ -85,7 +86,7 @@ export const useAccounts = () => {
     } else {
       toast.error(t('accounts.delete_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const getAccountBalance = async (accountId: string): Promise<number> => {
@@ -95,76 +96,26 @@ export const useAccounts = () => {
   }
 
   const getAccountBalances = async (): Promise<AccountWithBalance[]> => {
-    if (!user.value) {
-      return []
-    }
-    const accts = accounts.value
-    if (accts.length === 0) {
-      return []
-    }
-
-    const { data } = await supabase
-      .from('transactions')
-      .select('account_id, type, amount')
-      .eq('user_id', user.value.id)
-      .in(
-        'account_id',
-        accts.map((a) => a.id),
-      )
-      .not('account_id', 'is', null)
-
-    const netMap = new Map<string, number>()
-    for (const tx of (data || []) as { account_id: string; type: string; amount: number }[]) {
-      const current = netMap.get(tx.account_id) || 0
-      netMap.set(
-        tx.account_id,
-        tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount),
-      )
-    }
-
-    return accts.map((a) => ({
-      ...a,
-      balance: Number(a.initial_balance) + (netMap.get(a.id) || 0),
-    }))
+    if (!user.value) return []
+    const result = await queryAccountBalancesService(user.value.id)
+    if (result.error) throw result.error
+    return result.data || []
   }
 
   const getConvertedBalances = async (): Promise<AccountWithBalance[]> => {
-    if (!user.value) {
-      return []
-    }
-    const accts = accounts.value
-    if (accts.length === 0) {
-      return []
-    }
-
-    const { data } = await supabase
-      .from('transactions')
-      .select('account_id, type, amount')
-      .eq('user_id', user.value.id)
-      .in(
-        'account_id',
-        accts.map((a) => a.id),
-      )
-      .not('account_id', 'is', null)
-
-    const netMap = new Map<string, number>()
-    for (const tx of (data || []) as { account_id: string; type: string; amount: number }[]) {
-      const current = netMap.get(tx.account_id) || 0
-      netMap.set(
-        tx.account_id,
-        tx.type === 'income' ? current + Number(tx.amount) : current - Number(tx.amount),
-      )
-    }
+    const balances = await getAccountBalances()
+    if (balances.length === 0) return []
 
     const { defaultCurrency, convertTo } = useCurrency()
 
-    return accts.map((a) => {
-      const net = netMap.get(a.id) || 0
-      const rawBalance = Number(a.initial_balance) + net
-
-      let convertedBalance = rawBalance
+    return balances.map((a) => {
+      let convertedBalance = a.balance
       if (a.currency !== defaultCurrency.value) {
-        const converted = convertTo(rawBalance, a.currency || defaultCurrency.value, defaultCurrency.value)
+        const converted = convertTo(
+          a.balance,
+          a.currency || defaultCurrency.value,
+          defaultCurrency.value,
+        )
         if (converted !== null) {
           convertedBalance = converted
         }

@@ -1,0 +1,60 @@
+import { useSupabase } from '@/lib/supabase'
+import type { Database } from '@/types'
+import type { Result } from '@/types/result'
+import { AppError } from '@/types/result'
+
+export type RecurringRow = Database['public']['Tables']['recurring_transactions']['Row']
+export type RecurringInsert = Database['public']['Tables']['recurring_transactions']['Insert']
+export type RecurringUpdate = Database['public']['Tables']['recurring_transactions']['Update']
+
+export async function queryRecurring(userId: string): Promise<Result<RecurringRow[]>> {
+  const supabase = useSupabase()
+  const { data, error } = await supabase
+    .from('recurring_transactions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('next_date', { ascending: true })
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: data || [], error: null }
+}
+
+export async function createRecurring(recurring: RecurringInsert): Promise<Result<RecurringRow>> {
+  const supabase = useSupabase()
+  const { data, error } = await supabase.from('recurring_transactions').insert(recurring).select().single()
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data, error: null }
+}
+
+export async function updateRecurring(
+  id: string,
+  updates: RecurringUpdate,
+): Promise<Result<RecurringRow>> {
+  const supabase = useSupabase()
+  const { data, error } = await supabase.from('recurring_transactions').update(updates).eq('id', id).select().single()
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data, error: null }
+}
+
+export async function deleteRecurring(id: string): Promise<Result<null>> {
+  const supabase = useSupabase()
+  const { error } = await supabase.from('recurring_transactions').delete().eq('id', id)
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: null, error: null }
+}
+
+export async function queryDueRecurring(userId: string, today: string): Promise<Result<RecurringRow[]>> {
+  const supabase = useSupabase()
+  const { data, error } = await supabase
+    .from('recurring_transactions')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('active', true)
+    .lte('next_date', today)
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: data || [], error: null }
+}

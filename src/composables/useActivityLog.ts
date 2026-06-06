@@ -1,8 +1,8 @@
-import { useSupabase } from '@/lib/supabase'
-import { user } from './useAuth'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { Database, Json } from '@/types'
+import { queryActivityLogs, logActivity } from '@/services/activity.service'
+import type { ActivityLogRow as ActivityLog, ActivityLogFilters } from '@/services/activity.service'
+import type { Database } from '@/types'
 
 export type EntityType =
   | 'transaction'
@@ -29,22 +29,11 @@ export type ActionType =
   | 'alert_warning'
   | 'alert_exceeded'
 
-export type ActivityLog = Omit<Database['public']['Tables']['activity_logs']['Row'], 'metadata'> & {
-  metadata: any
-}
-
-export interface ActivityLogFilters {
-  page?: number
-  limit?: number
-  entityType?: EntityType | EntityType[]
-  action?: ActionType | ActionType[]
-  startDate?: string
-  endDate?: string
-}
+export type { ActivityLog, ActivityLogFilters }
 
 export const useActivityLog = () => {
-  const supabase = useSupabase()
   const queryClient = useQueryClient()
+  const { user } = useAuth()
 
   const currentFilters = ref<ActivityLogFilters>({})
 
@@ -56,54 +45,15 @@ export const useActivityLog = () => {
     queryKey: ['activity_logs', computed(() => user.value?.id), currentFilters],
     queryFn: async () => {
       if (!user.value) return { logs: [], total: 0 }
-      const filters = currentFilters.value
-      const { page = 1, limit = 50, entityType, action, startDate, endDate } = filters
-      const safePage = Math.max(1, page)
-
-      let query = supabase
-        .from('activity_logs')
-        .select('*', {
-          count: 'exact',
-        })
-        .eq('user_id', user.value.id)
-        .order('created_at', { ascending: false })
-        .range((safePage - 1) * limit, safePage * limit - 1)
-
-      if (entityType) {
-        if (Array.isArray(entityType)) {
-          query = query.in('entity_type', entityType)
-        } else {
-          query = query.eq('entity_type', entityType)
-        }
-      }
-      if (action) {
-        if (Array.isArray(action)) {
-          query = query.in('action', action)
-        } else {
-          query = query.eq('action', action)
-        }
-      }
-      if (startDate) {
-        query = query.gte('created_at', startDate)
-      }
-      if (endDate) {
-        query = query.lte('created_at', endDate)
-      }
-
-      const { data, count } = await query
-
-      return {
-        logs: data || [],
-        total: count || 0,
-      }
+      const result = await queryActivityLogs(user.value.id, currentFilters.value)
+      if (result.error) throw result.error
+      return result.data || { logs: [], total: 0 }
     },
     enabled: computed(() => !!user.value),
-    staleTime: 5_000, // 5s — activity log refreshes frequently but avoid refetch on every mount
+    staleTime: 5_000,
   })
 
   // Append logic - we keep existing logs if page > 1, otherwise we replace
-  // This approach is a bit tricky with useQuery directly, so we manage a local ref
-  // synced with query results for pagination support.
   const accumulatedLogs = ref<ActivityLog[]>([])
 
   watch(
@@ -130,19 +80,18 @@ export const useActivityLog = () => {
   ) => {
     if (!user.value) return
 
-    // Fire-and-forget: failure to log shouldn't block user's primary action
+    // Fire-and-forget
     try {
-      await supabase.from('activity_logs').insert({
+      await logActivity({
         user_id: user.value.id,
         entity_type: entityType,
         entity_id: entityId ?? null,
         action,
-        metadata: (metadata ?? {}) as Json,
-      })
-      // invalidate cache silently so next fetch is up to date
+        metadata: metadata || {},
+      } as Database['public']['Tables']['activity_logs']['Insert'])
       queryClient.invalidateQueries({ queryKey: ['activity_logs'] })
     } catch {
-      // Silently ignore — activity logging is best-effort
+      // Silently ignore
     }
   }
 
@@ -153,21 +102,8 @@ export const useActivityLog = () => {
 
   const fetchRecent = async (limitCount = 5): Promise<ActivityLog[]> => {
     if (!user.value) return []
-
-    return queryClient.fetchQuery({
-      queryKey: ['activity_logs:recent', user.value.id, limitCount],
-      queryFn: async () => {
-        const { data } = await supabase
-          .from('activity_logs')
-          .select('*')
-          .eq('user_id', user.value!.id)
-          .order('created_at', { ascending: false })
-          .limit(limitCount)
-
-        return data || []
-      },
-      staleTime: 10_000,
-    })
+    const result = await queryActivityLogs(user.value.id, { limit: limitCount })
+    return result.data?.logs || []
   }
 
   return {

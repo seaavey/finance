@@ -1,10 +1,16 @@
-import { computed } from 'vue'
-import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-
+import { computed } from 'vue'
+import {
+  queryCategories,
+  createCategory as createCategoryService,
+  updateCategory as updateCategoryService,
+  deleteCategory as deleteCategoryService,
+  createDefaultCategories as seedDefaultsService,
+} from '@/services/category.service'
+import type { CategoryRow as Category } from '@/services/category.service'
 import type { Database } from '@/types'
 
-export type Category = Database['public']['Tables']['categories']['Row']
+export type { Category }
 
 const DEFAULT_CATEGORIES = {
   income: [
@@ -25,11 +31,10 @@ const DEFAULT_CATEGORIES = {
 }
 
 export const useCategories = () => {
+  const queryClient = useQueryClient()
   const { t } = useI18n()
   const { toast } = useToast()
   const activity = useActivityLog()
-  const supabase = useSupabase()
-  const queryClient = useQueryClient()
   const { user } = useAuth()
 
   const {
@@ -40,84 +45,77 @@ export const useCategories = () => {
     queryKey: ['categories', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) throw new Error('Not authenticated')
-      const { data, error } = await supabase
-        .from('categories')
-        .select('id, user_id, name, type, icon, color, created_at')
-        .eq('user_id', user.value.id)
-        .order('created_at', { ascending: true })
-      if (error) throw error
-      return data || []
+      const result = await queryCategories(user.value.id)
+      if (result.error) throw result.error
+      return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 300_000, // 5 min — categories almost never change
+    staleTime: 300_000,
   })
 
   const categories = computed(() => categoriesData.value || [])
 
   const seedDefaults = async (userId: string) => {
-    const entries = [
-      ...DEFAULT_CATEGORIES.income.map((c) => ({ ...c, type: 'income' as const, user_id: userId })),
-      ...DEFAULT_CATEGORIES.expense.map((c) => ({
-        ...c,
-        type: 'expense' as const,
-        user_id: userId,
-      })),
+    const defaults = [
+      ...DEFAULT_CATEGORIES.income.map((c) => ({ ...c, type: 'income' })),
+      ...DEFAULT_CATEGORIES.expense.map((c) => ({ ...c, type: 'expense' })),
     ]
-    const { error } = await supabase.from('categories').insert(entries)
-    if (!error) {
+    const result = await seedDefaultsService(userId, defaults)
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       await fetchCategories()
     }
+    return result
   }
 
-  const addCategory = async (category: Omit<Category, 'id' | 'user_id' | 'created_at'>) => {
-    if (!user.value) {
-      return
-    }
+  const addCategory = async (
+    category: Omit<Database['public']['Tables']['categories']['Insert'], 'user_id' | 'created_at'>,
+  ) => {
+    if (!user.value) return
 
-    const { data, error } = await supabase
-      .from('categories')
-      .insert({ ...category, user_id: user.value.id })
-      .select()
+    const result = await createCategoryService({
+      ...category,
+      user_id: user.value.id,
+    } as Database['public']['Tables']['categories']['Insert'])
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success(t('toast.category_added'))
-      activity.log('category', 'created', { name: category.name }, data?.[0]?.id)
+      if (result.data) activity.log('category', 'created', { name: category.name }, result.data.id)
     } else {
       toast.error(t('toast.category_add_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const updateCategory = async (
     id: string,
-    updates: Partial<Pick<Category, 'name' | 'icon' | 'color'>>,
+    updates: Database['public']['Tables']['categories']['Update'],
   ) => {
-    const { error } = await supabase.from('categories').update(updates).eq('id', id)
+    const result = await updateCategoryService(id, updates)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success(t('toast.category_updated'))
-      activity.log('category', 'updated', { name: updates.name }, id)
+      if (result.data) activity.log('category', 'updated', { name: result.data.name }, id)
     } else {
       toast.error(t('toast.category_update_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const deleteCategory = async (id: string) => {
     const deletedCategoryName = categories.value.find((c) => c.id === id)?.name || ''
-    const { error } = await supabase.from('categories').delete().eq('id', id)
+    const result = await deleteCategoryService(id)
 
-    if (!error) {
+    if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success(t('toast.category_deleted'))
       activity.log('category', 'deleted', { name: deletedCategoryName }, id)
     } else {
       toast.error(t('toast.category_delete_error'))
     }
-    return { error }
+    return { error: result.error }
   }
 
   const incomeCategories = computed(() => categories.value.filter((c) => c.type === 'income'))
