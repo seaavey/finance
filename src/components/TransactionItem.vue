@@ -30,7 +30,7 @@
     <div class="ml-3 shrink-0 text-right md:ml-0">
       <p
         class="font-semibold md:text-lg"
-        :class="transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'"
+        :class="transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'"
       >
         {{ transaction.type === 'income' ? '+' : '-' }}{{ formatted }}
       </p>

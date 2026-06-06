@@ -275,19 +275,19 @@
                   :src="partner.avatar_url"
                   :alt="partner.display_name || ''"
                 />
-                <AvatarFallback class="bg-emerald-500/10 text-xl font-black text-emerald-600">
+                <AvatarFallback class="bg-emerald-500/10 text-xl font-black text-emerald-600 dark:text-emerald-400">
                   {{ (partnerDisplayName || '?').charAt(0) }}
                 </AvatarFallback>
               </Avatar>
               <div class="min-w-0">
-                <p class="truncate text-xl font-black tracking-tight text-emerald-600 md:text-2xl">
+                <p class="truncate text-xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 md:text-2xl">
                   {{ partnerDisplayName }}
                 </p>
                 <div class="mt-1 flex items-center gap-2">
                   <div
                     class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                   />
-                  <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">
+                  <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70">
                     {{ $t('settings.connected_status') }}
                   </p>
                 </div>
@@ -303,15 +303,15 @@
             <div class="flex w-full items-center justify-between">
               <div class="flex items-center gap-4">
                 <div
-                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
+                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-transform duration-300 group-hover:scale-110"
                 >
                   <AppIcon name="hugeicons:unlink-01" :size="22" />
                 </div>
                 <div class="min-w-0 text-left">
-                  <p class="text-sm font-black text-rose-500 md:text-base">
+                  <p class="text-sm font-black text-rose-500 dark:text-rose-400 md:text-base">
                     {{ $t('settings.disconnect_title') }}
                   </p>
-                  <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60">
+                  <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60 dark:text-rose-400/60">
                     {{ $t('settings.disconnect_desc') }}
                   </p>
                 </div>
@@ -319,7 +319,7 @@
               <AppIcon
                 name="hugeicons:arrow-right-01"
                 :size="20"
-                class="shrink-0 text-rose-500/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-rose-500/60"
+                class="shrink-0 text-rose-500/30 dark:text-rose-400/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-rose-500/60 dark:group-hover:text-rose-400/60"
               />
             </div>
           </Button>
@@ -348,7 +348,7 @@
       <!-- DANGER ZONE -->
       <section>
         <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 text-rose-500/60"
+          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 text-rose-500/60 dark:text-rose-400/60"
         >
           {{ $t('settings.account') }}
         </h3>
@@ -363,7 +363,7 @@
             <div class="flex w-full items-center justify-between">
               <div class="flex items-center gap-4">
                 <div
-                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 transition-transform duration-300 group-hover:scale-110"
+                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-transform duration-300 group-hover:scale-110"
                 >
                   <AppIcon name="hugeicons:logout-01" :size="22" />
                 </div>

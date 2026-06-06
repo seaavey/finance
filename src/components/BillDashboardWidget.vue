@@ -24,8 +24,8 @@
           class="flex size-10 shrink-0 items-center justify-center rounded-xl"
           :class="
             isOverdue(bill.due_date)
-              ? 'bg-rose-500/10 text-rose-600'
-              : 'bg-amber-500/10 text-amber-600'
+              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
           "
         >
           <AppIcon name="hugeicons:calendar-03" :size="20" />

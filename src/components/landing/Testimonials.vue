@@ -113,15 +113,15 @@ const getColorClasses = (color: string | object) => {
   const colorStr = typeof color === 'string' ? color : rt(color as unknown as string)
   switch (colorStr) {
     case 'pink':
-      return 'bg-pink-500/15 text-pink-500'
+      return 'bg-pink-500/15 text-pink-500 dark:text-pink-400'
     case 'blue':
-      return 'bg-blue-500/15 text-blue-500'
+      return 'bg-blue-500/15 text-blue-500 dark:text-blue-400'
     case 'purple':
-      return 'bg-purple-500/15 text-purple-500'
+      return 'bg-purple-500/15 text-purple-500 dark:text-purple-400'
     case 'amber':
-      return 'bg-amber-500/15 text-amber-500'
+      return 'bg-amber-500/15 text-amber-500 dark:text-amber-400'
     case 'emerald':
-      return 'bg-emerald-500/15 text-emerald-500'
+      return 'bg-emerald-500/15 text-emerald-500 dark:text-emerald-400'
     default:
       return 'bg-primary/15 text-primary'
   }

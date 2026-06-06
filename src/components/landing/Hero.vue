@@ -88,7 +88,7 @@
       >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -96,7 +96,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -104,7 +104,7 @@
         >
         <span class="flex items-center gap-2 group cursor-default"
           ><div
-            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
+            class="rounded-lg p-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-sm"
           >
             <AppIcon name="hugeicons:checkmark-circle-02" :size="14" />
           </div>
@@ -126,9 +126,9 @@
           <!-- Browser-like Top bar -->
           <div class="flex items-center gap-3 border-b border-border/50 px-6 py-4 bg-muted/30">
             <div class="flex gap-2">
-              <div class="h-3 w-3 rounded-full bg-rose-500/40 border border-rose-500/20" />
-              <div class="h-3 w-3 rounded-full bg-amber-500/40 border border-amber-500/20" />
-              <div class="h-3 w-3 rounded-full bg-emerald-500/40 border border-emerald-500/20" />
+              <div class="h-3 w-3 rounded-full bg-rose-500/40 border border-rose-500/20 dark:bg-rose-500/60 dark:border-rose-500/40" />
+              <div class="h-3 w-3 rounded-full bg-amber-500/40 border border-amber-500/20 dark:bg-amber-500/60 dark:border-amber-500/40" />
+              <div class="h-3 w-3 rounded-full bg-emerald-500/40 border border-emerald-500/20 dark:bg-emerald-500/60 dark:border-emerald-500/40" />
             </div>
             <div class="flex-1 flex justify-center">
               <div
@@ -154,7 +154,7 @@
                 </p>
                 <p class="mt-2 text-3xl font-black tracking-tighter">Rp 12.450.000</p>
                 <div
-                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-700 uppercase tracking-widest"
+                  class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest"
                 >
                   <AppIcon name="hugeicons:arrow-up-01" :size="12" />
                   <span>{{ $t('landing.hero_preview.trend') }}</span>
@@ -170,7 +170,7 @@
                 >
                   {{ $t('landing.hero_preview.income') }}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
+                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400">
                   Rp 18.200.000
                 </p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-emerald-500/10">
@@ -189,7 +189,7 @@
                 >
                   {{ $t('landing.hero_preview.expense') }}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500">Rp 5.750.000</p>
+                <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500 dark:text-rose-400">Rp 5.750.000</p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-rose-500/10">
                   <div
                     class="h-full w-1/3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
@@ -283,7 +283,7 @@
         >
           <div class="flex items-center gap-4">
             <div
-              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 shadow-sm"
+              class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
             >
               <AppIcon name="hugeicons:wallet-01" :size="24" />
             </div>
@@ -291,7 +291,7 @@
               <p class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-widest">
                 {{ $t('landing.hero_preview.savings') }}
               </p>
-              <p class="text-2xl font-black tracking-tighter text-emerald-600">Rp 2.100.000</p>
+              <p class="text-2xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400">Rp 2.100.000</p>
             </div>
           </div>
         </div>
@@ -332,27 +332,27 @@ const previewTransactions = [
     title: 'landing.hero_preview.item_shopping',
     date: 'landing.hero_preview.today',
     amount: '-Rp 350rb',
-    color: 'text-orange-500',
+    color: 'text-orange-500 dark:text-orange-400',
     bg: 'bg-orange-500/10',
-    amountColor: 'text-red-600',
+    amountColor: 'text-red-600 dark:text-red-400',
   },
   {
     icon: 'hugeicons:money-receive-02',
     title: 'landing.hero_preview.item_salary',
     date: 'landing.hero_preview.days_ago_2',
     amount: '+Rp 15jt',
-    color: 'text-green-600',
+    color: 'text-green-600 dark:text-green-400',
     bg: 'bg-green-500/10',
-    amountColor: 'text-green-700',
+    amountColor: 'text-green-700 dark:text-green-400',
   },
   {
     icon: 'hugeicons:credit-card',
     title: 'landing.hero_preview.item_bill',
     date: 'landing.hero_preview.days_ago_3',
     amount: '-Rp 280rb',
-    color: 'text-blue-500',
+    color: 'text-blue-500 dark:text-blue-400',
     bg: 'bg-blue-500/10',
-    amountColor: 'text-red-600',
+    amountColor: 'text-red-600 dark:text-red-400',
   },
 ]
 </script>
