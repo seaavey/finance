@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '@/composables/useTransactions'
+
 
 defineProps<{
   recent: Transaction[]

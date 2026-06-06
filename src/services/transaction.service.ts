@@ -1,20 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, TransactionRow, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
 import { AppError } from '@/types/result'
-
-export type TransactionRow = Database['public']['Tables']['transactions']['Row']
-export type TransactionInsert = Database['public']['Tables']['transactions']['Insert']
-export type TransactionUpdate = Database['public']['Tables']['transactions']['Update']
-
-export interface TransactionFilters {
-  type?: 'income' | 'expense'
-  category_id?: string
-  search?: string
-  startDate?: string
-  endDate?: string
-  account_id?: string
-}
 
 export async function queryTransactions(
   userId: string,

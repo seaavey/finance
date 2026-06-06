@@ -512,8 +512,9 @@
 
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import type { Transaction } from '@/composables/useTransactions'
-import type { SplitItem } from '@/composables/useTransactions'
+import type { Transaction, TransactionFilters, SplitItem } from "@/types"
+
+
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
@@ -707,7 +708,7 @@ const splitEnabled = ref(false)
 const splitItems = ref<SplitItem[]>([])
 
 const splitTotal = computed(() =>
-  splitItems.value.reduce((sum, s) => sum + (Number(s.amount) || 0), 0),
+  splitItems.value.reduce((sum: number, s) => sum + (Number(s.amount) || 0), 0),
 )
 
 const splitTotalMismatch = computed(

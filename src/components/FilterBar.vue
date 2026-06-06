@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TransactionFilters } from '@/composables/useTransactions'
+
 
 const emit = defineEmits<{
   filter: [filters: TransactionFilters]

@@ -165,7 +165,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 import { cn } from '@/lib/utils'
-import type { Goal } from '@/composables/useGoals'
+
 
 const router = useRouter()
 const route = useRoute()

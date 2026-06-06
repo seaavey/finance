@@ -9,10 +9,8 @@ import {
   cancelInvitation as cancelInvitationService,
   disconnectPartner as disconnectPartnerService,
 } from '@/services/partner.service'
-import type { ProfileRow as PartnerProfile, CoupleInvitation } from '@/services/partner.service'
-import { useSupabase } from '@/lib/supabase'
 
-export type { PartnerProfile, CoupleInvitation }
+import { useSupabase } from '@/lib/supabase'
 
 export const usePartner = () => {
   const queryClient = useQueryClient()
@@ -62,7 +60,7 @@ export const usePartner = () => {
         .select('*')
         .eq('sender_id', user.value.id)
         .order('created_at', { ascending: false })
-      return (data as CoupleInvitation[]) || []
+      return (data as any[]) || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 60_000,

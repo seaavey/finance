@@ -4,7 +4,7 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { BudgetWithProgress } from '@/composables/useBudgets'
+
 
 const router = useRouter()
 const route = useRoute()

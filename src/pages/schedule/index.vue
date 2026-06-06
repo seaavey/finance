@@ -297,7 +297,7 @@ import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { Bill } from '@/composables/useBills'
+
 import type { RecurringTransaction } from '@/composables/useRecurring'
 
 defineOptions({

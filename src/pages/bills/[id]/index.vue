@@ -272,7 +272,7 @@ import {
   NativeSelectOption,
 } from '@/components/ui/native-select'
 import { formatDateSafe } from '@/lib/utils'
-import type { Bill } from '@/composables/useBills'
+
 
 const router = useRouter()
 const route = useRoute()

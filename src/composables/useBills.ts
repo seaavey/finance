@@ -7,10 +7,7 @@ import {
   deleteBill as deleteBillService,
   markBillAsPaid as markAsPaidService,
 } from '@/services/bill.service'
-import type { BillRow as Bill } from '@/services/bill.service'
-import type { Database } from '@/types'
-
-export type { Bill }
+import type { Bill, Database } from '@/types'
 
 export const useBills = () => {
   const queryClient = useQueryClient()
@@ -46,7 +43,7 @@ export const useBills = () => {
       ...bill,
       user_id: user.value.id,
       is_paid: false,
-    } as Database['public']['Tables']['bills']['Insert'])
+    } as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['bills'] })

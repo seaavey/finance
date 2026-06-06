@@ -332,7 +332,7 @@ defineOptions({
 import { ref, computed } from 'vue'
 import { Button } from '@/components/ui/button'
 import { formatDateSafe } from '@/lib/utils'
-import type { EntityType, ActionType } from '@/composables/useActivityLog'
+
 
 const { logs, loading, total, fetchAll } = useActivityLog()
 const { t, locale } = useI18n()

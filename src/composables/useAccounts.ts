@@ -7,10 +7,7 @@ import {
   deleteAccount as deleteAccountService,
   queryAccountBalances as queryAccountBalancesService,
 } from '@/services/account.service'
-import type { AccountRow as Account, AccountWithBalance } from '@/services/account.service'
-import type { Database } from '@/types'
 
-export type { Account, AccountWithBalance }
 
 export const useAccounts = () => {
   const queryClient = useQueryClient()
@@ -37,16 +34,14 @@ export const useAccounts = () => {
 
   const accounts = computed(() => accountsData.value || [])
 
-  const addAccount = async (
-    account: Omit<Database['public']['Tables']['accounts']['Insert'], 'user_id' | 'created_at'>,
-  ) => {
+  const addAccount = async (account: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     if (!user.value) {
       return { error: new Error('Not authenticated') }
     }
     const result = await createAccountService({
       ...account,
       user_id: user.value.id,
-    } as Database['public']['Tables']['accounts']['Insert'])
+    } as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
@@ -58,11 +53,8 @@ export const useAccounts = () => {
     return { error: result.error }
   }
 
-  const updateAccount = async (
-    id: string,
-    updates: Database['public']['Tables']['accounts']['Update'],
-  ) => {
-    const result = await updateAccountService(id, updates)
+  const updateAccount = async (id: string, updates: Partial<Account>) => {
+    const result = await updateAccountService(id, updates as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })

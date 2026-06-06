@@ -1,15 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
 import { AppError } from '@/types/result'
-
-export type AccountRow = Database['public']['Tables']['accounts']['Row']
-export type AccountInsert = Database['public']['Tables']['accounts']['Insert']
-export type AccountUpdate = Database['public']['Tables']['accounts']['Update']
-
-export interface AccountWithBalance extends AccountRow {
-  balance: number
-}
 
 export async function queryAccounts(userId: string): Promise<Result<AccountRow[]>> {
   const supabase = useSupabase()

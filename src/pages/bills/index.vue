@@ -134,7 +134,7 @@ defineOptions({
   name: 'PagesBillsIndex',
 })
 import { Button } from '@/components/ui/button'
-import type { Bill } from '@/composables/useBills'
+
 
 const router = useRouter()
 const { bills, fetchBills, markAsPaid, deleteBill, loading } = useBills()

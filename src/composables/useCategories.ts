@@ -7,28 +7,7 @@ import {
   deleteCategory as deleteCategoryService,
   createDefaultCategories as seedDefaultsService,
 } from '@/services/category.service'
-import type { CategoryRow as Category } from '@/services/category.service'
-import type { Database } from '@/types'
-
-export type { Category }
-
-const DEFAULT_CATEGORIES = {
-  income: [
-    { name: 'Gaji', icon: 'hugeicons:wallet-01', color: '#22c55e' },
-    { name: 'Freelance', icon: 'hugeicons:laptop', color: '#3b82f6' },
-    { name: 'Investasi', icon: 'hugeicons:chart', color: '#8b5cf6' },
-    { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280' },
-  ],
-  expense: [
-    { name: 'Makanan', icon: 'hugeicons:restaurant-01', color: '#f97316' },
-    { name: 'Transport', icon: 'hugeicons:car-01', color: '#06b6d4' },
-    { name: 'Belanja', icon: 'hugeicons:shopping-bag-01', color: '#ec4899' },
-    { name: 'Tagihan', icon: 'hugeicons:receipt-text', color: '#ef4444' },
-    { name: 'Hiburan', icon: 'hugeicons:game-controller-01', color: '#a855f7' },
-    { name: 'Kesehatan', icon: 'hugeicons:health', color: '#14b8a6' },
-    { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280' },
-  ],
-}
+import type { Category, CategoryInsert, CategoryUpdate } from '@/types'
 
 export const useCategories = () => {
   const queryClient = useQueryClient()
@@ -57,8 +36,17 @@ export const useCategories = () => {
 
   const seedDefaults = async (userId: string) => {
     const defaults = [
-      ...DEFAULT_CATEGORIES.income.map((c) => ({ ...c, type: 'income' })),
-      ...DEFAULT_CATEGORIES.expense.map((c) => ({ ...c, type: 'expense' })),
+      { name: 'Gaji', icon: 'hugeicons:wallet-01', color: '#22c55e', type: 'income' },
+      { name: 'Freelance', icon: 'hugeicons:laptop', color: '#3b82f6', type: 'income' },
+      { name: 'Investasi', icon: 'hugeicons:chart', color: '#8b5cf6', type: 'income' },
+      { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280', type: 'income' },
+      { name: 'Makanan', icon: 'hugeicons:restaurant-01', color: '#f97316', type: 'expense' },
+      { name: 'Transport', icon: 'hugeicons:car-01', color: '#06b6d4', type: 'expense' },
+      { name: 'Belanja', icon: 'hugeicons:shopping-bag-01', color: '#ec4899', type: 'expense' },
+      { name: 'Tagihan', icon: 'hugeicons:receipt-text', color: '#ef4444', type: 'expense' },
+      { name: 'Hiburan', icon: 'hugeicons:game-controller-01', color: '#a855f7', type: 'expense' },
+      { name: 'Kesehatan', icon: 'hugeicons:health', color: '#14b8a6', type: 'expense' },
+      { name: 'Lainnya', icon: 'hugeicons:more-01', color: '#6b7280', type: 'expense' },
     ]
     const result = await seedDefaultsService(userId, defaults)
     if (!result.error) {
@@ -68,30 +56,25 @@ export const useCategories = () => {
     return result
   }
 
-  const addCategory = async (
-    category: Omit<Database['public']['Tables']['categories']['Insert'], 'user_id' | 'created_at'>,
-  ) => {
+  const addCategory = async (category: Omit<CategoryInsert, 'user_id' | 'created_at'>) => {
     if (!user.value) return
 
     const result = await createCategoryService({
       ...category,
       user_id: user.value.id,
-    } as Database['public']['Tables']['categories']['Insert'])
+    } as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success(t('toast.category_added'))
-      if (result.data) activity.log('category', 'created', { name: category.name }, result.data.id)
+      if (result.data) activity.log('category', 'created', { name: category.name || '' }, result.data.id)
     } else {
       toast.error(t('toast.category_add_error'))
     }
     return { error: result.error }
   }
 
-  const updateCategory = async (
-    id: string,
-    updates: Database['public']['Tables']['categories']['Update'],
-  ) => {
+  const updateCategory = async (id: string, updates: CategoryUpdate) => {
     const result = await updateCategoryService(id, updates)
 
     if (!result.error) {

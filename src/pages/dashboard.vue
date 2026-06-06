@@ -478,8 +478,8 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button'
 import { formatDateSafe } from '@/lib/utils'
-import type { BudgetWithProgress } from '@/composables/useBudgets'
-import type { AccountWithBalance } from '@/composables/useAccounts'
+
+
 import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
 
 const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'))

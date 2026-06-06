@@ -8,23 +8,10 @@ import {
   queryBudgetWithProgress as queryBudgetWithProgressService,
   calculateProgress,
 } from '@/services/budget.service'
-import type { BudgetWithProgress } from '@/services/budget.service'
-import type { Database } from '@/types'
+
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
-
-/** Maps to Database['public']['Tables']['budgets']['Row'] */
-export type Budget = Database['public']['Tables']['budgets']['Row']
-
-export type { BudgetWithProgress }
-
-export interface BudgetInput {
-  category_id: string
-  month: string
-  amount: number
-  name?: string | null
-}
 
 export const useBudgets = () => {
   const queryClient = useQueryClient()
@@ -145,7 +132,7 @@ export const useBudgets = () => {
       return { error: new Error('Not authenticated') }
     }
 
-    const result = await updateBudgetService(id, data)
+    const result = await updateBudgetService(id, data as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })

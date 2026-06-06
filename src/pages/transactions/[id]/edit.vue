@@ -144,7 +144,7 @@ defineOptions({
 })
 import { onBeforeRouteLeave } from 'vue-router'
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
-import type { Transaction } from '@/composables/useTransactions'
+
 import TransactionForm from '@/components/TransactionForm.vue'
 
 const router = useRouter()

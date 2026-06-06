@@ -512,7 +512,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import { useSupabase } from '@/lib/supabase'
-import type { CoupleInvitation } from '@/composables/usePartner'
+
 
 const { toast } = useToast()
 const supabase = useSupabase()

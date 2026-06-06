@@ -2,7 +2,7 @@
 defineOptions({
   name: 'PagesAccountsDetailIndex',
 })
-import type { AccountWithBalance } from '@/composables/useAccounts'
+
 
 const router = useRouter()
 const route = useRoute()

@@ -86,7 +86,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Category } from '@/composables/useCategories'
+
 
 const router = useRouter()
 const route = useRoute()

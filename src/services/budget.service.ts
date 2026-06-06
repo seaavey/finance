@@ -1,17 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, BudgetWithProgress, BudgetRow, BudgetInsert, BudgetUpdate } from '@/types'
 import { AppError } from '@/types/result'
-
-type BudgetRow = Database['public']['Tables']['budgets']['Row']
-
-export interface BudgetWithProgress extends BudgetRow {
-  category_name: string
-  category_color: string
-  category_icon: string
-  spent: number
-  rollover: number
-}
 
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
@@ -46,7 +35,7 @@ export async function createBudget(
 
 export async function updateBudget(
   id: string,
-  updates: { amount?: number; name?: string | null },
+  updates: BudgetUpdate,
 ): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
@@ -94,10 +83,7 @@ export async function queryBudgetWithProgress(
     .in('id', categoryIds)
 
   const categoryMap = new Map(
-    (categories || []).map((c) => [
-      c.id,
-      { name: c.name, color: c.color || '#6b7280', icon: c.icon || '' },
-    ]),
+    (categories || []).map((c) => [c.id, { name: c.name, color: c.color, icon: c.icon }]),
   )
 
   // 3. Calculate spending for the month

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
-import { useTransactions, type Transaction } from '@/composables/useTransactions'
+import { useTransactions } from '@/composables/useTransactions'
+import type { Transaction } from '@/types'
 
 const { searchTransactions } = useTransactions()
 const { formatCurrency } = useCurrency()

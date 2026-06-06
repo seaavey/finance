@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Goal } from '@/composables/useGoals'
+
 
 const props = defineProps<{
   goal: Goal

@@ -1,11 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, BillRow, BillInsert, BillUpdate } from '@/types'
 import { AppError } from '@/types/result'
-
-export type BillRow = Database['public']['Tables']['bills']['Row']
-export type BillInsert = Database['public']['Tables']['bills']['Insert']
-export type BillUpdate = Database['public']['Tables']['bills']['Update']
 
 export async function queryBills(userId: string): Promise<Result<BillRow[]>> {
   const supabase = useSupabase()

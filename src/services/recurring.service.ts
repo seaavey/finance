@@ -1,11 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, RecurringRow, RecurringInsert, RecurringUpdate } from '@/types'
 import { AppError } from '@/types/result'
-
-export type RecurringRow = Database['public']['Tables']['recurring_transactions']['Row']
-export type RecurringInsert = Database['public']['Tables']['recurring_transactions']['Insert']
-export type RecurringUpdate = Database['public']['Tables']['recurring_transactions']['Update']
 
 export async function queryRecurring(userId: string): Promise<Result<RecurringRow[]>> {
   const supabase = useSupabase()

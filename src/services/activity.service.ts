@@ -1,21 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database, SafeJson } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, ActivityLogRow, ActivityLogInsert, ActivityLogFilters } from '@/types'
 import { AppError } from '@/types/result'
-
-export type ActivityLogRow = Omit<Database['public']['Tables']['activity_logs']['Row'], 'metadata'> & {
-  metadata: Record<string, SafeJson | undefined>
-}
-export type ActivityLogInsert = Database['public']['Tables']['activity_logs']['Insert']
-
-export interface ActivityLogFilters {
-  page?: number
-  limit?: number
-  entityType?: string | string[]
-  action?: string
-  startDate?: string
-  endDate?: string
-}
 
 export async function queryActivityLogs(
   userId: string,
@@ -39,7 +24,13 @@ export async function queryActivityLogs(
       query = query.eq('entity_type', entityType)
     }
   }
-  if (action) query = query.eq('action', action)
+  if (action) {
+    if (Array.isArray(action)) {
+      query = query.in('action', action)
+    } else {
+      query = query.eq('action', action)
+    }
+  }
   if (startDate) query = query.gte('created_at', startDate)
   if (endDate) query = query.lte('created_at', endDate)
 

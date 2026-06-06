@@ -456,7 +456,7 @@ import {
 import type { RowData, SortingState } from '@tanstack/vue-table'
 import type { DateRange } from 'reka-ui'
 import { getLocalTimeZone } from '@internationalized/date'
-import type { Transaction } from '@/composables/useTransactions'
+
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,

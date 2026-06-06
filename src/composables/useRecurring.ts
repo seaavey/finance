@@ -7,11 +7,9 @@ import {
   updateRecurring as updateRecurringService,
   deleteRecurring as deleteRecurringService,
 } from '@/services/recurring.service'
-import type { RecurringRow as RecurringTransaction } from '@/services/recurring.service'
 import { createTransaction as createTxService } from '@/services/transaction.service'
-import type { TransactionInsert } from '@/services/transaction.service'
 import { formatDateSafe } from '@/lib/utils'
-import type { Database } from '@/types'
+import type { Database, RecurringTransaction, TransactionInsert } from '@/types'
 
 export type { RecurringTransaction }
 

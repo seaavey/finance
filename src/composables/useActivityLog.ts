@@ -1,35 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { queryActivityLogs, logActivity } from '@/services/activity.service'
-import type { ActivityLogRow as ActivityLog, ActivityLogFilters } from '@/services/activity.service'
-import type { Database } from '@/types'
 
-export type EntityType =
-  | 'transaction'
-  | 'category'
-  | 'budget'
-  | 'goal'
-  | 'bill'
-  | 'account'
-  | 'recurring'
-  | 'todo'
-  | 'partner'
-  | 'auth'
-
-export type ActionType =
-  | 'created'
-  | 'updated'
-  | 'deleted'
-  | 'bulk_updated'
-  | 'bulk_deleted'
-  | 'login'
-  | 'logout'
-  | 'connected'
-  | 'disconnected'
-  | 'alert_warning'
-  | 'alert_exceeded'
-
-export type { ActivityLog, ActivityLogFilters }
 
 export const useActivityLog = () => {
   const queryClient = useQueryClient()
@@ -87,8 +59,8 @@ export const useActivityLog = () => {
         entity_type: entityType,
         entity_id: entityId ?? null,
         action,
-        metadata: metadata || {},
-      } as Database['public']['Tables']['activity_logs']['Insert'])
+        metadata: (metadata || {}) as any,
+      })
       queryClient.invalidateQueries({ queryKey: ['activity_logs'] })
     } catch {
       // Silently ignore

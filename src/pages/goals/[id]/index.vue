@@ -202,7 +202,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
-import type { Goal } from '@/composables/useGoals'
+
 
 const router = useRouter()
 const route = useRoute()

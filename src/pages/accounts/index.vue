@@ -4,7 +4,7 @@ defineOptions({
 })
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { AccountWithBalance } from '@/composables/useAccounts'
+
 
 const router = useRouter()
 useI18n()

@@ -1,11 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, GoalRow, GoalInsert, GoalUpdate } from '@/types'
 import { AppError } from '@/types/result'
-
-export type GoalRow = Database['public']['Tables']['goals']['Row']
-export type GoalInsert = Database['public']['Tables']['goals']['Insert']
-export type GoalUpdate = Database['public']['Tables']['goals']['Update']
 
 export async function queryGoals(userId: string): Promise<Result<GoalRow[]>> {
   const supabase = useSupabase()
@@ -52,8 +47,6 @@ export async function deleteGoal(id: string): Promise<Result<null>> {
 }
 
 export async function addGoalFunds(goalId: string, amount: number): Promise<Result<GoalRow>> {
-  const supabase = useSupabase()
-
   const { data: goal, error: fetchError } = await getGoal(goalId)
   if (fetchError || !goal) return { data: null, error: fetchError || new AppError('Goal not found', 'NOT_FOUND') }
 

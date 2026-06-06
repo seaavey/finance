@@ -9,10 +9,7 @@ import {
   uploadGoalImage as uploadImageService,
   deleteGoalImage as deleteImageService,
 } from '@/services/goal.service'
-import type { GoalRow as Goal } from '@/services/goal.service'
-import type { Database } from '@/types'
-
-export type { Goal }
+import type { Goal, GoalInsert, GoalUpdate } from '@/types'
 
 export const useGoals = () => {
   const { t } = useI18n()
@@ -45,16 +42,14 @@ export const useGoals = () => {
     return result.data || []
   }
 
-  const addGoal = async (
-    goal: Omit<Database['public']['Tables']['goals']['Insert'], 'user_id' | 'created_at' | 'current_amount'>,
-  ) => {
+  const addGoal = async (goal: Omit<GoalInsert, 'user_id' | 'created_at' | 'current_amount'>) => {
     if (!user.value) return { error: { message: 'Not authenticated' } }
 
     const result = await createGoalService({
       ...goal,
       user_id: user.value.id,
       current_amount: 0,
-    } as Database['public']['Tables']['goals']['Insert'])
+    } as any)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })
@@ -63,7 +58,7 @@ export const useGoals = () => {
         activity.log(
           'goal',
           'created',
-          { name: goal.name || '', target_amount: goal.target_amount },
+          { name: goal.name || '', target_amount: goal.target_amount || 0 },
           result.data.id,
         )
       }
@@ -73,10 +68,7 @@ export const useGoals = () => {
     return { error: result.error }
   }
 
-  const updateGoal = async (
-    id: string,
-    updates: Database['public']['Tables']['goals']['Update'],
-  ) => {
+  const updateGoal = async (id: string, updates: GoalUpdate) => {
     const goalName = goals.value.find((g) => g.id === id)?.name || ''
     const result = await updateGoalService(id, updates)
 

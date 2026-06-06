@@ -152,7 +152,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sortable } from 'sortablejs-vue3'
-import type { Category } from '@/composables/useCategories'
+
 
 const router = useRouter()
 const { t, locale } = useI18n()

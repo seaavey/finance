@@ -1,3 +1,4 @@
+import type { Database } from './database'
 export type { Database, Json } from './database'
 export type { Result } from './result'
 export { AppError } from './result'
@@ -10,3 +11,144 @@ export type SafeJson =
   | null
   | { [key: string]: string | number | boolean | null | undefined }
   | Array<string | number | boolean | null>
+
+// --- SHARED DOMAIN TYPES ---
+
+// Account
+export type Account = Database['public']['Tables']['accounts']['Row']
+export type AccountRow = Account
+export type AccountInsert = Database['public']['Tables']['accounts']['Insert']
+export type AccountUpdate = Database['public']['Tables']['accounts']['Update']
+export interface AccountWithBalance extends Account {
+  balance: number
+}
+
+// Transaction
+export type TransactionRow = Database['public']['Tables']['transactions']['Row']
+export type TransactionInsert = Database['public']['Tables']['transactions']['Insert']
+export type TransactionUpdate = Database['public']['Tables']['transactions']['Update']
+
+export interface SplitItem {
+  category_id: string
+  amount: number
+  description?: string
+  [key: string]: SafeJson | undefined
+}
+
+export type Transaction = Omit<TransactionRow, 'splits'> & {
+  splits: SplitItem[] | null
+}
+
+export interface TransactionFilters {
+  type?: 'income' | 'expense'
+  category_id?: string
+  search?: string
+  dateFrom?: string
+  dateTo?: string
+  startDate?: string // for service compatibility
+  endDate?: string // for service compatibility
+  amountMin?: number
+  amountMax?: number
+  account_id?: string
+  currency?: string
+}
+
+// Budget
+export type Budget = Database['public']['Tables']['budgets']['Row']
+export type BudgetRow = Budget
+export type BudgetInsert = Database['public']['Tables']['budgets']['Insert']
+export type BudgetUpdate = Database['public']['Tables']['budgets']['Update']
+export interface BudgetWithProgress extends Budget {
+  category_name: string
+  category_color: string
+  category_icon: string
+  spent: number
+  rollover: number
+}
+
+// Category
+export type Category = Database['public']['Tables']['categories']['Row']
+export type CategoryRow = Category
+export type CategoryInsert = Database['public']['Tables']['categories']['Insert']
+export type CategoryUpdate = Database['public']['Tables']['categories']['Update']
+
+// Goal
+export type Goal = Database['public']['Tables']['goals']['Row']
+export type GoalRow = Goal
+export type GoalInsert = Database['public']['Tables']['goals']['Insert']
+export type GoalUpdate = Database['public']['Tables']['goals']['Update']
+
+// Bill
+export type Bill = Database['public']['Tables']['bills']['Row']
+export type BillRow = Bill
+export type BillInsert = Database['public']['Tables']['bills']['Insert']
+export type BillUpdate = Database['public']['Tables']['bills']['Update']
+
+// Recurring Transaction
+export type RecurringTransaction = Database['public']['Tables']['recurring_transactions']['Row']
+export type RecurringRow = RecurringTransaction
+export type RecurringInsert = Database['public']['Tables']['recurring_transactions']['Insert']
+export type RecurringUpdate = Database['public']['Tables']['recurring_transactions']['Update']
+
+// Profile & Partner
+export type Profile = Database['public']['Tables']['profiles']['Row']
+export type ProfileRow = Profile
+export type PartnerProfile = Profile
+export type Invitation = Database['public']['Tables']['couple_invitations']['Row']
+export type InvitationRow = Invitation
+export interface CoupleInvitation extends Invitation {
+  sender?: {
+    display_name: string | null
+    avatar_url: string | null
+  }
+}
+
+// Activity Log
+export type EntityType =
+  | 'transaction'
+  | 'category'
+  | 'budget'
+  | 'goal'
+  | 'bill'
+  | 'account'
+  | 'recurring'
+  | 'todo'
+  | 'partner'
+  | 'auth'
+
+export type ActionType =
+  | 'created'
+  | 'updated'
+  | 'deleted'
+  | 'bulk_updated'
+  | 'bulk_deleted'
+  | 'login'
+  | 'logout'
+  | 'connected'
+  | 'disconnected'
+  | 'alert_warning'
+  | 'alert_exceeded'
+
+export type ActivityLog = Omit<Database['public']['Tables']['activity_logs']['Row'], 'metadata'> & {
+  metadata: Record<string, SafeJson | undefined>
+}
+export type ActivityLogRow = ActivityLog
+export type ActivityLogInsert = Database['public']['Tables']['activity_logs']['Insert']
+
+export interface ActivityLogFilters {
+  page?: number
+  limit?: number
+  entityType?: EntityType | EntityType[] | string | string[]
+  action?: ActionType | ActionType[] | string
+  startDate?: string
+  endDate?: string
+}
+
+// Utilities
+export interface NetWorthData {
+  label: string
+  assets: number
+  debts: number
+  netWorth: number
+  date: string
+}

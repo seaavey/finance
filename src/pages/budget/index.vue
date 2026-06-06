@@ -5,7 +5,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDateSafe } from '@/lib/utils'
-import type { BudgetWithProgress } from '@/composables/useBudgets'
+
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -35,9 +35,9 @@ const budgetList = computed(() => {
 })
 
 const totals = computed(() => {
-  const totalLimit = budgetList.value.reduce((s, b) => s + b.amount, 0)
-  const totalRollover = budgetList.value.reduce((s, b) => s + b.rollover, 0)
-  const totalSpent = budgetList.value.reduce((s, b) => s + b.spent, 0)
+  const totalLimit = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.amount, 0)
+  const totalRollover = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.rollover, 0)
+  const totalSpent = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.spent, 0)
   const effectiveLimit = totalLimit + totalRollover
   return {
     totalLimit,

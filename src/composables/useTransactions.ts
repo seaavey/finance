@@ -1,31 +1,18 @@
-import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { queryTransactions, getTransaction as getTxService, createTransaction as createTxService, updateTransaction as updateTxService, deleteTransaction as deleteTxService, bulkUpdateTransactions as bulkUpdateTxService, bulkDeleteTransactions as bulkDeleteTxService, searchTransactions as searchTxService, uploadTransactionImage as uploadImageService, deleteTransactionImage as deleteImageService, type TransactionInsert } from '@/services/transaction.service'
-import type { TransactionFilters as ServiceFilters } from '@/services/transaction.service'
-import type { Database, SafeJson } from '@/types'
-
-export interface SplitItem {
-  category_id: string
-  amount: number
-  description?: string
-  [key: string]: SafeJson | undefined
-}
-
-export type Transaction = Omit<Database['public']['Tables']['transactions']['Row'], 'splits'> & {
-  splits: SplitItem[] | null
-}
-
-export interface TransactionFilters {
-  type?: 'income' | 'expense'
-  category_id?: string
-  search?: string
-  dateFrom?: string
-  dateTo?: string
-  amountMin?: number
-  amountMax?: number
-  account_id?: string
-  currency?: string
-}
+import { computed, ref } from 'vue'
+import {
+  queryTransactions,
+  getTransaction as getTxService,
+  createTransaction as createTxService,
+  updateTransaction as updateTxService,
+  deleteTransaction as deleteTxService,
+  bulkUpdateTransactions as bulkUpdateTxService,
+  bulkDeleteTransactions as bulkDeleteTxService,
+  searchTransactions as searchTxService,
+  uploadTransactionImage as uploadImageService,
+  deleteTransactionImage as deleteImageService,
+} from '@/services/transaction.service'
+import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
 
 export const useTransactions = () => {
   const { t } = useI18n()
@@ -53,16 +40,7 @@ export const useTransactions = () => {
     queryFn: async () => {
       if (!user.value) return []
 
-      const filters: ServiceFilters = {
-        type: currentFilters.value?.type,
-        category_id: currentFilters.value?.category_id,
-        search: currentFilters.value?.search,
-        startDate: currentFilters.value?.dateFrom,
-        endDate: currentFilters.value?.dateTo,
-        account_id: currentFilters.value?.account_id,
-      }
-
-      const result = await queryTransactions(user.value.id, filters, currentPage.value, pageSize.value)
+      const result = await queryTransactions(user.value.id, currentFilters.value || {}, currentPage.value, pageSize.value)
       if (result.error) throw result.error
 
       totalCount.value = result.data?.count || 0
@@ -98,7 +76,7 @@ export const useTransactions = () => {
   }
 
   const addTransaction = async (
-    tx: Omit<Database['public']['Tables']['transactions']['Insert'], 'user_id' | 'created_at'>,
+    tx: Omit<TransactionInsert, 'user_id' | 'created_at'>,
   ) => {
     if (!user.value) return { error: { message: 'Not authenticated' } }
 
@@ -127,7 +105,7 @@ export const useTransactions = () => {
 
   const updateTransaction = async (
     id: string,
-    updates: Database['public']['Tables']['transactions']['Update'],
+    updates: TransactionUpdate,
   ) => {
     const result = await updateTxService(id, updates)
 
@@ -164,7 +142,7 @@ export const useTransactions = () => {
 
   const bulkUpdateTransactions = async (
     ids: string[],
-    updates: Database['public']['Tables']['transactions']['Update'],
+    updates: TransactionUpdate,
   ) => {
     if (ids.length === 0) return { error: null }
     const result = await bulkUpdateTxService(ids, updates)

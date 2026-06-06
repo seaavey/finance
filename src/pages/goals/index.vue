@@ -310,7 +310,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
-import type { Goal } from '@/composables/useGoals'
+
 
 const router = useRouter()
 const { t } = useI18n()
@@ -338,7 +338,7 @@ const allGoals = computed(() => {
 
 const completedCount = computed(
   () =>
-    allGoals.value.filter((g) => {
+    allGoals.value.filter((g: Goal) => {
       const target = Number(g.target_amount)
       const current = Number(g.current_amount)
       return target > 0 && current >= target
@@ -346,15 +346,15 @@ const completedCount = computed(
 )
 
 const totalTarget = computed(() =>
-  allGoals.value.reduce((sum, g) => sum + Number(g.target_amount), 0),
+  allGoals.value.reduce((sum: number, g: Goal) => sum + Number(g.target_amount), 0),
 )
 const totalSaved = computed(() =>
-  allGoals.value.reduce((sum, g) => sum + Number(g.current_amount), 0),
+  allGoals.value.reduce((sum: number, g: Goal) => sum + Number(g.current_amount), 0),
 )
 
 // Pick first goal with an image as the featured hero card
 const featuredGoalId = computed(() => {
-  return allGoals.value.find((g) => !!g.image_url)?.id || null
+  return allGoals.value.find((g: Goal) => !!g.image_url)?.id || null
 })
 
 const partnerInitial = computed(() => partner.value?.display_name?.charAt(0)?.toUpperCase() || 'P')

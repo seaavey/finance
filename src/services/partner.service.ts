@@ -1,17 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database } from '@/types'
-import type { Result } from '@/types/result'
+import type { Result, ProfileRow, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
-
-export type ProfileRow = Database['public']['Tables']['profiles']['Row']
-export type InvitationRow = Database['public']['Tables']['couple_invitations']['Row']
-
-export interface CoupleInvitation extends InvitationRow {
-  sender?: {
-    display_name: string | null
-    avatar_url: string | null
-  }
-}
 
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
