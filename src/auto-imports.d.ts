@@ -112,32 +112,11 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { Account, AccountWithBalance } from './composables/useAccounts'
-  import('./composables/useAccounts')
-  // @ts-ignore
-  export type { EntityType, ActionType, ActivityLog, ActivityLogFilters } from './composables/useActivityLog'
-  import('./composables/useActivityLog')
-  // @ts-ignore
-  export type { Bill } from './composables/useBills'
-  import('./composables/useBills')
-  // @ts-ignore
-  export type { Budget, BudgetWithProgress, BudgetInput } from './composables/useBudgets'
-  import('./composables/useBudgets')
-  // @ts-ignore
   export type { CameraPermissionState, UseCameraReturn } from './composables/useCamera'
   import('./composables/useCamera')
   // @ts-ignore
-  export type { Category } from './composables/useCategories'
-  import('./composables/useCategories')
-  // @ts-ignore
-  export type { Goal } from './composables/useGoals'
-  import('./composables/useGoals')
-  // @ts-ignore
   export type { NetWorthData } from './composables/useNetWorth'
   import('./composables/useNetWorth')
-  // @ts-ignore
-  export type { CoupleInvitation, PartnerProfile } from './composables/usePartner'
-  import('./composables/usePartner')
   // @ts-ignore
   export type { UseReceiptsReturn } from './composables/useReceipts'
   import('./composables/useReceipts')
@@ -147,9 +126,6 @@ declare global {
   // @ts-ignore
   export type { Reminder } from './composables/useReminders'
   import('./composables/useReminders')
-  // @ts-ignore
-  export type { SplitItem, Transaction, TransactionFilters } from './composables/useTransactions'
-  import('./composables/useTransactions')
 }
 
 // for vue template auto import
