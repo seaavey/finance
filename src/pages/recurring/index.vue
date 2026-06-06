@@ -5,7 +5,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountWithBalance, Budget, BudgetWithProgress, Category, Goal, RecurringTransaction, ActivityLog, ActivityLogFilters, EntityType, ActionType, PartnerProfile, CoupleInvitation, Invitation } from '@/types'
+import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from '@/types'
 import { formatDateSafe } from '@/lib/utils'
 import { useBudgets } from '@/composables/useBudgets'
 

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-
+import type { Transaction } from '@/types'
 
 defineProps<{
   transactions: Transaction[]

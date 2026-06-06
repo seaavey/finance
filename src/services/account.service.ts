@@ -1,5 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Result, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
+import type { Account, Result, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryAccounts(userId: string): Promise<Result<Account[]>> {

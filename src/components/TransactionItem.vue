@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-
+import type { Transaction } from '@/types'
 
 const props = defineProps<{
   transaction: Transaction

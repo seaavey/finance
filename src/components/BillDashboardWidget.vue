@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-
+import type { Bill } from '@/types'
 
 const { toast } = useToast()
 const { t } = useI18n()

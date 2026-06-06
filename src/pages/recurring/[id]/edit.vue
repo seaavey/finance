@@ -16,7 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 import { cn } from '@/lib/utils'
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountWithBalance, Budget, BudgetWithProgress, Category, Goal, RecurringTransaction, ActivityLog, ActivityLogFilters, EntityType, ActionType, PartnerProfile, CoupleInvitation, Invitation } from '@/types'
+import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
