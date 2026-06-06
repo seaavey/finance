@@ -59,7 +59,7 @@ const goToDetail = (account: AccountWithBalance) => {
 const totalBalance = computed(() => {
   let total = 0
   for (const a of accountList.value) {
-    const converted = convertTo(a.balance, a.currency, defaultCurrency.value)
+    const converted = convertTo(a.balance, a.currency || defaultCurrency.value, defaultCurrency.value)
     total += converted ?? a.balance
   }
   return total
@@ -141,13 +141,13 @@ const totalBalance = computed(() => {
           <div class="flex min-w-0 flex-1 items-center gap-3">
             <div
               class="flex size-10 shrink-0 items-center justify-center rounded-2xl"
-              :style="{ backgroundColor: account.color + '20' }"
+              :style="{ backgroundColor: (account.color || '#6b7280') + '20' }"
             >
               <AccountIcon
-                :icon="account.icon"
+                :icon="account.icon || ''"
                 :type="account.type"
                 :size="20"
-                :color="account.color"
+                :color="account.color || undefined"
               />
             </div>
             <div class="min-w-0">
@@ -156,7 +156,7 @@ const totalBalance = computed(() => {
             </div>
           </div>
           <div class="ml-3 shrink-0 text-right">
-            <p class="font-semibold">{{ formatCurrency(account.balance, account.currency) }}</p>
+            <p class="font-semibold">{{ formatCurrency(account.balance, account.currency || undefined) }}</p>
           </div>
           <div
             class="ml-2 flex shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity"

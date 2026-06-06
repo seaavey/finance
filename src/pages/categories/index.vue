@@ -92,11 +92,11 @@
             <div class="flex items-center gap-4">
               <div
                 class="drag-handle flex size-12 cursor-grab items-center justify-center rounded-2xl active:cursor-grabbing transition-transform group-hover:scale-105"
-                :style="{ backgroundColor: cat.color + '15' }"
+                :style="{ backgroundColor: (cat.color || '#6b7280') + '15' }"
               >
                 <div
                   class="size-3.5 rounded-full shadow-sm"
-                  :style="{ backgroundColor: cat.color }"
+                  :style="{ backgroundColor: cat.color || undefined }"
                 />
               </div>
               <div>

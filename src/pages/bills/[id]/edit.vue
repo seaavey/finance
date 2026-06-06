@@ -206,7 +206,7 @@ onMounted(async () => {
     form.title = bill.title
     form.amount = bill.amount
     form.due_date = bill.due_date
-    form.recurrence = bill.recurrence
+    form.recurrence = bill.recurrence as 'none' | 'weekly' | 'monthly'
   }
   loading.value = false
 })

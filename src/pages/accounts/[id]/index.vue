@@ -79,10 +79,10 @@ onMounted(async () => {
               :style="{ backgroundColor: accountDetail.color + '20' }"
             >
               <AccountIcon
-                :icon="accountDetail.icon"
+                :icon="accountDetail.icon || ''"
                 :type="accountDetail.type"
                 :size="28"
-                :color="accountDetail.color"
+                :color="accountDetail.color || undefined"
               />
             </div>
             <div>
@@ -110,7 +110,7 @@ onMounted(async () => {
             {{ $t('dashboard.balance') }}
           </p>
           <p class="text-5xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(accountDetail.balance, accountDetail.currency) }}
+            {{ formatCurrency(accountDetail.balance, accountDetail.currency || undefined) }}
           </p>
         </div>
       </div>
@@ -122,7 +122,7 @@ onMounted(async () => {
             {{ $t('accounts.initial_balance') }}
           </p>
           <p class="mt-2 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(accountDetail.initial_balance, accountDetail.currency) }}
+            {{ formatCurrency(accountDetail.initial_balance || 0, accountDetail.currency || undefined) }}
           </p>
         </div>
         <div class="rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm">

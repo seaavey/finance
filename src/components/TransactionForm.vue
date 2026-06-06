@@ -221,7 +221,7 @@
                 class="rounded-xl px-3 py-2.5"
               >
                 <div class="flex items-center gap-2">
-                  <div class="size-2 rounded-full" :style="{ backgroundColor: acct.color }" />
+                  <div class="size-2 rounded-full" :style="{ backgroundColor: acct.color || undefined }" />
                   <span class="font-bold">{{ acct.name }}</span>
                 </div>
               </SelectItem>

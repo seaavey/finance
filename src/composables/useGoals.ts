@@ -2,19 +2,9 @@ import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
-export interface Goal {
-  id: string
-  user_id: string
-  name: string
-  target_amount: number
-  current_amount: number
-  deadline: string | null
-  icon: string | null
-  color: string
-  image_url: string | null
-  created_at: string
-  updated_at: string
-}
+import type { Database } from '@/types'
+
+export type Goal = Database['public']['Tables']['goals']['Row']
 
 export const useGoals = () => {
   const { t } = useI18n()
@@ -34,16 +24,14 @@ export const useGoals = () => {
       if (!user.value) throw new Error('Not authenticated')
       const { data, error } = await supabase
         .from('goals')
-        .select(
-          'id, user_id, name, target_amount, current_amount, deadline, icon, color, image_url, created_at',
-        )
+        .select('*')
         .eq('user_id', user.value.id)
         .order('created_at', { ascending: false })
 
       if (error) {
         throw error
       }
-      return data as Goal[]
+      return data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 30_000, // 30s — fund changes are frequent enough
@@ -57,18 +45,16 @@ export const useGoals = () => {
   const fetchUserGoals = async (userId: string): Promise<Goal[]> => {
     const { data, error } = await supabase
       .from('goals')
-      .select(
-        'id, user_id, name, target_amount, current_amount, deadline, icon, color, image_url, created_at',
-      )
+      .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
 
     if (error) throw error
-    return (data as Goal[]) || []
+    return data || []
   }
 
   const addGoal = async (
-    goal: Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'current_amount'>,
+    goal: Omit<Database['public']['Tables']['goals']['Insert'], 'user_id' | 'created_at' | 'current_amount'>,
   ) => {
     if (!user.value) {
       return { error: { message: 'Not authenticated' } }
@@ -76,7 +62,7 @@ export const useGoals = () => {
 
     const { data, error } = await supabase
       .from('goals')
-      .insert({ ...goal, user_id: user.value.id, current_amount: 0 })
+      .insert({ ...goal, user_id: user.value.id, current_amount: 0 } as Database['public']['Tables']['goals']['Insert'])
       .select()
 
     if (!error) {
@@ -85,7 +71,7 @@ export const useGoals = () => {
       activity.log(
         'goal',
         'created',
-        { name: goal.name, target_amount: goal.target_amount },
+        { name: goal.name || '', target_amount: goal.target_amount },
         data?.[0]?.id,
       )
     } else {
@@ -96,7 +82,7 @@ export const useGoals = () => {
 
   const updateGoal = async (
     id: string,
-    updates: Partial<Omit<Goal, 'id' | 'user_id' | 'created_at' | 'updated_at'>>,
+    updates: Database['public']['Tables']['goals']['Update'],
   ) => {
     const goalName = goals.value.find((g) => g.id === id)?.name || ''
     const { error } = await supabase.from('goals').update(updates).eq('id', id)
@@ -118,10 +104,12 @@ export const useGoals = () => {
     }
 
     const newAmount = Number(goal.current_amount) + Number(amount)
-    const { error } = await supabase
+    const { data: updated, error } = await supabase
       .from('goals')
       .update({ current_amount: newAmount })
       .eq('id', goalId)
+      .select()
+      .single()
 
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })
@@ -130,7 +118,7 @@ export const useGoals = () => {
     } else {
       toast.error(t('toast.funds_add_error'))
     }
-    return { error }
+    return { data: updated, error }
   }
 
   const uploadGoalImage = async (file: File): Promise<string | null> => {

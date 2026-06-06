@@ -262,7 +262,7 @@
                   <span class="font-bold text-foreground">{{
                     formatCurrency(Number(goal.current_amount))
                   }}</span>
-                  <span class="font-black" :style="{ color: goal.color }"
+                  <span class="font-black" :style="{ color: goal.color || undefined }"
                     >{{ getPercentage(goal) }}%</span
                   >
                 </div>

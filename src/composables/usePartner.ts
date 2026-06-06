@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import type { PostgrestResponse } from '@supabase/supabase-js'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import type { Database } from '@/types'
 
 export interface CoupleInvitation {
   id: string
@@ -17,12 +18,7 @@ export interface CoupleInvitation {
   }
 }
 
-export interface PartnerProfile {
-  id: string
-  display_name: string | null
-  avatar_url: string | null
-  currency: string
-}
+export type PartnerProfile = Database['public']['Tables']['profiles']['Row']
 
 export const usePartner = () => {
   const supabase = useSupabase()
@@ -47,10 +43,11 @@ export const usePartner = () => {
       if (profile?.partner_id) {
         const { data: partnerProfile } = await supabase
           .from('profiles')
-          .select('id, display_name, avatar_url, currency')
+          .select('*')
           .eq('id', profile.partner_id)
           .single()
-        return partnerProfile as PartnerProfile | null
+        return partnerProfile
+
       }
       return null
     },

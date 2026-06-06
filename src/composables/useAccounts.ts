@@ -2,18 +2,9 @@ import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
-export interface Account {
-  id: string
-  user_id: string
-  name: string
-  type: 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
-  currency: string
-  color: string
-  icon: string
-  initial_balance: number
-  created_at: string
-  updated_at: string
-}
+import type { Database } from '@/types'
+
+export type Account = Database['public']['Tables']['accounts']['Row']
 
 export interface AccountWithBalance extends Account {
   balance: number
@@ -37,13 +28,13 @@ export const useAccounts = () => {
       if (!user.value) throw new Error('Not authenticated')
       const { data, error } = await supabase
         .from('accounts')
-        .select('id, user_id, name, type, currency, color, icon, initial_balance, created_at')
+        .select('*')
         .eq('user_id', user.value.id)
         .order('created_at')
       if (error) {
         throw error
       }
-      return data as Account[]
+      return data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 120_000, // 2 min — account structure rarely changes
@@ -52,16 +43,16 @@ export const useAccounts = () => {
   const accounts = computed(() => accountsData.value || [])
 
   const addAccount = async (
-    data: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+    account: Omit<Database['public']['Tables']['accounts']['Insert'], 'user_id' | 'created_at'>,
   ) => {
     if (!user.value) {
       return { error: new Error('Not authenticated') }
     }
-    const { error } = await supabase.from('accounts').insert({ ...data, user_id: user.value.id })
+    const { error } = await supabase.from('accounts').insert({ ...account, user_id: user.value.id } as Database['public']['Tables']['accounts']['Insert'])
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
       toast.success(t('accounts.saved'))
-      activity.log('account', 'created', { name: data.name, type: data.type })
+      activity.log('account', 'created', { name: account.name, type: account.type })
     } else {
       toast.error(t('accounts.save_error'))
     }
@@ -70,9 +61,7 @@ export const useAccounts = () => {
 
   const updateAccount = async (
     id: string,
-    updates: Partial<
-      Pick<Account, 'name' | 'type' | 'currency' | 'color' | 'icon' | 'initial_balance'>
-    >,
+    updates: Database['public']['Tables']['accounts']['Update'],
   ) => {
     const { error } = await supabase.from('accounts').update(updates).eq('id', id)
     if (!error) {
@@ -175,7 +164,7 @@ export const useAccounts = () => {
 
       let convertedBalance = rawBalance
       if (a.currency !== defaultCurrency.value) {
-        const converted = convertTo(rawBalance, a.currency, defaultCurrency.value)
+        const converted = convertTo(rawBalance, a.currency || defaultCurrency.value, defaultCurrency.value)
         if (converted !== null) {
           convertedBalance = converted
         }

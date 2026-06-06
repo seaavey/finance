@@ -25,7 +25,7 @@ watch(
   recurring,
   (items) => {
     for (const item of items) {
-      checkedStates[item.id] = item.active
+      checkedStates[item.id] = !!item.active
     }
   },
   { immediate: true },
@@ -37,7 +37,7 @@ const handleToggle = async (id: string, newActive: boolean) => {
     console.error('Toggle recurring failed:', error)
     // Revert local state on error
     const item = recurring.value.find((r) => r.id === id)
-    if (item) checkedStates[id] = item.active
+    if (item) checkedStates[id] = !!item.active
     return
   }
   // Item was turned ON — auto-process any due recurring right away.
@@ -313,7 +313,7 @@ const confirmDelete = async () => {
               :class="item.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
             >
               {{ item.type === 'income' ? '+' : '-'
-              }}{{ formatCurrency(Number(item.amount), item.currency) }}
+              }}{{ formatCurrency(Number(item.amount), item.currency || undefined) }}
             </p>
           </div>
         </div>

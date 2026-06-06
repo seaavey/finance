@@ -84,12 +84,13 @@ onMounted(async () => {
   await Promise.all([fetchRecurring(), fetchCategories()])
   const item = recurring.value.find((r: RecurringTransaction) => r.id === recurringId)
   if (item) {
-    form.type = item.type
+    form.type = item.type as 'income' | 'expense'
     form.amount = item.amount
-    form.currency = item.currency
+    form.currency = item.currency || 'IDR'
     form.category_id = item.category_id || ''
     form.description = item.description || ''
-    form.frequency = item.frequency
+    form.frequency = item.frequency as any
+
     form.next_date = item.next_date
   }
   loading.value = false

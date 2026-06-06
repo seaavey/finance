@@ -4,19 +4,9 @@ import { useSupabase } from '@/lib/supabase'
 import { formatDateSafe } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
-export interface RecurringTransaction {
-  id: string
-  user_id: string
-  type: 'income' | 'expense'
-  amount: number
-  currency: string
-  category_id: string
-  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  next_date: string
-  active: boolean
-  description: string | null
-  created_at: string
-}
+import type { Database } from '@/types'
+
+export type RecurringTransaction = Database['public']['Tables']['recurring_transactions']['Row']
 
 export const useRecurring = () => {
   const { t } = useI18n()
@@ -36,13 +26,11 @@ export const useRecurring = () => {
       if (!user.value) throw new Error('Not authenticated')
       const { data, error } = await supabase
         .from('recurring_transactions')
-        .select(
-          'id, user_id, type, amount, currency, category_id, frequency, next_date, active, description, created_at',
-        )
+        .select('*')
         .eq('user_id', user.value.id)
         .order('next_date', { ascending: true })
       if (error) throw error
-      return data as RecurringTransaction[]
+      return data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 120_000, // 2 min — recurring rarely changes
@@ -51,7 +39,7 @@ export const useRecurring = () => {
   const recurring = computed(() => recurringData.value || [])
 
   const addRecurring = async (
-    item: Omit<RecurringTransaction, 'id' | 'user_id' | 'created_at'>,
+    item: Omit<Database['public']['Tables']['recurring_transactions']['Insert'], 'user_id' | 'created_at'>,
   ) => {
     if (!user.value) {
       return
@@ -59,7 +47,7 @@ export const useRecurring = () => {
 
     const { error } = await supabase
       .from('recurring_transactions')
-      .insert({ ...item, user_id: user.value.id })
+      .insert({ ...item, user_id: user.value.id } as Database['public']['Tables']['recurring_transactions']['Insert'])
 
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['recurring'] })
@@ -74,7 +62,10 @@ export const useRecurring = () => {
     return { error }
   }
 
-  const updateRecurring = async (id: string, updates: Partial<RecurringTransaction>) => {
+  const updateRecurring = async (
+    id: string,
+    updates: Database['public']['Tables']['recurring_transactions']['Update'],
+  ) => {
     let error: any
     try {
       const result = await supabase.from('recurring_transactions').update(updates).eq('id', id)
@@ -139,7 +130,7 @@ export const useRecurring = () => {
 
     let created = 0
 
-    for (const item of due as RecurringTransaction[]) {
+    for (const item of due) {
       // 1. Create the actual transaction
       const { error: txError } = await supabase.from('transactions').insert({
         user_id: user.value.id,

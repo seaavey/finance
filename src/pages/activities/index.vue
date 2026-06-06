@@ -248,16 +248,17 @@
                     >
                       <div
                         class="size-[14px] rounded-full border-2"
-                        :class="getDotClass(log.action)"
+                        :class="getDotClass(log.action as ActionType)"
                       />
                     </div>
 
                     <!-- Icon Badge: smaller on mobile -->
                     <div
                       class="flex size-8 shrink-0 items-center justify-center rounded-xl sm:size-9"
-                      :class="getBadgeClass(log.entity_type)"
+                      :class="getBadgeClass(log.entity_type as EntityType)"
+
                     >
-                      <AppIcon :name="getActivityIcon(log.entity_type, log.action)" :size="14" />
+                      <AppIcon :name="getActivityIcon(log.entity_type as EntityType, log.action as ActionType)" :size="14" />
                     </div>
 
                     <!-- Content -->
@@ -266,14 +267,14 @@
                         {{ $t(`activity.${log.entity_type}.${log.action}`, log.metadata) }}
                       </p>
                       <p class="mt-0.5 text-[10px] font-medium text-muted-foreground/90 sm:text-xs">
-                        {{ formatTime(log.created_at) }}
+                        {{ formatTime(log.created_at || '') }}
                       </p>
                     </div>
 
                     <!-- Action Badge: pill on desktop, none on mobile -->
                     <span
                       class="hidden shrink-0 self-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider sm:inline-block"
-                      :class="getActionBadgeClass(log.action)"
+                      :class="getActionBadgeClass(log.action as ActionType)"
                     >
                       {{ log.action }}
                     </span>
@@ -359,11 +360,11 @@ const filterTabs = computed(() => [
 
 const todayCount = computed(() => {
   const today = formatDateSafe(new Date())
-  return logs.value.filter((l) => l.created_at.startsWith(today)).length
+  return logs.value.filter((l: any) => l.created_at.startsWith(today)).length
 })
 
 const transactionCount = computed(() => {
-  return logs.value.filter((l) => l.entity_type === 'transaction').length
+  return logs.value.filter((l: any) => l.entity_type === 'transaction').length
 })
 
 interface LogGroup {
@@ -375,7 +376,7 @@ interface LogGroup {
 const groupedLogs = computed<LogGroup[]>(() => {
   const groups: Record<string, typeof logs.value> = {}
   for (const log of logs.value) {
-    const date = log.created_at.slice(0, 10)
+    const date = (log.created_at || '').slice(0, 10)
     if (!groups[date]) groups[date] = []
     groups[date].push(log)
   }

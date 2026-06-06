@@ -125,7 +125,7 @@
                     {{ reminder.name }}
                   </p>
                   <p class="text-xs font-medium text-muted-foreground">
-                    {{ formatCurrency(reminder.amount, reminder.currency) }} •
+                    {{ formatCurrency(reminder.amount, reminder.currency || undefined) }} •
                     {{
                       reminder.days_left === 0
                         ? $t('recurring.due_today')

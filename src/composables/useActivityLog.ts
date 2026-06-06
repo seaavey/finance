@@ -2,7 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import { user } from './useAuth'
 import { computed } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { Json } from '@/types'
+import type { Database, Json } from '@/types'
 
 export type EntityType =
   | 'transaction'
@@ -29,14 +29,8 @@ export type ActionType =
   | 'alert_warning'
   | 'alert_exceeded'
 
-export interface ActivityLog {
-  id: string
-  user_id: string
-  entity_type: EntityType
-  entity_id: string | null
-  action: ActionType
-  metadata: Record<string, unknown>
-  created_at: string
+export type ActivityLog = Omit<Database['public']['Tables']['activity_logs']['Row'], 'metadata'> & {
+  metadata: any
 }
 
 export interface ActivityLogFilters {
@@ -68,7 +62,7 @@ export const useActivityLog = () => {
 
       let query = supabase
         .from('activity_logs')
-        .select('id, user_id, entity_type, entity_id, action, metadata, created_at', {
+        .select('*', {
           count: 'exact',
         })
         .eq('user_id', user.value.id)
@@ -99,7 +93,7 @@ export const useActivityLog = () => {
       const { data, count } = await query
 
       return {
-        logs: (data as ActivityLog[]) || [],
+        logs: data || [],
         total: count || 0,
       }
     },
@@ -165,12 +159,12 @@ export const useActivityLog = () => {
       queryFn: async () => {
         const { data } = await supabase
           .from('activity_logs')
-          .select('id, user_id, entity_type, entity_id, action, metadata, created_at')
+          .select('*')
           .eq('user_id', user.value!.id)
           .order('created_at', { ascending: false })
           .limit(limitCount)
 
-        return (data as ActivityLog[]) || []
+        return data || []
       },
       staleTime: 10_000,
     })

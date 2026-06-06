@@ -132,9 +132,9 @@ onMounted(async () => {
   const cat = categories.value.find((c: Category) => c.id === categoryId)
   if (cat) {
     form.name = cat.name
-    form.type = cat.type
-    form.color = cat.color
-    form.icon = cat.icon
+    form.type = cat.type as 'income' | 'expense'
+    form.color = cat.color || '#6b7280'
+    form.icon = cat.icon || ''
   }
   loading.value = false
 })

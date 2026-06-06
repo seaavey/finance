@@ -411,7 +411,7 @@
                   <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
                 </div>
                 <span class="text-xs font-black tracking-tighter text-foreground">{{
-                  formatCurrency(acct.balance, acct.currency)
+                  formatCurrency(acct.balance, acct.currency || undefined)
                 }}</span>
               </div>
             </div>
@@ -602,7 +602,7 @@ const formatRelativeDate = (date: string) => {
 const categoryMap = computed(() => {
   const map = new Map<string, { name: string; color: string }>()
   for (const cat of categories.value) {
-    map.set(cat.id, { name: cat.name, color: cat.color })
+    map.set(cat.id, { name: cat.name, color: cat.color || '#6b7280' })
   }
   return map
 })

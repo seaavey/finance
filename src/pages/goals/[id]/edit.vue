@@ -299,7 +299,7 @@ onMounted(async () => {
     form.name = goal.name
     form.target_amount = goal.target_amount
     form.deadline = goal.deadline || ''
-    form.color = goal.color
+    form.color = goal.color || '#3b82f6'
     form.image_url = goal.image_url
     if (goal.image_url) imagePreview.value = goal.image_url
   }

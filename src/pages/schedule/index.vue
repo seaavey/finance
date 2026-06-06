@@ -282,7 +282,7 @@
                 :class="rec.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
               >
                 {{ rec.type === 'income' ? '+' : '-'
-                }}{{ formatCurrency(Number(rec.amount), rec.currency) }}
+                }}{{ formatCurrency(Number(rec.amount), rec.currency || undefined) }}
               </p>
             </div>
           </div>

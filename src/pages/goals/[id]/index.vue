@@ -104,7 +104,7 @@
               {{ formatCurrency(Number(goalDetail.current_amount)) }} /
               {{ formatCurrency(Number(goalDetail.target_amount)) }}
             </span>
-            <span class="font-black" :style="{ color: goalDetail.color }"> {{ percentage }}% </span>
+            <span class="font-black" :style="{ color: goalDetail.color || undefined }"> {{ percentage }}% </span>
           </div>
           <Progress :model-value="percentage" class="h-4">
             <template #indicator>
@@ -239,8 +239,8 @@ function formatDate(dateStr: string): string {
 const onFundsSaved = () => {
   showFundsDialog.value = false
   // Refresh goal detail
-  const updated = goals.value.find((g) => g.id === goalId)
-  if (updated) goalDetail.value = { ...updated }
+  const updated = goals.value.find((g: Goal) => g.id === goalId)
+  if (updated) goalDetail.value = updated
 }
 
 const handleDelete = async () => {

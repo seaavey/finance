@@ -2,15 +2,9 @@ import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
-export interface Category {
-  id: string
-  user_id: string
-  name: string
-  type: 'income' | 'expense'
-  icon: string
-  color: string
-  created_at: string
-}
+import type { Database } from '@/types'
+
+export type Category = Database['public']['Tables']['categories']['Row']
 
 const DEFAULT_CATEGORIES = {
   income: [
@@ -52,7 +46,7 @@ export const useCategories = () => {
         .eq('user_id', user.value.id)
         .order('created_at', { ascending: true })
       if (error) throw error
-      return data as Category[]
+      return data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 300_000, // 5 min — categories almost never change

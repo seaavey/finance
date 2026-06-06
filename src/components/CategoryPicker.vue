@@ -6,7 +6,7 @@
     <SelectContent>
       <SelectItem v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">
         <div class="flex items-center gap-2">
-          <div class="size-3 rounded-full" :style="{ backgroundColor: cat.color }" />
+          <div class="size-3 rounded-full" :style="{ backgroundColor: cat.color || undefined }" />
           {{ cat.name }}
         </div>
       </SelectItem>

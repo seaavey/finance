@@ -80,7 +80,7 @@
                   <div class="flex w-full items-center gap-2">
                     <div
                       class="size-2.5 shrink-0 rounded-full"
-                      :style="{ backgroundColor: cat.color }"
+                      :style="{ backgroundColor: cat.color || undefined }"
                     />
                     <span class="truncate">{{ cat.name }}</span>
                     <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
@@ -107,7 +107,7 @@
                   <div class="flex w-full items-center gap-2">
                     <div
                       class="size-2.5 shrink-0 rounded-full"
-                      :style="{ backgroundColor: cat.color }"
+                      :style="{ backgroundColor: cat.color || undefined }"
                     />
                     <span class="truncate">{{ cat.name }}</span>
                     <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
@@ -413,7 +413,7 @@
           <SelectContent>
             <SelectItem v-for="acc in accounts" :key="acc.id" :value="acc.id">
               <div class="flex items-center gap-2">
-                <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color }" />
+                <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color || undefined }" />
                 {{ acc.name }}
               </div>
             </SelectItem>

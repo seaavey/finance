@@ -123,10 +123,10 @@ onMounted(async () => {
   const account = accounts.value.find((a) => a.id === accountId)
   if (account) {
     form.name = account.name
-    form.type = account.type
-    form.currency = account.currency
-    form.color = account.color
-    form.icon = account.icon
+    form.type = account.type as any
+    form.currency = account.currency || 'IDR'
+    form.color = account.color || '#3b82f6'
+    form.icon = account.icon || 'hugeicons:bank'
     form.initial_balance = Number(account.initial_balance)
   }
 })
