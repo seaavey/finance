@@ -40,9 +40,9 @@ __screenshots__/
 
 # AI agent config/docs (local only, not pushed to GitHub)
 /docs/
+/RPD/
 CLAUDE.md
 GEMINI.md
-RPD.md
 
 # Environment
 .env
