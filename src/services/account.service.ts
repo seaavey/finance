@@ -76,17 +76,12 @@ export async function queryAccountBalances(userId: string): Promise<Result<Accou
     .in('account_id', accountIds)
 
   const netMap = new Map<string, number>()
-  for (const tx of (txData || []) as any[]) {
+  for (const tx of txData || []) {
     const amount = Number(tx.amount)
     const factor = tx.type === 'income' ? 1 : -1
-    const current = netMap.get(tx.account_id) || 0
-    netMap.set(tx.account_id, current + amount * factor)
-
-    // Handle splits
-    if (tx.splits?.length) {
-      // Splits don't usually change the account balance if the whole tx is already counted
-      // but they might have different accounts? No, this app assumes one account per tx.
-    }
+    const accountId = tx.account_id || ''
+    const current = netMap.get(accountId) || 0
+    netMap.set(accountId, current + amount * factor)
   }
 
   const result: AccountWithBalance[] = accounts.map((a) => ({

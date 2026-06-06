@@ -56,7 +56,7 @@ export async function sendInvitation(
   return { data, error: null }
 }
 
-export async function acceptInvitation(invitationId: string): Promise<Result<any>> {
+export async function acceptInvitation(invitationId: string): Promise<Result<unknown>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.rpc('accept_couple_invitation', {
     invitation_id: invitationId,
@@ -64,7 +64,7 @@ export async function acceptInvitation(invitationId: string): Promise<Result<any
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   // Check for application-level error returned by RPC
-  const err = (data as any)?.error
+  const err = (data as { error?: string } | null)?.error
   if (err) return { data: null, error: new AppError(err, 'RPC_ERROR') }
 
   return { data, error: null }
@@ -92,12 +92,12 @@ export async function cancelInvitation(invitationId: string): Promise<Result<nul
   return { data: null, error: null }
 }
 
-export async function disconnectPartner(): Promise<Result<any>> {
+export async function disconnectPartner(): Promise<Result<unknown>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.rpc('disconnect_partner')
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  const err = (data as any)?.error
+  const err = (data as { error?: string } | null)?.error
   if (err) return { data: null, error: new AppError(err, 'RPC_ERROR') }
 
   return { data, error: null }

@@ -221,7 +221,7 @@ const loadTransaction = async () => {
   try {
     const id = route.params.id as string
     const { data } = await getTransaction(id)
-    transaction.value = data
+    transaction.value = data as unknown as Transaction
   } catch {
     fetchError.value = true
   } finally {

@@ -1,29 +1,18 @@
 import { computed, ref } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import {
-  queryTransactions,
-  getTransaction as getTxService,
-  createTransaction as createTxService,
-  updateTransaction as updateTxService,
-  deleteTransaction as deleteTxService,
-  bulkUpdateTransactions as bulkUpdateTxService,
-  bulkDeleteTransactions as bulkDeleteTxService,
-  searchTransactions as searchTxService,
-  uploadTransactionImage as uploadImageService,
-  deleteTransactionImage as deleteImageService,
-} from '@/services/transaction.service'
+import { queryTransactions, getTransaction as getTxService, createTransaction as createTxService, updateTransaction as updateTxService, deleteTransaction as deleteTxService, bulkUpdateTransactions as bulkUpdateTxService, bulkDeleteTransactions as bulkDeleteTxService, searchTransactions as searchTxService, uploadTransactionImage as uploadImageService, deleteTransactionImage as deleteImageService, type TransactionInsert } from '@/services/transaction.service'
 import type { TransactionFilters as ServiceFilters } from '@/services/transaction.service'
-import type { Database } from '@/types'
+import type { Database, SafeJson } from '@/types'
 
 export interface SplitItem {
   category_id: string
   amount: number
   description?: string
-  [key: string]: any
+  [key: string]: SafeJson | undefined
 }
 
 export type Transaction = Omit<Database['public']['Tables']['transactions']['Row'], 'splits'> & {
-  splits: any
+  splits: SplitItem[] | null
 }
 
 export interface TransactionFilters {
@@ -113,7 +102,7 @@ export const useTransactions = () => {
   ) => {
     if (!user.value) return { error: { message: 'Not authenticated' } }
 
-    const result = await createTxService({ ...tx, user_id: user.value.id } as any)
+    const result = await createTxService({ ...tx, user_id: user.value.id } as TransactionInsert)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })

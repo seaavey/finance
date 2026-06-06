@@ -9,6 +9,7 @@ import {
 } from '@/services/recurring.service'
 import type { RecurringRow as RecurringTransaction } from '@/services/recurring.service'
 import { createTransaction as createTxService } from '@/services/transaction.service'
+import type { TransactionInsert } from '@/services/transaction.service'
 import { formatDateSafe } from '@/lib/utils'
 import type { Database } from '@/types'
 
@@ -138,7 +139,7 @@ export const useRecurring = () => {
         account_id: null,
         image_url: null,
         splits: [],
-      } as any)
+      } as TransactionInsert)
 
       if (txResult.error) {
         console.error('Failed to create recurring transaction:', txResult.error)

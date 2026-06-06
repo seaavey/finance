@@ -1,12 +1,20 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { queryAccounts } from '../account.service'
 
-const mockSupabase: any = {
+interface MockSupabaseChain {
+  from: () => MockSupabaseChain
+  select: () => MockSupabaseChain
+  eq: () => MockSupabaseChain
+  order: () => MockSupabaseChain
+  then: (resolve: (val: { data: unknown[]; error: unknown }) => void) => void
+}
+
+const mockSupabase: MockSupabaseChain = {
   from: () => mockSupabase,
   select: () => mockSupabase,
   eq: () => mockSupabase,
   order: () => mockSupabase,
-  then: (resolve: any) => resolve({ data: [], error: null }),
+  then: (resolve) => resolve({ data: [], error: null }),
 }
 
 mock.module('@/lib/supabase', () => ({

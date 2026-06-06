@@ -360,11 +360,11 @@ const filterTabs = computed(() => [
 
 const todayCount = computed(() => {
   const today = formatDateSafe(new Date())
-  return logs.value.filter((l: any) => l.created_at.startsWith(today)).length
+  return logs.value.filter((l: ActivityLog) => l.created_at?.startsWith(today)).length
 })
 
 const transactionCount = computed(() => {
-  return logs.value.filter((l: any) => l.entity_type === 'transaction').length
+  return logs.value.filter((l: ActivityLog) => l.entity_type === 'transaction').length
 })
 
 interface LogGroup {

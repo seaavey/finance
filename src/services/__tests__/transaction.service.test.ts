@@ -1,8 +1,20 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { queryTransactions } from '../transaction.service'
 
-// Improved mock for useSupabase
-const mockSupabase: any = {
+interface MockSupabaseChain {
+  from: () => MockSupabaseChain
+  select: () => MockSupabaseChain
+  eq: () => MockSupabaseChain
+  order: () => MockSupabaseChain
+  range: () => MockSupabaseChain
+  ilike: () => MockSupabaseChain
+  gte: () => MockSupabaseChain
+  lte: () => MockSupabaseChain
+  in: () => MockSupabaseChain
+  then: (resolve: (val: { data: unknown[]; count: number; error: unknown }) => void) => void
+}
+
+const mockSupabase: MockSupabaseChain = {
   from: () => mockSupabase,
   select: () => mockSupabase,
   eq: () => mockSupabase,
@@ -12,7 +24,7 @@ const mockSupabase: any = {
   gte: () => mockSupabase,
   lte: () => mockSupabase,
   in: () => mockSupabase,
-  then: (resolve: any) => resolve({ data: [], count: 0, error: null }),
+  then: (resolve) => resolve({ data: [], count: 0, error: null }),
 }
 
 mock.module('@/lib/supabase', () => ({

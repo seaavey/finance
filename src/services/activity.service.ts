@@ -1,10 +1,10 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Database, Json } from '@/types'
+import type { Database, SafeJson } from '@/types'
 import type { Result } from '@/types/result'
 import { AppError } from '@/types/result'
 
 export type ActivityLogRow = Omit<Database['public']['Tables']['activity_logs']['Row'], 'metadata'> & {
-  metadata: any
+  metadata: Record<string, SafeJson | undefined>
 }
 export type ActivityLogInsert = Database['public']['Tables']['activity_logs']['Insert']
 

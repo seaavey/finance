@@ -94,7 +94,10 @@ export async function queryBudgetWithProgress(
     .in('id', categoryIds)
 
   const categoryMap = new Map(
-    (categories || []).map((c: any) => [c.id, { name: c.name, color: c.color, icon: c.icon }]),
+    (categories || []).map((c) => [
+      c.id,
+      { name: c.name, color: c.color || '#6b7280', icon: c.icon || '' },
+    ]),
   )
 
   // 3. Calculate spending for the month
@@ -112,9 +115,10 @@ export async function queryBudgetWithProgress(
     .lt('date', nextMonth)
 
   const spentMap = new Map<string, number>()
-  for (const tx of (txData || []) as any[]) {
-    if (tx.splits?.length) {
-      for (const split of tx.splits) {
+  for (const tx of txData || []) {
+    const splits = tx.splits as unknown as Array<{ category_id: string; amount: number }> | null
+    if (splits?.length) {
+      for (const split of splits) {
         if (categoryIds.includes(split.category_id)) {
           spentMap.set(
             split.category_id,
@@ -169,9 +173,9 @@ export async function getBudgetRollover(
 
   if (!prevBudgetData?.length) return rolloverMap
 
-  const prevCatIds = [...new Set(prevBudgetData.map((pb: any) => pb.category_id))]
+  const prevCatIds = [...new Set(prevBudgetData.map((pb) => pb.category_id))]
   const prevBudgetMap = new Map<string, number>()
-  for (const pb of prevBudgetData as any[]) {
+  for (const pb of prevBudgetData) {
     prevBudgetMap.set(pb.category_id, (prevBudgetMap.get(pb.category_id) || 0) + Number(pb.amount))
   }
 
@@ -184,9 +188,10 @@ export async function getBudgetRollover(
     .lt('date', currentMonth)
 
   const prevSpentMap = new Map<string, number>()
-  for (const tx of (prevTxData || []) as any[]) {
-    if (tx.splits?.length) {
-      for (const split of tx.splits) {
+  for (const tx of prevTxData || []) {
+    const splits = tx.splits as unknown as Array<{ category_id: string; amount: number }> | null
+    if (splits?.length) {
+      for (const split of splits) {
         if (prevCatIds.includes(split.category_id)) {
           prevSpentMap.set(
             split.category_id,

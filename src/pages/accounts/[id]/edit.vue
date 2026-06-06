@@ -123,7 +123,7 @@ onMounted(async () => {
   const account = accounts.value.find((a) => a.id === accountId)
   if (account) {
     form.name = account.name
-    form.type = account.type as any
+    form.type = account.type as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
     form.currency = account.currency || 'IDR'
     form.color = account.color || '#3b82f6'
     form.icon = account.icon || 'hugeicons:bank'
@@ -199,7 +199,7 @@ const selectBrand = (brandId: string, brandLabel: string) => {
                 ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-primary'
                 : 'bg-secondary/40 hover:bg-secondary/60 text-foreground border-border/50'
             "
-            @click="form.type = opt.value as any"
+            @click="form.type = opt.value as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'"
           >
             <AppIcon :name="opt.icon" :size="24" />
             <span class="text-[10px] font-black tracking-tight uppercase">{{ opt.label }}</span>

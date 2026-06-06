@@ -39,7 +39,7 @@
             v-for="(item, index) in navItems"
             :key="item.href"
             :ref="
-              (el: any) => {
+              (el) => {
                 if (el) navRefs[index] = el as HTMLElement
               }
             "

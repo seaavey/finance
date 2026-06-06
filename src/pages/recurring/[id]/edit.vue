@@ -89,7 +89,7 @@ onMounted(async () => {
     form.currency = item.currency || 'IDR'
     form.category_id = item.category_id || ''
     form.description = item.description || ''
-    form.frequency = item.frequency as any
+    form.frequency = item.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly'
 
     form.next_date = item.next_date
   }

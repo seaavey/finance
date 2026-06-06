@@ -1,5 +1,5 @@
 <template>
-  <Select :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event as any)">
+  <Select :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event as string)">
     <SelectTrigger>
       <SelectValue :placeholder="placeholder" />
     </SelectTrigger>
