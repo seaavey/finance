@@ -2,7 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import type { Result, RecurringRow, RecurringInsert, RecurringUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
-export async function queryRecurring(userId: string): Promise<Result<RecurringRow[]>> {
+export async function queryRecurring(userId: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
@@ -11,26 +11,26 @@ export async function queryRecurring(userId: string): Promise<Result<RecurringRo
     .order('next_date', { ascending: true })
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data || [], error: null }
+  return { data: (data as RecurringTransaction[]) || [], error: null }
 }
 
-export async function createRecurring(recurring: RecurringInsert): Promise<Result<RecurringRow>> {
+export async function createRecurring(recurring: RecurringInsert): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('recurring_transactions').insert(recurring).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as RecurringTransaction, error: null }
 }
 
 export async function updateRecurring(
   id: string,
   updates: RecurringUpdate,
-): Promise<Result<RecurringRow>> {
+): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('recurring_transactions').update(updates).eq('id', id).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as RecurringTransaction, error: null }
 }
 
 export async function deleteRecurring(id: string): Promise<Result<null>> {
@@ -41,7 +41,7 @@ export async function deleteRecurring(id: string): Promise<Result<null>> {
   return { data: null, error: null }
 }
 
-export async function queryDueRecurring(userId: string, today: string): Promise<Result<RecurringRow[]>> {
+export async function queryDueRecurring(userId: string, today: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
@@ -51,5 +51,5 @@ export async function queryDueRecurring(userId: string, today: string): Promise<
     .lte('next_date', today)
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data || [], error: null }
+  return { data: (data as RecurringTransaction[]) || [], error: null }
 }

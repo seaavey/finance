@@ -2,7 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import type { Result, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
 import { AppError } from '@/types/result'
 
-export async function queryAccounts(userId: string): Promise<Result<AccountRow[]>> {
+export async function queryAccounts(userId: string): Promise<Result<Account[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('accounts')
@@ -11,31 +11,31 @@ export async function queryAccounts(userId: string): Promise<Result<AccountRow[]
     .order('created_at')
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data || [], error: null }
+  return { data: (data as Account[]) || [], error: null }
 }
 
-export async function getAccount(id: string): Promise<Result<AccountRow>> {
+export async function getAccount(id: string): Promise<Result<Account>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('accounts').select('*').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as Account, error: null }
 }
 
-export async function createAccount(account: AccountInsert): Promise<Result<AccountRow>> {
+export async function createAccount(account: AccountInsert): Promise<Result<Account>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('accounts').insert(account).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as Account, error: null }
 }
 
-export async function updateAccount(id: string, updates: AccountUpdate): Promise<Result<AccountRow>> {
+export async function updateAccount(id: string, updates: AccountUpdate): Promise<Result<Account>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('accounts').update(updates).eq('id', id).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as Account, error: null }
 }
 
 export async function deleteAccount(id: string): Promise<Result<null>> {
@@ -75,10 +75,13 @@ export async function queryAccountBalances(userId: string): Promise<Result<Accou
     netMap.set(accountId, current + amount * factor)
   }
 
-  const result: AccountWithBalance[] = accounts.map((a) => ({
-    ...a,
-    balance: Number(a.initial_balance || 0) + (netMap.get(a.id) || 0),
-  }))
+  const result: AccountWithBalance[] = accounts.map(
+    (a) =>
+      ({
+        ...a,
+        balance: Number(a.initial_balance || 0) + (netMap.get(a.id) || 0),
+      }) as AccountWithBalance,
+  )
 
   return { data: result, error: null }
 }

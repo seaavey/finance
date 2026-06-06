@@ -8,7 +8,7 @@ import {
   queryBudgetWithProgress as queryBudgetWithProgressService,
   calculateProgress,
 } from '@/services/budget.service'
-
+import type { Budget, BudgetWithProgress, BudgetUpdate } from '@/types'
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
@@ -132,7 +132,7 @@ export const useBudgets = () => {
       return { error: new Error('Not authenticated') }
     }
 
-    const result = await updateBudgetService(id, data as any)
+    const result = await updateBudgetService(id, data as BudgetUpdate)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['budgets'] })

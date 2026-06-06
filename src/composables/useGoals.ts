@@ -49,7 +49,7 @@ export const useGoals = () => {
       ...goal,
       user_id: user.value.id,
       current_amount: 0,
-    } as any)
+    } as GoalInsert)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['goals'] })

@@ -1,7 +1,14 @@
 import { computed, ref, watch } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { queryActivityLogs, logActivity } from '@/services/activity.service'
-
+import type {
+  ActivityLog,
+  ActivityLogFilters,
+  EntityType,
+  ActionType,
+  ActivityLogInsert,
+  SafeJson,
+} from '@/types'
 
 export const useActivityLog = () => {
   const queryClient = useQueryClient()
@@ -59,8 +66,8 @@ export const useActivityLog = () => {
         entity_type: entityType,
         entity_id: entityId ?? null,
         action,
-        metadata: (metadata || {}) as any,
-      })
+        metadata: (metadata || {}) as Record<string, SafeJson | undefined>,
+      } as ActivityLogInsert)
       queryClient.invalidateQueries({ queryKey: ['activity_logs'] })
     } catch {
       // Silently ignore

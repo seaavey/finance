@@ -1,5 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Result, TransactionRow, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
+import type { Result, Transaction, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryTransactions(
@@ -7,7 +7,7 @@ export async function queryTransactions(
   filters: TransactionFilters = {},
   page = 1,
   pageSize = 20,
-): Promise<Result<{ data: TransactionRow[]; count: number }>> {
+): Promise<Result<{ data: Transaction[]; count: number }>> {
   const supabase = useSupabase()
   const { type, category_id, search, startDate, endDate, account_id } = filters
 
@@ -29,34 +29,34 @@ export async function queryTransactions(
   const { data, error, count } = await query
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: { data: data || [], count: count || 0 }, error: null }
+  return { data: { data: (data as unknown as Transaction[]) || [], count: count || 0 }, error: null }
 }
 
-export async function getTransaction(id: string): Promise<Result<TransactionRow>> {
+export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('transactions').select('*').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as unknown as Transaction, error: null }
 }
 
-export async function createTransaction(tx: TransactionInsert): Promise<Result<TransactionRow>> {
+export async function createTransaction(tx: TransactionInsert): Promise<Result<Transaction>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('transactions').insert(tx).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as unknown as Transaction, error: null }
 }
 
 export async function updateTransaction(
   id: string,
   updates: TransactionUpdate,
-): Promise<Result<TransactionRow>> {
+): Promise<Result<Transaction>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.from('transactions').update(updates).eq('id', id).select().single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return { data: data as unknown as Transaction, error: null }
 }
 
 export async function deleteTransaction(id: string): Promise<Result<null>> {
@@ -90,7 +90,7 @@ export async function searchTransactions(
   userId: string,
   term: string,
   limit = 10,
-): Promise<Result<TransactionRow[]>> {
+): Promise<Result<Transaction[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('transactions')
@@ -101,7 +101,7 @@ export async function searchTransactions(
     .limit(limit)
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data || [], error: null }
+  return { data: (data as unknown as Transaction[]) || [], error: null }
 }
 
 export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {

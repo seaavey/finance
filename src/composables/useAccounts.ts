@@ -7,7 +7,7 @@ import {
   deleteAccount as deleteAccountService,
   queryAccountBalances as queryAccountBalancesService,
 } from '@/services/account.service'
-
+import type { Account, AccountWithBalance, AccountInsert, AccountUpdate } from '@/types'
 
 export const useAccounts = () => {
   const queryClient = useQueryClient()
@@ -41,7 +41,7 @@ export const useAccounts = () => {
     const result = await createAccountService({
       ...account,
       user_id: user.value.id,
-    } as any)
+    } as AccountInsert)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
@@ -53,8 +53,11 @@ export const useAccounts = () => {
     return { error: result.error }
   }
 
-  const updateAccount = async (id: string, updates: Partial<Account>) => {
-    const result = await updateAccountService(id, updates as any)
+  const updateAccount = async (
+    id: string,
+    updates: AccountUpdate,
+  ) => {
+    const result = await updateAccountService(id, updates)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })

@@ -62,7 +62,7 @@ export const useCategories = () => {
     const result = await createCategoryService({
       ...category,
       user_id: user.value.id,
-    } as any)
+    } as CategoryInsert)
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })

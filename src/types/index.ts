@@ -15,18 +15,38 @@ export type SafeJson =
 // --- SHARED DOMAIN TYPES ---
 
 // Account
-export type Account = Database['public']['Tables']['accounts']['Row']
+export type AccountType = 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
+
+export type Account = Omit<Database['public']['Tables']['accounts']['Row'], 'type'> & {
+  type: AccountType
+}
 export type AccountRow = Account
-export type AccountInsert = Database['public']['Tables']['accounts']['Insert']
-export type AccountUpdate = Database['public']['Tables']['accounts']['Update']
+export type AccountInsert = Omit<Database['public']['Tables']['accounts']['Insert'], 'type'> & {
+  type: AccountType
+}
+export type AccountUpdate = Omit<Database['public']['Tables']['accounts']['Update'], 'type'> & {
+  type?: AccountType
+}
 export interface AccountWithBalance extends Account {
   balance: number
 }
 
 // Transaction
+export type TransactionType = 'income' | 'expense'
+
 export type TransactionRow = Database['public']['Tables']['transactions']['Row']
-export type TransactionInsert = Database['public']['Tables']['transactions']['Insert']
-export type TransactionUpdate = Database['public']['Tables']['transactions']['Update']
+export type TransactionInsert = Omit<
+  Database['public']['Tables']['transactions']['Insert'],
+  'type'
+> & {
+  type: TransactionType
+}
+export type TransactionUpdate = Omit<
+  Database['public']['Tables']['transactions']['Update'],
+  'type'
+> & {
+  type?: TransactionType
+}
 
 export interface SplitItem {
   category_id: string
@@ -36,11 +56,12 @@ export interface SplitItem {
 }
 
 export type Transaction = Omit<TransactionRow, 'splits'> & {
+  type: TransactionType
   splits: SplitItem[] | null
 }
 
 export interface TransactionFilters {
-  type?: 'income' | 'expense'
+  type?: TransactionType
   category_id?: string
   search?: string
   dateFrom?: string
@@ -85,10 +106,27 @@ export type BillInsert = Database['public']['Tables']['bills']['Insert']
 export type BillUpdate = Database['public']['Tables']['bills']['Update']
 
 // Recurring Transaction
-export type RecurringTransaction = Database['public']['Tables']['recurring_transactions']['Row']
+export type RecurringFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
+
+export type RecurringTransaction = Omit<
+  Database['public']['Tables']['recurring_transactions']['Row'],
+  'frequency'
+> & {
+  frequency: RecurringFrequency
+}
 export type RecurringRow = RecurringTransaction
-export type RecurringInsert = Database['public']['Tables']['recurring_transactions']['Insert']
-export type RecurringUpdate = Database['public']['Tables']['recurring_transactions']['Update']
+export type RecurringInsert = Omit<
+  Database['public']['Tables']['recurring_transactions']['Insert'],
+  'frequency'
+> & {
+  frequency: RecurringFrequency
+}
+export type RecurringUpdate = Omit<
+  Database['public']['Tables']['recurring_transactions']['Update'],
+  'frequency'
+> & {
+  frequency?: RecurringFrequency
+}
 
 // Profile & Partner
 export type Profile = Database['public']['Tables']['profiles']['Row']
@@ -133,7 +171,14 @@ export type ActivityLog = Omit<Database['public']['Tables']['activity_logs']['Ro
   metadata: Record<string, SafeJson | undefined>
 }
 export type ActivityLogRow = ActivityLog
-export type ActivityLogInsert = Database['public']['Tables']['activity_logs']['Insert']
+export type ActivityLogInsert = Omit<
+  Database['public']['Tables']['activity_logs']['Insert'],
+  'entity_type' | 'action' | 'metadata'
+> & {
+  entity_type: EntityType
+  action: ActionType
+  metadata?: Record<string, SafeJson | undefined>
+}
 
 export interface ActivityLogFilters {
   page?: number
