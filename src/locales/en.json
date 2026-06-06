@@ -359,6 +359,7 @@
     "form_due_date": "Due Date",
     "form_recurrence": "Recurrence",
     "recurrence_none": "One-time",
+    "recurrence_weekly": "Weekly",
     "recurrence_monthly": "Monthly",
     "cancel": "Cancel",
     "back": "Back",
@@ -450,6 +451,31 @@
     "cancel": "Cancel",
     "back": "Back",
     "add": "Add Funds"
+  },
+  "currencies": {
+    "group_southeast_asia": "Southeast Asia",
+    "group_east_asia": "East Asia",
+    "group_south_asia": "South Asia",
+    "idr": "IDR - Indonesian Rupiah",
+    "myr": "MYR - Malaysian Ringgit",
+    "sgd": "SGD - Singapore Dollar",
+    "thb": "THB - Thai Baht",
+    "php": "PHP - Philippine Peso",
+    "vnd": "VND - Vietnamese Dong",
+    "mmk": "MMK - Myanmar Kyat",
+    "khr": "KHR - Cambodian Riel",
+    "lak": "LAK - Lao Kip",
+    "bnd": "BND - Brunei Dollar",
+    "jpy": "JPY - Japanese Yen",
+    "krw": "KRW - South Korean Won",
+    "cny": "CNY - Chinese Yuan",
+    "twd": "TWD - Taiwan Dollar",
+    "hkd": "HKD - Hong Kong Dollar",
+    "inr": "INR - Indian Rupee",
+    "bdt": "BDT - Bangladeshi Taka",
+    "pkr": "PKR - Pakistani Rupee",
+    "lkr": "LKR - Sri Lankan Rupee",
+    "npr": "NPR - Nepalese Rupee"
   },
   "settings": {
     "preferences": "Preferences",
@@ -555,6 +581,7 @@
     "dismiss_notification": "Dismiss notification"
   },
   "landing": {
+    "title": "Aemy Finance - Personal & Shared Finance Management",
     "hero_badge": "100+ active users",
     "hero_title": "Take control of your finances the simple way.",
     "hero_desc": "Track expenses, recurring bills, and balance — together with your partner in one modern dashboard.",
@@ -793,7 +820,8 @@
     "login_google": "Sign in with Google",
     "back": "← Back",
     "register": "Sign Up",
-    "authenticating": "Authenticating..."
+    "authenticating": "Authenticating...",
+    "redirecting": "Redirecting..."
   },
   "confirm": {
     "title": "Confirm",

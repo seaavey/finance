@@ -124,7 +124,7 @@ onMounted(async () => {
   if (account) {
     form.name = account.name
     form.type = account.type as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
-    form.currency = account.currency || 'IDR'
+    form.currency = account.currency || defaultCurrency.value
     form.color = account.color || '#3b82f6'
     form.icon = account.icon || 'hugeicons:bank'
     form.initial_balance = Number(account.initial_balance)

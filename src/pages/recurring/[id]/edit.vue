@@ -86,7 +86,7 @@ onMounted(async () => {
   if (item) {
     form.type = item.type as TransactionType
     form.amount = item.amount
-    form.currency = item.currency || 'IDR'
+    form.currency = item.currency || defaultCurrency.value
     form.category_id = item.category_id || ''
     form.description = item.description || ''
     form.frequency = item.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly'

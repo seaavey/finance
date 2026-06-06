@@ -279,7 +279,7 @@ const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 const { bills, fetchBills, markAsPaid, deleteBill } = useBills()
-const { formatCurrency } = useCurrency()
+const { formatCurrency, defaultCurrency } = useCurrency()
 const { fetchAccounts, accounts, bankAccounts, ewalletAccounts, cashAccounts } = useAccounts()
 const { addTransaction } = useTransactions()
 
@@ -353,7 +353,7 @@ async function handleMarkPaid(id: string) {
     await addTransaction({
       type: 'expense',
       amount: billDetail.value.amount,
-      currency: 'IDR',
+      currency: defaultCurrency.value,
       category_id: null,
       description: billDetail.value.title,
       date: formatDateSafe(new Date()),

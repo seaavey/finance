@@ -534,7 +534,7 @@ const {
   cancelInvite,
   disconnectPartner,
 } = usePartner()
-const { currencies, currencyGroups } = useCurrency()
+const { currencies, currencyGroups, defaultCurrency } = useCurrency()
 const colorMode = useColorMode()
 const { locale, setLocale, t } = useI18n()
 
@@ -546,12 +546,12 @@ const inviteEmail = ref('')
 
 const profile = reactive({
   display_name: '',
-  currency: 'IDR',
+  currency: defaultCurrency.value,
 })
 
 const selectedCurrencyLabel = computed(() => {
-  const c = currencies.find((c) => c.value === profile.currency)
-  return c ? c.label : 'IDR'
+  const c = currencies.value.find((c) => c.value === profile.currency)
+  return c ? c.label : defaultCurrency.value
 })
 
 const localeLabel = computed(() => {
@@ -594,7 +594,7 @@ onMounted(async () => {
 
   if (data) {
     profile.display_name = data.display_name ?? ''
-    profile.currency = data.currency ?? 'IDR'
+    profile.currency = data.currency ?? defaultCurrency.value
   }
   loading.value = false
 

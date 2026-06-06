@@ -75,7 +75,7 @@
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">{{ $t('bills.recurrence_none') }}</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
+            <SelectItem value="weekly">{{ $t('bills.recurrence_weekly') }}</SelectItem>
             <SelectItem value="monthly">{{ $t('bills.recurrence_monthly') }}</SelectItem>
           </SelectContent>
         </Select>

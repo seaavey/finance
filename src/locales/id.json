@@ -359,6 +359,7 @@
     "form_due_date": "Jatuh Tempo",
     "form_recurrence": "Pengulangan",
     "recurrence_none": "Sekali",
+    "recurrence_weekly": "Mingguan",
     "recurrence_monthly": "Bulanan",
     "cancel": "Batal",
     "back": "Kembali",
@@ -450,6 +451,31 @@
     "cancel": "Batal",
     "back": "Kembali",
     "add": "Tambah Dana"
+  },
+  "currencies": {
+    "group_southeast_asia": "Asia Tenggara",
+    "group_east_asia": "Asia Timur",
+    "group_south_asia": "Asia Selatan",
+    "idr": "IDR - Rupiah Indonesia",
+    "myr": "MYR - Ringgit Malaysia",
+    "sgd": "SGD - Dollar Singapura",
+    "thb": "THB - Baht Thailand",
+    "php": "PHP - Peso Filipina",
+    "vnd": "VND - Dong Vietnam",
+    "mmk": "MMK - Kyat Myanmar",
+    "khr": "KHR - Riel Kamboja",
+    "lak": "LAK - Kip Laos",
+    "bnd": "BND - Dollar Brunei",
+    "jpy": "JPY - Yen Jepang",
+    "krw": "KRW - Won Korea",
+    "cny": "CNY - Yuan Tiongkok",
+    "twd": "TWD - Dollar Taiwan",
+    "hkd": "HKD - Dollar Hong Kong",
+    "inr": "INR - Rupee India",
+    "bdt": "BDT - Taka Bangladesh",
+    "pkr": "PKR - Rupee Pakistan",
+    "lkr": "LKR - Rupee Sri Lanka",
+    "npr": "NPR - Rupee Nepal"
   },
   "settings": {
     "preferences": "Preferensi",
@@ -555,6 +581,7 @@
     "dismiss_notification": "Tutup notifikasi"
   },
   "landing": {
+    "title": "Aemy Finance - Kelola Keuangan Pribadi & Bersama",
     "hero_badge": "100+ pengguna aktif",
     "hero_title": "Kontrol keuangan pribadi tanpa ribet.",
     "hero_desc": "Pantau pengeluaran, transaksi rutin, dan saldo — bareng pasangan dalam satu dashboard modern.",
@@ -793,7 +820,8 @@
     "login_google": "Login dengan Google",
     "back": "← Kembali",
     "register": "Daftar",
-    "authenticating": "Mengautentikasi..."
+    "authenticating": "Mengautentikasi...",
+    "redirecting": "Mengalihkan..."
   },
   "confirm": {
     "title": "Konfirmasi",

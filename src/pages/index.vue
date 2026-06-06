@@ -38,7 +38,7 @@ const LandingFooter = defineAsyncComponent(() => import('@/components/landing/Fo
 
 const { t } = useI18n()
 
-const title = 'Aemy Finance - Kelola Keuangan Pribadi & Bersama'
+const title = t('landing.title')
 const description = `${t('landing.hero_desc')} ${t('landing.hero_free')}.`
 
 useSeoMeta({

@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useI18n } from './nuxt-compat'
 import {
   queryAccounts,
   createAccount as createAccountService,
@@ -15,6 +16,7 @@ export const useAccounts = () => {
   const { toast } = useToast()
   const activity = useActivityLog()
   const { user } = useAuth()
+  const { defaultCurrency, convertTo } = useCurrency()
 
   const {
     data: accountsData,
@@ -120,8 +122,6 @@ export const useAccounts = () => {
   const getConvertedBalances = async (): Promise<AccountWithBalance[]> => {
     const balances = balancesData.value || (await getAccountBalances())
     if (balances.length === 0) return []
-
-    const { defaultCurrency, convertTo } = useCurrency()
 
     return balances.map((a) => {
       let convertedBalance = a.balance

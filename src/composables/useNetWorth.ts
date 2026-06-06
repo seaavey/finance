@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { formatDateSafe } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/vue-query'
+import { useI18n } from './nuxt-compat'
 
 export interface NetWorthData {
   label: string
@@ -86,7 +87,7 @@ export const useNetWorth = () => {
           for (const acc of accounts) {
             runningBalances.set(acc.id, Number(acc.initial_balance))
             isLiability.set(acc.id, acc.type === 'liability')
-            accountCurrency.set(acc.id, acc.currency || 'IDR')
+            accountCurrency.set(acc.id, acc.currency || defaultCurrency.value)
             accountCreated.set(acc.id, new Date(acc.created_at || ''))
           }
 
@@ -116,7 +117,7 @@ export const useNetWorth = () => {
               if ((accountCreated.get(acc.id) ?? new Date()) > mb.end) continue
 
               const balance = runningBalances.get(acc.id) ?? 0
-              const converted = convertAmount(balance, accountCurrency.get(acc.id) || 'IDR')
+              const converted = convertAmount(balance, accountCurrency.get(acc.id) || defaultCurrency.value)
 
               if (isLiability.get(acc.id)) {
                 totalDebts += converted

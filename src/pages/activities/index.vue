@@ -350,13 +350,13 @@ const filterTabs = computed(() => [
   { value: 'all', label: t('activities.filter_all'), icon: 'hugeicons:note-01' },
   { value: 'auth', label: 'Auth', icon: 'hugeicons:user' },
   { value: 'transaction', label: t('activities.transactions'), icon: 'hugeicons:arrow-left-right' },
-  { value: 'category', label: 'Kategori', icon: 'hugeicons:grid-view' },
-  { value: 'budget', label: 'Budget', icon: 'hugeicons:wallet-03' },
-  { value: 'goal', label: 'Goal', icon: 'hugeicons:target-02' },
-  { value: 'bill', label: 'Tagihan', icon: 'hugeicons:calendar-03' },
-  { value: 'account', label: 'Akun', icon: 'hugeicons:bank' },
-  { value: 'recurring', label: 'Rutin', icon: 'hugeicons:repeat' },
-  { value: 'partner', label: 'Partner', icon: 'hugeicons:user' },
+  { value: 'category', label: t('nav.categories'), icon: 'hugeicons:grid-view' },
+  { value: 'budget', label: t('nav.budget'), icon: 'hugeicons:wallet-03' },
+  { value: 'goal', label: t('nav.goals'), icon: 'hugeicons:target-02' },
+  { value: 'bill', label: t('nav.bills'), icon: 'hugeicons:calendar-03' },
+  { value: 'account', label: t('nav.accounts'), icon: 'hugeicons:bank' },
+  { value: 'recurring', label: t('nav.recurring'), icon: 'hugeicons:repeat' },
+  { value: 'partner', label: t('sidebar.partner'), icon: 'hugeicons:user' },
 ])
 
 const todayCount = computed(() => {

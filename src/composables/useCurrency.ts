@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/vue-query'
 import { user } from './useAuth'
+import { useI18n } from './nuxt-compat'
 
 const defaultCurrency = ref<string>('IDR')
 
@@ -48,6 +49,8 @@ const fetchFallbackRates = async () => {
 fetchFallbackRates()
 
 export const useCurrency = () => {
+  const { t } = useI18n()
+
   // --- Exchange rates from Supabase (synced via Edge Function) ---
   const { data: ratesData } = useQuery({
     queryKey: ['exchange-rates'],
@@ -143,45 +146,45 @@ export const useCurrency = () => {
     return localeMap[currency] ?? 'en-US'
   }
 
-  const currencyGroups = [
+  const currencyGroups = computed(() => [
     {
-      label: 'Asia Tenggara',
+      label: t('currencies.group_southeast_asia'),
       currencies: [
-        { value: 'IDR', label: 'IDR - Rupiah Indonesia' },
-        { value: 'MYR', label: 'MYR - Ringgit Malaysia' },
-        { value: 'SGD', label: 'SGD - Dollar Singapura' },
-        { value: 'THB', label: 'THB - Baht Thailand' },
-        { value: 'PHP', label: 'PHP - Peso Filipina' },
-        { value: 'VND', label: 'VND - Dong Vietnam' },
-        { value: 'MMK', label: 'MMK - Kyat Myanmar' },
-        { value: 'KHR', label: 'KHR - Riel Kamboja' },
-        { value: 'LAK', label: 'LAK - Kip Laos' },
-        { value: 'BND', label: 'BND - Dollar Brunei' },
+        { value: 'IDR', label: t('currencies.idr') },
+        { value: 'MYR', label: t('currencies.myr') },
+        { value: 'SGD', label: t('currencies.sgd') },
+        { value: 'THB', label: t('currencies.thb') },
+        { value: 'PHP', label: t('currencies.php') },
+        { value: 'VND', label: t('currencies.vnd') },
+        { value: 'MMK', label: t('currencies.mmk') },
+        { value: 'KHR', label: t('currencies.khr') },
+        { value: 'LAK', label: t('currencies.lak') },
+        { value: 'BND', label: t('currencies.bnd') },
       ],
     },
     {
-      label: 'Asia Timur',
+      label: t('currencies.group_east_asia'),
       currencies: [
-        { value: 'JPY', label: 'JPY - Yen Jepang' },
-        { value: 'KRW', label: 'KRW - Won Korea' },
-        { value: 'CNY', label: 'CNY - Yuan Tiongkok' },
-        { value: 'TWD', label: 'TWD - Dollar Taiwan' },
-        { value: 'HKD', label: 'HKD - Dollar Hong Kong' },
+        { value: 'JPY', label: t('currencies.jpy') },
+        { value: 'KRW', label: t('currencies.krw') },
+        { value: 'CNY', label: t('currencies.cny') },
+        { value: 'TWD', label: t('currencies.twd') },
+        { value: 'HKD', label: t('currencies.hkd') },
       ],
     },
     {
-      label: 'Asia Selatan',
+      label: t('currencies.group_south_asia'),
       currencies: [
-        { value: 'INR', label: 'INR - Rupee India' },
-        { value: 'BDT', label: 'BDT - Taka Bangladesh' },
-        { value: 'PKR', label: 'PKR - Rupee Pakistan' },
-        { value: 'LKR', label: 'LKR - Rupee Sri Lanka' },
-        { value: 'NPR', label: 'NPR - Rupee Nepal' },
+        { value: 'INR', label: t('currencies.inr') },
+        { value: 'BDT', label: t('currencies.bdt') },
+        { value: 'PKR', label: t('currencies.pkr') },
+        { value: 'LKR', label: t('currencies.lkr') },
+        { value: 'NPR', label: t('currencies.npr') },
       ],
     },
-  ]
+  ])
 
-  const currencies = currencyGroups.flatMap((g) => g.currencies)
+  const currencies = computed(() => currencyGroups.value.flatMap((g) => g.currencies))
 
   const formatNumberOnly = (amount: number, currency?: string) => {
     const cur = currency || defaultCurrency.value
