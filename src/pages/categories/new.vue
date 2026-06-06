@@ -79,6 +79,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import type { CategoryInsert, TransactionType } from '@/types'
 
 const router = useRouter()
 const { addCategory } = useCategories()
@@ -100,7 +101,7 @@ const colorOptions = [
 
 const form = reactive({
   name: '',
-  type: 'expense' as 'income' | 'expense',
+  type: 'expense' as TransactionType,
   icon: 'hugeicons:wallet-01',
   color: '#3b82f6',
 })
@@ -111,7 +112,7 @@ const onSubmit = async () => {
     type: form.type,
     icon: form.icon,
     color: form.color,
-  })
+  } as CategoryInsert)
   if (!result?.error) {
     router.push('/categories')
   }

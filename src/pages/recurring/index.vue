@@ -5,7 +5,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import type { RecurringTransaction } from '@/composables/useRecurring'
+import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountWithBalance, Budget, BudgetWithProgress, Category, Goal, RecurringTransaction, ActivityLog, ActivityLogFilters, EntityType, ActionType, PartnerProfile, CoupleInvitation, Invitation } from '@/types'
 import { formatDateSafe } from '@/lib/utils'
 import { useBudgets } from '@/composables/useBudgets'
 

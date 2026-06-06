@@ -22,12 +22,13 @@ const { locale } = useI18n()
 const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency()
 const { addRecurring } = useRecurring()
 const { fetchCategories } = useCategories()
+import type { RecurringTransaction, TransactionType } from "@/types"
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' })
 const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
-  type: 'expense' as 'income' | 'expense',
+  type: 'expense' as TransactionType,
   amount: 0,
   currency: defaultCurrency.value,
   category_id: '',

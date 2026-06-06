@@ -16,7 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 import { cn } from '@/lib/utils'
-import type { RecurringTransaction } from '@/composables/useRecurring'
+import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountWithBalance, Budget, BudgetWithProgress, Category, Goal, RecurringTransaction, ActivityLog, ActivityLogFilters, EntityType, ActionType, PartnerProfile, CoupleInvitation, Invitation } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
@@ -31,7 +31,7 @@ const loading = ref(true)
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' })
 
 const form = reactive({
-  type: 'expense' as 'income' | 'expense',
+  type: 'expense' as TransactionType,
   amount: 0,
   currency: defaultCurrency.value,
   category_id: '',
@@ -84,7 +84,7 @@ onMounted(async () => {
   await Promise.all([fetchRecurring(), fetchCategories()])
   const item = recurring.value.find((r: RecurringTransaction) => r.id === recurringId)
   if (item) {
-    form.type = item.type as 'income' | 'expense'
+    form.type = item.type as TransactionType
     form.amount = item.amount
     form.currency = item.currency || 'IDR'
     form.category_id = item.category_id || ''

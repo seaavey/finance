@@ -57,6 +57,8 @@
 <script setup lang="ts">
 
 
+import type { TransactionFilters, TransactionType } from '@/types'
+
 const emit = defineEmits<{
   filter: [filters: TransactionFilters]
 }>()
@@ -84,7 +86,7 @@ const emitFilters = () => {
     f.search = filters.search
   }
   if (filters.type && filters.type !== 'all') {
-    f.type = filters.type as 'income' | 'expense'
+    f.type = filters.type as TransactionType
   }
   if (filters.category_id) {
     f.category_id = filters.category_id

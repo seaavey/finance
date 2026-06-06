@@ -15,9 +15,11 @@
 </template>
 
 <script setup lang="ts">
+import type { TransactionType } from '@/types'
+
 const props = defineProps<{
   modelValue?: string
-  type?: 'income' | 'expense'
+  type?: TransactionType
   placeholder?: string
 }>()
 

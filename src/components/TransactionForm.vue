@@ -512,7 +512,7 @@
 
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import type { Transaction, TransactionFilters, SplitItem } from "@/types"
+import type { TransactionType, Transaction, TransactionFilters, SplitItem } from "@/types"
 
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -580,7 +580,7 @@ const amountDisplay = computed({
 const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
-  type: (props.transaction?.type as 'income' | 'expense') ?? ('expense' as 'income' | 'expense'),
+  type: (props.transaction?.type as TransactionType) ?? ('expense' as TransactionType),
   amount: props.transaction?.amount ?? 0,
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
@@ -607,7 +607,7 @@ const cameraDialogOpen = ref(false)
  * Shared by file selection and camera capture flows.
  */
 function autoFillForm(receiptData: {
-  type: 'income' | 'expense'
+  type: TransactionType
   amount: number
   currency: string
   category: string | null

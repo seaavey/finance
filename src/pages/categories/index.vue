@@ -152,7 +152,7 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sortable } from 'sortablejs-vue3'
-
+import type { Category, TransactionType } from '@/types'
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -185,7 +185,7 @@ const categoryStats = computed(() => {
   return map
 })
 
-const activeTab = ref<'income' | 'expense'>('expense')
+const activeTab = ref<TransactionType>('expense')
 const showDeleteDialog = ref(false)
 const deletingCategory = ref<Category | undefined>()
 

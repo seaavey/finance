@@ -298,7 +298,7 @@ import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import type { RecurringTransaction } from '@/composables/useRecurring'
+import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountWithBalance, Budget, BudgetWithProgress, Category, Goal, RecurringTransaction, ActivityLog, ActivityLogFilters, EntityType, ActionType, PartnerProfile, CoupleInvitation, Invitation } from '@/types'
 
 defineOptions({
   name: 'PagesScheduleIndex',

@@ -86,7 +86,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
+import type { Category, TransactionType } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
@@ -112,7 +112,7 @@ const colorOptions = [
 
 const form = reactive({
   name: '',
-  type: 'expense' as 'income' | 'expense',
+  type: 'expense' as TransactionType,
   icon: 'hugeicons:wallet-01',
   color: '#3b82f6',
 })
@@ -132,7 +132,7 @@ onMounted(async () => {
   const cat = categories.value.find((c: Category) => c.id === categoryId)
   if (cat) {
     form.name = cat.name
-    form.type = cat.type as 'income' | 'expense'
+    form.type = cat.type as TransactionType
     form.color = cat.color || '#6b7280'
     form.icon = cat.icon || ''
   }
