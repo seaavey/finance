@@ -7,12 +7,11 @@ defineOptions({
 
 const router = useRouter()
 const route = useRoute()
-const { fetchAccounts, getAccountBalances } = useAccounts()
+const { accountBalances, balancesLoading: loading, fetchAccountBalances } = useAccounts()
 const { formatCurrency } = useCurrency()
 
 const accountId = route.params.id as string
-const accountDetail = ref<AccountWithBalance | null>(null)
-const loading = ref(true)
+const accountDetail = computed(() => accountBalances.value.find((a) => a.id === accountId) || null)
 
 const typeLabels: Record<string, string> = {
   bank: 'accounts.bank',
@@ -23,10 +22,7 @@ const typeLabels: Record<string, string> = {
 }
 
 onMounted(async () => {
-  await fetchAccounts()
-  const list = await getAccountBalances()
-  accountDetail.value = list.find((a) => a.id === accountId) || null
-  loading.value = false
+  await fetchAccountBalances()
 })
 </script>
 

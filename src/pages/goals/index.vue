@@ -315,25 +315,25 @@ import { Progress } from '@/components/ui/progress'
 
 const router = useRouter()
 const { t } = useI18n()
-const { goals, loading, fetchGoals, fetchUserGoals } = useGoals()
+const { goals, partnerGoals, loading, fetchGoals, setPartnerId } = useGoals()
 const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency } = useCurrency()
 const { user, getSession } = useAuth()
 
-const myGoalsList = ref<Goal[]>([])
-const partnerGoalsList = ref<Goal[]>([])
 const ownerFilter = ref<'mine' | 'partner' | 'all'>('all')
 
 const allGoals = computed(() => {
-  // Filter local goals list based on owner filter
+  let mine = goals.value
+  let theirs = partnerGoals.value
+
   switch (ownerFilter.value) {
     case 'mine':
-      return myGoalsList.value
+      return mine
     case 'partner':
-      return partnerGoalsList.value
+      return theirs
     case 'all':
     default:
-      return [...myGoalsList.value, ...partnerGoalsList.value]
+      return [...mine, ...theirs]
   }
 })
 
@@ -382,16 +382,10 @@ function remainingFor(goal: Goal): number {
 
 const loadData = async () => {
   await getSession()
-  await fetchGoals()
-  // Sync to local refs
-  myGoalsList.value = [...goals.value]
   if (isPartnered.value && partner.value?.id) {
-    try {
-      partnerGoalsList.value = await fetchUserGoals(partner.value.id)
-    } catch {
-      partnerGoalsList.value = []
-    }
+    setPartnerId(partner.value.id)
   }
+  await fetchGoals()
 }
 
 onMounted(() => {

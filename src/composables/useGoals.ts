@@ -18,9 +18,11 @@ export const useGoals = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()
 
+  const partnerId = ref<string | undefined>()
+
   const {
     data: goalsData,
-    isLoading: loading,
+    isLoading: loadingGoals,
     refetch: fetchGoals,
   } = useQuery({
     queryKey: ['goals', computed(() => user.value?.id)],
@@ -34,7 +36,28 @@ export const useGoals = () => {
     staleTime: 30_000,
   })
 
+  const {
+    data: partnerGoalsData,
+    isLoading: loadingPartnerGoals,
+    refetch: fetchPartnerGoals,
+  } = useQuery({
+    queryKey: ['goals', partnerId],
+    queryFn: async () => {
+      if (!partnerId.value) return []
+      const result = await queryGoals(partnerId.value)
+      if (result.error) throw result.error
+      return result.data || []
+    },
+    enabled: computed(() => !!partnerId.value),
+    staleTime: 30_000,
+  })
+
   const goals = computed(() => goalsData.value || [])
+  const partnerGoals = computed(() => partnerGoalsData.value || [])
+
+  const setPartnerId = (id: string | undefined) => {
+    partnerId.value = id
+  }
 
   const fetchUserGoals = async (userId: string): Promise<Goal[]> => {
     const result = await queryGoals(userId)
@@ -133,8 +156,11 @@ export const useGoals = () => {
 
   return {
     goals,
-    loading,
+    partnerGoals,
+    setPartnerId,
+    loading: computed(() => loadingGoals.value || loadingPartnerGoals.value),
     fetchGoals,
+    fetchPartnerGoals,
     fetchUserGoals,
     addGoal,
     updateGoal,

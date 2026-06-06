@@ -10,11 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 const router = useRouter()
 useI18n()
-const { loading, fetchAccounts, getAccountBalances, deleteAccount } = useAccounts()
+const { loading, fetchAccounts, fetchAccountBalances, accountBalances, deleteAccount } = useAccounts()
 const { fetchCategories } = useCategories()
 const { formatCurrency, convertTo, defaultCurrency } = useCurrency()
 
-const accountList = ref<AccountWithBalance[]>([])
 const showDeleteDialog = ref(false)
 const deletingAccount = ref<AccountWithBalance | null>(null)
 
@@ -27,8 +26,7 @@ const typeLabels: Record<string, string> = {
 }
 
 const loadData = async () => {
-  await Promise.all([fetchAccounts(), fetchCategories()])
-  accountList.value = await getAccountBalances()
+  await Promise.all([fetchAccounts(), fetchAccountBalances(), fetchCategories()])
 }
 
 onMounted(() => {
@@ -43,7 +41,6 @@ const onDeleteRequest = (account: AccountWithBalance) => {
 const onDeleteConfirm = async () => {
   if (!deletingAccount.value) return
   await deleteAccount(deletingAccount.value.id)
-  accountList.value = await getAccountBalances()
   showDeleteDialog.value = false
   deletingAccount.value = null
 }
@@ -60,7 +57,7 @@ const goToDetail = (account: AccountWithBalance) => {
 
 const totalBalance = computed(() => {
   let total = 0
-  for (const a of accountList.value) {
+  for (const a of accountBalances.value) {
     const converted = convertTo(a.balance, a.currency || defaultCurrency.value, defaultCurrency.value)
     total += converted ?? a.balance
   }
@@ -99,7 +96,7 @@ const totalBalance = computed(() => {
 
     <!-- Empty State -->
     <div
-      v-else-if="accountList.length === 0"
+      v-else-if="accountBalances.length === 0"
       class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
     >
       <div
@@ -135,7 +132,7 @@ const totalBalance = computed(() => {
       <!-- Account Cards -->
       <div class="grid gap-3 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
         <div
-          v-for="account in accountList"
+          v-for="account in accountBalances"
           :key="account.id"
           class="group flex items-center justify-between rounded-3xl border border-border/50 bg-card/30 p-4 transition-all hover:border-border hover:bg-card/50 cursor-pointer"
           @click="goToDetail(account)"

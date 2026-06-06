@@ -21,10 +21,11 @@ export const useBudgets = () => {
   const { user } = useAuth()
 
   const currentMonth = ref<string>('')
+  const targetUserId = ref<string | undefined>()
 
   const {
     data: budgetsData,
-    isLoading: loading,
+    isLoading: budgetsLoading,
     refetch: refetchBudgets,
   } = useQuery({
     queryKey: ['budgets', computed(() => user.value?.id), currentMonth],
@@ -38,7 +39,25 @@ export const useBudgets = () => {
     staleTime: 60_000,
   })
 
+  const {
+    data: progressData,
+    isLoading: progressLoading,
+    refetch: refetchBudgetProgress,
+  } = useQuery({
+    queryKey: ['budgets:with-progress', computed(() => targetUserId.value || user.value?.id), currentMonth],
+    queryFn: async () => {
+      const uid = targetUserId.value || user.value?.id
+      if (!uid || !currentMonth.value) return []
+      const result = await queryBudgetWithProgressService(uid, currentMonth.value)
+      if (result.error) throw result.error
+      return result.data || []
+    },
+    enabled: computed(() => !!(targetUserId.value || user.value?.id) && !!currentMonth.value),
+    staleTime: 30_000,
+  })
+
   const budgets = computed(() => budgetsData.value || [])
+  const budgetsWithProgress = computed(() => progressData.value || [])
 
   const fetchBudgets = async (month: string) => {
     currentMonth.value = month
@@ -49,6 +68,8 @@ export const useBudgets = () => {
     month: string,
     userId?: string,
   ): Promise<BudgetWithProgress[]> => {
+    currentMonth.value = month
+    targetUserId.value = userId
     const uid = userId || user.value?.id
     if (!uid) return []
 
@@ -207,7 +228,8 @@ export const useBudgets = () => {
 
   return {
     budgets,
-    loading,
+    budgetsWithProgress,
+    loading: computed(() => budgetsLoading.value || progressLoading.value),
     fetchBudgets,
     fetchBudgetWithProgress,
     setBudget,

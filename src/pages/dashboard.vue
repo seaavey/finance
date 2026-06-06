@@ -573,15 +573,14 @@ const trendBalance = computed(() => {
   return Math.round(((balance.value - prevSummary.value.balance) / prevSummary.value.balance) * 100)
 })
 
-const { fetchBudgetWithProgress, checkBudgetAlerts } = useBudgets()
-const { fetchAccounts, getAccountBalances } = useAccounts()
+const { fetchBudgetWithProgress, checkBudgetAlerts, budgetsWithProgress } = useBudgets()
+const { fetchAccounts, accountBalances, fetchAccountBalances } = useAccounts()
 const { currentNetWorth, fetchNetWorthHistory } = useNetWorth()
 const { fetchRecurring, processDueRecurring } = useRecurring()
 useReminders()
 
 const loading = ref(true)
 const budgetSummaries = ref<BudgetWithProgress[]>([])
-const accountBalances = ref<AccountWithBalance[]>([])
 
 const periodOptions = [
   { value: '1d' as const, label: '1D' },
@@ -756,9 +755,12 @@ onMounted(async () => {
   await processDueRecurring()
 
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`
-  const [budgets] = await Promise.all([fetchBudgetWithProgress(monthStr), fetchAccounts()])
-  budgetSummaries.value = budgets
-  accountBalances.value = await getAccountBalances()
+  await Promise.all([
+    fetchBudgetWithProgress(monthStr),
+    fetchAccounts(),
+    fetchAccountBalances(),
+  ])
+  budgetSummaries.value = budgetsWithProgress.value
 
   // Check budget thresholds for alerts after fresh budget data is loaded
   await checkBudgetAlerts(monthStr)

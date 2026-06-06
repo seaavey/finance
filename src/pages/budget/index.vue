@@ -11,28 +11,24 @@ import { formatDateSafe } from '@/lib/utils'
 const router = useRouter()
 const { t, locale } = useI18n()
 const { fetchCategories } = useCategories()
-const { loading, fetchBudgetWithProgress, deleteBudget, getProgress } = useBudgets()
+const { loading, fetchBudgetWithProgress, budgetsWithProgress, deleteBudget, getProgress } = useBudgets()
 const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency: fmtCurrency } = useCurrency()
 const { user, getSession } = useAuth()
 
-const myBudgetList = ref<BudgetWithProgress[]>([])
-const partnerBudgetList = ref<BudgetWithProgress[]>([])
 const showDeleteDialog = ref(false)
 const deletingBudget = ref<BudgetWithProgress | null>(null)
 
 const ownerFilter = ref<'mine' | 'partner' | 'all'>('all')
 
 const budgetList = computed(() => {
-  switch (ownerFilter.value) {
-    case 'mine':
-      return myBudgetList.value
-    case 'partner':
-      return partnerBudgetList.value
-    case 'all':
-    default:
-      return [...myBudgetList.value, ...partnerBudgetList.value]
+  let list = budgetsWithProgress.value
+  if (ownerFilter.value === 'mine') {
+    list = list.filter((b) => b.user_id === user.value?.id)
+  } else if (ownerFilter.value === 'partner') {
+    list = list.filter((b) => b.user_id === partner.value?.id)
   }
+  return list
 })
 
 const totals = computed(() => {
@@ -80,14 +76,7 @@ const loadData = async () => {
 }
 
 const loadBudget = async () => {
-  const [mine, partnerBudgets] = await Promise.all([
-    fetchBudgetWithProgress(currentMonthStr.value),
-    isPartnered.value && partner.value?.id
-      ? fetchBudgetWithProgress(currentMonthStr.value, partner.value.id)
-      : Promise.resolve([] as BudgetWithProgress[]),
-  ])
-  myBudgetList.value = mine
-  partnerBudgetList.value = partnerBudgets
+  await fetchBudgetWithProgress(currentMonthStr.value)
 }
 
 onMounted(() => {

@@ -32,7 +32,24 @@ export const useAccounts = () => {
     staleTime: 120_000,
   })
 
+  const {
+    data: balancesData,
+    isLoading: balancesLoading,
+    refetch: fetchAccountBalances,
+  } = useQuery({
+    queryKey: ['account-balances', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) throw new Error('Not authenticated')
+      const result = await queryAccountBalancesService(user.value.id)
+      if (result.error) throw result.error
+      return result.data || []
+    },
+    enabled: computed(() => !!user.value),
+    staleTime: 60_000,
+  })
+
   const accounts = computed(() => accountsData.value || [])
+  const accountBalances = computed(() => balancesData.value || [])
 
   const addAccount = async (account: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     if (!user.value) {
@@ -45,6 +62,7 @@ export const useAccounts = () => {
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
       toast.success(t('accounts.saved'))
       activity.log('account', 'created', { name: account.name, type: account.type })
     } else {
@@ -61,6 +79,7 @@ export const useAccounts = () => {
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
       toast.success(t('accounts.saved'))
       if (result.data) activity.log('account', 'updated', { name: result.data.name }, id)
     } else {
@@ -75,6 +94,7 @@ export const useAccounts = () => {
 
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
       toast.success(t('accounts.deleted'))
       activity.log('account', 'deleted', { name: accountName }, id)
@@ -85,7 +105,7 @@ export const useAccounts = () => {
   }
 
   const getAccountBalance = async (accountId: string): Promise<number> => {
-    const balances = await getAccountBalances()
+    const balances = balancesData.value || (await getAccountBalances())
     const account = balances.find((a) => a.id === accountId)
     return account?.balance ?? 0
   }
@@ -98,7 +118,7 @@ export const useAccounts = () => {
   }
 
   const getConvertedBalances = async (): Promise<AccountWithBalance[]> => {
-    const balances = await getAccountBalances()
+    const balances = balancesData.value || (await getAccountBalances())
     if (balances.length === 0) return []
 
     const { defaultCurrency, convertTo } = useCurrency()
@@ -128,8 +148,11 @@ export const useAccounts = () => {
 
   return {
     accounts,
-    loading,
+    accountBalances,
+    loading: computed(() => loading.value || balancesLoading.value),
+    balancesLoading,
     fetchAccounts,
+    fetchAccountBalances,
     addAccount,
     updateAccount,
     deleteAccount,
