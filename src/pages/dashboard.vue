@@ -372,7 +372,7 @@
                     : 'text-foreground'
                 "
               >
-                {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount, tx.currency) }}
+                {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount, tx.currency || undefined) }}
               </p>
             </router-link>
           </div>

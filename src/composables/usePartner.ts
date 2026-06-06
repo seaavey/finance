@@ -197,7 +197,7 @@ export const usePartner = () => {
     })
 
     const err =
-      data?.error || // RPC returned { error: string }
+      (data as any)?.error || // RPC returned { error: string }
       error?.message || // Supabase client error
       (error as { details?: string })?.details || // Postgres error detail
       null
@@ -244,7 +244,7 @@ export const usePartner = () => {
     const { data, error } = await supabase.rpc('disconnect_partner')
 
     const err =
-      data?.error || // RPC returned { error: string }
+      (data as any)?.error || // RPC returned { error: string }
       error?.message || // Supabase client error
       (error as { details?: string })?.details || // Postgres error detail
       null

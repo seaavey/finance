@@ -579,7 +579,7 @@ const amountDisplay = computed({
 const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
-  type: props.transaction?.type ?? ('expense' as 'income' | 'expense'),
+  type: (props.transaction?.type as 'income' | 'expense') ?? ('expense' as 'income' | 'expense'),
   amount: props.transaction?.amount ?? 0,
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
@@ -748,8 +748,9 @@ function onSplitAmountInput(event: Event, index: number) {
 watch(
   () => props.transaction,
   (tx) => {
-    if (tx?.splits && tx.splits.length > 0) {
-      splitItems.value = tx.splits.map((s) => ({ ...s }))
+    const splits = (tx?.splits as unknown as SplitItem[]) || []
+    if (splits.length > 0) {
+      splitItems.value = splits.map((s) => ({ ...s }))
       splitEnabled.value = true
     }
   },

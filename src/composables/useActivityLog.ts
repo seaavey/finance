@@ -2,6 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import { user } from './useAuth'
 import { computed } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import type { Json } from '@/types'
 
 export type EntityType =
   | 'transaction'
@@ -142,7 +143,7 @@ export const useActivityLog = () => {
         entity_type: entityType,
         entity_id: entityId ?? null,
         action,
-        metadata: metadata ?? {},
+        metadata: (metadata ?? {}) as Json,
       })
       // invalidate cache silently so next fetch is up to date
       queryClient.invalidateQueries({ queryKey: ['activity_logs'] })

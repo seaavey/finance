@@ -93,7 +93,7 @@
                 {{ $t('transaction_edit.edit_label') }}
               </p>
               <p class="text-xl font-bold">
-                {{ formatCurrency(transaction.amount, transaction.currency) }}
+                {{ formatCurrency(transaction.amount, transaction.currency || undefined) }}
               </p>
               <p class="text-sm text-muted-foreground">
                 {{ categoryName }} &middot; {{ formattedDate }}

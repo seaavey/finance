@@ -934,7 +934,7 @@ const columns = [
       const isIncome = row.original.type === 'income'
       const symbol = isIncome ? '+' : '-'
       const colorClass = isIncome ? 'text-emerald-600' : 'text-red-600'
-      const amount = formatCurrency(Number(row.original.amount), row.original.currency)
+      const amount = formatCurrency(Number(row.original.amount), row.original.currency || undefined)
 
       return h('div', { class: 'text-right' }, [
         h('p', { class: `text-base font-bold tabular-nums ${colorClass}` }, `${symbol}${amount}`),

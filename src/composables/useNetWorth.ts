@@ -87,7 +87,7 @@ export const useNetWorth = () => {
             runningBalances.set(acc.id, Number(acc.initial_balance))
             isLiability.set(acc.id, acc.type === 'liability')
             accountCurrency.set(acc.id, acc.currency || 'IDR')
-            accountCreated.set(acc.id, new Date(acc.created_at))
+            accountCreated.set(acc.id, new Date(acc.created_at || ''))
           }
 
           let txIdx = 0

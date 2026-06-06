@@ -113,7 +113,7 @@ const formatDate = (date: string) => {
             :class="tx.type === 'income' ? 'text-emerald-600' : 'text-red-600'"
           >
             {{ tx.type === 'income' ? '+' : '-'
-            }}{{ formatCurrency(Number(tx.amount), tx.currency) }}
+            }}{{ formatCurrency(Number(tx.amount), tx.currency || undefined) }}
           </p>
           <AppIcon
             name="hugeicons:pencil-edit-01"

@@ -69,7 +69,7 @@ const accountName = computed(() => {
   return accounts.value.find((a) => a.id === props.transaction.account_id)?.name ?? ''
 })
 const formatted = computed(() =>
-  formatCurrency(Number(props.transaction.amount), props.transaction.currency),
+  formatCurrency(Number(props.transaction.amount), props.transaction.currency || undefined),
 )
 const formattedDate = computed(() => {
   const d = new Date(props.transaction.date)

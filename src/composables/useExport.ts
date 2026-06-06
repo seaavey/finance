@@ -58,7 +58,7 @@ export const useExport = () => {
         [t('export.col_date')]: tx.date,
         [t('export.col_type')]:
           tx.type === 'income' ? t('export.type_income') : t('export.type_expense'),
-        [t('export.col_category')]: catMap.get(tx.category_id) || '-',
+        [t('export.col_category')]: catMap.get(tx.category_id || '') || '-',
         [t('export.col_amount')]: Number(tx.amount),
         [t('export.col_currency')]: tx.currency,
         [t('export.col_description')]: tx.description || '',

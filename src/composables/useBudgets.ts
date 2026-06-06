@@ -113,7 +113,7 @@ export const useBudgets = () => {
 
         const categoryMap = new Map(
           (categoriesData || []).map(
-            (c: { id: string; name: string; color: string; icon: string }) => [c.id, c],
+            (c: { id: string; name: string; color: string | null; icon: string | null }) => [c.id, c],
           ),
         )
 

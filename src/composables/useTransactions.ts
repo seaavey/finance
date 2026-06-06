@@ -1,28 +1,17 @@
 import { computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import type { Database } from '@/types/database'
+import type { Database, Json } from '@/types'
 
 export interface SplitItem {
   category_id: string
   amount: number
   description?: string
+  [key: string]: any
 }
 
-/** Maps to Database['public']['Tables']['transactions']['Row'] */
-export interface Transaction {
-  id: string
-  user_id: string
-  type: 'income' | 'expense'
-  amount: number
-  currency: string
-  category_id: string | null
-  description: string | null
-  date: string
-  account_id: string | null
-  image_url: string | null
-  splits: SplitItem[]
-  created_at: string | null
+export type Transaction = Omit<Database['public']['Tables']['transactions']['Row'], 'splits'> & {
+  splits: any
 }
 
 export interface TransactionFilters {
@@ -58,9 +47,7 @@ export const useTransactions = () => {
   const buildQuery = (filters?: TransactionFilters) => {
     let query = supabase
       .from('transactions')
-      .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
-      )
+      .select('*')
       .order('date', { ascending: false })
 
     if (filters?.type) query = query.eq('type', filters.type)
@@ -115,13 +102,13 @@ export const useTransactions = () => {
 
       totalCount.value = countResult.count ?? 0
 
-      return (data as Transaction[]) || []
+      return data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 30_000,
   })
 
-  const transactions = computed(() => loadedTransactions.value)
+  const transactions = computed<Transaction[]>(() => loadedTransactions.value)
 
   const fetchTransactions = async (filters?: TransactionFilters, page = 1) => {
     currentFilters.value = filters
@@ -146,14 +133,16 @@ export const useTransactions = () => {
     await goToPage(currentPage.value + delta)
   }
 
-  const addTransaction = async (tx: Omit<Transaction, 'id' | 'user_id' | 'created_at'>) => {
+  const addTransaction = async (
+    tx: Omit<Database['public']['Tables']['transactions']['Insert'], 'user_id' | 'created_at'>,
+  ) => {
     if (!user.value) {
       return { error: { message: 'Not authenticated' } }
     }
 
     const { data, error } = await supabase
       .from('transactions')
-      .insert({ ...tx, user_id: user.value.id })
+      .insert({ ...tx, user_id: user.value.id } as Database['public']['Tables']['transactions']['Insert'])
       .select()
 
     if (!error) {
@@ -179,7 +168,7 @@ export const useTransactions = () => {
 
   const updateTransaction = async (
     id: string,
-    updates: Partial<Omit<Transaction, 'id' | 'user_id' | 'created_at'>>,
+    updates: Database['public']['Tables']['transactions']['Update'],
   ) => {
     const { error } = await supabase.from('transactions').update(updates).eq('id', id)
 
@@ -216,7 +205,7 @@ export const useTransactions = () => {
 
   const bulkUpdateTransactions = async (
     ids: string[],
-    updates: Partial<Omit<Transaction, 'id' | 'user_id' | 'created_at'>>,
+    updates: Database['public']['Tables']['transactions']['Update'],
   ) => {
     if (ids.length === 0) return { error: null }
     const { error } = await supabase.from('transactions').update(updates).in('id', ids)
@@ -248,13 +237,11 @@ export const useTransactions = () => {
   const getTransaction = async (id: string) => {
     const { data, error } = await supabase
       .from('transactions')
-      .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
-      )
+      .select('*')
       .eq('id', id)
       .single()
 
-    return { data: data as Transaction | null, error }
+    return { data, error }
   }
 
   const searchTransactions = async (term: string): Promise<Transaction[]> => {
@@ -263,13 +250,11 @@ export const useTransactions = () => {
     }
     const { data, error } = await supabase
       .from('transactions')
-      .select(
-        'id, user_id, type, amount, currency, category_id, description, date, account_id, image_url, splits, created_at',
-      )
+      .select('*')
       .ilike('description', `%${term}%`)
       .order('date', { ascending: false })
       .limit(10)
-    return error || !data ? [] : (data as Transaction[])
+    return error || !data ? [] : data
   }
 
   const deleteTransactionImage = async (url: string) => {
@@ -312,7 +297,8 @@ export const useTransactions = () => {
     const month = now.getMonth()
     const year = now.getFullYear()
 
-    const monthTxs = transactions.value.filter((tx) => {
+    const txs = transactions.value as Transaction[]
+    const monthTxs = txs.filter((tx) => {
       const d = new Date(tx.date)
       return d.getMonth() === month && d.getFullYear() === year
     })

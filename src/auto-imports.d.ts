@@ -121,7 +121,7 @@ declare global {
   export type { Bill } from './composables/useBills'
   import('./composables/useBills')
   // @ts-ignore
-  export type { Budget, BudgetWithProgress } from './composables/useBudgets'
+  export type { Budget, BudgetWithProgress, BudgetInput } from './composables/useBudgets'
   import('./composables/useBudgets')
   // @ts-ignore
   export type { CameraPermissionState, UseCameraReturn } from './composables/useCamera'
