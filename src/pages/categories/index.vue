@@ -160,26 +160,28 @@ const { formatCurrency } = useCurrency()
 
 const {
   categories,
-  loading,
+  loading: categoriesLoading,
   incomeCategories,
   expenseCategories,
   fetchCategories,
   seedDefaults,
   deleteCategory,
 } = useCategories()
-const { transactions, fetchTransactions } = useTransactions()
 const { user, getSession } = useAuth()
+
+const userId = computed(() => user.value?.id)
+const { data: statsData, isLoading: statsLoading } = useCategoryStats(userId)
+
+const loading = computed(() => categoriesLoading.value || statsLoading.value)
 
 const categoryStats = computed(() => {
   const map = new Map<string, { count: number; total: number }>()
-  for (const tx of transactions.value) {
-    if (!tx.category_id) continue
-    const existing = map.get(tx.category_id)
-    if (existing) {
-      existing.count++
-      existing.total += tx.amount
-    } else {
-      map.set(tx.category_id, { count: 1, total: tx.amount })
+  if (statsData.value) {
+    for (const item of statsData.value) {
+      map.set(item.category_id, {
+        count: Number(item.transaction_count),
+        total: Number(item.total_amount),
+      })
     }
   }
   return map
@@ -211,7 +213,7 @@ const onReorder = (evt: { oldIndex: number; newIndex: number }) => {
 
 onMounted(async () => {
   await getSession()
-  await Promise.all([fetchCategories(), fetchTransactions()])
+  await fetchCategories()
   if (categories.value.length === 0 && user.value) {
     await seedDefaults(user.value.id)
   }

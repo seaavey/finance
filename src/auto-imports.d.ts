@@ -70,6 +70,7 @@ declare global {
   const useBudgets: typeof import('./composables/useBudgets').useBudgets
   const useCamera: typeof import('./composables/useCamera').useCamera
   const useCategories: typeof import('./composables/useCategories').useCategories
+  const useCategoryStats: typeof import('./composables/useTransactions').useCategoryStats
   const useColorMode: typeof import('./composables/nuxt-compat').useColorMode
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
@@ -98,6 +99,7 @@ declare global {
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useToast: typeof import('./composables/useToast').useToast
   const useToggle: typeof import('@vueuse/core').useToggle
+  const useTransactionSummary: typeof import('./composables/useTransactions').useTransactionSummary
   const useTransactions: typeof import('./composables/useTransactions').useTransactions
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const user: typeof import('./composables/useAuth').user
@@ -196,6 +198,7 @@ declare module 'vue' {
     readonly useBudgets: UnwrapRef<typeof import('./composables/useBudgets')['useBudgets']>
     readonly useCamera: UnwrapRef<typeof import('./composables/useCamera')['useCamera']>
     readonly useCategories: UnwrapRef<typeof import('./composables/useCategories')['useCategories']>
+    readonly useCategoryStats: UnwrapRef<typeof import('./composables/useTransactions')['useCategoryStats']>
     readonly useColorMode: UnwrapRef<typeof import('./composables/nuxt-compat')['useColorMode']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
@@ -224,6 +227,7 @@ declare module 'vue' {
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useToast: UnwrapRef<typeof import('./composables/useToast')['useToast']>
     readonly useToggle: UnwrapRef<typeof import('@vueuse/core')['useToggle']>
+    readonly useTransactionSummary: UnwrapRef<typeof import('./composables/useTransactions')['useTransactionSummary']>
     readonly useTransactions: UnwrapRef<typeof import('./composables/useTransactions')['useTransactions']>
     readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
     readonly user: UnwrapRef<typeof import('./composables/useAuth')['user']>

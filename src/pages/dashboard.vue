@@ -54,7 +54,7 @@
     </div>
 
     <!-- Skeleton Loading -->
-    <div v-if="loading" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+    <div v-if="loading || summaryLoading" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
       <div class="h-64 animate-pulse rounded-4xl bg-muted/50 md:col-span-2 lg:col-span-3" />
       <div
         v-for="i in 3"
@@ -473,14 +473,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import { useQuery } from '@tanstack/vue-query'
+import { getTransactionSummary as getTxSummaryService } from '@/services/transaction.service'
+import type { BudgetWithProgress, AccountWithBalance, TransactionType } from "@/types"
+
 defineOptions({
   name: 'DashboardPage',
 })
+
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { formatDateSafe } from '@/lib/utils'
-
-
 import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
 
 const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'))
@@ -492,6 +495,84 @@ const { categories, fetchCategories } = useCategories()
 const { formatCurrency, defaultCurrency, convertTo } = useCurrency()
 const { t, locale } = useI18n()
 const { fetchPartner, partner, isPartnered } = usePartner()
+
+const viewMode = ref<'mine' | 'partner'>('mine')
+const period = ref<'1d' | '7d' | '30d' | 'all'>('7d')
+
+const activeCurrency = computed(() => {
+  if (viewMode.value === 'partner' && isPartnered.value && partner.value?.currency) {
+    return partner.value.currency
+  }
+  return defaultCurrency.value
+})
+
+const startDate = computed(() => {
+  const now = new Date()
+  if (period.value === 'all') return '1970-01-01'
+  const daysMap = { '1d': 0, '7d': 6, '30d': 29 }
+  const d = new Date(now.getTime() - (daysMap[period.value as keyof typeof daysMap] || 0) * 24 * 60 * 60 * 1000)
+  return formatDateSafe(d)
+})
+
+const endDate = computed(() => formatDateSafe(new Date()))
+
+const targetUserId = computed(() => {
+  if (isPartnered.value && viewMode.value === 'partner') {
+    return partner.value?.id
+  }
+  return user.value?.id
+})
+
+const { data: summary, isLoading: summaryLoading } = useTransactionSummary(
+  targetUserId,
+  startDate,
+  endDate,
+  activeCurrency,
+)
+
+const prevSummaryParams = computed(() => {
+  if (period.value === 'all') return null
+  const now = new Date()
+  const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
+  const days = daysMap[period.value as keyof typeof daysMap] || 0
+  
+  const end = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
+  const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000)
+  
+  return {
+    start: formatDateSafe(start),
+    end: formatDateSafe(end)
+  }
+})
+
+const { data: prevSummary } = useQuery({
+  queryKey: ['transaction-summary-prev', targetUserId, prevSummaryParams, activeCurrency],
+  queryFn: async () => {
+    if (!targetUserId.value || !prevSummaryParams.value) return null
+    const result = await getTxSummaryService(
+      targetUserId.value,
+      prevSummaryParams.value.start,
+      prevSummaryParams.value.end,
+      activeCurrency.value
+    )
+    if (result.error) throw result.error
+    return result.data
+  },
+  enabled: computed(() => !!targetUserId.value && !!prevSummaryParams.value),
+  staleTime: 60_000,
+})
+
+const totalIncome = computed(() => summary.value?.total_income || 0)
+const totalExpense = computed(() => summary.value?.total_expense || 0)
+const balance = computed(() => summary.value?.balance || 0)
+
+const trendBalance = computed(() => {
+  if (!prevSummary.value || prevSummary.value.balance === 0) {
+    return balance.value !== 0 ? null : 0
+  }
+  return Math.round(((balance.value - prevSummary.value.balance) / prevSummary.value.balance) * 100)
+})
+
 const { fetchBudgetWithProgress, checkBudgetAlerts } = useBudgets()
 const { fetchAccounts, getAccountBalances } = useAccounts()
 const { currentNetWorth, fetchNetWorthHistory } = useNetWorth()
@@ -499,8 +580,6 @@ const { fetchRecurring, processDueRecurring } = useRecurring()
 useReminders()
 
 const loading = ref(true)
-const viewMode = ref<'mine' | 'partner'>('mine')
-const period = ref<'1d' | '7d' | '30d' | 'all'>('7d')
 const budgetSummaries = ref<BudgetWithProgress[]>([])
 const accountBalances = ref<AccountWithBalance[]>([])
 
@@ -519,28 +598,6 @@ const viewModes = computed(() => [
   },
 ])
 
-const filteredTransactions = computed(() => {
-  let list = transactions.value
-
-  // 1. View Mode Filter (Self/Partner)
-  if (isPartnered.value) {
-    const targetUserId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id
-    if (targetUserId) {
-      list = list.filter((tx) => tx.user_id === targetUserId)
-    }
-  }
-
-  // 2. Period Filter
-  if (period.value !== 'all') {
-    const now = new Date()
-    const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
-    const cutoff = new Date(now.getTime() - daysMap[period.value] * 24 * 60 * 60 * 1000)
-    list = list.filter((tx) => new Date(tx.date) >= cutoff)
-  }
-
-  return list
-})
-
 const displayName = computed(() => {
   const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
   if (!name) {
@@ -549,34 +606,17 @@ const displayName = computed(() => {
   return name.split(' ')[0]
 })
 
-// Determine which currency to use based on view mode
-const activeCurrency = computed(() => {
-  if (viewMode.value === 'partner' && isPartnered.value && partner.value?.currency) {
-    return partner.value.currency
-  }
-  return defaultCurrency.value
-})
-
-// Convert a transaction amount to active currency using exchange rates
 const convertAmount = (amount: number, fromCurrency: string, toCurrency: string): number => {
   if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount
   const converted = convertTo(amount, fromCurrency, toCurrency)
   if (converted !== null) return converted
-  // If conversion fails (rates not loaded), fall back to 0 rather than silently using wrong currency
-  console.warn(`Currency conversion failed: ${fromCurrency}→${toCurrency} for amount ${amount}`)
   return 0
 }
 
 const monthLabel = computed(() => {
-  if (period.value === '1d') {
-    return t('dashboard.today')
-  }
-  if (period.value === '7d') {
-    return t('dashboard.last_7_days')
-  }
-  if (period.value === '30d') {
-    return t('dashboard.last_30_days')
-  }
+  if (period.value === '1d') return t('dashboard.today')
+  if (period.value === '7d') return t('dashboard.last_7_days')
+  if (period.value === '30d') return t('dashboard.last_30_days')
   return t('dashboard.all_time')
 })
 
@@ -585,19 +625,10 @@ const formatRelativeDate = (date: string) => {
   const d = new Date(date)
   const diffMs = now.getTime() - d.getTime()
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  if (diffDays === 0) {
-    return t('dashboard.today')
-  }
-  if (diffDays === 1) {
-    return t('dashboard.yesterday')
-  }
-  if (diffDays < 7) {
-    return t('dashboard.days_ago', { days: diffDays })
-  }
-  return d.toLocaleDateString(locale.value, {
-    day: 'numeric',
-    month: 'short',
-  })
+  if (diffDays === 0) return t('dashboard.today')
+  if (diffDays === 1) return t('dashboard.yesterday')
+  if (diffDays < 7) return t('dashboard.days_ago', { days: diffDays })
+  return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
 }
 
 const categoryMap = computed(() => {
@@ -609,75 +640,22 @@ const categoryMap = computed(() => {
 })
 
 const getCategoryName = (id: string | null) => {
-  if (!id) {
-    return ''
-  }
+  if (!id) return ''
   return categoryMap.value.get(id)?.name || ''
 }
-
-const totalIncome = computed(() =>
-  filteredTransactions.value
-    .filter((t) => t.type === 'income')
-    .reduce(
-      (s, t) =>
-        s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
-      0,
-    ),
-)
-
-const totalExpense = computed(() =>
-  filteredTransactions.value
-    .filter((t) => t.type === 'expense')
-    .reduce(
-      (s, t) =>
-        s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCurrency.value),
-      0,
-    ),
-)
-
-const balance = computed(() => totalIncome.value - totalExpense.value)
 
 const currentMonthStr = computed(() => {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
 })
 
-const trendBalance = computed(() => {
-  if (period.value === 'all') {
-    return 0
+const filteredTransactions = computed(() => {
+  let list = transactions.value
+  if (isPartnered.value) {
+    const targetId = viewMode.value === 'mine' ? user.value?.id : partner.value?.id
+    if (targetId) list = list.filter((tx) => tx.user_id === targetId)
   }
-
-  const now = new Date()
-  const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
-  const days = daysMap[period.value]
-
-  const currentCutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
-  const prevCutoff = new Date(now.getTime() - days * 2 * 24 * 60 * 60 * 1000)
-
-  const prevTransactions = transactions.value.filter((tx) => {
-    const d = new Date(tx.date)
-    return d >= prevCutoff && d < currentCutoff
-  })
-
-  const activeCur = activeCurrency.value
-  const prevIncome = prevTransactions
-    .filter((tx) => tx.type === 'income')
-    .reduce(
-      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-      0,
-    )
-  const prevExpense = prevTransactions
-    .filter((tx) => tx.type === 'expense')
-    .reduce(
-      (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-      0,
-    )
-
-  const prevBalance = prevIncome - prevExpense
-  if (prevBalance === 0) {
-    return balance.value !== 0 ? null : 0
-  }
-  return Math.round(((balance.value - prevBalance) / prevBalance) * 100)
+  return list
 })
 
 const recentTransactions = computed(() =>

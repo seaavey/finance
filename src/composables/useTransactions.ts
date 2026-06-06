@@ -9,10 +9,58 @@ import {
   bulkUpdateTransactions as bulkUpdateTxService,
   bulkDeleteTransactions as bulkDeleteTxService,
   searchTransactions as searchTxService,
+  getTransactionSummary as getTxSummaryService,
+  getCategoryStats as getCategoryStatsService,
   uploadTransactionImage as uploadImageService,
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
 import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
+
+export const useTransactionSummary = (
+  userId: Ref<string | undefined>,
+  startDate: Ref<string>,
+  endDate: Ref<string>,
+  targetCurrency: Ref<string>,
+) => {
+  return useQuery({
+    queryKey: ['transaction-summary', userId, startDate, endDate, targetCurrency],
+    queryFn: async () => {
+      if (!userId.value) return null
+      const result = await getTxSummaryService(
+        userId.value,
+        startDate.value,
+        endDate.value,
+        targetCurrency.value,
+      )
+      if (result.error) throw result.error
+      return result.data
+    },
+    enabled: computed(() => !!userId.value),
+    staleTime: 60_000,
+  })
+}
+
+export const useCategoryStats = (
+  userId: Ref<string | undefined>,
+  startDate?: Ref<string | undefined>,
+  endDate?: Ref<string | undefined>,
+) => {
+  return useQuery({
+    queryKey: ['category-stats', userId, startDate, endDate],
+    queryFn: async () => {
+      if (!userId.value) return []
+      const result = await getCategoryStatsService(
+        userId.value,
+        startDate?.value,
+        endDate?.value,
+      )
+      if (result.error) throw result.error
+      return result.data || []
+    },
+    enabled: computed(() => !!userId.value),
+    staleTime: 60_000,
+  })
+}
 
 export const useTransactions = () => {
   const { t } = useI18n()
@@ -23,13 +71,12 @@ export const useTransactions = () => {
 
   const currentFilters = ref<TransactionFilters | undefined>(undefined)
   const currentPage = ref(1)
-  const loadedTransactions = ref<Transaction[]>([])
   const totalCount = ref(0)
   const pageSize = ref(20)
 
   const totalPages = computed(() => Math.max(1, Math.ceil(totalCount.value / pageSize.value)))
 
-  const { isLoading: loading, refetch: refetchTransactions } = useQuery({
+  const { data: transactionsData, isLoading: loading, refetch: refetchTransactions } = useQuery({
     queryKey: [
       'transactions',
       computed(() => user.value?.id),
@@ -38,37 +85,33 @@ export const useTransactions = () => {
       pageSize,
     ],
     queryFn: async () => {
-      if (!user.value) return []
+      if (!user.value) return { data: [], count: 0 }
 
       const result = await queryTransactions(user.value.id, currentFilters.value || {}, currentPage.value, pageSize.value)
       if (result.error) throw result.error
 
       totalCount.value = result.data?.count || 0
-      return (result.data?.data as Transaction[]) || []
+      return {
+        data: (result.data?.data as Transaction[]) || [],
+        count: result.data?.count || 0
+      }
     },
     enabled: computed(() => !!user.value),
     staleTime: 30_000,
   })
 
-  const transactions = computed<Transaction[]>(() => loadedTransactions.value)
+  const transactions = computed<Transaction[]>(() => transactionsData.value?.data || [])
 
   const fetchTransactions = async (filters?: TransactionFilters, page = 1) => {
     currentFilters.value = filters
     currentPage.value = page
-    loadedTransactions.value = []
-    const result = await refetchTransactions()
-    if (result.data) {
-      loadedTransactions.value = result.data
-    }
+    await refetchTransactions()
   }
 
   const goToPage = async (page: number) => {
     if (page < 1 || page > totalPages.value || page === currentPage.value) return
     currentPage.value = page
-    const result = await refetchTransactions()
-    if (result.data) {
-      loadedTransactions.value = result.data
-    }
+    await refetchTransactions()
   }
 
   const changePage = async (delta: number) => {

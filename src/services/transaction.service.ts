@@ -104,6 +104,42 @@ export async function searchTransactions(
   return { data: (data as unknown as Transaction[]) || [], error: null }
 }
 
+export async function getTransactionSummary(
+  userId: string,
+  startDate: string,
+  endDate: string,
+  targetCurrency: string,
+): Promise<Result<{ total_income: number; total_expense: number; balance: number }>> {
+  const supabase = useSupabase()
+  // Cast to any to bypass generated types that don't include new RPCs yet
+  const { data, error } = await (supabase as any).rpc('get_transaction_summary', {
+    p_user_id: userId,
+    p_start_date: startDate,
+    p_end_date: endDate,
+    p_target_currency: targetCurrency,
+  })
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  const result = data && data.length > 0 ? data[0] : { total_income: 0, total_expense: 0, balance: 0 }
+  return { data: result, error: null }
+}
+
+export async function getCategoryStats(
+  userId: string,
+  startDate?: string,
+  endDate?: string,
+): Promise<Result<{ category_id: string; transaction_count: number; total_amount: number }[]>> {
+  const supabase = useSupabase()
+  const { data, error } = await (supabase as any).rpc('get_category_stats', {
+    p_user_id: userId,
+    p_start_date: startDate || '1970-01-01',
+    p_end_date: endDate || '9999-12-31',
+  })
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: (data as any) || [], error: null }
+}
+
 export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {
   const supabase = useSupabase()
   const ext = file.name.split('.').pop() || 'jpg'
