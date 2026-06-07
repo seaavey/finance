@@ -125,8 +125,8 @@
             <AppIcon name="hugeicons:chart-line-up-01" :size="20" />
           </div>
           <div>
-            <h3 class="text-sm font-black uppercase tracking-widest text-foreground">7-Day Trend</h3>
-            <p class="text-[10px] font-bold text-muted-foreground">Performance of {{ fromCurrency }}/{{ toCurrency }}</p>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground">{{ $t('converter.trend_title') }}</h3>
+            <p class="text-[10px] font-bold text-muted-foreground">{{ $t('converter.trend_subtitle', { from: fromCurrency, to: toCurrency }) }}</p>
           </div>
         </div>
       </div>
@@ -140,7 +140,7 @@
         <VisXYContainer v-if="trendData.length > 0" :data="trendData" class="h-full" :class="{ 'opacity-50': chartLoading }">
           <VisArea :x="x" :y="y" color="var(--primary)" :opacity="0.1" />
           <VisLine :x="x" :y="y" color="var(--primary)" :lineWidth="3" />
-          <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(undefined, { weekday: 'short' })" :gridLine="false" />
+          <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(locale, { weekday: 'short' })" :gridLine="false" />
         </VisXYContainer>
 
         <!-- EMPTY STATE -->
@@ -172,6 +172,7 @@ import { Button } from '@/components/ui/button'
 import { VisXYContainer, VisLine, VisArea, VisAxis } from '@unovis/vue'
 import { Skeleton } from '@/components/ui/skeleton'
 
+const { locale } = useI18n()
 const {
   currencyGroups,
   formatNumberOnly,

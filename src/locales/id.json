@@ -593,7 +593,9 @@
     "from": "Dari",
     "to": "Ke",
     "current_rate": "Kurs Saat Ini",
-    "no_trend": "Data tren tidak tersedia untuk pasangan ini"
+    "no_trend": "Data tren tidak tersedia untuk pasangan ini",
+    "trend_title": "Tren 7-Hari",
+    "trend_subtitle": "Performa {from}/{to}"
   },
   "landing": {
     "title": "Aemy Finance - Kelola Keuangan Pribadi & Bersama",
