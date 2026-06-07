@@ -6,7 +6,7 @@ export async function queryBills(userId: string): Promise<Result<BillRow[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('bills')
-    .select('*')
+    .select('amount, created_at, due_date, id, is_paid, paid_with_account_id, recurrence, title, updated_at, user_id')
     .eq('user_id', userId)
     .order('due_date')
 

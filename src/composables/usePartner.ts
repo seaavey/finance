@@ -58,7 +58,7 @@ export const usePartner = () => {
       if (!user.value) return []
       const { data } = await supabase
         .from('couple_invitations')
-        .select('*')
+        .select('created_at, id, recipient_email, sender_id, status, token, updated_at')
         .eq('sender_id', user.value.id)
         .order('created_at', { ascending: false })
       return (data as Invitation[]) || []

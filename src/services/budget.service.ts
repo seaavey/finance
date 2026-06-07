@@ -6,7 +6,7 @@ export async function queryBudgets(userId: string, month: string): Promise<Resul
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('budgets')
-    .select('*')
+    .select('amount, category_id, created_at, id, month, name, updated_at, user_id')
     .eq('user_id', userId)
     .eq('month', month)
     .order('created_at')
@@ -66,7 +66,7 @@ export async function queryBudgetWithProgress(
   // 1. Fetch budgets
   const { data: budgets, error: budgetError } = await supabase
     .from('budgets')
-    .select('*')
+    .select('amount, category_id, created_at, id, month, name, updated_at, user_id')
     .eq('user_id', userId)
     .eq('month', month)
 

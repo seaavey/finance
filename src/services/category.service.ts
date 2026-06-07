@@ -6,7 +6,7 @@ export async function queryCategories(userId: string): Promise<Result<CategoryRo
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('categories')
-    .select('*')
+    .select('color, created_at, icon, id, name, type, user_id')
     .eq('user_id', userId)
     .order('created_at', { ascending: true })
 
@@ -16,7 +16,7 @@ export async function queryCategories(userId: string): Promise<Result<CategoryRo
 
 export async function getCategory(id: string): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('categories').select('*').eq('id', id).single()
+  const { data, error } = await supabase.from('categories').select('color, created_at, icon, id, name, type, user_id').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }

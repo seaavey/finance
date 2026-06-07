@@ -13,7 +13,7 @@ export async function queryTransactions(
 
   let query = supabase
     .from('transactions')
-    .select('*', { count: 'exact' })
+    .select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id', { count: 'exact' })
     .eq('user_id', userId)
     .order('date', { ascending: false })
     .order('created_at', { ascending: false })
@@ -34,7 +34,7 @@ export async function queryTransactions(
 
 export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('transactions').select('*').eq('id', id).single()
+  const { data, error } = await supabase.from('transactions').select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: data as unknown as Transaction, error: null }
@@ -94,7 +94,7 @@ export async function searchTransactions(
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('transactions')
-    .select('*')
+    .select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id')
     .eq('user_id', userId)
     .ilike('description', `%${term}%`)
     .order('date', { ascending: false })

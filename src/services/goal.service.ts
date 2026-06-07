@@ -6,7 +6,7 @@ export async function queryGoals(userId: string): Promise<Result<GoalRow[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('goals')
-    .select('*')
+    .select('color, created_at, current_amount, deadline, icon, id, image_url, name, target_amount, updated_at, user_id')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
@@ -16,7 +16,7 @@ export async function queryGoals(userId: string): Promise<Result<GoalRow[]>> {
 
 export async function getGoal(id: string): Promise<Result<GoalRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('goals').select('*').eq('id', id).single()
+  const { data, error } = await supabase.from('goals').select('color, created_at, current_amount, deadline, icon, id, image_url, name, target_amount, updated_at, user_id').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }

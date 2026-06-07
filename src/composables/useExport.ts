@@ -42,10 +42,10 @@ export const useExport = () => {
       const [txResult, catResult] = await Promise.all([
         supabase
           .from('transactions')
-          .select('*')
+          .select('date, type, category_id, amount, currency, description')
           .eq('user_id', user.value.id)
           .order('date', { ascending: false }),
-        supabase.from('categories').select('*').eq('user_id', user.value.id),
+        supabase.from('categories').select('id, name').eq('user_id', user.value.id),
       ])
 
       const transactions = txResult.data || []

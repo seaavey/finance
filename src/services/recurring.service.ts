@@ -6,7 +6,7 @@ export async function queryRecurring(userId: string): Promise<Result<RecurringTr
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
-    .select('*')
+    .select('active, amount, category_id, created_at, currency, description, frequency, id, next_date, type, updated_at, user_id')
     .eq('user_id', userId)
     .order('next_date', { ascending: true })
 
@@ -45,7 +45,7 @@ export async function queryDueRecurring(userId: string, today: string): Promise<
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
-    .select('*')
+    .select('active, amount, category_id, created_at, currency, description, frequency, id, next_date, type, updated_at, user_id')
     .eq('user_id', userId)
     .eq('active', true)
     .lte('next_date', today)

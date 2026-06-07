@@ -6,7 +6,7 @@ export async function queryAccounts(userId: string): Promise<Result<Account[]>> 
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('accounts')
-    .select('*')
+    .select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at')
     .eq('user_id', userId)
     .order('created_at')
 
@@ -16,7 +16,7 @@ export async function queryAccounts(userId: string): Promise<Result<Account[]>> 
 
 export async function getAccount(id: string): Promise<Result<Account>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('accounts').select('*').eq('id', id).single()
+  const { data, error } = await supabase.from('accounts').select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at').eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: data as Account, error: null }
@@ -52,7 +52,7 @@ export async function queryAccountBalances(userId: string): Promise<Result<Accou
   // 1. Fetch accounts
   const { data: accounts, error: accountError } = await supabase
     .from('accounts')
-    .select('*')
+    .select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at')
     .eq('user_id', userId)
 
   if (accountError)

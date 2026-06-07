@@ -4,7 +4,7 @@ import { AppError } from '@/types/result'
 
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single()
+  const { data, error } = await supabase.from('profiles').select('avatar_url, created_at, currency, display_name, id, partner_id, updated_at').eq('id', userId).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }
