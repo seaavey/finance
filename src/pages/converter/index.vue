@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-2xl space-y-12 px-1 py-8 md:px-0">
+  <div class="mx-auto max-w-2xl space-y-12 px-4 py-8 md:px-0">
     <!-- HEADER -->
     <div class="text-center space-y-2">
       <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
@@ -52,17 +52,23 @@
         <Button
           variant="outline"
           size="icon"
-          class="size-14 rounded-full border-4 border-background bg-card shadow-xl transition-all hover:scale-110 active:scale-95"
+          class="size-14 rounded-full border-4 border-background bg-card shadow-xl transition-all hover:scale-110 active:scale-95 group/swap"
           @click="swapCurrencies"
         >
-          <AppIcon name="hugeicons:exchange-01" :size="24" class="text-primary" />
+          <AppIcon
+            name="hugeicons:exchange-01"
+            :size="24"
+            class="text-primary transition-transform duration-500 group-active/swap:rotate-180"
+          />
         </Button>
       </div>
 
       <!-- TO DISPLAY -->
-      <div class="group relative rounded-4xl bg-card/5 p-8 transition-all">
+      <div class="group relative rounded-4xl bg-card/5 p-8 transition-all hover:bg-card/10">
         <div class="flex items-center justify-between gap-4">
-          <div class="w-full text-5xl font-black tracking-tighter text-foreground/50 md:text-6xl">
+          <div
+            class="w-full text-5xl font-black tracking-tighter text-foreground/50 md:text-6xl transition-all duration-300"
+          >
             {{ formatNumberOnly(toAmount, toCurrency) }}
           </div>
           <Select v-model="toCurrency">
@@ -91,9 +97,9 @@
       </div>
 
       <!-- RATE INFO -->
-      <div v-if="displayRate" class="text-center">
+      <div v-if="displayRate" class="text-center transition-all duration-500">
         <span
-          class="inline-flex items-center gap-2 rounded-full bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary"
+          class="inline-flex items-center gap-2 rounded-full bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary animate-in fade-in slide-in-from-bottom-2"
         >
           1 {{ displayRate.from }} =
           {{ formatNumberOnly(displayRate.amount, displayRate.to, 4) }} {{ displayRate.to }}
@@ -106,7 +112,7 @@
       <div
         v-for="item in quickConversions"
         :key="item.code"
-        class="flex flex-col gap-1 rounded-3xl border border-border/50 bg-card/10 p-5 transition-all hover:bg-card/20"
+        class="flex flex-col gap-1 rounded-3xl border border-border/50 bg-card/10 p-5 transition-all duration-300 hover:bg-card/20 hover:scale-[1.02] hover:shadow-lg"
       >
         <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {{ item.code }}
@@ -118,33 +124,33 @@
     </div>
 
     <!-- TREND CHART -->
-    <div class="rounded-4xl border border-border/50 bg-card/10 p-8 space-y-6">
+    <div class="rounded-4xl border border-border/50 bg-card/10 p-8 space-y-6 transition-all duration-500">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <div class="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform hover:scale-110">
             <AppIcon name="hugeicons:chart-line-up-01" :size="20" />
           </div>
           <div>
             <h3 class="text-sm font-black uppercase tracking-widest text-foreground">{{ $t('converter.trend_title') }}</h3>
-            <p class="text-[10px] font-bold text-muted-foreground">{{ $t('converter.trend_subtitle', { from: fromCurrency, to: toCurrency }) }}</p>
+            <p class="text-[10px] font-bold text-muted-foreground transition-all duration-300">{{ $t('converter.trend_subtitle', { from: fromCurrency, to: toCurrency }) }}</p>
           </div>
         </div>
       </div>
 
       <div class="h-48 w-full relative">
         <!-- LOADING STATE -->
-        <div v-if="chartLoading" class="absolute inset-0 z-10 rounded-2xl">
+        <div v-if="chartLoading" class="absolute inset-0 z-10 rounded-2xl transition-opacity duration-300">
           <Skeleton class="h-full w-full rounded-2xl" />
         </div>
 
-        <VisXYContainer v-if="trendData.length > 0" :data="trendData" class="h-full" :class="{ 'opacity-50': chartLoading }">
+        <VisXYContainer v-if="trendData.length > 0" :data="trendData" class="h-full transition-opacity duration-300" :class="{ 'opacity-50': chartLoading }">
           <VisArea :x="x" :y="y" color="var(--primary)" :opacity="0.1" />
           <VisLine :x="x" :y="y" color="var(--primary)" :lineWidth="3" />
           <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(locale, { weekday: 'short' })" :gridLine="false" />
         </VisXYContainer>
 
         <!-- EMPTY STATE -->
-        <div v-else-if="!chartLoading" class="flex h-full flex-col items-center justify-center gap-2 text-center">
+        <div v-else-if="!chartLoading" class="flex h-full flex-col items-center justify-center gap-2 text-center animate-in fade-in zoom-in-95">
           <p class="text-sm font-bold text-muted-foreground italic">
             {{ $t('converter.no_trend') }}
           </p>
@@ -207,8 +213,13 @@ const updateTrend = async () => {
 
 watch([fromCurrency, toCurrency], updateTrend, { immediate: true })
 
-const x = (d: any) => new Date(d.date).getTime()
-const y = (d: any) => d.value
+interface TrendDataPoint {
+  date: string
+  value: number
+}
+
+const x = (d: TrendDataPoint) => new Date(d.date).getTime()
+const y = (d: TrendDataPoint) => d.value
 
 const onFromInput = (e: Event) => {
   const val = (e.target as HTMLInputElement).value

@@ -229,9 +229,9 @@ export const useCurrency = () => {
       if (!res.ok) return null
       const data = await res.json()
       // Returns { [date]: { [symbol]: rate } }
-      return Object.entries(data.rates || {}).map(([date, rates]: any) => ({
+      return Object.entries(data.rates || {}).map(([date, rates]) => ({
         date,
-        value: rates[to],
+        value: (rates as Record<string, number>)[to],
       })).sort((a, b) => a.date.localeCompare(b.date))
     } catch {
       return null
