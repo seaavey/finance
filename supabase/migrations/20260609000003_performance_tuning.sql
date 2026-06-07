@@ -122,18 +122,21 @@ CREATE POLICY "Users can view own and partner's budgets"
 
 -- Transactions: Consistency fix - allow partners to SELECT (View)
 DROP POLICY IF EXISTS "Users can view own transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can view own and partner's transactions" ON public.transactions;
 CREATE POLICY "Users can view own and partner's transactions"
   ON public.transactions FOR SELECT
   USING (auth.uid() = user_id OR public.is_my_partner(user_id));
 
 -- Categories: Allow partners to see categories
 DROP POLICY IF EXISTS "Users can view own categories" ON public.categories;
+DROP POLICY IF EXISTS "Users can view own and partner's categories" ON public.categories;
 CREATE POLICY "Users can view own and partner's categories"
   ON public.categories FOR SELECT
   USING (auth.uid() = user_id OR public.is_my_partner(user_id));
 
 -- Goals: Consistency check
 DROP POLICY IF EXISTS "Users can view own goals" ON public.goals;
+DROP POLICY IF EXISTS "Users can view own and partner's goals" ON public.goals;
 CREATE POLICY "Users can view own and partner's goals"
   ON public.goals FOR SELECT
   USING (auth.uid() = user_id OR public.is_my_partner(user_id));
