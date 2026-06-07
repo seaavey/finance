@@ -33,6 +33,7 @@
                   v-for="cur in group.currencies"
                   :key="cur.value"
                   :value="cur.value"
+                  :text-value="cur.value"
                   class="rounded-xl font-bold"
                 >
                   {{ cur.label }}
@@ -89,6 +90,7 @@
                   v-for="cur in group.currencies"
                   :key="cur.value"
                   :value="cur.value"
+                  :text-value="cur.value"
                   class="rounded-xl font-bold"
                 >
                   {{ cur.label }}

@@ -32,7 +32,7 @@ export interface AccountWithBalance extends Account {
 }
 
 // Transaction
-export type TransactionType = 'income' | 'expense'
+export type TransactionType = 'income' | 'expense' | 'transfer'
 
 export type TransactionRow = Database['public']['Tables']['transactions']['Row']
 export type TransactionInsert = Omit<

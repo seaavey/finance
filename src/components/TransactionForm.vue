@@ -11,7 +11,7 @@
     </div>
 
     <!-- TYPE SELECTOR -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-3 gap-3 md:gap-4">
       <Button
         variant="ghost"
         class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
@@ -23,7 +23,7 @@
         @click="form.type = 'income'"
       >
         <div
-          class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
           :class="
             form.type === 'income'
               ? 'bg-white/20'
@@ -32,7 +32,7 @@
         >
           <AppIcon name="hugeicons:arrow-down-01" :size="28" />
         </div>
-        <span class="text-xs font-black uppercase tracking-widest">{{
+        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
           $t('transaction_form.income')
         }}</span>
       </Button>
@@ -48,7 +48,7 @@
         @click="form.type = 'expense'"
       >
         <div
-          class="flex size-12 items-center justify-center rounded-2xl transition-colors"
+          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
           :class="
             form.type === 'expense'
               ? 'bg-white/20'
@@ -57,14 +57,39 @@
         >
           <AppIcon name="hugeicons:arrow-up-01" :size="28" />
         </div>
-        <span class="text-xs font-black uppercase tracking-widest">{{
+        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
           $t('transaction_form.expense')
+        }}</span>
+      </Button>
+
+      <Button
+        variant="ghost"
+        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
+        :class="
+          form.type === 'transfer'
+            ? 'bg-blue-500 text-white shadow-xl shadow-blue-500/20 border-blue-500'
+            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
+        "
+        @click="form.type = 'transfer'"
+      >
+        <div
+          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
+          :class="
+            form.type === 'transfer'
+              ? 'bg-white/20'
+              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+          "
+        >
+          <AppIcon name="hugeicons:exchange-01" :size="28" />
+        </div>
+        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
+          $t('transaction_form.transfer')
         }}</span>
       </Button>
     </div>
 
     <!-- SCAN RECEIPT BUTTON -->
-    <div class="flex justify-center">
+    <div v-if="form.type !== 'transfer'" class="flex justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button
@@ -164,8 +189,15 @@
           @input="onAmountInput"
         />
       </div>
+      <div v-if="convertedAmount" class="mt-2 flex items-center gap-2 justify-center">
+        <AppIcon name="hugeicons:arrow-right-01" :size="14" class="text-primary" />
+        <span class="text-sm font-black text-primary">{{ convertedAmount }}</span>
+        <span class="text-[10px] font-medium text-muted-foreground/60"
+          >({{ $t('transaction_form.estimated_receive') }})</span
+        >
+      </div>
       <p
-        v-if="hasDecimals(form.currency)"
+        v-if="hasDecimals(form.currency) && !convertedAmount"
         class="mt-2 text-[10px] font-medium text-muted-foreground/60 text-center"
       >
         {{
@@ -181,7 +213,9 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <!-- Category & Account (Left Side) -->
       <div class="space-y-4">
+        <!-- Category Picker (Hidden for Transfer) -->
         <div
+          v-if="form.type !== 'transfer'"
           class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
           <Label
@@ -198,6 +232,7 @@
           />
         </div>
 
+        <!-- From Account / Main Account -->
         <div
           class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
         >
@@ -205,24 +240,83 @@
             class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
           >
             <AppIcon name="hugeicons:wallet-01" :size="12" />
-            {{ $t('transaction_form.select_account') }}
+            {{
+              form.type === 'transfer'
+                ? $t('transaction_form.from_account')
+                : $t('transaction_form.select_account')
+            }}
           </Label>
           <Select v-model="form.account_id">
             <SelectTrigger
               class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80"
             >
-              <SelectValue :placeholder="$t('transaction_form.select_account')" />
+              <SelectValue
+                :placeholder="
+                  form.type === 'transfer'
+                    ? $t('transaction_form.from_account')
+                    : $t('transaction_form.select_account')
+                "
+              />
             </SelectTrigger>
             <SelectContent class="rounded-2xl p-2">
               <SelectItem
                 v-for="acct in accounts"
                 :key="acct.id"
                 :value="acct.id"
+                :text-value="acct.name"
                 class="rounded-xl px-3 py-2.5"
+                :disabled="form.type === 'transfer' && acct.id === form.to_account_id"
               >
                 <div class="flex items-center gap-2">
-                  <div class="size-2 rounded-full" :style="{ backgroundColor: acct.color || undefined }" />
-                  <span class="font-bold">{{ acct.name }}</span>
+                  <div
+                    class="size-2 rounded-full"
+                    :style="{ backgroundColor: acct.color || undefined }"
+                  />
+                  <div class="flex flex-col">
+                    <span class="font-bold">{{ acct.name }}</span>
+                    <span class="text-[10px] opacity-60">{{ acct.currency }}</span>
+                  </div>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- To Account (Only for Transfer) -->
+        <div
+          v-if="form.type === 'transfer'"
+          class="space-y-2 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
+        >
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
+            <AppIcon name="hugeicons:wallet-01" :size="12" />
+            {{ $t('transaction_form.to_account') }}
+          </Label>
+          <Select v-model="form.to_account_id">
+            <SelectTrigger
+              class="h-11 rounded-2xl border-border/50 bg-background/50 transition-all hover:bg-background/80"
+            >
+              <SelectValue :placeholder="$t('transaction_form.to_account')" />
+            </SelectTrigger>
+            <SelectContent class="rounded-2xl p-2">
+              <SelectItem
+                v-for="acct in accounts"
+                :key="acct.id"
+                :value="acct.id"
+                :text-value="acct.name"
+                class="rounded-xl px-3 py-2.5"
+                :disabled="acct.id === form.account_id"
+              >
+                <div class="flex items-center gap-2">
+                  <div
+                    class="size-2 rounded-full"
+                    :style="{ backgroundColor: acct.color || undefined }"
+                  />
+                  <div class="flex flex-col">
+                    <span class="font-bold">{{ acct.name }}</span>
+                    <span class="text-[10px] opacity-60">{{ acct.currency }}</span>
+                  </div>
                 </div>
               </SelectItem>
             </SelectContent>
@@ -258,6 +352,7 @@
                   v-for="c in group.currencies"
                   :key="c.value"
                   :value="c.value"
+                  :text-value="c.value"
                   class="rounded-xl px-3 py-2.5"
                 >
                   <div class="flex items-center gap-2">
@@ -396,6 +491,7 @@
 
     <!-- SPLIT TRANSACTION -->
     <div
+      v-if="form.type !== 'transfer'"
       class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
     >
       <div class="flex items-start justify-between gap-3">
@@ -547,10 +643,11 @@ const {
   defaultCurrency,
   hasDecimals,
   formatCurrency,
+  convertTo,
 } = useCurrency()
 const { toast } = useToast()
 
-const { addTransaction, updateTransaction } = useTransactions()
+const { addTransaction, addTransfer, updateTransaction } = useTransactions()
 const { uploadTransactionImage, deleteTransactionImage } = useTransactions()
 const { accounts, fetchAccounts } = useAccounts()
 const { checkBudgetAlerts } = useBudgets()
@@ -585,6 +682,7 @@ const form = reactive({
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
   account_id: props.transaction?.account_id ?? '',
+  to_account_id: (props.transaction as any)?.to_account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
   image_url: props.transaction?.image_url ?? (null as string | null),
@@ -717,6 +815,17 @@ const splitTotalMismatch = computed(
 
 const formattedSplitTotal = computed(() => formatCurrency(splitTotal.value, form.currency))
 const formattedAmount = computed(() => formatCurrency(form.amount, form.currency))
+
+const convertedAmount = computed(() => {
+  if (form.type !== 'transfer' || !form.to_account_id) return null
+  const toAccount = accounts.value.find((a) => a.id === form.to_account_id)
+  const toCurrency = toAccount?.currency || form.currency
+  if (toCurrency === form.currency) return null
+
+  const converted = convertTo(Number(form.amount), form.currency, toCurrency)
+  if (converted === null) return null
+  return formatCurrency(converted, toCurrency)
+})
 
 function toggleSplit() {
   splitEnabled.value = !splitEnabled.value
@@ -855,9 +964,40 @@ const onSubmit = async () => {
       splits: splitEnabled.value ? splitItems.value : [],
     }
 
-    const result = props.transaction
-      ? await updateTransaction(props.transaction.id, payload)
-      : await addTransaction(payload)
+    let result
+    if (form.type === 'transfer') {
+      if (!form.account_id || !form.to_account_id) {
+        toast.error(t('transaction_form.error_transfer_accounts'))
+        submitting.value = false
+        return
+      }
+
+      const toAccount = accounts.value.find((a) => a.id === form.to_account_id)
+      const toCurrency = toAccount?.currency || form.currency
+
+      let toAmount = Number(form.amount)
+      if (toCurrency !== form.currency) {
+        const converted = convertTo(Number(form.amount), form.currency, toCurrency)
+        if (converted !== null) {
+          toAmount = converted
+        }
+      }
+
+      result = await addTransfer({
+        from_account_id: form.account_id,
+        to_account_id: form.to_account_id,
+        amount: Number(form.amount),
+        to_amount: toAmount,
+        currency: form.currency,
+        to_currency: toCurrency,
+        date: form.date!,
+        description: form.description || undefined,
+      })
+    } else {
+      result = props.transaction
+        ? await updateTransaction(props.transaction.id, payload as any)
+        : await addTransaction(payload as any)
+    }
 
     if (!result.error) {
       emit('saved')

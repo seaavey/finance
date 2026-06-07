@@ -4,6 +4,7 @@ import {
   queryTransactions,
   getTransaction as getTxService,
   createTransaction as createTxService,
+  createTransfer as createTransferService,
   updateTransaction as updateTxService,
   deleteTransaction as deleteTxService,
   bulkUpdateTransactions as bulkUpdateTxService,
@@ -69,6 +70,7 @@ export const useTransactions = () => {
   const activity = useActivityLog()
   const { user } = useAuth()
   const { partner } = usePartner()
+  const { categories } = useCategories()
 
   const currentFilters = ref<TransactionFilters | undefined>(undefined)
   const currentPage = ref(1)
@@ -142,6 +144,52 @@ export const useTransactions = () => {
             type: tx.type,
           },
           result.data.id,
+        )
+      }
+    } else {
+      toast.error(t('toast.transaction_add_error'))
+    }
+    return { error: result.error }
+  }
+
+  const addTransfer = async (data: {
+    from_account_id: string
+    to_account_id: string
+    amount: number
+    to_amount?: number
+    currency: string
+    to_currency?: string
+    date: string
+    description?: string
+  }) => {
+    if (!user.value) return { error: { message: 'Not authenticated' } }
+
+    const transferCategory = categories.value.find(
+      (c) =>
+        c.name.toLowerCase() === 'transfer' ||
+        c.name.toLowerCase() === 'pindah buku' ||
+        c.name.toLowerCase() === 'mutasi',
+    )
+
+    const result = await createTransferService(user.value.id, {
+      ...data,
+      category_id: transferCategory?.id || '',
+    })
+
+    if (!result.error) {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
+      toast.success(t('toast.transfer_added'))
+      if (result.data?.[0]) {
+        activity.log(
+          'transaction',
+          'created',
+          {
+            description: data.description || 'Transfer',
+            amount: data.amount,
+            type: 'transfer',
+          },
+          result.data[0].id,
         )
       }
     } else {
@@ -277,6 +325,7 @@ export const useTransactions = () => {
     changePage,
     searchTransactions,
     addTransaction,
+    addTransfer,
     updateTransaction,
     deleteTransaction,
     bulkUpdateTransactions,

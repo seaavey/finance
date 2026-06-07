@@ -411,7 +411,7 @@
             <SelectValue :placeholder="$t('transactions.all_accounts')" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem v-for="acc in accounts" :key="acc.id" :value="acc.id">
+            <SelectItem v-for="acc in accounts" :key="acc.id" :value="acc.id" :text-value="acc.name">
               <div class="flex items-center gap-2">
                 <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color || undefined }" />
                 {{ acc.name }}

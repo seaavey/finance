@@ -278,7 +278,7 @@ const selectBrand = (brandId: string, brandLabel: string) => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value">
+              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value" :text-value="c.value">
                 {{ c.label }}
               </SelectItem>
             </SelectContent>
