@@ -24,6 +24,7 @@ Aemy Finance is a modern, high-performance personal finance application designed
 | 👫 **Couple Mode**         | Secure, invite-only shared finance mode using Supabase Auth and dedicated RLS policies.                        |
 | 📸 **AI OCR Scanner**      | Automated transaction entry via GPT-4o mini powered receipt scanning (Indonesian & English support).           |
 | ✂️ **Split Transactions**  | Detailed expense tracking allowing single transactions to be distributed across multiple categories.           |
+| 🔄 **Account Transfer**   | Seamlessly move balances between internal accounts with automated linked transaction records.                   |
 | 🔁 **Recurring Engine**    | Automated transaction generation for subscriptions and salary with flexible interval logic.                    |
 | 📎 **Attachments**         | Transaction-level receipt storage using Supabase Storage with secure signed URLs.                              |
 | 🎯 **Goal Tracking**       | Visual financial targets with progress milestones and custom imagery.                                          |

@@ -401,8 +401,10 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          metadata: Json | null
           receipt_image: string | null
           splits: Json | null
+          transfer_id: string | null
           type: string
           updated_at: string | null
           user_id: string
@@ -417,8 +419,10 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          metadata?: Json | null
           receipt_image?: string | null
           splits?: Json | null
+          transfer_id?: string | null
           type: string
           updated_at?: string | null
           user_id: string
@@ -433,8 +437,10 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          metadata?: Json | null
           receipt_image?: string | null
           splits?: Json | null
+          transfer_id?: string | null
           type?: string
           updated_at?: string | null
           user_id?: string

@@ -282,4 +282,21 @@ Untuk menangani volume transaksi yang besar dan konversi mata uang yang kompleks
 - Kuning: 30-60 menit
 - Merah: > 60 menit (perlu refresh)
 
+### 12.10 Account Transfer
+
+**Model:** Linked Transactions (Double-Entry).
+
+**Mekanisme:**
+1. User memilih "Transfer" di form transaksi.
+2. Form mengumpulkan: `from_account_id`, `to_account_id`, `amount`, `date`, dan `description`.
+3. Sistem membuat **dua** record di tabel `transactions`:
+   - **Record 1:** `type: 'expense'`, `account_id: from_account_id`, `amount: amount`.
+   - **Record 2:** `type: 'income'`, `account_id: to_account_id`, `amount: amount` (atau `to_amount` jika konversi kurs).
+4. Kedua record diberikan `transfer_id` (UUID) yang sama.
+5. Kategori diset otomatis ke kategori sistem "Transfer".
+
+**Sinkronisasi:**
+- **Hapus:** Jika salah satu transaksi dengan `transfer_id` dihapus, pasangannya otomatis ikut terhapus.
+- **Edit:** Perubahan pada satu sisi transfer akan merefleksikan perubahan pada sisi lainnya untuk menjaga konsistensi saldo.
+
 ---

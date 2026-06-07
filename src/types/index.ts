@@ -40,12 +40,14 @@ export type TransactionInsert = Omit<
   'type'
 > & {
   type: TransactionType
+  transfer_id?: string | null
 }
 export type TransactionUpdate = Omit<
   Database['public']['Tables']['transactions']['Update'],
   'type'
 > & {
   type?: TransactionType
+  transfer_id?: string | null
 }
 
 export interface SplitItem {
@@ -58,6 +60,7 @@ export interface SplitItem {
 export type Transaction = Omit<TransactionRow, 'splits'> & {
   type: TransactionType
   splits: SplitItem[] | null
+  transfer_id?: string | null
 }
 
 export interface TransactionFilters {

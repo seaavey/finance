@@ -75,6 +75,8 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `description` | `text`        | —                   | —                                       | Deskripsi/catatan          |
 | `date`        | `date`        | `current_date`      | NOT NULL                                | Tanggal transaksi          |
 | `image_url`   | `text`        | —                   | —                                       | URL lampiran (receipt)     |
+| `transfer_id` | `uuid`        | —                   | —                                       | ID untuk transfer terhubung|
+| `metadata`    | `jsonb`       | `'{}'`              | —                                       | Data tambahan/audit        |
 | `splits`      | `jsonb`       | `'[]'`              | —                                       | Split ke multiple kategori |
 | `created_at`  | `timestamptz` | `now()`             | —                                       | —                          |
 | `updated_at`  | `timestamptz` | `now()`             | —                                       | —                          |
@@ -86,6 +88,7 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `idx_transactions_user_type` | `(user_id, type)` | B-tree | Filter: "transaksi expense saja" |
 | `idx_transactions_category_id` | `(category_id)` | B-tree | Budget: "jumlah spending per kategori" |
 | `idx_transactions_account_id` | `(account_id)` | B-tree | Balance: "saldo akun ini" |
+| `idx_transactions_transfer_id`| `(transfer_id)`| B-tree | "Cari pasangan transfer" |
 | Plus indexes from migration `20260603000001` (composite + partial)
 
 ### 6.4 Tabel: `accounts`
