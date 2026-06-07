@@ -494,7 +494,7 @@ const { transactions, fetchTransactions } = useTransactions()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency, defaultCurrency, convertTo } = useCurrency()
 const { t, locale } = useI18n()
-const { fetchPartner, partner, isPartnered } = usePartner()
+const { fetchPartner, partner, isPartnered, myProfile } = usePartner()
 
 const viewMode = ref<'mine' | 'partner'>('mine')
 const period = ref<'1d' | '7d' | '30d' | 'all'>('7d')
@@ -598,7 +598,7 @@ const viewModes = computed(() => [
 ])
 
 const displayName = computed(() => {
-  const name = user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
+  const name = myProfile?.display_name || user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
   if (!name) {
     return t('dashboard.user')
   }
