@@ -57,6 +57,56 @@ export async function createTransaction(tx: TransactionInsert): Promise<Result<T
   return { data: data as unknown as Transaction, error: null }
 }
 
+export async function createTransfer(
+  userId: string,
+  data: {
+    from_account_id: string
+    to_account_id: string
+    amount: number
+    to_amount?: number
+    currency: string
+    to_currency?: string
+    date: string
+    description?: string
+    category_id: string
+  },
+): Promise<Result<Transaction[]>> {
+  const supabase = useSupabase()
+  const transferId = crypto.randomUUID()
+
+  const expense: TransactionInsert = {
+    user_id: userId,
+    account_id: data.from_account_id,
+    amount: data.amount,
+    currency: data.currency,
+    type: 'expense',
+    date: data.date,
+    description: data.description,
+    category_id: data.category_id,
+    transfer_id: transferId,
+  }
+
+  const income: TransactionInsert = {
+    user_id: userId,
+    account_id: data.to_account_id,
+    amount: data.to_amount ?? data.amount,
+    currency: data.to_currency ?? data.currency,
+    type: 'income',
+    date: data.date,
+    description: data.description,
+    category_id: data.category_id,
+    transfer_id: transferId,
+  }
+
+  const { data: created, error } = await supabase
+    .from('transactions')
+    .insert([expense, income])
+    .select()
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: (created as unknown as Transaction[]) || [], error: null }
+}
+
 export async function updateTransaction(
   id: string,
   updates: TransactionUpdate,
@@ -70,7 +120,27 @@ export async function updateTransaction(
 
 export async function deleteTransaction(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('transactions').delete().eq('id', id)
+
+  // First, get the transaction to check for transfer_id
+  const { data: tx, error: fetchError } = await supabase
+    .from('transactions')
+    .select('transfer_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) {
+    return { data: null, error: new AppError(fetchError.message, fetchError.code, fetchError) }
+  }
+
+  let query = supabase.from('transactions').delete()
+
+  if (tx?.transfer_id) {
+    query = query.eq('transfer_id', tx.transfer_id)
+  } else {
+    query = query.eq('id', id)
+  }
+
+  const { error } = await query
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: null, error: null }
