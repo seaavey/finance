@@ -1,6 +1,34 @@
 ## 7. Composable API Reference
 
-Setiap domain entity memiliki composable sendiri dengan pola yang konsisten:
+<sub>18 domain composables · pola konsisten · auto-imported · 7 Jun 2026</sub>
+
+---
+
+### 📐 Pola Umum
+
+Setiap composable mengikuti kontrak yang sama:
+
+```typescript
+export const useXxx = () => {
+  // Return: { data, loading, mutations, computeds }
+}
+```
+
+**Lifecycle:**
+
+1. Mount → `useQuery` fetch otomatis (enabled saat user tersedia)
+2. Mutation → insert/update/delete → `invalidateQueries` → toast → activity log
+3. Unmount → TanStack Query cache tetap (staleTime) — tidak refetch unless invalidated
+
+**Error Handling:**
+
+- Semua mutation return `{ error? }` — komponen tidak perlu try/catch
+- Toast otomatis dari composable (success / error)
+- Activity log fire-and-forget (tidak blocking UI)
+
+---
+
+### 🧩 Daftar Composable
 
 ### 7.1 `useAuth()`
 

@@ -1,29 +1,34 @@
 # Product Development Documentation — Aemy Finance ✦
 
-Selamat datang di dokumentasi pengembangan produk Aemy Finance. Dokumen ini telah dipisah menjadi beberapa bagian untuk kemudahan navigasi.
+Selamat datang di dokumentasi pengembangan produk **Aemy Finance** — aplikasi manajemen keuangan pribadi & bersama, open source (MIT), gratis selamanya.
 
-## Daftar Isi
+## 📖 Tentang RPD
 
-0. [Pendahuluan](00-introduction.md)
-1. [Visi & Misi](01-visi-misi.md)
-2. [Target Pengguna & Persona](02-target-pengguna-persona.md)
-3. [Kondisi Saat Ini](03-kondisi-saat-ini.md)
-4. [Tech Stack Detail](04-tech-stack-detail.md)
-5. [Arsitektur Frontend](05-arsitektur-frontend.md)
-6. [Database Schema](06-database-schema.md)
-7. [Composable API Reference](07-composable-api-reference.md)
-8. [Routing & Layout](08-routing-layout.md)
-9. [Row-Level Security (RLS)](09-row-level-security-rls.md)
-10. [Edge Functions API](10-edge-functions-api.md)
-11. [Migration History](11-migration-history.md)
-12. [Fitur & Implementasi Detail](12-fitur-implementasi-detail.md)
-13. [Roadmap](13-roadmap.md)
-14. [Tech Debt & Known Issues](14-tech-debt-known-issues.md)
-15. [Performance & Monitoring](15-performance-monitoring.md)
-16. [Environment Variables](16-environment-variables.md)
-17. [Deploy & CI/CD](17-deploy-cicd.md)
-18. [Security Model](18-security-model.md)
-19. [Glossary](19-glossary.md)
+Folder ini berisi **Rencana Pengembangan Produk** (RPD) — dokumen hidup yang merekam seluruh arah pengembangan Aemy Finance. Mulai dari visi, arsitektur teknis, database schema, API reference, roadmap, hingga tech debt.
+
+> **Mulai dari sini:** [`00-INTRODUCTION.MD`](./00-INTRODUCTION.MD) — pengantar, ringkasan status, dan navigasi.
+
+## 🗂️ Navigasi Cepat
+
+| Kategori           | Dokumen                                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 🧭 **Fondasi**     | [Visi & Misi](./01-VISI-MISI.MD) · [Target Persona](./02-TARGET-PENGGUNA-PERSONA.MD) · [Kondisi Saat Ini](./03-KONDISI-SAAT-INI.MD)                                                                                      |
+| 🏗️ **Arsitektur**  | [Tech Stack](./04-TECH-STACK-DETAIL.MD) · [Frontend](./05-ARSITEKTUR-FRONTEND.MD) · [Database](./06-DATABASE-SCHEMA.MD) · [Composable API](./07-COMPOSABLE-API-REFERENCE.MD) · [Routing](./08-ROUTING-LAYOUT.MD)         |
+| 🔐 **Keamanan**    | [RLS](./09-ROW-LEVEL-SECURITY-RLS.MD) · [Edge Functions](./10-EDGE-FUNCTIONS-API.MD) · [Security Model](./18-SECURITY-MODEL.MD)                                                                                          |
+| ✨ **Fitur**       | [Implementasi Detail](./12-FITUR-IMPLEMENTASI-DETAIL.MD) · [Roadmap 📌](./13-ROADMAP.MD)                                                                                                                                 |
+| 🛠️ **Operasional** | [Migration History](./11-MIGRATION-HISTORY.MD) · [Tech Debt](./14-TECH-DEBT-KNOWN-ISSUES.MD) · [Performance](./15-PERFORMANCE-MONITORING.MD) · [Env Vars](./16-ENVIRONMENT-VARIABLES.MD) · [Deploy](./17-DEPLOY-CICD.MD) |
+| 📚 **Referensi**   | [Glossary](./19-GLOSSARY.MD) · [Daftar Isi](./00-DAFTAR-ISI.MD)                                                                                                                                                          |
+
+## 🚀 Status
+
+|                |                                                                        |
+| -------------- | ---------------------------------------------------------------------- |
+| **Status**     | 🟢 Production — aktif di [seaavey.site](https://seaavey.site)          |
+| **Lisensi**    | MIT — [github.com/seaavey/finance](https://github.com/seaavey/finance) |
+| **Fitur Inti** | ~90% selesai menuju v1.0                                               |
+| **Fase**       | Stabilisasi & polish                                                   |
+| **Tech Stack** | Vue 3 + Supabase + Vite + Tailwind CSS + TanStack Query                |
 
 ---
-*Terakhir diperbarui: 5 Juni 2026*
+
+_Terakhir diperbarui: 7 Jun 2026 · 22 dokumen · Dikelola oleh seaavey_

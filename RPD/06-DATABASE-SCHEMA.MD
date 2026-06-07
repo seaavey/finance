@@ -1,5 +1,29 @@
 ## 6. Database Schema
 
+<sub>PostgreSQL 15 di Supabase · 11 tabel · 41 migrasi · 7 Jun 2026</sub>
+
+---
+
+### 📐 Entity Relationship (Mental Model)
+
+```
+profiles (1) ──── (1) profiles       # Couple pair
+profiles (1) ──── (*) categories      # Owned categories
+profiles (1) ──── (*) accounts        # Owned accounts
+profiles (1) ──── (*) transactions    # Owned transactions
+profiles (1) ──── (*) budgets         # Owned budgets
+profiles (1) ──── (*) bills           # Owned bills
+profiles (1) ──── (*) recurring       # Owned recurring
+profiles (1) ──── (*) goals           # Owned goals
+profiles (1) ──── (*) activity_logs   # Owned audit trail
+
+categories (1) ──── (*) transactions   # Each transaction has a category
+accounts   (1) ──── (*) transactions   # Each transaction can be tied to an account
+
+couple_invitations — standalone table (temporary invitation records)
+exchange_rates     — standalone table (rates cache, no user ownership)
+```
+
 ### 6.1 Tabel: `profiles`
 
 | Kolom          | Tipe          | Default | Constraint                            | Deskripsi                 |
@@ -56,10 +80,13 @@
 | `updated_at`  | `timestamptz` | `now()`             | —                                       | —                          |
 
 **Indexes:**
-
-- `idx_transactions_user_date` ON `(user_id, date DESC)`
-- `idx_transactions_user_type` ON `(user_id, type)`
-- Additional optimized indexes from migration `20260603000001`
+| Index Name | Columns | Type | Untuk Query |
+|-----------|---------|------|-------------|
+| `idx_transactions_user_date` | `(user_id, date DESC)` | B-tree | Dashboard: "transaksi saya, diurutkan tanggal" |
+| `idx_transactions_user_type` | `(user_id, type)` | B-tree | Filter: "transaksi expense saja" |
+| `idx_transactions_category_id` | `(category_id)` | B-tree | Budget: "jumlah spending per kategori" |
+| `idx_transactions_account_id` | `(account_id)` | B-tree | Balance: "saldo akun ini" |
+| Plus indexes from migration `20260603000001` (composite + partial)
 
 ### 6.4 Tabel: `accounts`
 
@@ -177,18 +204,18 @@
 
 ### 6.12 Storage Buckets
 
-| Bucket        | Visibility | Fungsi                          |
-| ------------- | ---------- | ------------------------------- |
-| `receipts`    | Private    | Upload gambar receipt untuk OCR |
-| `goal-images` | Public     | Upload gambar target goal       |
+| Bucket        | Visibility | Fungsi                          | RLS                                          |
+| ------------- | ---------- | ------------------------------- | -------------------------------------------- |
+| `receipts`    | Private    | Upload gambar receipt untuk OCR | ✅ Signed URL 10 menit                       |
+| `goal-images` | Public     | Upload gambar target goal       | ✅ Row-level (user hanya bisa hapus sendiri) |
 
 ### 6.13 Stored Procedures (RPC)
 
-| Nama                      | Parameter                                                                      | Return  | Deskripsi                                                 |
-| ------------------------- | ------------------------------------------------------------------------------ | ------- | --------------------------------------------------------- |
-| `get_transaction_summary` | `p_user_id`, `p_start_date`, `p_end_date`, `p_target_currency`                 | `TABLE` | Ringkasan income/expense dengan konversi mata uang        |
-| `get_category_stats`      | `p_user_id`, `p_start_date`, `p_end_date`                                      | `TABLE` | Statistik (jumlah & total) per kategori                   |
-| `accept_invitation`       | `p_invitation_id`                                                              | `void`  | Menghubungkan user dengan partner berdasarkan undangan    |
-| `disconnect_partner`      | —                                                                              | `void`  | Memutus hubungan partner dan membersihkan `partner_id`    |
+| Nama                      | Parameter                                                      | Return  | Deskripsi                                              |
+| ------------------------- | -------------------------------------------------------------- | ------- | ------------------------------------------------------ |
+| `get_transaction_summary` | `p_user_id`, `p_start_date`, `p_end_date`, `p_target_currency` | `TABLE` | Ringkasan income/expense dengan konversi mata uang     |
+| `get_category_stats`      | `p_user_id`, `p_start_date`, `p_end_date`                      | `TABLE` | Statistik (jumlah & total) per kategori                |
+| `accept_invitation`       | `p_invitation_id`                                              | `void`  | Menghubungkan user dengan partner berdasarkan undangan |
+| `disconnect_partner`      | —                                                              | `void`  | Memutus hubungan partner dan membersihkan `partner_id` |
 
 ---

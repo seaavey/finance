@@ -1,5 +1,31 @@
 ## 10. Edge Functions API
 
+<sub>4 Deno Edge Functions · Supabase · 7 Jun 2026</sub>
+
+---
+
+### 10.0 Arsitektur Edge Functions
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                   Edge Functions (Deno 2)                   │
+│                                                              │
+│  ┌──────────────────┐  ┌──────────────────┐                 │
+│  │   ocr-receipt    │  │   sync-rates     │                 │
+│  │  POST (private)  │  │  Scheduled (cron) │                 │
+│  └────────┬─────────┘  └────────┬─────────┘                 │
+│           │                     │                            │
+│           ▼                     ▼                            │
+│  ┌──────────────────┐  ┌──────────────────┐                 │
+│  │ send-couple-invite│  │   og-image       │                 │
+│  │  POST (private)  │  │  GET (public)    │                 │
+│  └────────┬─────────┘  └──────────────────┘                 │
+│           │                                                   │
+│           ▼                                                   │
+│  Resend API (email)  ← External                              │
+└────────────────────────────────────────────────────────────┘
+```
+
 ### 10.1 `ocr-receipt`
 
 **Endpoint:** `POST /functions/v1/ocr-receipt`
@@ -63,7 +89,7 @@
 - Upsert ke tabel `exchange_rates` (batch)
 - Update kolom `updated_at`
 
-**Rate Schedule:** Belum ditentukan (bisa cron Supabase atau external scheduler)
+**Rate Schedule:** Belum ada cron scheduler — untuk sementara panggil manual via dashboard atau external cron (e.g. cron-job.org free tier)
 
 ### 10.3 `send-couple-invite`
 
