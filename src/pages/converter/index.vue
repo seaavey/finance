@@ -131,12 +131,24 @@
         </div>
       </div>
 
-      <div class="h-48 w-full">
-        <VisXYContainer :data="trendData" class="h-full">
+      <div class="h-48 w-full relative">
+        <!-- LOADING STATE -->
+        <div v-if="chartLoading" class="absolute inset-0 z-10 rounded-2xl">
+          <Skeleton class="h-full w-full rounded-2xl" />
+        </div>
+
+        <VisXYContainer v-if="trendData.length > 0" :data="trendData" class="h-full" :class="{ 'opacity-50': chartLoading }">
           <VisArea :x="x" :y="y" color="var(--primary)" :opacity="0.1" />
           <VisLine :x="x" :y="y" color="var(--primary)" :lineWidth="3" />
           <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(undefined, { weekday: 'short' })" :gridLine="false" />
         </VisXYContainer>
+
+        <!-- EMPTY STATE -->
+        <div v-else-if="!chartLoading" class="flex h-full flex-col items-center justify-center gap-2 text-center">
+          <p class="text-sm font-bold text-muted-foreground italic">
+            {{ $t('converter.no_trend') }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -158,6 +170,7 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { VisXYContainer, VisLine, VisArea, VisAxis } from '@unovis/vue'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const {
   currencyGroups,
@@ -174,12 +187,21 @@ const fromAmount = ref(1)
 
 const trendData = ref<{ date: string; value: number }[]>([])
 const chartLoading = ref(false)
+let currentRequestId = 0
 
 const updateTrend = async () => {
+  const requestId = ++currentRequestId
   chartLoading.value = true
-  const data = await fetchHistoricalRates(fromCurrency.value, toCurrency.value)
-  if (data) trendData.value = data
-  chartLoading.value = false
+  try {
+    const data = await fetchHistoricalRates(fromCurrency.value, toCurrency.value)
+    if (requestId === currentRequestId) {
+      trendData.value = data || []
+    }
+  } finally {
+    if (requestId === currentRequestId) {
+      chartLoading.value = false
+    }
+  }
 }
 
 watch([fromCurrency, toCurrency], updateTrend, { immediate: true })

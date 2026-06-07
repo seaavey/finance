@@ -8,6 +8,7 @@
     "bills": "Tagihan",
     "recurring": "Rutin",
     "schedule": "Jadwal",
+    "converter": "Konverter",
     "activities": "Aktivitas",
     "accounts": "Akun",
     "settings": "Setelan",
@@ -456,6 +457,7 @@
     "group_southeast_asia": "Asia Tenggara",
     "group_east_asia": "Asia Timur",
     "group_south_asia": "Asia Selatan",
+    "group_global": "Global",
     "idr": "IDR - Rupiah Indonesia",
     "myr": "MYR - Ringgit Malaysia",
     "sgd": "SGD - Dollar Singapura",
@@ -475,7 +477,10 @@
     "bdt": "BDT - Taka Bangladesh",
     "pkr": "PKR - Rupee Pakistan",
     "lkr": "LKR - Rupee Sri Lanka",
-    "npr": "NPR - Rupee Nepal"
+    "npr": "NPR - Rupee Nepal",
+    "usd": "USD - Dollar AS",
+    "eur": "EUR - Euro",
+    "gbp": "GBP - Pound Inggris"
   },
   "settings": {
     "preferences": "Preferensi",
@@ -544,6 +549,7 @@
     "accounts": "Akun",
     "bills": "Tagihan",
     "schedule": "Kalender",
+    "converter": "Konverter",
     "settings": "Setelan",
     "activities": "Aktivitas",
     "logout": "Logout",
@@ -576,9 +582,18 @@
     "quick_actions": "Aksi Cepat",
     "notifications": "Notifikasi",
     "no_notifications": "Tidak ada notifikasi baru",
+    "converter": "Konverter Mata Uang",
     "toggle_sidebar": "Buka/tutup sidebar",
     "toggle_theme": "Ganti tema",
     "dismiss_notification": "Tutup notifikasi"
+  },
+  "converter": {
+    "title": "Konverter Mata Uang",
+    "subtitle": "Konversi mata uang secara real-time berdasarkan kurs terbaru",
+    "from": "Dari",
+    "to": "Ke",
+    "current_rate": "Kurs Saat Ini",
+    "no_trend": "Data tren tidak tersedia untuk pasangan ini"
   },
   "landing": {
     "title": "Aemy Finance - Kelola Keuangan Pribadi & Bersama",

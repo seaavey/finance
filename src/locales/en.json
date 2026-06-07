@@ -8,6 +8,7 @@
     "bills": "Bills",
     "recurring": "Recurring",
     "schedule": "Schedule",
+    "converter": "Converter",
     "activities": "Activities",
     "accounts": "Accounts",
     "settings": "Settings",
@@ -456,6 +457,7 @@
     "group_southeast_asia": "Southeast Asia",
     "group_east_asia": "East Asia",
     "group_south_asia": "South Asia",
+    "group_global": "Global",
     "idr": "IDR - Indonesian Rupiah",
     "myr": "MYR - Malaysian Ringgit",
     "sgd": "SGD - Singapore Dollar",
@@ -475,7 +477,10 @@
     "bdt": "BDT - Bangladeshi Taka",
     "pkr": "PKR - Pakistani Rupee",
     "lkr": "LKR - Sri Lankan Rupee",
-    "npr": "NPR - Nepalese Rupee"
+    "npr": "NPR - Nepalese Rupee",
+    "usd": "USD - US Dollar",
+    "eur": "EUR - Euro",
+    "gbp": "GBP - British Pound"
   },
   "settings": {
     "preferences": "Preferences",
@@ -544,6 +549,7 @@
     "accounts": "Accounts",
     "bills": "Bills",
     "schedule": "Calendar",
+    "converter": "Converter",
     "settings": "Settings",
     "activities": "Activity",
     "logout": "Logout",
@@ -576,9 +582,18 @@
     "quick_actions": "Quick Actions",
     "notifications": "Notifications",
     "no_notifications": "No new notifications",
+    "converter": "Currency Converter",
     "toggle_sidebar": "Toggle sidebar",
     "toggle_theme": "Toggle theme",
     "dismiss_notification": "Dismiss notification"
+  },
+  "converter": {
+    "title": "Currency Converter",
+    "subtitle": "Convert currencies in real-time based on the latest exchange rates",
+    "from": "From",
+    "to": "To",
+    "current_rate": "Current Rate",
+    "no_trend": "No trend data available for this pair"
   },
   "landing": {
     "title": "Aemy Finance - Personal & Shared Finance Management",
