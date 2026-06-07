@@ -6,11 +6,12 @@
 | ---------------------------------- | --------- | ----------------------------------------------------- |
 | Recurring auto-create transactions | 5 Jun '26 | Otomatis buat transaksi dari recurring di `next_date` |
 | Budget rollover                    | 5 Jun '26 | Sisa budget bulan lalu diakumulasi ke bulan ini       |
-| Transaction attachments            | 7 Jun '26 | Upload receipt/invoice ke transaksi                   |
-| Split transactions                 | 8 Jun '26 | Split satu transaksi ke multiple kategori             |
-| Multiple budgets/kategori          | 9 Jun '26 | Mendukung beberapa budget untuk kategori yang sama    |
-| Performance Engine (RPC)           | 9 Jun '26 | Optimasi query besar menggunakan database RPC         |
-| Currency Converter                 | 9 Jun '26 | Kalkulator konversi mata uang real-time               |
+| Transaction attachments            | 4 Jun '26 | Upload receipt/invoice ke transaksi                   |
+| Split transactions                 | 5 Jun '26 | Split satu transaksi ke multiple kategori             |
+| Multiple budgets/kategori          | 6 Jun '26 | Mendukung beberapa budget untuk kategori yang sama    |
+| Performance Engine (RPC)           | 5 Jun '26 | Optimasi query besar menggunakan database RPC         |
+| Currency Converter                 | 5 Jun '26 | Kalkulator konversi mata uang real-time               |
+| Account transfer                   | 7 Jun '26 | Pindah uang antar akun (rekening → cash → e-wallet)   |
 
 ### 13.1 Short-term (1-2 bulan)
 
@@ -19,7 +20,6 @@
 | Tag system                      | 🟢 Rendah | 4 hari   | Tagging transaksi untuk grouping non-kategori                   |
 | Data import (CSV)               | 🟡 Sedang | 4 hari   | Import transaksi dari CSV / external sources                    |
 | Export PDF (laporan)            | 🟡 Sedang | 1 minggu | Laporan income/expense/budget per bulan dalam PDF               |
-| Account transfer                | 🔴 Tinggi | 3 hari   | Pindah uang antar akun (rekening → cash → e-wallet)             |
 | Multi-select transaction delete | 🟡 Sedang | 2 hari   | Hapus transaksi massal dengan konfirmasi                        |
 | Budget carry-over config        | 🟢 Rendah | 2 hari   | Opsi enable/disable rollover per budget                         |
 | Dashboard quick stats           | 🟢 Rendah | 2 hari   | Kartu ringkasan di atas dashboard (saldo, avg daily spend, dll) |
