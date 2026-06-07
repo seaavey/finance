@@ -1,212 +1,119 @@
 # Aemy Finance ✦
 
-**Personal & Shared Finance Management**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Bun](https://img.shields.io/badge/Runtime-Bun-black?logo=bun)](https://bun.sh)
+[![Vue](https://img.shields.io/badge/Frontend-Vue_3-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org)
+[![Tailwind CSS v4](https://img.shields.io/badge/Styles-Tailwind_v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
 
-A modern personal finance app with multi-currency support, interactive visualizations, and couple mode — free with no ads.
+**Personal & Shared Finance Management — Refined.**
 
-🌐 **Live:** [seaavey.site](https://seaavey.site)
+Aemy Finance is a modern, high-performance personal finance application designed for clarity and control. Built with a "Privacy First" mindset, it offers multi-currency support, AI-powered automation, and seamless collaborative tools — all without ads or tracking.
 
----
-
-## ✨ Key Features
-
-| Feature                            | Description                                                                  |
-| ---------------------------------- | ---------------------------------------------------------------------------- |
-| 💰 **Interactive Dashboard**       | Bento-grid layout with balance, charts, budget progress, recent transactions |
-| 💳 **Multi-Currency**              | Accounts in different currencies, auto-converted to base currency            |
-| 📊 **Charts**                      | Monthly income/expense bars, category donut, net worth line chart            |
-| 🏷️ **Categories**                  | Indonesian defaults, fully customizable with icons & colors                  |
-| 📋 **Budget Planning**             | Per-category monthly budgets with progress tracking & rollover               |
-| 🔁 **Recurring Transactions**      | Daily / weekly / monthly / yearly — auto-creates transactions when due       |
-| 🎯 **Goals Tracker**               | Financial targets with progress bar and image upload                         |
-| 💸 **Bills Manager**               | Bill tracking with paid/unpaid status and recurring support                  |
-| 👫 **Couple Mode**                 | Share finances with a partner — invite via email                             |
-| 📈 **Net Worth**                   | Track assets, debts, and net worth over time                                 |
-| 📥 **CSV Export**                  | Export all transactions to CSV                                               |
-| 🔔 **Reminders**                   | Upcoming bill notifications (7-day window)                                   |
-| 📅 **Schedule Calendar**           | Monthly calendar view for bills & recurring transactions                     |
-| 📸 **OCR Receipt Scanning**        | AI-powered receipt scanning to auto-fill transactions                        |
-| 📎 **Transaction Attachments**     | Upload receipt/invoice images to transactions                                |
-| ✂️ **Split Transactions**          | Split one transaction across multiple categories                             |
-| 🌙 **Dark Mode**                   | Light/dark theme toggle                                                      |
-| 🔒 **Secure**                      | Google OAuth, Row-Level Security on all data                                 |
+🌐 **Live Demo:** [seaavey.site](https://seaavey.site)
 
 ---
 
-## 🚀 Quick Start
+## ✨ Core Features
 
-```bash
-# Clone
-git clone https://github.com/seaavey/finance.git
-cd finance
-
-# Install dependencies
-bun install
-
-# Copy environment
-cp .env .env.local
-
-# Start dev server
-bun dev
-```
-
-> **Note:** The `.env` file contains the Supabase URL and anon key tied to the live project. For local development, run `supabase start`.
-
-### Prerequisites
-
-- **bun** (JavaScript runtime & package manager)
-- **Supabase CLI** (for local database)
+| Feature                    | Technical Description                                                                                          |
+| :------------------------- | :------------------------------------------------------------------------------------------------------------- |
+| 💰 **Bento Dashboard**     | High-performance dashboard with real-time balance tracking and Unovis-powered data visualization.              |
+| 💳 **Multi-Currency**      | Native support for 150+ currencies with automated daily rate synchronization via Edge Functions.               |
+| 📋 **Smart Budgets**       | Flexible monthly budget planning with per-category tracking, rollover support, and visual progress indicators. |
+| 👫 **Couple Mode**         | Secure, invite-only shared finance mode using Supabase Auth and dedicated RLS policies.                        |
+| 📸 **AI OCR Scanner**      | Automated transaction entry via GPT-4o mini powered receipt scanning (Indonesian & English support).           |
+| ✂️ **Split Transactions**  | Detailed expense tracking allowing single transactions to be distributed across multiple categories.           |
+| 🔁 **Recurring Engine**    | Automated transaction generation for subscriptions and salary with flexible interval logic.                    |
+| 📎 **Attachments**         | Transaction-level receipt storage using Supabase Storage with secure signed URLs.                              |
+| 🎯 **Goal Tracking**       | Visual financial targets with progress milestones and custom imagery.                                          |
+| 🔒 **Bank-Grade Security** | Google OAuth 2.0 and strict Postgres Row-Level Security (RLS) ensure your data never leaves your control.      |
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Modern Tech Stack
 
-### Frontend
+### Frontend Architecture
 
-| Technology                                     | Purpose                 |
-| ---------------------------------------------- | ----------------------- |
-| **Vue 3** + Composition API + `<script setup>` | UI framework            |
-| **Vite 8** + Rolldown                          | Build tool              |
-| **TypeScript 6**                               | Type safety             |
-| **Tailwind CSS v4**                            | Utility-first styling   |
-| **shadcn-vue**                                 | UI component library    |
-| **TanStack Vue Query**                         | Server state management |
-| **vue-router 5**                               | File-based routing      |
-| **vue-i18n**                                   | Internationalization    |
-| **Unovis**                                     | Chart visualization     |
-| **Iconify** (HugeIcons)                        | Icon set                |
-| **@unhead/vue**                                | SEO / meta tags         |
+- **Framework:** [Vue 3](https://vuejs.org/) (Composition API, `<script setup>`)
+- **Build Tool:** [Vite 8](https://vitejs.dev/) with Rolldown optimization.
+- **Language:** [TypeScript 6](https://www.typescriptlang.org/) for robust type safety.
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) with [shadcn-vue](https://www.shadcn-vue.com/) components.
+- **State & Data:** [TanStack Vue Query v5](https://tanstack.com/query/latest/docs/framework/vue/overview) for server state management.
+- **Visualization:** [Unovis](https://unovis.dev/) for modular, accessible charts.
+- **PWA:** Offline-ready with `vite-plugin-pwa`.
 
 ### Backend & Infrastructure
 
-| Technology           | Purpose                                              |
-| -------------------- | ---------------------------------------------------- |
-| **Supabase**         | Database (PostgreSQL), Auth, Storage, Edge Functions |
-| **Google OAuth**     | Authentication                                       |
-| **Resend**           | Email (partner invitations)                          |
-| **Vercel**           | Hosting                                              |
-| **exchangerate.fun** | Exchange rate API                                    |
+- **Platform:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage, Edge Functions).
+- **Runtime:** [Deno](https://deno.land/) for serverless Edge Functions.
+- **AI Integration:** [GPT-4o mini](https://openai.com/index/gpt-4o-mini/) for intelligent OCR processing.
+- **Deployment:** [Vercel](https://vercel.com/) for frontend edge hosting.
 
 ---
 
-## 📁 Project Structure
+## 🚀 Development Workflow
 
-```
-src/
-├── components/       # Auto-imported UI & domain components
-│   ├── ui/           # shadcn-vue (136 components)
-│   ├── charts/       # Unovis chart wrappers
-│   └── landing/      # Landing page sections
-├── composables/      # Domain logic (useAuth, useTransactions, etc.)
-├── layouts/          # default.vue (sidebar), blank.vue (landing)
-├── lib/              # supabase client, utility helpers
-├── pages/            # File-based routes (37 pages)
-├── router/           # Router guard & layout assignment
-└── styles/           # Tailwind + CSS custom properties
+### Prerequisites
 
-supabase/
-├── functions/        # Edge Functions (Deno)
-│   ├── ocr-receipt/  # AI receipt scanning
-│   ├── sync-rates/   # Exchange rate sync
-│   ├── send-couple-invite/  # Partner invitation emails
-│   └── og-image/     # Dynamic Open Graph image
-└── migrations/       # 36 timestamped SQL migrations
-```
+- [Bun](https://bun.sh) (v1.1+ recommended)
+- [Supabase CLI](https://supabase.com/docs/guides/cli) (for local database development)
 
----
-
-## 📄 Pages & Routing
-
-| Route                    | Page                   | Layout  |
-| ------------------------ | ---------------------- | ------- |
-| `/`                      | Landing page           | blank   |
-| `/dashboard`             | Main dashboard         | default |
-| `/transactions`          | Transaction list       | default |
-| `/transactions/new`      | Add transaction        | default |
-| `/transactions/:id/edit` | Edit transaction       | default |
-| `/categories`            | Category management    | default |
-| `/categories/new`        | Add category           | default |
-| `/categories/:id/edit`   | Edit category          | default |
-| `/budget`                | Budget overview        | default |
-| `/budget/new`            | Add budget             | default |
-| `/budget/edit`           | Edit budget            | default |
-| `/budget/detail/:id`     | Budget detail          | default |
-| `/accounts`              | Account list           | default |
-| `/accounts/new`          | Add account            | default |
-| `/accounts/:id`          | Account detail         | default |
-| `/accounts/:id/edit`     | Edit account           | default |
-| `/bills`                 | Bill management        | default |
-| `/bills/new`             | Add bill               | default |
-| `/bills/:id`             | Bill detail            | default |
-| `/bills/:id/edit`        | Edit bill              | default |
-| `/recurring`             | Recurring transactions | default |
-| `/recurring/new`         | Add recurring          | default |
-| `/recurring/:id/edit`    | Edit recurring         | default |
-| `/schedule`              | Schedule calendar      | default |
-| `/goals`                 | Financial goals        | default |
-| `/goals/new`             | Add goal               | default |
-| `/goals/:id`             | Goal detail            | default |
-| `/goals/:id/edit`        | Edit goal              | default |
-| `/activities`            | Activity log           | default |
-| `/settings`              | User settings          | default |
-| `/auth/login`            | Login page             | blank   |
-| `/login`                 | Login (alias)          | blank   |
-| `/auth/callback`         | OAuth callback         | blank   |
-| `/about`                 | About                  | blank   |
-| `/contact`               | Contact                | blank   |
-| `/privacy-policy`        | Privacy policy         | blank   |
-| `/terms-of-service`      | Terms of service       | blank   |
-
----
-
-## 🗄️ Database (Supabase)
-
-**11 tables** with Row-Level Security:
-
-| Table                    | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| `profiles`               | User profiles (display name, currency, partner)    |
-| `categories`             | Income/expense categories                          |
-| `transactions`           | Financial transaction records                      |
-| `accounts`               | Bank/e-wallet/cash/investment/liability accounts   |
-| `budgets`                | Per-category monthly budgets                       |
-| `bills`                  | One-time & recurring bills                         |
-| `recurring_transactions` | Recurring transactions                             |
-| `goals`                  | Financial goals                                    |
-| `activity_logs`          | User activity audit trail                          |
-| `couple_invitations`     | Partner invitations                                |
-| `exchange_rates`         | Currency exchange rates (synced via edge function) |
-
----
-
-## 📦 Scripts
+### Quick Start
 
 ```bash
-bun dev              # Dev server (port 5173)
-bun build            # Type-check + production build
-bun build-only       # Build without type-check
-bun preview          # Preview production build
-bun type-check       # vue-tsc type checking
-bun lint             # oxlint + eslint --fix
-bun format           # Prettier formatting
+# 1. Clone the repository
+git clone https://github.com/seaavey/finance.git
+cd finance
+
+# 2. Install optimized dependencies
+bun install
+
+# 3. Setup environment variables
+cp .env.example .env.local
+
+# 4. Launch development environment
+bun dev
 ```
+
+### Build & Maintenance Commands
+
+| Command              | Purpose                                                       |
+| :------------------- | :------------------------------------------------------------ |
+| `bun build`          | Production-ready type-check and build.                        |
+| `bun type-check`     | Run `vue-tsc` for deep static analysis.                       |
+| `bun lint`           | Multi-stage linting with `oxlint` (fast) and `eslint` (deep). |
+| `bun format`         | Standardize code style with `prettier`.                       |
+| `bun audit:security` | Automated security scanning for dependencies and secrets.     |
 
 ---
 
-## 🌐 Environment & Deploy
+## 🗄️ Database Architecture
 
-- **Production:** [seaavey.site](https://seaavey.site) — deployed via Vercel
-- **Supabase Project:** Connected to live project (URL & anon key in `.env`)
-- **Local DB:** `supabase start` for local PostgreSQL + stack
+Aemy Finance utilizes a relational PostgreSQL schema with **11 core tables**, protected by strict **Row-Level Security (RLS)**.
+
+- `profiles`: Core user settings, currency preferences, and partner linking.
+- `transactions`: The ledger of all financial movements (supports splitting).
+- `accounts`: Managed assets (Cash, Bank, E-Wallet, Investments, Liabilities).
+- `categories`: Customizable taxonomy for income and expenses.
+- `budgets`: Time-scoped spending limits per category.
+- `bills` & `recurring_transactions`: Scheduling engine for future payments.
+- `exchange_rates`: Dynamic cache for multi-currency conversion.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started.
 
 ---
 
 ## 📄 License
 
-Copyright © 2026 — [seaavey](https://github.com/seaavey) · [Koxi](https://github.com/koci79)
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
-Licensed under the [MIT License](LICENSE).
+Copyright © 2026 — [seaavey](https://github.com/seaavey) & [Koxi](https://github.com/koci79)
 
 ---
 
-> Built with ❤️ using Vue 3, Tailwind CSS, Supabase, and many other awesome technologies.
+Built with ❤️ for a better financial future.

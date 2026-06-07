@@ -1,193 +1,119 @@
 # Aemy Finance ✦
 
-**Kelola Keuangan Pribadi & Bersama**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Bun](https://img.shields.io/badge/Runtime-Bun-black?logo=bun)](https://bun.sh)
+[![Vue](https://img.shields.io/badge/Frontend-Vue_3-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org)
+[![Tailwind CSS v4](https://img.shields.io/badge/Styles-Tailwind_v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
 
-Aplikasi manajemen keuangan pribadi modern dengan dukungan multi-mata uang, visualisasi interaktif, dan mode pasangan (couple mode) — gratis tanpa iklan.
+**Manajemen Keuangan Pribadi & Bersama — Modern & Terstruktur.**
 
-🌐 **Live:** [seaavey.site](https://seaavey.site)
+Aemy Finance adalah aplikasi manajemen keuangan modern dengan performa tinggi yang dirancang untuk memberikan kejelasan dan kendali penuh atas finansial Anda. Dibangun dengan prinsip "Privasi Utama", aplikasi ini menawarkan dukungan multi-mata uang, otomasi bertenaga AI, dan fitur kolaborasi tanpa hambatan — semuanya gratis tanpa iklan atau pelacakan.
+
+🌐 **Demo Live:** [seaavey.site](https://seaavey.site)
 
 ---
 
 ## ✨ Fitur Utama
 
-| Fitur                       | Deskripsi                                                             |
-| --------------------------- | --------------------------------------------------------------------- |
-| 💰 **Dashboard interaktif** | Bento-grid dengan balance, chart, budget progress, transaksi terbaru  |
-| 💳 **Multi-mata uang**      | Akun dalam berbagai mata uang, konversi otomatis ke base currency     |
-| 📊 **Chart visual**         | Grafik bulanan (income/expense), donat kategori, net worth line chart |
-| 🏷️ **Kategori**             | Default Indonesia, bisa dikustom dengan ikon & warna                  |
-| 📋 **Budget planning**      | Anggaran per kategori per bulan dengan progress tracking              |
-| 🔁 **Transaksi berulang**   | Daily / weekly / monthly / yearly recurring transactions              |
-| 🎯 **Goals tracker**        | Target finansial dengan progress bar dan upload gambar                |
-| 💸 **Bills manager**        | Manajemen tagihan dengan status paid/unpaid & recurring               |
-| 👫 **Couple mode**          | Bagikan keuangan dengan pasangan — undang via email                   |
-| 📈 **Net worth**            | Pantau aset, utang, dan kekayaan bersih dari waktu ke waktu           |
-| 📥 **Export CSV**           | Ekspor transaksi ke CSV                                               |
-| 🔔 **Reminder**             | Notifikasi tagihan jatuh tempo (7 hari ke depan)                      |
-| 🌙 **Dark mode**            | Toggle light/dark theme                                               |
-| 🔒 **Aman**                 | Autentikasi Google OAuth, Row-Level Security di database              |
+| Fitur                    | Deskripsi Teknis                                                                                                       |
+| :----------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| 💰 **Dashboard Bento**   | Dashboard interaktif dengan pelacakan saldo real-time dan visualisasi data menggunakan Unovis.                         |
+| 💳 **Multi-Mata Uang**   | Dukungan asli untuk 150+ mata uang dengan sinkronisasi kurs otomatis setiap hari via Edge Functions.                   |
+| 📋 **Anggaran Cerdas**   | Perencanaan anggaran bulanan fleksibel dengan pelacakan per kategori, dukungan rollover, dan indikator progres visual. |
+| 👫 **Mode Pasangan**     | Mode keuangan bersama yang aman dan berbasis undangan menggunakan Supabase Auth dan kebijakan RLS khusus.              |
+| 📸 **AI OCR Scanner**    | Entri transaksi otomatis melalui pemindaian struk berbasis GPT-4o mini (mendukung bahasa Indonesia & Inggris).         |
+| ✂️ **Transaksi Split**   | Pelacakan pengeluaran mendetail yang memungkinkan satu transaksi didistribusikan ke berbagai kategori.                 |
+| 🔁 **Mesin Berulang**    | Pembuatan transaksi otomatis untuk langganan dan gaji dengan logika interval yang fleksibel.                           |
+| 📎 **Lampiran**          | Penyimpanan struk/nota di tingkat transaksi menggunakan Supabase Storage dengan URL bertanda tangan yang aman.         |
+| 🎯 **Target Finansial**  | Pelacakan tujuan keuangan dengan milestone progres dan gambar kustom.                                                  |
+| 🔒 **Keamanan Berlapis** | Google OAuth 2.0 dan Row-Level Security (RLS) Postgres yang ketat memastikan data Anda tetap dalam kendali Anda.       |
 
 ---
 
-## 🚀 Mulai Cepat
+## 🛠️ Tech Stack Modern
+
+### Arsitektur Frontend
+
+- **Framework:** [Vue 3](https://vuejs.org/) (Composition API, `<script setup>`)
+- **Build Tool:** [Vite 8](https://vitejs.dev/) dengan optimasi Rolldown.
+- **Bahasa:** [TypeScript 6](https://www.typescriptlang.org/) untuk keamanan tipe data yang kuat.
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) dengan komponen [shadcn-vue](https://www.shadcn-vue.com/).
+- **State & Data:** [TanStack Vue Query v5](https://tanstack.com/query/latest/docs/framework/vue/overview) untuk manajemen state server.
+- **Visualisasi:** [Unovis](https://unovis.dev/) untuk grafik modular dan aksesibel.
+- **PWA:** Siap offline dengan `vite-plugin-pwa`.
+
+### Backend & Infrastruktur
+
+- **Platform:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage, Edge Functions).
+- **Runtime:** [Deno](https://deno.land/) untuk serverless Edge Functions.
+- **Integrasi AI:** [GPT-4o mini](https://openai.com/index/gpt-4o-mini/) untuk pemrosesan OCR yang cerdas.
+- **Deployment:** [Vercel](https://vercel.com/) untuk hosting frontend di edge.
+
+---
+
+## 🚀 Alur Pengembangan
+
+### Prasyarat
+
+- [Bun](https://bun.sh) (direkomendasikan v1.1+)
+- [Supabase CLI](https://supabase.com/docs/guides/cli) (untuk pengembangan database lokal)
+
+### Mulai Cepat
 
 ```bash
-# Clone
+# 1. Clone repositori
 git clone https://github.com/seaavey/finance.git
 cd finance
 
-# Install dependencies
+# 2. Instal dependensi yang teroptimasi
 bun install
 
-# Copy environment
-cp .env .env.local
+# 3. Setup variabel lingkungan
+cp .env.example .env.local
 
-# Start dev server
+# 4. Jalankan lingkungan pengembangan
 bun dev
 ```
 
-> **Catatan:** `.env` berisi Supabase URL dan anon key yang sudah terhubung ke project live. Untuk development lokal, jalankan `supabase start`.
+### Perintah Build & Pemeliharaan
 
-### Prerequisites
-
-- **bun** (JavaScript runtime & package manager)
-- **Supabase CLI** (untuk lokal)
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-| Teknologi                                      | Kegunaan                |
-| ---------------------------------------------- | ----------------------- |
-| **Vue 3** + Composition API + `<script setup>` | Framework UI            |
-| **Vite 8** + Rolldown                          | Build tool              |
-| **TypeScript 6**                               | Type safety             |
-| **Tailwind CSS v4**                            | Utility-first styling   |
-| **shadcn-vue**                                 | UI component library    |
-| **TanStack Vue Query**                         | Server state management |
-| **vue-router 5**                               | File-based routing      |
-| **vue-i18n**                                   | Internasionalisasi      |
-| **Unovis**                                     | Chart visualisasi       |
-| **Iconify** (HugeIcons)                        | Icon set                |
-| **@unhead/vue**                                | SEO / meta tags         |
-
-### Backend & Infrastructure
-
-| Teknologi            | Kegunaan                                             |
-| -------------------- | ---------------------------------------------------- |
-| **Supabase**         | Database (PostgreSQL), Auth, Storage, Edge Functions |
-| **Google OAuth**     | Autentikasi                                          |
-| **Resend**           | Email (undangan pasangan)                            |
-| **Vercel**           | Hosting                                              |
-| **exchangerate.fun** | API kurs mata uang                                   |
+| Perintah             | Kegunaan                                                             |
+| :------------------- | :------------------------------------------------------------------- |
+| `bun build`          | Build produksi disertai pengecekan tipe data.                        |
+| `bun type-check`     | Menjalankan `vue-tsc` untuk analisis statis mendalam.                |
+| `bun lint`           | Linting multi-tahap dengan `oxlint` (cepat) dan `eslint` (mendalam). |
+| `bun format`         | Menstandarisasi gaya kode dengan `prettier`.                         |
+| `bun audit:security` | Pemindaian keamanan otomatis untuk dependensi dan rahasia.           |
 
 ---
 
-## 📁 Struktur Project
+## 🗄️ Arsitektur Database
 
-```
-src/
-├── components/       # Auto-imported UI & domain components
-│   ├── ui/           # shadcn-vue (136 komponen)
-│   ├── charts/       # Unovis chart wrappers
-│   └── landing/      # Landing page sections
-├── composables/      # Domain logic (useAuth, useTransactions, dll.)
-├── layouts/          # default.vue (sidebar), blank.vue (landing)
-├── lib/              # supabase client, utility helpers
-├── pages/            # File-based routes (35 halaman)
-├── router/           # Router guard & layout assignment
-└── styles/           # Tailwind + CSS custom properties
+Aemy Finance menggunakan skema relasional PostgreSQL dengan **11 tabel inti**, yang dilindungi oleh **Row-Level Security (RLS)** yang ketat.
 
-supabase/
-├── functions/        # Edge Functions (Deno)
-│   ├── sync-rates/   # Sinkronisasi kurs mata uang
-│   ├── send-couple-invite/  # Email undangan pasangan
-│   └── og-image/     # Dynamic Open Graph image
-└── migrations/       # 27 timestamped SQL migrations
-```
-
----
-
-## 📄 Halaman & Routing
-
-| Route                    | Halaman            | Layout  |
-| ------------------------ | ------------------ | ------- |
-| `/`                      | Landing page       | blank   |
-| `/dashboard`             | Dashboard utama    | default |
-| `/transactions`          | Daftar transaksi   | default |
-| `/transactions/new`      | Tambah transaksi   | default |
-| `/transactions/:id/edit` | Edit transaksi     | default |
-| `/categories`            | Manajemen kategori | default |
-| `/budget`                | Budget planning    | default |
-| `/accounts`              | Daftar akun        | default |
-| `/bills`                 | Manajemen tagihan  | default |
-| `/recurring`             | Transaksi berulang | default |
-| `/goals`                 | Financial goals    | default |
-| `/activities`            | Activity log       | default |
-| `/settings`              | Pengaturan profil  | default |
-| `/auth/login`            | Halaman login      | blank   |
-| `/about`                 | Tentang            | blank   |
-| `/privacy-policy`        | Kebijakan privasi  | blank   |
-| `/terms-of-service`      | Syarat & ketentuan | blank   |
-
----
-
-## 🗄️ Database (Supabase)
-
-**10 tabel utama** dengan Row-Level Security:
-
-| Tabel                    | Fungsi                                        |
-| ------------------------ | --------------------------------------------- |
-| `profiles`               | Profil user (display name, currency, partner) |
-| `categories`             | Kategori income/expense                       |
-| `transactions`           | Catatan transaksi keuangan                    |
-| `accounts`               | Akun bank/e-wallet/cash/investment/liability  |
-| `budgets`                | Anggaran per kategori per bulan               |
-| `bills`                  | Tagihan berulang & satu kali                  |
-| `recurring_transactions` | Transaksi berulang                            |
-| `goals`                  | Target finansial                              |
-| `activity_logs`          | Log aktivitas user                            |
-| `couple_invitations`     | Undangan pasangan                             |
-| `exchange_rates`         | Kurs mata uang (sync dari edge function)      |
-
----
-
-## 📦 Scripts
-
-```bash
-bun dev              # Dev server (port 5173)
-bun build            # Type-check + production build
-bun build-only       # Build tanpa type-check
-bun preview          # Preview production build
-bun type-check       # vue-tsc type checking
-bun lint             # oxlint + eslint --fix
-bun format           # Prettier formatting
-```
-
----
-
-## 🌐 Lingkungan & Deploy
-
-- **Production:** [seaavey.site](https://seaavey.site) — deploy via Vercel
-- **Supabase Project:** Terhubung ke project live (URL & anon key di `.env`)
-- **Local DB:** `supabase start` untuk lokal PostgreSQL + Stack
+- `profiles`: Pengaturan profil, preferensi mata uang, dan tautan pasangan.
+- `transactions`: Ledger utama untuk semua pergerakan finansial (mendukung split).
+- `accounts`: Pengelolaan aset (Tunai, Bank, E-Wallet, Investasi, Liabilitas).
+- `categories`: Taksonomi kustom untuk pendapatan dan pengeluaran.
+- `budgets`: Batas pengeluaran bulanan berdasarkan kategori.
+- `bills` & `recurring_transactions`: Mesin penjadwalan untuk pembayaran masa depan.
+- `exchange_rates`: Cache dinamis untuk konversi multi-mata uang.
 
 ---
 
 ## 🤝 Kontribusi
 
-Project ini adalah proyek pribadi. Jika ada saran atau menemukan bug, silakan buka issue atau hubungi langsung.
+Kami menerima kontribusi! Silakan lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk panduan tentang cara memulai.
 
 ---
 
 ## 📄 Lisensi
 
-Hak cipta © 2026 — [seaavey](https://github.com/seaavey) · [Koxi](https://github.com/koci79)
+Didistribusikan di bawah **MIT License**. Lihat `LICENSE` untuk informasi lebih lanjut.
 
-Dilisensikan di bawah [MIT License](LICENSE).
+Copyright © 2026 — [seaavey](https://github.com/seaavey) & [Koxi](https://github.com/koci79)
 
 ---
 
-> Dibuat dengan ❤️ menggunakan Vue 3, Tailwind CSS, Supabase, dan sederet teknologi keren lainnya.
+Dibuat dengan ❤️ untuk masa depan finansial yang lebih baik.
