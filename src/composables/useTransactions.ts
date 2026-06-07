@@ -68,6 +68,7 @@ export const useTransactions = () => {
   const queryClient = useQueryClient()
   const activity = useActivityLog()
   const { user } = useAuth()
+  const { partner } = usePartner()
 
   const currentFilters = ref<TransactionFilters | undefined>(undefined)
   const currentPage = ref(1)
@@ -76,10 +77,13 @@ export const useTransactions = () => {
 
   const totalPages = computed(() => Math.max(1, Math.ceil(totalCount.value / pageSize.value)))
 
+  const partnerId = computed(() => partner.value?.id)
+
   const { data: transactionsData, isLoading: loading, refetch: refetchTransactions } = useQuery({
     queryKey: [
       'transactions',
       computed(() => user.value?.id),
+      partnerId,
       currentFilters,
       currentPage,
       pageSize,
@@ -87,7 +91,7 @@ export const useTransactions = () => {
     queryFn: async () => {
       if (!user.value) return { data: [], count: 0 }
 
-      const result = await queryTransactions(user.value.id, currentFilters.value || {}, currentPage.value, pageSize.value)
+      const result = await queryTransactions(user.value.id, currentFilters.value || {}, currentPage.value, pageSize.value, partnerId.value)
       if (result.error) throw result.error
 
       totalCount.value = result.data?.count || 0

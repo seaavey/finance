@@ -7,6 +7,7 @@ export async function queryTransactions(
   filters: TransactionFilters = {},
   page = 1,
   pageSize = 20,
+  partnerId?: string,
 ): Promise<Result<{ data: Transaction[]; count: number }>> {
   const supabase = useSupabase()
   const { type, category_id, search, startDate, endDate, account_id } = filters
@@ -14,7 +15,15 @@ export async function queryTransactions(
   let query = supabase
     .from('transactions')
     .select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id', { count: 'exact' })
-    .eq('user_id', userId)
+
+  // Include partner transactions if partnered
+  if (partnerId) {
+    query = query.in('user_id', [userId, partnerId])
+  } else {
+    query = query.eq('user_id', userId)
+  }
+
+  query = query
     .order('date', { ascending: false })
     .order('created_at', { ascending: false })
     .range((page - 1) * pageSize, page * pageSize - 1)
