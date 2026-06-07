@@ -74,6 +74,24 @@ export default defineConfig({
             },
           },
           {
+            urlPattern: /^https:\/\/api\.exchangerate\.fun\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'exchangerate-api-cache',
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'unsplash-image-cache',
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 },
+            },
+          },
+          {
             urlPattern: /^https:\/\/[a-z]+\.[a-z]+\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
             options: {
