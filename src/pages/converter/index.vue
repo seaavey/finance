@@ -1,25 +1,25 @@
 <template>
-  <div class="mx-auto max-w-2xl space-y-12 px-4 py-8 md:px-0">
+  <div class="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:space-y-10 sm:py-8 md:space-y-12 md:py-8 md:px-0">
     <!-- HEADER -->
     <div class="text-center space-y-2">
-      <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
+      <h2 class="text-3xl font-black tracking-tighter text-foreground sm:text-4xl md:text-5xl">
         {{ $t('converter.title') }}
       </h2>
-      <p class="text-sm font-medium text-muted-foreground">
+      <p class="text-xs font-medium text-muted-foreground sm:text-sm">
         {{ $t('converter.subtitle') }}
       </p>
     </div>
 
     <!-- HERO CONVERTER -->
-    <div class="space-y-4">
+    <div class="space-y-3 sm:space-y-4">
       <!-- FROM INPUT -->
-      <div class="group relative rounded-4xl bg-card/10 p-8 transition-all hover:bg-card/20">
-        <div class="flex items-center justify-between gap-4">
+      <div class="group relative rounded-3xl bg-card/10 p-5 transition-all hover:bg-card/20 sm:rounded-4xl sm:p-6 md:p-8">
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
           <input
             v-model="fromAmountString"
             type="text"
             inputmode="decimal"
-            class="w-full bg-transparent text-5xl font-black tracking-tighter text-foreground focus:outline-none md:text-6xl"
+            class="min-w-0 w-full bg-transparent text-3xl font-black tracking-tighter text-foreground focus:outline-none sm:text-4xl md:text-5xl lg:text-6xl"
             @input="onFromInput"
           />
           <Select v-model="fromCurrency">
@@ -64,10 +64,10 @@
       </div>
 
       <!-- TO DISPLAY -->
-      <div class="group relative rounded-4xl bg-card/5 p-8 transition-all hover:bg-card/10">
-        <div class="flex items-center justify-between gap-4">
+      <div class="group relative rounded-3xl bg-card/5 p-5 transition-all hover:bg-card/10 sm:rounded-4xl sm:p-6 md:p-8">
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
           <div
-            class="w-full text-5xl font-black tracking-tighter text-foreground/50 md:text-6xl transition-all duration-300"
+            class="min-w-0 w-full text-3xl font-black tracking-tighter text-foreground/50 sm:text-4xl md:text-5xl lg:text-6xl transition-all duration-300"
           >
             {{ formatNumberOnly(toAmount, toCurrency) }}
           </div>
@@ -108,16 +108,16 @@
     </div>
 
     <!-- QUICK MULTI-CONVERT GRID -->
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
       <div
         v-for="item in quickConversions"
         :key="item.code"
-        class="flex flex-col gap-1 rounded-3xl border border-border/50 bg-card/10 p-5 transition-all duration-300 hover:bg-card/20 hover:scale-[1.02] hover:shadow-lg"
+        class="flex flex-col gap-1 rounded-2xl border border-border/50 bg-card/10 p-4 transition-all duration-300 hover:bg-card/20 hover:scale-[1.02] hover:shadow-lg sm:rounded-3xl sm:p-5"
       >
         <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {{ item.code }}
         </p>
-        <p class="text-xl font-black tracking-tight text-foreground">
+        <p class="text-base font-black tracking-tight text-foreground sm:text-xl">
           {{ formatNumberOnly(item.amount, item.code) }}
         </p>
       </div>
