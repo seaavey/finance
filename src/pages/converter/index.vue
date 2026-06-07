@@ -1,0 +1,191 @@
+<template>
+  <div class="mx-auto max-w-2xl space-y-12 px-1 py-8 md:px-0">
+    <!-- HEADER -->
+    <div class="text-center space-y-2">
+      <h2 class="text-4xl font-black tracking-tighter text-foreground md:text-5xl">
+        {{ $t('converter.title') }}
+      </h2>
+      <p class="text-sm font-medium text-muted-foreground">
+        {{ $t('converter.subtitle') }}
+      </p>
+    </div>
+
+    <!-- HERO CONVERTER -->
+    <div class="space-y-4">
+      <!-- FROM INPUT -->
+      <div class="group relative rounded-4xl bg-card/10 p-8 transition-all hover:bg-card/20">
+        <div class="flex items-center justify-between gap-4">
+          <input
+            v-model="fromAmountString"
+            type="text"
+            inputmode="decimal"
+            class="w-full bg-transparent text-5xl font-black tracking-tighter text-foreground focus:outline-none md:text-6xl"
+            @input="onFromInput"
+          />
+          <Select v-model="fromCurrency">
+            <SelectTrigger
+              class="h-12 w-auto rounded-2xl border-none bg-background/50 px-4 font-bold shadow-sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
+              <SelectGroup v-for="group in currencyGroups" :key="group.label">
+                <SelectLabel class="text-[10px] font-black uppercase tracking-widest text-primary">{{
+                  group.label
+                }}</SelectLabel>
+                <SelectItem
+                  v-for="cur in group.currencies"
+                  :key="cur.value"
+                  :value="cur.value"
+                  class="rounded-xl font-bold"
+                >
+                  {{ cur.label }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <!-- SWAP DIVIDER -->
+      <div class="relative -my-6 z-10 flex justify-center">
+        <Button
+          variant="outline"
+          size="icon"
+          class="size-14 rounded-full border-4 border-background bg-card shadow-xl transition-all hover:scale-110 active:scale-95"
+          @click="swapCurrencies"
+        >
+          <AppIcon name="hugeicons:exchange-01" :size="24" class="text-primary" />
+        </Button>
+      </div>
+
+      <!-- TO DISPLAY -->
+      <div class="group relative rounded-4xl bg-card/5 p-8 transition-all">
+        <div class="flex items-center justify-between gap-4">
+          <div class="w-full text-5xl font-black tracking-tighter text-foreground/50 md:text-6xl">
+            {{ formatNumberOnly(toAmount, toCurrency) }}
+          </div>
+          <Select v-model="toCurrency">
+            <SelectTrigger
+              class="h-12 w-auto rounded-2xl border-none bg-background/50 px-4 font-bold shadow-sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
+              <SelectGroup v-for="group in currencyGroups" :key="group.label">
+                <SelectLabel class="text-[10px] font-black uppercase tracking-widest text-primary">{{
+                  group.label
+                }}</SelectLabel>
+                <SelectItem
+                  v-for="cur in group.currencies"
+                  :key="cur.value"
+                  :value="cur.value"
+                  class="rounded-xl font-bold"
+                >
+                  {{ cur.label }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <!-- RATE INFO -->
+      <div v-if="displayRate" class="text-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary"
+        >
+          1 {{ displayRate.from }} =
+          {{ formatNumberOnly(displayRate.amount, displayRate.to, 4) }} {{ displayRate.to }}
+        </span>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDERS FOR NEXT TASKS -->
+    <div id="quick-convert-placeholder"></div>
+    <div id="trend-chart-placeholder"></div>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineOptions({
+  name: 'PagesConverterIndex',
+})
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+
+const {
+  currencyGroups,
+  formatNumberOnly,
+  parseLocalizedNumber,
+  convertTo,
+} = useCurrency()
+
+const fromCurrency = ref('USD')
+const toCurrency = ref('IDR')
+const fromAmountString = ref('1')
+const fromAmount = ref(1)
+
+const onFromInput = (e: Event) => {
+  const val = (e.target as HTMLInputElement).value
+  fromAmount.value = parseLocalizedNumber(val, fromCurrency.value)
+  fromAmountString.value = formatNumberOnly(fromAmount.value, fromCurrency.value)
+}
+
+const setFromAmount = (amount: number) => {
+  fromAmount.value = amount
+  fromAmountString.value = formatNumberOnly(amount, fromCurrency.value)
+}
+
+const toAmount = computed(() => {
+  return convertTo(fromAmount.value, fromCurrency.value, toCurrency.value) || 0
+})
+
+const currentRate = computed(() => {
+  return convertTo(1, fromCurrency.value, toCurrency.value)
+})
+
+const displayRate = computed(() => {
+  const rate = currentRate.value
+  if (!rate) return null
+
+  // If rate is very small (e.g. IDR to USD), show inverse for better readability
+  if (rate < 0.01) {
+    const inverse = convertTo(1, toCurrency.value, fromCurrency.value)
+    if (inverse) {
+      return {
+        amount: inverse,
+        from: toCurrency.value,
+        to: fromCurrency.value,
+      }
+    }
+  }
+
+  return {
+    amount: rate,
+    from: fromCurrency.value,
+    to: toCurrency.value,
+  }
+})
+
+const swapCurrencies = () => {
+  const temp = fromCurrency.value
+  fromCurrency.value = toCurrency.value
+  toCurrency.value = temp
+  // Re-format the string for the new currency
+  fromAmountString.value = formatNumberOnly(fromAmount.value, fromCurrency.value)
+}
+
+onMounted(() => {
+  setFromAmount(1)
+})
+</script>
