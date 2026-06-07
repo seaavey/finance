@@ -598,7 +598,7 @@ const viewModes = computed(() => [
 ])
 
 const displayName = computed(() => {
-  const name = myProfile?.display_name || user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
+  const name = myProfile.value?.display_name || user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
   if (!name) {
     return t('dashboard.user')
   }
