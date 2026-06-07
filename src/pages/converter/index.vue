@@ -117,8 +117,28 @@
       </div>
     </div>
 
-    <!-- TREND CHART PLACEHOLDER -->
-    <div id="trend-chart-placeholder"></div>
+    <!-- TREND CHART -->
+    <div class="rounded-4xl border border-border/50 bg-card/10 p-8 space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <AppIcon name="hugeicons:chart-line-up-01" :size="20" />
+          </div>
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground">7-Day Trend</h3>
+            <p class="text-[10px] font-bold text-muted-foreground">Performance of {{ fromCurrency }}/{{ toCurrency }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-48 w-full">
+        <VisXYContainer :data="trendData" class="h-full">
+          <VisArea :x="x" :y="y" color="var(--primary)" :opacity="0.1" />
+          <VisLine :x="x" :y="y" color="var(--primary)" :lineWidth="3" />
+          <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(undefined, { weekday: 'short' })" :gridLine="false" />
+        </VisXYContainer>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -137,18 +157,35 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { VisXYContainer, VisLine, VisArea, VisAxis } from '@unovis/vue'
 
 const {
   currencyGroups,
   formatNumberOnly,
   parseLocalizedNumber,
   convertTo,
+  fetchHistoricalRates,
 } = useCurrency()
 
 const fromCurrency = ref('USD')
 const toCurrency = ref('IDR')
 const fromAmountString = ref('1')
 const fromAmount = ref(1)
+
+const trendData = ref<{ date: string; value: number }[]>([])
+const chartLoading = ref(false)
+
+const updateTrend = async () => {
+  chartLoading.value = true
+  const data = await fetchHistoricalRates(fromCurrency.value, toCurrency.value)
+  if (data) trendData.value = data
+  chartLoading.value = false
+}
+
+watch([fromCurrency, toCurrency], updateTrend, { immediate: true })
+
+const x = (d: any) => new Date(d.date).getTime()
+const y = (d: any) => d.value
 
 const onFromInput = (e: Event) => {
   const val = (e.target as HTMLInputElement).value
