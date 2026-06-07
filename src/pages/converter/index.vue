@@ -101,8 +101,23 @@
       </div>
     </div>
 
-    <!-- PLACEHOLDERS FOR NEXT TASKS -->
-    <div id="quick-convert-placeholder"></div>
+    <!-- QUICK MULTI-CONVERT GRID -->
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div
+        v-for="item in quickConversions"
+        :key="item.code"
+        class="flex flex-col gap-1 rounded-3xl border border-border/50 bg-card/10 p-5 transition-all hover:bg-card/20"
+      >
+        <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          {{ item.code }}
+        </p>
+        <p class="text-xl font-black tracking-tight text-foreground">
+          {{ formatNumberOnly(item.amount, item.code) }}
+        </p>
+      </div>
+    </div>
+
+    <!-- TREND CHART PLACEHOLDER -->
     <div id="trend-chart-placeholder"></div>
   </div>
 </template>
@@ -175,6 +190,14 @@ const displayRate = computed(() => {
     from: fromCurrency.value,
     to: toCurrency.value,
   }
+})
+
+const quickTargets = ['EUR', 'SGD', 'GBP', 'MYR']
+const quickConversions = computed(() => {
+  return quickTargets.map((code) => ({
+    code,
+    amount: convertTo(fromAmount.value, fromCurrency.value, code) || 0,
+  }))
 })
 
 const swapCurrencies = () => {
