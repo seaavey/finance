@@ -71,6 +71,7 @@ export default defineConfig({
               cacheName: 'iconify-cache',
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 30 },
               fetchOptions: { mode: 'cors' },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
@@ -89,6 +90,8 @@ export default defineConfig({
             options: {
               cacheName: 'unsplash-image-cache',
               expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+              fetchOptions: { mode: 'cors' },
             },
           },
           {
