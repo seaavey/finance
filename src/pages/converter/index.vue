@@ -1,32 +1,28 @@
 <template>
-  <div class="mx-auto max-w-2xl space-y-8 px-4 py-6 sm:space-y-10 sm:py-8 md:space-y-12 md:py-8 md:px-0">
+  <div class="mx-auto max-w-2xl space-y-6 px-4 py-5 sm:space-y-10 sm:py-8 md:space-y-12 md:py-8 md:px-0">
     <!-- HEADER -->
-    <div class="text-center space-y-2">
-      <h2 class="text-3xl font-black tracking-tighter text-foreground sm:text-4xl md:text-5xl">
+    <div class="text-center space-y-1 sm:space-y-2">
+      <h2 class="text-2xl font-black tracking-tighter text-foreground sm:text-4xl md:text-5xl">
         {{ $t('converter.title') }}
       </h2>
-      <p class="text-xs font-medium text-muted-foreground sm:text-sm">
+      <p class="text-[11px] font-medium text-muted-foreground sm:text-sm">
         {{ $t('converter.subtitle') }}
       </p>
     </div>
 
     <!-- HERO CONVERTER -->
-    <div class="space-y-3 sm:space-y-4">
+    <div class="space-y-2 sm:space-y-4">
       <!-- FROM INPUT -->
-      <div class="group relative rounded-3xl bg-card/10 p-5 transition-all hover:bg-card/20 sm:rounded-4xl sm:p-6 md:p-8">
-        <div class="flex items-center justify-between gap-2 sm:gap-4">
-          <input
-            v-model="fromAmountString"
-            type="text"
-            inputmode="decimal"
-            class="min-w-0 w-full bg-transparent text-3xl font-black tracking-tighter text-foreground focus:outline-none sm:text-4xl md:text-5xl lg:text-6xl"
-            @input="onFromInput"
-          />
+      <div class="group relative rounded-2xl bg-card/10 p-3 transition-all hover:bg-card/20 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8">
+        <div class="flex items-center gap-3 sm:gap-4">
+          <!-- Currency select as a prominent tappable badge on the left -->
           <Select v-model="fromCurrency">
             <SelectTrigger
-              class="h-12 w-auto rounded-2xl border-none bg-background/50 px-4 font-bold shadow-sm"
+              class="shrink-0 h-10 sm:h-14 md:h-16 w-auto rounded-xl border-2 border-primary/20 bg-primary/10 px-3 font-black tracking-tight shadow-sm hover:bg-primary/20 active:scale-95 transition-all sm:rounded-2xl sm:px-4 md:px-5"
             >
-              <SelectValue />
+              <SelectValue>
+                {{ fromCurrency }}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
@@ -44,38 +40,45 @@
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          <!-- Amount input fills remaining space -->
+          <input
+            v-model="fromAmountString"
+            type="text"
+            inputmode="decimal"
+            class="min-w-0 flex-1 bg-transparent text-right text-3xl font-black tracking-tighter text-foreground focus:outline-none sm:text-4xl md:text-5xl lg:text-6xl"
+            @input="onFromInput"
+          />
         </div>
       </div>
 
       <!-- SWAP DIVIDER -->
-      <div class="relative -my-6 z-10 flex justify-center">
+      <div class="relative -my-5 sm:-my-6 z-10 flex justify-center">
         <Button
           variant="outline"
           size="icon"
-          class="size-14 rounded-full border-4 border-background bg-card shadow-xl transition-all hover:scale-110 active:scale-95 group/swap"
+          class="size-9 sm:size-12 md:size-14 rounded-full border-2 sm:border-3 md:border-4 border-background bg-card shadow-xl transition-all hover:scale-110 active:scale-95 group/swap"
           @click="swapCurrencies"
         >
           <AppIcon
             name="hugeicons:exchange-01"
-            :size="24"
-            class="text-primary transition-transform duration-500 group-active/swap:rotate-180"
+            :size="16"
+            class="sm:size-5 md:size-6 text-primary transition-transform duration-500 group-active/swap:rotate-180"
           />
         </Button>
       </div>
 
       <!-- TO DISPLAY -->
-      <div class="group relative rounded-3xl bg-card/5 p-5 transition-all hover:bg-card/10 sm:rounded-4xl sm:p-6 md:p-8">
-        <div class="flex items-center justify-between gap-2 sm:gap-4">
-          <div
-            class="min-w-0 w-full text-3xl font-black tracking-tighter text-foreground/50 sm:text-4xl md:text-5xl lg:text-6xl transition-all duration-300"
-          >
-            {{ formatNumberOnly(toAmount, toCurrency) }}
-          </div>
+      <div class="group relative rounded-2xl bg-card/5 p-3 transition-all hover:bg-card/10 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8">
+        <div class="flex items-center gap-3 sm:gap-4">
+          <!-- Currency select on the left -->
           <Select v-model="toCurrency">
             <SelectTrigger
-              class="h-12 w-auto rounded-2xl border-none bg-background/50 px-4 font-bold shadow-sm"
+              class="shrink-0 h-10 sm:h-14 md:h-16 w-auto rounded-xl border-2 border-primary/20 bg-primary/10 px-3 font-black tracking-tight shadow-sm hover:bg-primary/20 active:scale-95 transition-all sm:rounded-2xl sm:px-4 md:px-5"
             >
-              <SelectValue />
+              <SelectValue>
+                {{ toCurrency }}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
@@ -93,13 +96,20 @@
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          <!-- Converted amount on the right -->
+          <div
+            class="flex-1 text-right text-3xl font-black tracking-tighter text-foreground/50 sm:text-4xl md:text-5xl lg:text-6xl transition-all duration-300"
+          >
+            {{ formatNumberOnly(toAmount, toCurrency) }}
+          </div>
         </div>
       </div>
 
       <!-- RATE INFO -->
       <div v-if="displayRate" class="text-center transition-all duration-500">
         <span
-          class="inline-flex items-center gap-2 rounded-full bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary animate-in fade-in slide-in-from-bottom-2"
+          class="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1 text-[11px] font-bold text-primary animate-in fade-in slide-in-from-bottom-2 sm:gap-2 sm:px-4 sm:py-1.5 sm:text-xs"
         >
           1 {{ displayRate.from }} =
           {{ formatNumberOnly(displayRate.amount, displayRate.to, 4) }} {{ displayRate.to }}
@@ -108,16 +118,16 @@
     </div>
 
     <!-- QUICK MULTI-CONVERT GRID -->
-    <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+    <div class="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-4">
       <div
         v-for="item in quickConversions"
         :key="item.code"
-        class="flex flex-col gap-1 rounded-2xl border border-border/50 bg-card/10 p-4 transition-all duration-300 hover:bg-card/20 hover:scale-[1.02] hover:shadow-lg sm:rounded-3xl sm:p-5"
+        class="flex flex-col gap-1 rounded-xl border border-border/50 bg-card/10 p-3 transition-all duration-300 hover:bg-card/20 active:scale-[0.98] hover:shadow-lg sm:rounded-2xl sm:p-4 md:rounded-3xl md:p-5"
       >
         <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {{ item.code }}
         </p>
-        <p class="text-base font-black tracking-tight text-foreground sm:text-xl">
+        <p class="text-sm font-black tracking-tight text-foreground sm:text-lg md:text-xl">
           {{ formatNumberOnly(item.amount, item.code) }}
         </p>
       </div>
