@@ -23,6 +23,20 @@ export const usePartner = () => {
 
   const sending = ref(false)
 
+  const { data: myProfileData, refetch: refetchMyProfile } = useQuery({
+    queryKey: ['myProfile', computed(() => user.value?.id)],
+    queryFn: async () => {
+      if (!user.value) return null
+      const result = await getProfile(user.value.id)
+      if (result.error) throw result.error
+      return result.data
+    },
+    enabled: computed(() => !!user.value),
+    staleTime: 60_000,
+  })
+
+  const myProfile = computed(() => myProfileData.value || null)
+
   const { data: partnerData, refetch: fetchPartner } = useQuery({
     queryKey: ['partner', computed(() => user.value?.id)],
     queryFn: async () => {
@@ -209,6 +223,7 @@ export const usePartner = () => {
   }
 
   return {
+    myProfile,
     partner,
     sentInvitations,
     receivedInvitations,

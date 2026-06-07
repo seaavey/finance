@@ -513,9 +513,11 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import { useSupabase } from '@/lib/supabase'
+import { useQueryClient } from '@tanstack/vue-query'
 
 
 const { toast } = useToast()
+const queryClient = useQueryClient()
 const supabase = useSupabase()
 const { user, signOut, getSession } = useAuth()
 const {
@@ -618,6 +620,7 @@ const saveProfile = async () => {
 
   if (!error) {
     toast.success(t('settings.toast_saved'))
+    queryClient.invalidateQueries({ queryKey: ['myProfile'] })
     loadCurrency()
   } else {
     toast.error(t('settings.toast_save_error'))

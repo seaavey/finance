@@ -54,15 +54,15 @@
             <AvatarImage
               v-if="user.user_metadata?.avatar_url"
               :src="user.user_metadata.avatar_url"
-              :alt="user.user_metadata?.full_name"
+              :alt="myProfile?.display_name || user.user_metadata?.full_name"
             />
             <AvatarFallback class="bg-muted text-xs font-bold text-muted-foreground">{{
-              user.user_metadata?.full_name?.charAt(0) ?? '?'
+              (myProfile?.display_name || user?.user_metadata?.full_name || '?').charAt(0)
             }}</AvatarFallback>
           </Avatar>
           <div class="flex-1 truncate">
             <p class="truncate text-sm font-bold text-foreground">
-              {{ user.user_metadata?.full_name }}
+              {{ myProfile?.display_name || user?.user_metadata?.full_name }}
             </p>
             <p class="truncate text-[10px] font-medium text-muted-foreground">
               {{ user.email }}
@@ -113,7 +113,7 @@ const emit = defineEmits<{
 
 const isDesktop = useMediaQuery('(min-width: 1024px)')
 const { user, signOut } = useAuth()
-const { isPartnered, partnerDisplayName, fetchPartner } = usePartner()
+const { myProfile, isPartnered, partnerDisplayName, fetchPartner } = usePartner()
 const route = useRoute()
 const { t } = useI18n()
 
