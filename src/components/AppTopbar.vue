@@ -282,6 +282,11 @@ const breadcrumbItems = computed<BreadcrumbItemDef[]>(() => {
     return items
   }
 
+  if (path.startsWith('/converter')) {
+    items.push({ label: t('topbar.converter') })
+    return items
+  }
+
   if (path.startsWith('/settings')) {
     items.push({ label: t('topbar.settings') })
     return items

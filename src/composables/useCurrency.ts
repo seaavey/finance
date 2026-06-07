@@ -232,7 +232,9 @@ export const useCurrency = () => {
       return Object.entries(data.rates || {}).map(([date, rates]) => ({
         date,
         value: (rates as Record<string, number>)[to],
-      })).sort((a, b) => a.date.localeCompare(b.date))
+      }))
+        .filter((item) => item.value !== undefined)
+        .sort((a, b) => a.date.localeCompare(b.date)) as { date: string; value: number }[]
     } catch {
       return null
     }
