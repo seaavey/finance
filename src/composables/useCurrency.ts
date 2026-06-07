@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/vue-query'
 import { user } from './useAuth'
@@ -74,27 +74,27 @@ export const useCurrency = () => {
     if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount
     if (amount === 0) return 0
 
-    const baseCurrency = defaultCurrency.value
+    const baseCurrency = 'IDR' // The exchange_rates table is relative to IDR
 
     // Try DB-stored rates first
     const stored = exchangeRates.value
     if (stored) {
-      const rateFrom = stored[fromCurrency]
-      const rateTo = stored[toCurrency]
+      const rateFrom = fromCurrency === baseCurrency ? 1 : stored[fromCurrency]
+      const rateTo = toCurrency === baseCurrency ? 1 : stored[toCurrency]
       if (rateFrom && rateTo) {
-        const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom
-        return toCurrency === baseCurrency ? inBase : inBase * rateTo
+        // amount / rateFrom gives the value in IDR
+        // (amount / rateFrom) * rateTo gives the value in toCurrency
+        return (amount / rateFrom) * rateTo
       }
     }
 
     // Fallback: try API-fetched rates (cached in memory)
     const fb = fallbackRates.value
     if (fb) {
-      const rateFrom = fb[fromCurrency]
-      const rateTo = fb[toCurrency]
+      const rateFrom = fromCurrency === baseCurrency ? 1 : fb[fromCurrency]
+      const rateTo = toCurrency === baseCurrency ? 1 : fb[toCurrency]
       if (rateFrom && rateTo) {
-        const inBase = fromCurrency === baseCurrency ? amount : amount / rateFrom
-        return toCurrency === baseCurrency ? inBase : inBase * rateTo
+        return (amount / rateFrom) * rateTo
       }
     }
 
@@ -142,11 +142,22 @@ export const useCurrency = () => {
       PKR: 'en-PK',
       LKR: 'si-LK',
       NPR: 'ne-NP',
+      USD: 'en-US',
+      EUR: 'de-DE',
+      GBP: 'en-GB',
     }
     return localeMap[currency] ?? 'en-US'
   }
 
   const currencyGroups = computed(() => [
+    {
+      label: t('currencies.group_global'),
+      currencies: [
+        { value: 'USD', label: t('currencies.usd') },
+        { value: 'EUR', label: t('currencies.eur') },
+        { value: 'GBP', label: t('currencies.gbp') },
+      ],
+    },
     {
       label: t('currencies.group_southeast_asia'),
       currencies: [
@@ -186,11 +197,13 @@ export const useCurrency = () => {
 
   const currencies = computed(() => currencyGroups.value.flatMap((g) => g.currencies))
 
-  const formatNumberOnly = (amount: number, currency?: string) => {
+  const formatNumberOnly = (amount: number, currency?: string, precision?: number) => {
     const cur = currency || defaultCurrency.value
+    // If currency doesn't support decimals (like IDR), force 0 decimals
+    const decimals = hasDecimals(cur) ? (precision !== undefined ? precision : 2) : 0
     return new Intl.NumberFormat(getLocale(cur), {
-      minimumFractionDigits: hasDecimals(cur) ? 2 : 0,
-      maximumFractionDigits: hasDecimals(cur) ? 2 : 0,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
     }).format(amount)
   }
 
@@ -207,6 +220,24 @@ export const useCurrency = () => {
     return num
   }
 
+  const fetchHistoricalRates = async (from: string, to: string) => {
+    const endDate = new Date().toISOString().split('T')[0]
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+
+    try {
+      const res = await fetch(`https://api.exchangerate.fun/${startDate}..${endDate}?base=${from}&symbols=${to}`)
+      if (!res.ok) return null
+      const data = await res.json()
+      // Returns { [date]: { [symbol]: rate } }
+      return Object.entries(data.rates || {}).map(([date, rates]: any) => ({
+        date,
+        value: rates[to],
+      })).sort((a, b) => a.date.localeCompare(b.date))
+    } catch {
+      return null
+    }
+  }
+
   return {
     formatCurrency,
     formatNumberOnly,
@@ -217,5 +248,6 @@ export const useCurrency = () => {
     defaultCurrency,
     exchangeRates,
     convertTo,
+    fetchHistoricalRates,
   }
 }
