@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { useSupabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/vue-query'
 import { user } from './useAuth'
-import { useI18n } from './nuxt-compat'
+import i18n from '@/plugins/i18n'
 
 const defaultCurrency = ref<string>('IDR')
 
@@ -49,7 +49,11 @@ const fetchFallbackRates = async () => {
 fetchFallbackRates()
 
 export const useCurrency = () => {
-  const { t } = useI18n()
+  // Use global i18n.global instance directly to avoid Vue's "inject() can only be used inside setup()" warnings.
+  // This is the most robust way to support useCurrency calls from any context (async, top-level, etc.)
+  const globalI18n = i18n.global as any
+  const t = globalI18n.t
+  const locale = globalI18n.locale
 
   // --- Exchange rates from Supabase (synced via Edge Function) ---
   const { data: ratesData } = useQuery({
@@ -221,18 +225,30 @@ export const useCurrency = () => {
   }
 
   const fetchHistoricalRates = async (from: string, to: string) => {
-    const endDate = new Date().toISOString().split('T')[0]
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
     try {
-      const res = await fetch(`https://api.exchangerate.fun/${startDate}..${endDate}?base=${from}&symbols=${to}`)
+      // Use EUR as stable base and fetch both currencies to calculate ratio
+      // This avoids 404s for currencies that Frankfurter doesn't support as base (like IDR)
+      // We use the open-ended range "startDate.." to avoid 404s if today's data isn't published yet
+      const res = await fetch(
+        `https://api.frankfurter.app/${startDate}..?base=EUR&symbols=${from},${to}`,
+      )
       if (!res.ok) return null
       const data = await res.json()
-      // Returns { [date]: { [symbol]: rate } }
-      return Object.entries(data.rates || {}).map(([date, rates]) => ({
-        date,
-        value: (rates as Record<string, number>)[to],
-      }))
+
+      return Object.entries(data.rates || {}).map(([date, rates]: [string, any]) => {
+        const rateFrom = from === 'EUR' ? 1 : rates[from]
+        const rateTo = to === 'EUR' ? 1 : rates[to]
+
+        return {
+          date,
+          // If we want from -> to, and we have EUR -> from and EUR -> to:
+          // 1 from = (1/rateFrom) EUR
+          // (1/rateFrom) EUR = (rateTo/rateFrom) to
+          value: rateFrom && rateTo ? rateTo / rateFrom : undefined,
+        }
+      })
         .filter((item) => item.value !== undefined)
         .sort((a, b) => a.date.localeCompare(b.date)) as { date: string; value: number }[]
     } catch {
@@ -251,5 +267,6 @@ export const useCurrency = () => {
     exchangeRates,
     convertTo,
     fetchHistoricalRates,
+    locale,
   }
 }

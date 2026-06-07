@@ -122,41 +122,6 @@
         </p>
       </div>
     </div>
-
-    <!-- TREND CHART -->
-    <div class="rounded-4xl border border-border/50 bg-card/10 p-8 space-y-6 transition-all duration-500">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform hover:scale-110">
-            <AppIcon name="hugeicons:chart-line-up-01" :size="20" />
-          </div>
-          <div>
-            <h3 class="text-sm font-black uppercase tracking-widest text-foreground">{{ $t('converter.trend_title') }}</h3>
-            <p class="text-[10px] font-bold text-muted-foreground transition-all duration-300">{{ $t('converter.trend_subtitle', { from: fromCurrency, to: toCurrency }) }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="h-48 w-full relative">
-        <!-- LOADING STATE -->
-        <div v-if="chartLoading" class="absolute inset-0 z-10 rounded-2xl transition-opacity duration-300">
-          <Skeleton class="h-full w-full rounded-2xl" />
-        </div>
-
-        <VisXYContainer v-if="trendData.length > 0" :data="trendData" class="h-full transition-opacity duration-300" :class="{ 'opacity-50': chartLoading }">
-          <VisArea :x="x" :y="y" color="var(--primary)" :opacity="0.1" />
-          <VisLine :x="x" :y="y" color="var(--primary)" :lineWidth="3" />
-          <VisAxis type="x" :tickFormat="(t: number) => new Date(t).toLocaleDateString(locale, { weekday: 'short' })" :gridLine="false" />
-        </VisXYContainer>
-
-        <!-- EMPTY STATE -->
-        <div v-else-if="!chartLoading" class="flex h-full flex-col items-center justify-center gap-2 text-center animate-in fade-in zoom-in-95">
-          <p class="text-sm font-bold text-muted-foreground italic">
-            {{ $t('converter.no_trend') }}
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -175,51 +140,18 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { VisXYContainer, VisLine, VisArea, VisAxis } from '@unovis/vue'
-import { Skeleton } from '@/components/ui/skeleton'
 
-const { locale } = useI18n()
 const {
   currencyGroups,
   formatNumberOnly,
   parseLocalizedNumber,
   convertTo,
-  fetchHistoricalRates,
 } = useCurrency()
 
 const fromCurrency = ref('USD')
 const toCurrency = ref('IDR')
 const fromAmountString = ref('1')
 const fromAmount = ref(1)
-
-const trendData = ref<{ date: string; value: number }[]>([])
-const chartLoading = ref(false)
-let currentRequestId = 0
-
-const updateTrend = async () => {
-  const requestId = ++currentRequestId
-  chartLoading.value = true
-  try {
-    const data = await fetchHistoricalRates(fromCurrency.value, toCurrency.value)
-    if (requestId === currentRequestId) {
-      trendData.value = data || []
-    }
-  } finally {
-    if (requestId === currentRequestId) {
-      chartLoading.value = false
-    }
-  }
-}
-
-watch([fromCurrency, toCurrency], updateTrend, { immediate: true })
-
-interface TrendDataPoint {
-  date: string
-  value: number
-}
-
-const x = (d: TrendDataPoint) => new Date(d.date).getTime()
-const y = (d: TrendDataPoint) => d.value
 
 const onFromInput = (e: Event) => {
   const val = (e.target as HTMLInputElement).value
