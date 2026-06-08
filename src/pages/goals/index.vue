@@ -1,21 +1,13 @@
 <template>
   <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('goals.title') }}
-        </h1>
-        <p class="mt-1 font-medium text-muted-foreground">{{ $t('goals.subtitle') }}</p>
-      </div>
-      <Button
-        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="router.push('/goals/new')"
-      >
-        <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('goals.add') }}</span>
-      </Button>
-    </div>
+    <PageHeader
+      :title="$t('goals.title')"
+      :subtitle="$t('goals.subtitle')"
+      :button-text="$t('goals.add')"
+      button-icon="hugeicons:add-01"
+      @action="router.push('/goals/new')"
+    />
 
     <!-- OWNER FILTER (when partnered) -->
     <div v-if="isPartnered" class="inline-flex items-center gap-1 rounded-2xl bg-muted/50 p-1">
@@ -56,38 +48,26 @@
 
     <!-- Summary Stats — bento top row -->
     <div v-if="allGoals.length > 0" class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-      <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-          {{ $t('goals.total_goals') }}
-        </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">
-          {{ allGoals.length }}
-        </p>
-      </div>
-      <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-          {{ $t('goals.completed') }}
-        </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-emerald-600">
-          {{ completedCount }}
-        </p>
-      </div>
-      <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-          {{ $t('goals.total_target') }}
-        </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-foreground">
-          {{ formatCurrency(totalTarget) }}
-        </p>
-      </div>
-      <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-          {{ $t('goals.total_saved') }}
-        </p>
-        <p class="mt-1 text-3xl font-black tracking-tighter text-primary">
-          {{ formatCurrency(totalSaved) }}
-        </p>
-      </div>
+      <StatCard
+        :label="$t('goals.total_goals')"
+        :value="allGoals.length"
+        variant="primary"
+      />
+      <StatCard
+        :label="$t('goals.completed')"
+        :value="completedCount"
+        variant="success"
+      />
+      <StatCard
+        :label="$t('goals.total_target')"
+        :value="totalTarget"
+        variant="primary"
+      />
+      <StatCard
+        :label="$t('goals.total_saved')"
+        :value="totalSaved"
+        variant="info"
+      />
     </div>
 
     <!-- LOADING STATE -->
@@ -107,27 +87,14 @@
 
     <template v-else>
       <!-- EMPTY STATE -->
-      <div
+      <EmptyState
         v-if="allGoals.length === 0"
-        class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
-      >
-        <div
-          class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
-        >
-          <AppIcon name="hugeicons:target-02" :size="40" class="text-muted-foreground/40" />
-        </div>
-        <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('goals.empty') }}</h3>
-        <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-          {{ $t('goals.empty_desc') }}
-        </p>
-        <Button
-          variant="outline"
-          class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-          @click="router.push('/goals/new')"
-        >
-          {{ $t('goals.add') }}
-        </Button>
-      </div>
+        :title="$t('goals.empty')"
+        :description="$t('goals.empty_desc')"
+        icon="hugeicons:target-02"
+        :button-text="$t('goals.add')"
+        @action="router.push('/goals/new')"
+      />
 
       <!-- BENTO AUTO-FIT GRID -->
       <div
@@ -135,12 +102,13 @@
         class="grid gap-4"
         :style="{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }"
       >
-        <div
+        <BaseCard
           v-for="goal in allGoals"
           :key="goal.id"
-          class="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/30 transition-all hover:border-border hover:bg-card/50 hover:shadow-lg"
+          class="group relative flex cursor-pointer flex-col overflow-hidden transition-all hover:shadow-lg"
           :class="{ 'md:col-span-2 md:row-span-2': getIsFeatured(goal) }"
           :style="getIsFeatured(goal) ? { minHeight: '360px' } : { minHeight: '220px' }"
+          no-padding
           @click="router.push(`/goals/${goal.id}`)"
         >
           <!-- Featured hero card (image background) -->

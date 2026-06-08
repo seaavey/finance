@@ -68,66 +68,40 @@ const totalBalance = computed(() => {
 <template>
   <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('accounts.title') }}
-        </h1>
-        <p class="mt-1 font-medium text-muted-foreground">{{ $t('accounts.subtitle') }}</p>
-      </div>
-      <Button
-        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="goToNew"
-      >
-        <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('accounts.add') }}</span>
-      </Button>
-    </div>
+    <PageHeader
+      :title="$t('accounts.title')"
+      :subtitle="$t('accounts.subtitle')"
+      :button-text="$t('accounts.add')"
+      button-icon="hugeicons:add-01"
+      @action="goToNew"
+    />
 
     <!-- Loading -->
     <div v-if="loading" class="space-y-4">
-      <!-- Balance bar skeleton -->
       <Skeleton class="h-24 w-full rounded-3xl bg-muted/50" />
-      <!-- Account cards grid -->
       <div class="grid gap-3 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
         <Skeleton v-for="i in 4" :key="i" class="h-20 rounded-3xl bg-muted/50" />
       </div>
     </div>
 
     <!-- Empty State -->
-    <div
+    <EmptyState
       v-else-if="accountBalances.length === 0"
-      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
-    >
-      <div
-        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
-      >
-        <AppIcon name="hugeicons:bank" :size="40" class="text-muted-foreground/40" />
-      </div>
-      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('accounts.empty') }}</h3>
-      <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-        {{ $t('accounts.empty_desc') }}
-      </p>
-      <Button
-        variant="outline"
-        class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-        @click="goToNew"
-      >
-        {{ $t('accounts.add') }}
-      </Button>
-    </div>
+      :title="$t('accounts.empty')"
+      :description="$t('accounts.empty_desc')"
+      icon="hugeicons:bank"
+      :button-text="$t('accounts.add')"
+      @action="goToNew"
+    />
 
     <!-- Account List -->
     <div v-else class="space-y-6">
       <!-- Total Balance Bar -->
-      <div class="rounded-3xl border border-border/50 bg-card/20 p-5 backdrop-blur-sm">
-        <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
-          {{ $t('dashboard.balance') }}
-        </p>
-        <p class="text-3xl font-black tracking-tighter text-foreground">
-          {{ formatCurrency(totalBalance) }}
-        </p>
-      </div>
+      <StatCard
+        :label="$t('dashboard.balance')"
+        :value="totalBalance"
+        icon="hugeicons:bank"
+      />
 
       <!-- Account Cards -->
       <div class="grid gap-3 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
@@ -158,25 +132,13 @@ const totalBalance = computed(() => {
             <p class="font-semibold">{{ formatCurrency(account.balance, account.currency || undefined) }}</p>
           </div>
           <div
-            class="ml-2 flex shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            class="ml-2 flex shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
             @click.stop
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-8 rounded-xl"
-              @click="goToEdit(account)"
-            >
-              <AppIcon name="hugeicons:pencil-edit-01" :size="16" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-8 rounded-xl text-red-600"
-              @click="onDeleteRequest(account)"
-            >
-              <AppIcon name="hugeicons:delete-01" :size="16" />
-            </Button>
+            <ListItemAction
+              @edit="goToEdit(account)"
+              @delete="onDeleteRequest(account)"
+            />
           </div>
         </div>
       </div>

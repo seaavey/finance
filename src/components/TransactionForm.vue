@@ -179,14 +179,11 @@
         >
           {{ form.currency }}
         </div>
-        <input
-          v-model="amountDisplay"
-          type="text"
-          inputmode="numeric"
+        <CurrencyInput
+          v-model="form.amount"
+          :currency="form.currency"
           :placeholder="$t('transaction_form.amount_placeholder')"
-          class="w-full border-none bg-transparent text-4xl md:text-6xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20"
-          @keydown="onNumberKeydown"
-          @input="onAmountInput"
+          class="w-full border-none bg-transparent text-4xl md:text-6xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 shadow-none focus-visible:ring-0"
         />
       </div>
       <div v-if="convertedAmount" class="mt-2 flex items-center gap-2 justify-center">
@@ -662,18 +659,6 @@ const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', {
   dateStyle: 'long',
 })
 
-const amountDisplay = computed({
-  get: () => {
-    if (!form.amount) {
-      return ''
-    }
-    return formatNumberOnly(form.amount, form.currency)
-  },
-  set: (val: string) => {
-    form.amount = parseLocalizedNumber(val, form.currency)
-  },
-})
-
 const todayDate = today(getLocalTimeZone()).toString()
 
 const form = reactive({
@@ -902,37 +887,6 @@ watch(
   },
   { deep: true, immediate: true },
 )
-
-const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = [
-    'Backspace',
-    'Delete',
-    'Tab',
-    'Escape',
-    'Enter',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Home',
-    'End',
-  ]
-  if (allowed.includes(e.key)) {
-    return
-  }
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
-    return
-  }
-  if (/^[0-9]$/.test(e.key)) {
-    return
-  }
-  // Prevent decimal separators to reinforce digits-only entry
-  if (e.key === ',' || e.key === '.') {
-    e.preventDefault()
-    return
-  }
-  e.preventDefault()
-}
 
 const onAmountInput = (e: Event) => {
   const input = e.target as HTMLInputElement

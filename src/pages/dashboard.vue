@@ -68,122 +68,89 @@
     <!-- Bento Grid Content -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
       <!-- Main Balance Hero Card (3 cols) -->
-      <div
-        class="group relative flex flex-col justify-between overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-none md:col-span-6 lg:col-span-3"
-      >
-        <div class="relative z-10">
-          <div class="flex items-center gap-3">
-            <div
-              class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-none"
-            >
-              <AppIcon name="hugeicons:wallet-01" :size="20" />
-            </div>
-            <span class="text-sm font-bold tracking-tight text-muted-foreground uppercase">{{
-              $t('dashboard.balance_this_month')
-            }}</span>
-          </div>
-          <div class="mt-4">
-            <h1
-              class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl"
-            >
-              {{ formatCurrency(balance, activeCurrency) }}
-            </h1>
-            <div class="mt-4 flex items-center gap-2">
+      <BaseCard class="md:col-span-6 lg:col-span-3" no-padding>
+        <div class="relative p-6 group h-full flex flex-col justify-between overflow-hidden">
+          <div class="relative z-10">
+            <div class="flex items-center gap-3">
               <div
-                class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
-                :class="
-                  balance >= 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                    : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                "
+                class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-none"
               >
-                <AppIcon
-                  :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
-                  :size="14"
-                />
-                {{ trendBalance === null ? $t('dashboard.new') : `${Math.abs(trendBalance)}%` }}
+                <AppIcon name="hugeicons:wallet-01" :size="20" />
               </div>
-              <span class="text-xs font-bold text-muted-foreground/90">{{
-                $t('dashboard.vs_last_month_short')
+              <span class="text-sm font-bold tracking-tight text-muted-foreground uppercase">{{
+                $t('dashboard.balance_this_month')
               }}</span>
             </div>
+            <div class="mt-4">
+              <h1
+                class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl"
+              >
+                {{ formatCurrency(balance, activeCurrency) }}
+              </h1>
+              <div class="mt-4 flex items-center gap-2">
+                <div
+                  class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
+                  :class="
+                    balance >= 0
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                  "
+                >
+                  <AppIcon
+                    :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
+                    :size="14"
+                  />
+                  {{ trendBalance === null ? $t('dashboard.new') : `${Math.abs(trendBalance)}%` }}
+                </div>
+                <span class="text-xs font-bold text-muted-foreground/90">{{
+                  $t('dashboard.vs_last_month_short')
+                }}</span>
+              </div>
+            </div>
           </div>
+          <div
+            class="absolute -right-12 -top-12 size-64 rounded-full bg-muted/30 transition-all duration-700 group-hover:scale-110 group-hover:bg-muted/50"
+          />
         </div>
-        <div
-          class="absolute -right-12 -top-12 size-64 rounded-full bg-muted/30 transition-all duration-700 group-hover:scale-110 group-hover:bg-muted/50"
-        />
-      </div>
+      </BaseCard>
 
       <!-- Income Stats (1 col) -->
-      <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
-      >
-        <div
-          class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
-        >
-          <AppIcon name="hugeicons:arrow-down-01" :size="24" />
-        </div>
-        <div>
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('dashboard.income') }}
-          </p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(totalIncome, activeCurrency) }}
-          </p>
-        </div>
-      </div>
+      <StatCard
+        class="md:col-span-2 lg:col-span-1"
+        :label="$t('dashboard.income')"
+        :value="totalIncome"
+        :currency="activeCurrency"
+        icon="hugeicons:arrow-down-01"
+        variant="success"
+      />
 
       <!-- Expense Stats (1 col) -->
-      <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
-      >
-        <div
-          class="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-sm"
-        >
-          <AppIcon name="hugeicons:arrow-up-01" :size="24" />
-        </div>
-        <div>
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('dashboard.expense') }}
-          </p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(totalExpense, activeCurrency) }}
-          </p>
-        </div>
-      </div>
+      <StatCard
+        class="md:col-span-2 lg:col-span-1"
+        :label="$t('dashboard.expense')"
+        :value="totalExpense"
+        :currency="activeCurrency"
+        icon="hugeicons:arrow-up-01"
+        variant="danger"
+      />
 
       <!-- Net Worth Stats (1 col) -->
-      <div
-        class="flex flex-col justify-between rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1"
-      >
-        <div
-          class="flex size-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-sm"
-        >
-          <AppIcon name="hugeicons:chart-line-data-01" :size="24" />
-        </div>
-        <div>
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('dashboard.net_worth') }}
-          </p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(currentNetWorth?.netWorth || 0, defaultCurrency) }}
-          </p>
-        </div>
-      </div>
+      <StatCard
+        class="md:col-span-2 lg:col-span-1"
+        :label="$t('dashboard.net_worth')"
+        :value="currentNetWorth?.netWorth || 0"
+        :currency="defaultCurrency"
+        icon="hugeicons:chart-line-data-01"
+        variant="info"
+      />
 
       <!-- Analytics Area: Monthly Bar Chart (4 cols) -->
-      <div
-        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg md:col-span-6 lg:col-span-4"
+      <BaseCard
+        class="md:col-span-6 lg:col-span-4"
+        :title="$t('dashboard.expense_chart')"
+        :subtitle="$t('dashboard.monthly_performance')"
       >
-        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <h3 class="text-xl font-black tracking-tighter text-foreground">
-              {{ $t('dashboard.expense_chart') }}
-            </h3>
-            <p class="text-sm font-medium text-muted-foreground">
-              {{ $t('dashboard.monthly_performance') }}
-            </p>
-          </div>
+        <template #action>
           <div class="flex gap-4">
             <div class="flex items-center gap-2">
               <span
@@ -200,7 +167,7 @@
               }}</span>
             </div>
           </div>
-        </div>
+        </template>
         <div class="h-[460px]">
           <ClientOnly>
             <ChartsMonthlyBar :data="monthlyData" />
@@ -211,27 +178,25 @@
             </template>
           </ClientOnly>
         </div>
-      </div>
+      </BaseCard>
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
       <div class="flex flex-col gap-4 md:col-span-6 lg:col-span-2">
         <BillDashboardWidget />
 
         <!-- Budget Progress -->
-        <div
-          class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md flex-1"
+        <BaseCard
+          class="flex-1"
+          :title="$t('budget.dashboard_title')"
         >
-          <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-              {{ $t('budget.dashboard_title') }}
-            </h3>
+          <template #action>
             <router-link
               to="/budget"
               class="text-[10px] font-black text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
             >
               {{ $t('dashboard.view_all') }}
             </router-link>
-          </div>
+          </template>
           <div class="flex h-full flex-col justify-center pb-4">
             <template v-if="budgetSummaries.length > 0">
               <div
@@ -279,29 +244,24 @@
               </Button>
             </div>
           </div>
-        </div>
+        </BaseCard>
       </div>
 
       <!-- Recent Transactions (Full Width - 6 cols) -->
-      <div
-        class="rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-lg md:col-span-6"
+      <BaseCard
+        class="md:col-span-6"
+        :title="$t('dashboard.recent')"
+        :subtitle="$t('dashboard.latest_activity')"
+        no-padding
       >
-        <div class="flex items-center justify-between border-b border-border/50 p-6">
-          <div>
-            <h3 class="text-xl font-black tracking-tighter text-foreground">
-              {{ $t('dashboard.recent') }}
-            </h3>
-            <p class="text-sm font-medium text-muted-foreground">
-              {{ $t('dashboard.latest_activity') }}
-            </p>
-          </div>
+        <template #action>
           <router-link
             to="/transactions"
             class="rounded-xl border border-border px-4 py-2 text-xs font-black text-foreground transition-all hover:bg-muted hover:border-border"
           >
             {{ $t('dashboard.view_all') }}
           </router-link>
-        </div>
+        </template>
 
         <div class="p-4">
           <div
@@ -377,23 +337,21 @@
             </router-link>
           </div>
         </div>
-      </div>
+      </BaseCard>
 
       <!-- Quick Accounts -->
-      <div
-        class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-lg md:col-span-6"
+      <BaseCard
+        class="md:col-span-6"
+        :title="$t('dashboard.accounts_title')"
       >
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('dashboard.accounts_title') }}
-          </h3>
+        <template #action>
           <router-link
             to="/accounts"
             class="text-[10px] font-black text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
           >
             {{ $t('dashboard.view_all') }}
           </router-link>
-        </div>
+        </template>
         <div class="flex h-full flex-col justify-center pb-4">
           <template v-if="accountBalances.length > 0">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -425,16 +383,16 @@
             </p>
           </div>
         </div>
-      </div>
+      </BaseCard>
 
       <!-- Quick Actions -->
-      <div class="md:col-span-3">
+      <BaseCard class="md:col-span-3" no-padding>
         <button
-          class="flex w-full items-center gap-6 rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-none"
+          class="flex w-full items-center gap-6 p-6 group"
           @click="router.push('/transactions/new')"
         >
           <div
-            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transition-all duration-500 hover:scale-110"
+            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transition-all duration-500 group-hover:scale-110"
           >
             <AppIcon name="hugeicons:add-01" :size="28" />
           </div>
@@ -447,14 +405,14 @@
             </p>
           </div>
         </button>
-      </div>
-      <div class="md:col-span-3">
+      </BaseCard>
+      <BaseCard class="md:col-span-3" no-padding>
         <button
-          class="flex w-full items-center gap-6 rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-none"
+          class="flex w-full items-center gap-6 p-6 group"
           @click="router.push('/categories')"
         >
           <div
-            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 transition-all duration-500 hover:scale-110"
+            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 transition-all duration-500 group-hover:scale-110"
           >
             <AppIcon name="hugeicons:grid-view" :size="28" />
           </div>
@@ -467,7 +425,7 @@
             </p>
           </div>
         </button>
-      </div>
+      </BaseCard>
     </div>
   </div>
 </template>

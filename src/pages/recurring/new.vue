@@ -19,10 +19,10 @@ import { cn } from '@/lib/utils'
 
 const router = useRouter()
 const { locale } = useI18n()
-const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency()
+const { currencies, defaultCurrency } = useCurrency()
 const { addRecurring } = useRecurring()
 const { fetchCategories } = useCategories()
-import type { RecurringTransaction, TransactionType } from "@/types"
+import type { TransactionType } from "@/types"
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' })
 const todayDate = today(getLocalTimeZone()).toString()
@@ -37,43 +37,12 @@ const form = reactive({
   next_date: todayDate,
 })
 
-const amountDisplay = computed({
-  get: () => (form.amount ? formatNumberOnly(form.amount, form.currency) : ''),
-  set: (val: string) => {
-    form.amount = parseLocalizedNumber(val, form.currency)
-  },
-})
-
 const calendarDate = computed({
   get: () => (form.next_date ? parseDate(form.next_date) : undefined),
   set: (val) => {
     if (val) form.next_date = val.toString()
   },
 })
-
-const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = [
-    'Backspace',
-    'Delete',
-    'Tab',
-    'Escape',
-    'Enter',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Home',
-    'End',
-  ]
-  if (allowed.includes(e.key)) return
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return
-  if (/^[0-9]$/.test(e.key)) return
-  if (e.key === ',' || e.key === '.') {
-    e.preventDefault()
-    return
-  }
-  e.preventDefault()
-}
 
 const isFormValid = computed(() => form.amount > 0 && form.next_date)
 
@@ -138,13 +107,11 @@ const onSubmit = async () => {
 
       <div class="space-y-2">
         <Label>{{ $t('recurring_form.amount') }}</Label>
-        <Input
-          v-model="amountDisplay"
-          type="text"
-          inputmode="numeric"
+        <CurrencyInput
+          v-model="form.amount"
+          :currency="form.currency"
           :placeholder="$t('transaction_form.amount_placeholder')"
           required
-          @keydown="onNumberKeydown"
         />
       </div>
 

@@ -9,6 +9,15 @@ import i18n from './plugins/i18n'
 import Icon from './components/Icon.vue'
 import ClientOnly from './components/ClientOnly.vue'
 
+// Reusable components
+import PageHeader from './components/PageHeader.vue'
+import EmptyState from './components/EmptyState.vue'
+import StatCard from './components/StatCard.vue'
+import CurrencyInput from './components/CurrencyInput.vue'
+import ListItemAction from './components/ListItemAction.vue'
+import StatusBadge from './components/StatusBadge.vue'
+import BaseDialog from './components/BaseDialog.vue'
+
 const app = createApp(App)
 const head = createHead()
 
@@ -31,5 +40,14 @@ app.component('AppIcon', Icon)
 app.component('ClientOnly', ClientOnly)
 app.component('NuxtLinkLocale', RouterLink)
 app.component('NuxtLink', RouterLink)
+
+// Register new reusable components
+app.component('PageHeader', PageHeader)
+app.component('EmptyState', EmptyState)
+app.component('StatCard', StatCard)
+app.component('CurrencyInput', CurrencyInput)
+app.component('ListItemAction', ListItemAction)
+app.component('StatusBadge', StatusBadge)
+app.component('BaseDialog', BaseDialog)
 
 app.mount('#app')

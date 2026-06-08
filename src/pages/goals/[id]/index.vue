@@ -39,7 +39,7 @@
     <!-- Detail -->
     <div v-else class="space-y-6">
       <!-- Hero Card -->
-      <div class="rounded-4xl border border-border/50 bg-card p-8 shadow-sm">
+      <BaseCard padding-size="lg">
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-4">
             <div
@@ -76,25 +76,10 @@
               </p>
             </div>
           </div>
-          <div class="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              class="rounded-xl"
-              @click="router.push(`/goals/${goalDetail.id}/edit`)"
-            >
-              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="mr-1" />
-              {{ $t('goal_form.title_edit') }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              class="rounded-xl text-red-600 hover:text-red-600"
-              @click="showDeleteDialog = true"
-            >
-              <AppIcon name="hugeicons:delete-01" :size="16" />
-            </Button>
-          </div>
+          <ListItemAction
+            @edit="router.push(`/goals/${goalDetail.id}/edit`)"
+            @delete="showDeleteDialog = true"
+          />
         </div>
 
         <!-- Progress -->
@@ -136,42 +121,28 @@
 
         <!-- Add Funds (if not completed) -->
         <div v-if="percentage < 100" class="mt-6">
-          <Button class="w-full rounded-2xl" @click="showFundsDialog = true">
+          <Button class="w-full rounded-2xl shadow-lg shadow-primary/20" @click="showFundsDialog = true">
             <AppIcon name="hugeicons:add-01" :size="16" class="mr-2" />
             {{ $t('goals.add_funds') }}
           </Button>
         </div>
-      </div>
+      </BaseCard>
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div class="rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm">
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('goals.target_amount') }}
-          </p>
-          <p class="mt-2 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(Number(goalDetail.target_amount)) }}
-          </p>
-        </div>
-        <div class="rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm">
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('goals.current_amount') }}
-          </p>
-          <p class="mt-2 text-2xl font-black tracking-tighter text-foreground">
-            {{ formatCurrency(Number(goalDetail.current_amount)) }}
-          </p>
-        </div>
-        <div class="rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm">
-          <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase">
-            {{ $t('goals.deadline') }}
-          </p>
-          <p
-            class="mt-2 text-2xl font-black tracking-tighter"
-            :class="goalDetail.deadline ? 'text-foreground' : 'text-muted-foreground'"
-          >
-            {{ goalDetail.deadline ? formatDate(goalDetail.deadline) : '-' }}
-          </p>
-        </div>
+        <StatCard
+          :label="$t('goals.target_amount')"
+          :value="Number(goalDetail.target_amount)"
+        />
+        <StatCard
+          :label="$t('goals.current_amount')"
+          :value="Number(goalDetail.current_amount)"
+          variant="info"
+        />
+        <StatCard
+          :label="$t('goals.deadline')"
+          :value="goalDetail.deadline ? formatDate(goalDetail.deadline) : '-'"
+        />
       </div>
     </div>
 

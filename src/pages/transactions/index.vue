@@ -1,38 +1,22 @@
 <template>
   <div class="pb-10 pt-4">
     <!-- Header -->
-    <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h2 class="text-4xl font-bold tracking-tighter text-foreground">
-          {{ $t('transactions.title') }}
-        </h2>
-        <p class="mt-1 font-medium text-muted-foreground">
-          {{ filteredTransactions.length }} {{ $t('transactions.title').toLowerCase() }}
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <Button
-          class="flex items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
-          @click="router.push('/transactions/new')"
-        >
-          <AppIcon name="hugeicons:add-01" :size="18" />
-          <span>{{ $t('topbar.add') }}</span>
-        </Button>
-      </div>
-    </div>
+    <PageHeader
+      :title="$t('transactions.title')"
+      :subtitle="`${filteredTransactions.length} ${$t('transactions.title').toLowerCase()}`"
+      :button-text="$t('topbar.add')"
+      button-icon="hugeicons:add-01"
+      @action="router.push('/transactions/new')"
+    />
 
     <!-- Transactions Table Card -->
-    <div class="rounded-4xl border border-border/50 bg-card shadow-sm">
-      <!-- Card Header -->
-      <div class="flex items-center justify-between border-b border-border/50 p-6 md:p-8">
-        <div>
-          <h3 class="text-xl font-black tracking-tighter text-foreground">
-            {{ $t('transactions.title') }}
-          </h3>
-          <p class="text-sm font-medium text-muted-foreground">
-            {{ $t('dashboard.latest_activity') }}
-          </p>
-        </div>
+    <BaseCard
+      :title="$t('transactions.title')"
+      :subtitle="$t('dashboard.latest_activity')"
+      no-padding
+      class="mt-8"
+    >
+      <template #action>
         <div class="text-right">
           <p class="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">
             {{ $t('transactions.difference') }}
@@ -50,7 +34,7 @@
             </p>
           </div>
         </div>
-      </div>
+      </template>
 
       <!-- Table Area -->
       <div class="p-0 md:p-0">
@@ -934,17 +918,19 @@ const columns = [
     cell: ({ row }) => {
       const isIncome = row.original.type === 'income'
       const symbol = isIncome ? '+' : '-'
-      const colorClass = isIncome ? 'text-emerald-600' : 'text-red-600'
+      const colorClass = isIncome ? 'text-emerald-600' : 'text-rose-600'
       const amount = formatCurrency(Number(row.original.amount), row.original.currency || undefined)
 
       return h('div', { class: 'text-right' }, [
         h('p', { class: `text-base font-bold tabular-nums ${colorClass}` }, `${symbol}${amount}`),
         h(
-          'p',
-          {
-            class: 'mt-0.5 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider',
-          },
-          isIncome ? t('transactions.income') : t('transactions.expense'),
+          'div',
+          { class: 'mt-0.5' },
+          h(
+            'StatusBadge',
+            { type: isIncome ? 'success' : 'danger' },
+            () => isIncome ? t('transactions.income') : t('transactions.expense'),
+          ),
         ),
       ])
     },

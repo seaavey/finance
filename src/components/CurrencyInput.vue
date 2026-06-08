@@ -8,6 +8,7 @@ const props = defineProps<{
   currency?: string
   placeholder?: string
   required?: boolean
+  class?: string
 }>()
 
 const emit = defineEmits(['update:modelValue'])
@@ -53,6 +54,7 @@ const onKeydown = (e: KeyboardEvent) => {
     inputmode="numeric"
     :placeholder="placeholder"
     :required="required"
+    :class="props.class"
     @keydown="onKeydown"
   />
 </template>

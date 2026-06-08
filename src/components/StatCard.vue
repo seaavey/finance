@@ -8,18 +8,40 @@ const props = defineProps<{
   icon?: string
   trend?: 'up' | 'down'
   trendValue?: number | string
+  variant?: 'primary' | 'success' | 'danger' | 'info'
 }>()
 
 const { formatCurrency } = useCurrency()
+
+const colorClasses = computed(() => {
+  const map = {
+    primary: 'text-primary',
+    success: 'text-emerald-600 dark:text-emerald-400',
+    danger: 'text-rose-600 dark:text-rose-400',
+    info: 'text-indigo-600 dark:text-indigo-400',
+  }
+  return map[props.variant || 'primary']
+})
+
+const bgClasses = computed(() => {
+  const map = {
+    primary: 'border-primary/10 bg-primary/[0.03] hover:bg-primary/[0.06]',
+    success: 'border-emerald-500/10 bg-emerald-500/[0.03] hover:bg-emerald-500/[0.06]',
+    danger: 'border-rose-500/10 bg-rose-500/[0.03] hover:bg-rose-500/[0.06]',
+    info: 'border-indigo-500/10 bg-indigo-500/[0.03] hover:bg-indigo-500/[0.06]',
+  }
+  return map[props.variant || 'primary']
+})
 </script>
 
 <template>
   <div
-    class="group relative overflow-hidden rounded-4xl border border-primary/10 bg-primary/[0.03] p-6 transition-all hover:bg-primary/[0.06]"
+    class="group relative overflow-hidden rounded-4xl border p-6 transition-all"
+    :class="bgClasses"
   >
     <div class="relative z-10">
       <div class="flex items-center gap-2">
-        <p class="text-[10px] font-black uppercase tracking-widest text-primary/70">
+        <p class="text-[10px] font-black uppercase tracking-widest opacity-70" :class="colorClasses">
           {{ label }}
         </p>
         <div
@@ -31,7 +53,7 @@ const { formatCurrency } = useCurrency()
           {{ trendValue }}
         </div>
       </div>
-      <h3 class="mt-2 text-3xl font-black tracking-tighter text-primary">
+      <h3 class="mt-2 text-3xl font-black tracking-tighter" :class="colorClasses">
         {{ typeof value === 'number' ? formatCurrency(value, currency) : value }}
       </h3>
     </div>
