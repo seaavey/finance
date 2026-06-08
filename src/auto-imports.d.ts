@@ -95,6 +95,7 @@ declare global {
   const useSeoMeta: typeof import('@unhead/vue').useSeoMeta
   const useSlots: typeof import('vue').useSlots
   const useStorage: typeof import('@vueuse/core').useStorage
+  const useSubscriptions: typeof import('./composables/useSubscriptions').useSubscriptions
   const useSupabase: typeof import('./lib/supabase').useSupabase
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useToast: typeof import('./composables/useToast').useToast
@@ -223,6 +224,7 @@ declare module 'vue' {
     readonly useSeoMeta: UnwrapRef<typeof import('@unhead/vue')['useSeoMeta']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useStorage: UnwrapRef<typeof import('@vueuse/core')['useStorage']>
+    readonly useSubscriptions: UnwrapRef<typeof import('./composables/useSubscriptions')['useSubscriptions']>
     readonly useSupabase: UnwrapRef<typeof import('./lib/supabase')['useSupabase']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useToast: UnwrapRef<typeof import('./composables/useToast')['useToast']>
