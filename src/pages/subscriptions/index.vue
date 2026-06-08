@@ -139,7 +139,7 @@ const confirmDelete = async () => {
           </p>
         </div>
         <AppIcon
-          name="hugeicons:membership-card"
+          name="hugeicons:license"
           class="absolute -right-4 -top-4 size-24 rotate-12 opacity-5 transition-transform group-hover:scale-110"
         />
       </div>
@@ -163,7 +163,7 @@ const confirmDelete = async () => {
       <div
         class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
       >
-        <AppIcon name="hugeicons:membership-card" :size="40" class="text-muted-foreground/80" />
+        <AppIcon name="hugeicons:license" :size="40" class="text-muted-foreground/80" />
       </div>
       <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('subscriptions.empty') }}</h3>
       <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
@@ -191,7 +191,7 @@ const confirmDelete = async () => {
             <div
               class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm transition-transform group-hover:scale-110"
             >
-              <AppIcon name="hugeicons:membership-card" :size="24" />
+              <AppIcon name="hugeicons:license" :size="24" />
             </div>
             <div>
               <h3 class="font-bold text-foreground">
