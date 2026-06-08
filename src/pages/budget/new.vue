@@ -14,7 +14,7 @@ defineOptions({
 
 const router = useRouter()
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { fetchCategories } = useCategories()
 const { createBudget, loading } = useBudgets()
 const { defaultCurrency } = useCurrency()
@@ -22,12 +22,19 @@ const { defaultCurrency } = useCurrency()
 const selectedCategoryId = ref('')
 const rawAmount = ref(0)
 const budgetName = ref('')
-const month = ref((route.query.month as string)?.substring(0, 7) || '')
+const month = ref((route.query.month as string) || '')
 
-const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value > 0)
+const displayMonth = computed(() => {
+  if (!month.value) return ''
+  const [year, m] = month.value.split('-')
+  const date = new Date(parseInt(year!), parseInt(m!) - 1)
+  return date.toLocaleDateString(locale.value, { month: 'long', year: 'numeric' })
+})
+
+const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value > 0 && !!month.value)
 
 const handleSave = async () => {
-  if (!isFormValid.value || !month.value) return
+  if (!isFormValid.value) return
   const result = await createBudget(
     selectedCategoryId.value,
     month.value,
@@ -44,7 +51,7 @@ onMounted(async () => {
   // Default to current month if not specified
   if (!month.value) {
     const d = new Date()
-    month.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    month.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
   }
 })
 </script>
@@ -118,7 +125,7 @@ onMounted(async () => {
           <div
             class="flex h-11 items-center rounded-2xl border border-border/50 bg-muted/20 px-4 font-bold text-muted-foreground/80"
           >
-            {{ month }}
+            {{ displayMonth }}
           </div>
         </div>
 

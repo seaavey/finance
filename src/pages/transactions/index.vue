@@ -402,7 +402,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type { Transaction } from "@/types"
 import { h, type VNode, type Ref } from 'vue'
 import {
   FlexRender,
@@ -503,10 +503,6 @@ const filteredTransactions = computed(() => {
 
   return all
 })
-
-const onDateRangeChange = () => {
-  // Triggered when range calendar selection changes
-}
 
 const incomeCategories = computed(() => categories.value.filter((c) => c.type === 'income'))
 const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
