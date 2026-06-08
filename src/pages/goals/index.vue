@@ -265,7 +265,7 @@
           >
             <AppIcon name="hugeicons:pencil-edit-01" :size="14" />
           </button>
-        </div>
+        </BaseCard>
       </div>
     </template>
   </div>

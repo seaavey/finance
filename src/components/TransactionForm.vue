@@ -531,22 +531,16 @@
           </div>
           <div class="flex items-center gap-2">
             <div class="relative flex-1 md:w-36">
-              <span
-                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground"
-              >
-                {{ form.currency }}
-              </span>
-              <input
+              <CurrencyInput
                 v-model="split.amount"
-                type="text"
-                inputmode="numeric"
+                :currency="form.currency"
                 :placeholder="$t('transaction_form.split_amount')"
-                class="h-10 w-full rounded-xl border border-border/50 bg-background/50 pl-10 pr-3 text-sm font-bold outline-none transition-all focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
-                @keydown="onNumberKeydown"
-                @input="onSplitAmountInput($event, index)"
+                class="h-10"
+                required
               />
             </div>
             <Button
+
               variant="ghost"
               size="sm"
               class="h-10 w-10 shrink-0 rounded-xl text-muted-foreground hover:text-destructive"

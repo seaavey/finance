@@ -17,6 +17,7 @@ import CurrencyInput from './components/CurrencyInput.vue'
 import ListItemAction from './components/ListItemAction.vue'
 import StatusBadge from './components/StatusBadge.vue'
 import BaseDialog from './components/BaseDialog.vue'
+import DateRangePicker from './components/DateRangePicker.vue'
 
 const app = createApp(App)
 const head = createHead()
@@ -52,4 +53,3 @@ app.component('BaseDialog', BaseDialog)
 app.component('DateRangePicker', DateRangePicker)
 
 app.mount('#app')
-ount('#app')

@@ -136,38 +136,11 @@
             </SelectContent>
           </Select>
 
-          <Popover>
-            <PopoverTrigger as-child>
-              <Button
-                variant="outline"
-                size="sm"
-                class="h-8 gap-1.5 rounded-xl border-border/50 text-xs font-medium"
-                :class="
-                  dateRange.start || dateRange.end
-                    ? 'border-primary/30 text-primary'
-                    : 'text-muted-foreground'
-                "
-              >
-                <AppIcon name="hugeicons:calendar-01" :size="14" />
-                <span v-if="dateRange.start || dateRange.end" class="hidden sm:inline">
-                  {{ formatRangeLabel }}
-                </span>
-                <span v-else class="hidden sm:inline">{{
-                  $t('transactions.select_date_range')
-                }}</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="w-auto p-0" align="start">
-              <RangeCalendar
-                v-model="dateRange"
-                :number-of-months="2"
-                @update:model-value="onDateRangeChange"
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+          <DateRangePicker v-model="dateRange" />
+          </div>
 
-        <!-- Top bar: info + per page -->
+          <!-- Top bar: info + per page -->
+
         <div class="flex items-center justify-between border-b border-border/50 px-4 py-2 md:px-6">
           <p class="text-sm font-medium text-muted-foreground">
             <template v-if="totalCount > 0">
@@ -299,7 +272,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </BaseCard>
   </div>
 
   <!-- Floating bulk action bar -->
