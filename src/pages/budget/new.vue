@@ -1,7 +1,4 @@
 <script setup lang="ts">
-defineOptions({
-  name: 'PagesBudgetNew',
-})
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,57 +9,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import CurrencyInput from '@/components/CurrencyInput.vue'
+import CategoryPicker from '@/components/CategoryPicker.vue'
+import { useCurrency } from '@/composables/useCurrency'
+import { useCategories } from '@/composables/useCategories'
+import { useBudgets } from '@/composables/useBudgets'
+
+defineOptions({
+  name: 'PagesBudgetNew',
+})
 
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 const { categories, fetchCategories } = useCategories()
-const { createBudget, setBudget, loading } = useBudgets()
-const { formatNumberOnly, parseLocalizedNumber, defaultCurrency } = useCurrency()
+const { createBudget, loading } = useBudgets()
 
 const selectedCategoryId = ref('')
 const rawAmount = ref(0)
 const budgetName = ref('')
 const month = ref((route.query.month as string) || '')
 
-const amountDisplay = computed({
-  get: () =>
-    rawAmount.value === 0 ? '' : formatNumberOnly(rawAmount.value, defaultCurrency.value),
-  set: (val: string) => {
-    rawAmount.value = parseLocalizedNumber(val, defaultCurrency.value)
-  },
-})
-
-const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = [
-    'Backspace',
-    'Delete',
-    'Tab',
-    'Escape',
-    'Enter',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Home',
-    'End',
-  ]
-  if (allowed.includes(e.key)) return
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return
-  if (/^[0-9]$/.test(e.key)) return
-  if (e.key === ',' || e.key === '.') {
-    e.preventDefault()
-    return
-  }
-  e.preventDefault()
-}
-
 const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
 const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value > 0)
 
 const handleSave = async () => {
   if (!isFormValid.value || !month.value) return
-  const result = await createBudget(selectedCategoryId.value, month.value, rawAmount.value, budgetName.value || null)
+  const result = await createBudget(
+    selectedCategoryId.value,
+    month.value,
+    rawAmount.value,
+    budgetName.value || null,
+  )
   if (!result.error) {
     router.push('/budget')
   }
