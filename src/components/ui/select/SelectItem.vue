@@ -33,8 +33,12 @@ const forwardedProps = useForwardProps(delegatedProps)
       </SelectItemIndicator>
     </span>
 
-    <SelectItemText class="flex-1 min-w-0">
-      <slot />
+    <SelectItemText class="min-w-0">
+      <span v-if="$slots.text" class="sr-only"><slot name="text" /></span>
+      <slot v-else />
     </SelectItemText>
+    <div v-if="$slots.text" class="flex-1 min-w-0">
+      <slot />
+    </div>
   </SelectItem>
 </template>

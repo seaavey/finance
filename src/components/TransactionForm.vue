@@ -183,7 +183,7 @@
           v-model="form.amount"
           :currency="form.currency"
           :placeholder="$t('transaction_form.amount_placeholder')"
-          class="w-full border-none bg-transparent text-4xl md:text-6xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 shadow-none focus-visible:ring-0"
+          class="h-auto w-full border-none bg-transparent py-0 text-4xl font-black tracking-tighter text-foreground outline-none placeholder:text-muted-foreground/20 shadow-none focus-visible:ring-0 md:text-6xl"
         />
       </div>
       <div v-if="convertedAmount" class="mt-2 flex items-center gap-2 justify-center">
@@ -264,6 +264,7 @@
                 class="rounded-xl px-3 py-2.5"
                 :disabled="form.type === 'transfer' && acct.id === form.to_account_id"
               >
+                <template #text>{{ acct.name }}</template>
                 <div class="flex items-center gap-2">
                   <div
                     class="size-2 rounded-full"
@@ -305,6 +306,7 @@
                 class="rounded-xl px-3 py-2.5"
                 :disabled="acct.id === form.account_id"
               >
+                <template #text>{{ acct.name }}</template>
                 <div class="flex items-center gap-2">
                   <div
                     class="size-2 rounded-full"
@@ -352,6 +354,7 @@
                   :text-value="c.value"
                   class="rounded-xl px-3 py-2.5"
                 >
+                  <template #text>{{ c.value }}</template>
                   <div class="flex items-center gap-2">
                     <span class="font-black text-foreground">{{ c.value }}</span>
                     <span class="text-xs text-muted-foreground opacity-60">

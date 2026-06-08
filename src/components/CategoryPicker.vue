@@ -1,6 +1,6 @@
 <template>
   <Select :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event as string)">
-    <SelectTrigger>
+    <SelectTrigger :class="props.class">
       <SelectValue :placeholder="placeholder" />
     </SelectTrigger>
     <SelectContent>
@@ -21,6 +21,7 @@ const props = defineProps<{
   modelValue?: string
   type?: TransactionType
   placeholder?: string
+  class?: string
 }>()
 
 defineEmits<{
