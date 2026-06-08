@@ -161,11 +161,9 @@ const confirmDelete = async () => {
                 {{ item.name }}
               </h3>
               <div class="mt-1 flex items-center gap-2">
-                <span
-                  class="rounded-lg bg-muted px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-muted-foreground"
-                >
+                <StatusBadge>
                   {{ billingCycleLabel(item.billing_cycle) }}
-                </span>
+                </StatusBadge>
                 <span class="text-[10px] font-bold text-muted-foreground/90">
                   {{ $t('subscriptions.next_billing') }}: {{ formatNextBilling(item.next_billing_date) }}
                 </span>
@@ -181,24 +179,10 @@ const confirmDelete = async () => {
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
-          <div class="flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-9 rounded-xl hover:bg-muted"
-              @click="goToEdit(item)"
-            >
-              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
-              @click="onDelete(item)"
-            >
-              <AppIcon name="hugeicons:delete-01" :size="16" />
-            </Button>
-          </div>
+          <ListItemAction
+            @edit="goToEdit(item)"
+            @delete="onDelete(item)"
+          />
           <div class="text-right">
             <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               {{ $t('subscriptions.amount') }}

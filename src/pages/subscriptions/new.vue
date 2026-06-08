@@ -26,7 +26,7 @@ import { reactive, computed, onMounted } from 'vue'
 
 const router = useRouter()
 const { locale } = useI18n()
-const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency()
+const { currencies, defaultCurrency } = useCurrency()
 const { addSubscription } = useSubscriptions()
 const { fetchCategories } = useCategories()
 const { accounts, fetchAccounts } = useAccounts()
@@ -46,43 +46,12 @@ const form = reactive({
   active: true,
 })
 
-const amountDisplay = computed({
-  get: () => (form.amount ? formatNumberOnly(form.amount, form.currency) : ''),
-  set: (val: string) => {
-    form.amount = parseLocalizedNumber(val, form.currency)
-  },
-})
-
 const calendarDate = computed({
   get: () => (form.next_billing_date ? parseDate(form.next_billing_date) : undefined),
   set: (val) => {
     if (val) form.next_billing_date = val.toString()
   },
 })
-
-const onNumberKeydown = (e: KeyboardEvent) => {
-  const allowed = [
-    'Backspace',
-    'Delete',
-    'Tab',
-    'Escape',
-    'Enter',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Home',
-    'End',
-  ]
-  if (allowed.includes(e.key)) return
-  if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return
-  if (/^[0-9]$/.test(e.key)) return
-  if (e.key === ',' || e.key === '.') {
-    e.preventDefault()
-    return
-  }
-  e.preventDefault()
-}
 
 const isFormValid = computed(() => form.name && form.amount > 0 && form.next_billing_date)
 
@@ -140,13 +109,11 @@ const onSubmit = async () => {
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div class="space-y-2">
           <Label>{{ $t('subscription_form.amount') }}</Label>
-          <Input
-            v-model="amountDisplay"
-            type="text"
-            inputmode="numeric"
+          <CurrencyInput
+            v-model="form.amount"
+            :currency="form.currency"
             :placeholder="$t('transaction_form.amount_placeholder')"
             required
-            @keydown="onNumberKeydown"
           />
         </div>
 
