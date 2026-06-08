@@ -68,8 +68,9 @@ export const useCurrency = () => {
       }
       return map
     },
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    refetchInterval: 1000 * 60 * 10, // auto-refresh every 10 min
+    staleTime: 0, // selalu dianggap stale, refetch tiap kali mount/focus
+    refetchInterval: 60_000, // auto-refresh setiap 1 menit
+    refetchOnWindowFocus: true, // refetch pas balik ke tab
     retry: 2,
   })
 
