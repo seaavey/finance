@@ -1,21 +1,13 @@
 <template>
   <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('categories.title') }}
-        </h1>
-        <p class="mt-1 font-medium text-muted-foreground">{{ $t('categories.subtitle') }}</p>
-      </div>
-      <Button
-        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="router.push('/categories/new')"
-      >
-        <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('categories.add') }}</span>
-      </Button>
-    </div>
+    <PageHeader
+      :title="$t('categories.title')"
+      :subtitle="$t('categories.subtitle')"
+      :button-text="$t('categories.add')"
+      button-icon="hugeicons:add-01"
+      @action="router.push('/categories/new')"
+    />
 
     <!-- TABS -->
     <div
@@ -52,29 +44,14 @@
 
     <template v-else>
       <!-- EMPTY STATE -->
-      <div
+      <EmptyState
         v-if="filteredCategories.length === 0"
-        class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
-      >
-        <div
-          class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
-        >
-          <AppIcon name="hugeicons:grid-view" :size="40" class="text-muted-foreground/40" />
-        </div>
-        <h3 class="text-xl font-black tracking-tight text-foreground">
-          {{ $t('categories.empty') }}
-        </h3>
-        <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-          {{ $t('categories.empty_desc') }}
-        </p>
-        <Button
-          variant="outline"
-          class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-          @click="router.push('/categories/new')"
-        >
-          {{ $t('categories.add') }}
-        </Button>
-      </div>
+        :title="$t('categories.empty')"
+        :description="$t('categories.empty_desc')"
+        icon="hugeicons:grid-view"
+        :button-text="$t('categories.add')"
+        @action="router.push('/categories/new')"
+      />
 
       <!-- CATEGORY GRID -->
       <Sortable

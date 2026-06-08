@@ -144,64 +144,26 @@ const confirmDelete = async () => {
 <template>
   <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('recurring.title') }}
-        </h1>
-        <p class="mt-1 font-medium text-muted-foreground">
-          {{ recurring.length }} {{ $t('recurring.schedule_active') }}
-        </p>
-      </div>
-      <Button
-        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="goToNew"
-      >
-        <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('topbar.add') }}</span>
-      </Button>
-    </div>
+    <PageHeader
+      :title="$t('recurring.title')"
+      :subtitle="`${recurring.length} ${$t('recurring.schedule_active')}`"
+      :button-text="$t('recurring_form.title_new')"
+      button-icon="hugeicons:add-01"
+      @action="goToNew"
+    />
 
     <!-- STATS -->
     <div v-if="!loading && recurring.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div
-        class="group relative overflow-hidden rounded-4xl border border-rose-500/10 bg-rose-500/[0.03] p-6 transition-all hover:bg-rose-500/[0.06]"
-      >
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-widest text-rose-500/70">
-            {{ $t('recurring.expense') }}
-          </p>
-          <h3 class="mt-2 text-3xl font-black tracking-tighter text-rose-500">
-            {{ formatCurrency(monthlyExpense) }}
-          </h3>
-          <p class="mt-1 text-[10px] font-bold text-rose-500/40 uppercase tracking-tight">
-            Est. Per Bulan
-          </p>
-        </div>
-        <AppIcon
-          name="hugeicons:arrow-up-01"
-          class="absolute -right-4 -top-4 size-24 rotate-12 opacity-5 transition-transform group-hover:scale-110"
-        />
-      </div>
-      <div
-        class="group relative overflow-hidden rounded-4xl border border-emerald-500/10 bg-emerald-500/[0.03] p-6 transition-all hover:bg-emerald-500/[0.06]"
-      >
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600">
-            {{ $t('recurring.income') }}
-          </p>
-          <h3 class="mt-2 text-3xl font-black tracking-tighter text-emerald-600">
-            {{ formatCurrency(monthlyIncome) }}
-          </h3>
-          <p class="mt-1 text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
-            Est. Per Bulan
-          </p>
-        </div>
-        <AppIcon
-          name="hugeicons:arrow-down-01"
-          class="absolute -right-4 -top-4 size-24 -rotate-12 opacity-5 transition-transform group-hover:scale-110"
-        />
-      </div>
+      <StatCard
+        :label="$t('recurring.expense')"
+        :value="monthlyExpense"
+        icon="hugeicons:arrow-up-01"
+      />
+      <StatCard
+        :label="$t('recurring.income')"
+        :value="monthlyIncome"
+        icon="hugeicons:arrow-down-01"
+      />
     </div>
 
     <!-- LOADING -->
@@ -217,27 +179,14 @@ const confirmDelete = async () => {
     </div>
 
     <!-- EMPTY STATE -->
-    <div
+    <EmptyState
       v-else-if="recurring.length === 0"
-      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
-    >
-      <div
-        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
-      >
-        <AppIcon name="hugeicons:repeat" :size="40" class="text-muted-foreground/80" />
-      </div>
-      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('recurring.empty') }}</h3>
-      <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-        {{ $t('recurring.empty_desc') }}
-      </p>
-      <Button
-        variant="outline"
-        class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-        @click="goToNew"
-      >
-        {{ $t('recurring.add') }}
-      </Button>
-    </div>
+      :title="$t('recurring.empty')"
+      :description="$t('recurring.empty_desc')"
+      icon="hugeicons:repeat"
+      :button-text="$t('recurring.add')"
+      @action="goToNew"
+    />
 
     <!-- LIST -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">

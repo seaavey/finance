@@ -104,45 +104,21 @@ const confirmDelete = async () => {
 <template>
   <div class="mx-auto max-w-6xl space-y-8 pb-12 pt-4">
     <!-- HEADER -->
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div>
-        <h1 class="text-4xl font-black tracking-tighter text-foreground">
-          {{ $t('subscriptions.title') }}
-        </h1>
-        <p class="mt-1 font-medium text-muted-foreground">
-          {{ subscriptions.length }} {{ $t('subscriptions.active') }}
-        </p>
-      </div>
-      <Button
-        class="flex h-11 items-center gap-2 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98]"
-        @click="goToNew"
-      >
-        <AppIcon name="hugeicons:add-01" :size="20" />
-        <span>{{ $t('subscriptions.add') }}</span>
-      </Button>
-    </div>
+    <PageHeader
+      :title="$t('subscriptions.title')"
+      :subtitle="`${subscriptions.length} ${$t('subscriptions.active')}`"
+      :button-text="$t('subscriptions.add')"
+      button-icon="hugeicons:add-01"
+      @action="goToNew"
+    />
 
     <!-- STATS -->
     <div v-if="!loading && subscriptions.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div
-        class="group relative overflow-hidden rounded-4xl border border-primary/10 bg-primary/[0.03] p-6 transition-all hover:bg-primary/[0.06]"
-      >
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-widest text-primary/70">
-            Total Est. Per Month
-          </p>
-          <h3 class="mt-2 text-3xl font-black tracking-tighter text-primary">
-            {{ formatCurrency(monthlyTotal) }}
-          </h3>
-          <p class="mt-1 text-[10px] font-bold text-primary/40 uppercase tracking-tight">
-            Active Subscriptions
-          </p>
-        </div>
-        <AppIcon
-          name="hugeicons:license"
-          class="absolute -right-4 -top-4 size-24 rotate-12 opacity-5 transition-transform group-hover:scale-110"
-        />
-      </div>
+      <StatCard
+        label="Total Est. Per Month"
+        :value="monthlyTotal"
+        icon="hugeicons:license"
+      />
     </div>
 
     <!-- LOADING -->
@@ -156,27 +132,14 @@ const confirmDelete = async () => {
     </div>
 
     <!-- EMPTY STATE -->
-    <div
+    <EmptyState
       v-else-if="subscriptions.length === 0"
-      class="flex flex-col items-center justify-center rounded-4xl border border-dashed border-border/50 bg-card/20 py-24 text-center"
-    >
-      <div
-        class="mb-6 flex size-20 items-center justify-center rounded-3xl bg-muted/50 shadow-inner"
-      >
-        <AppIcon name="hugeicons:license" :size="40" class="text-muted-foreground/80" />
-      </div>
-      <h3 class="text-xl font-black tracking-tight text-foreground">{{ $t('subscriptions.empty') }}</h3>
-      <p class="mt-2 max-w-xs text-sm font-medium text-muted-foreground">
-        {{ $t('subscriptions.empty_desc') }}
-      </p>
-      <Button
-        variant="outline"
-        class="mt-8 rounded-2xl border-border/50 bg-background/50 px-8 font-bold transition-all hover:bg-muted"
-        @click="goToNew"
-      >
-        {{ $t('subscriptions.add') }}
-      </Button>
-    </div>
+      :title="$t('subscriptions.empty')"
+      :description="$t('subscriptions.empty_desc')"
+      icon="hugeicons:license"
+      :button-text="$t('subscriptions.add')"
+      @action="goToNew"
+    />
 
     <!-- LIST -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
