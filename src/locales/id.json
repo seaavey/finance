@@ -29,7 +29,12 @@
     "delete": "Hapus",
     "edit": "Ubah",
     "loading": "Memuat...",
-    "error": "Terjadi kesalahan"
+    "error": "Terjadi kesalahan",
+    "close": "Tutup",
+    "more": "Lainnya",
+    "confirm": "Konfirmasi",
+    "confirm_desc": "Apakah kamu yakin?",
+    "saving": "Menyimpan..."
   },
   "dashboard": {
     "greeting": "Halo",
@@ -883,17 +888,6 @@
     "message": "Apakah kamu yakin?",
     "delete": "Hapus",
     "cancel": "Batal"
-  },
-  "common": {
-    "close": "Tutup",
-    "more": "Lainnya",
-    "confirm": "Konfirmasi",
-    "confirm_desc": "Apakah kamu yakin?",
-    "delete": "Hapus",
-    "cancel": "Batal",
-    "save": "Simpan",
-    "back": "Kembali",
-    "saving": "Menyimpan..."
   },
   "toast": {
     "transaction_added": "Transaksi berhasil ditambahkan",

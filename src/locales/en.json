@@ -29,8 +29,14 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "error": "An error occurred"
-  },
+    "error": "Something went wrong",
+    "close": "Close",
+    "more": "More",
+    "confirm": "Confirm",
+    "confirm_desc": "Are you sure you want to proceed?",
+    "saving": "Saving..."
+    },
+
   "dashboard": {
     "greeting": "Hello",
     "greeting_loading": "Hello...",
@@ -883,19 +889,9 @@
     "message": "Are you sure?",
     "delete": "Delete",
     "cancel": "Cancel"
-  },
-  "common": {
-    "close": "Close",
-    "more": "More",
-    "confirm": "Confirm",
-    "confirm_desc": "Are you sure?",
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "save": "Save",
-    "back": "Back",
-    "saving": "Saving..."
-  },
-  "toast": {
+    },
+    "toast": {
+
     "transaction_added": "Transaction added successfully",
     "transfer_added": "Transfer saved successfully",
     "transaction_add_error": "Failed to add transaction",
