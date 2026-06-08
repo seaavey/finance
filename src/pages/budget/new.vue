@@ -141,17 +141,18 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex justify-end gap-3 pt-2">
+    <!-- ACTION BUTTONS -->
+    <div class="flex items-center justify-end gap-3 md:gap-4 pt-4">
       <Button
         variant="ghost"
-        class="rounded-2xl px-6 font-bold text-muted-foreground transition-all hover:bg-muted/50"
+        class="h-11 md:h-12 rounded-2xl px-6 md:px-8 font-black uppercase tracking-widest transition-all hover:bg-secondary/50"
         @click="router.push('/budget')"
       >
         {{ $t('common.cancel') }}
       </Button>
       <Button
+        class="h-11 md:h-12 rounded-2xl bg-linear-to-b from-primary to-primary/90 px-6 md:px-10 font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 transition-all hover:from-primary/80 hover:to-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
         :disabled="loading || !isFormValid"
-        class="rounded-2xl bg-foreground px-8 font-bold text-background transition-all hover:opacity-90 disabled:opacity-50"
         @click="handleSave"
       >
         {{ loading ? $t('common.saving') : $t('budget.set_budget') }}
