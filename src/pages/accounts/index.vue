@@ -113,8 +113,7 @@ const totalBalance = computed(() => {
         >
           <div class="flex min-w-0 flex-1 items-center gap-3">
             <div
-              class="flex size-10 shrink-0 items-center justify-center rounded-2xl"
-              :style="{ backgroundColor: (account.color || '#6b7280') + '20' }"
+              class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-zinc-950 dark:bg-white shadow-sm border border-border/50"
             >
               <AccountIcon
                 :icon="account.icon || ''"

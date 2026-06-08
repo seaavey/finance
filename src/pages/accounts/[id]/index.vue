@@ -72,8 +72,7 @@ onMounted(async () => {
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-4">
             <div
-              class="flex size-14 items-center justify-center rounded-2xl"
-              :style="{ backgroundColor: accountDetail.color + '20' }"
+              class="flex size-14 items-center justify-center rounded-2xl bg-zinc-950 dark:bg-white shadow-lg border border-border/50"
             >
               <AccountIcon
                 :icon="accountDetail.icon || ''"

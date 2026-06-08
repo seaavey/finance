@@ -34,7 +34,8 @@
     "more": "More",
     "confirm": "Confirm",
     "confirm_desc": "Are you sure you want to proceed?",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "select_date": "Select date"
     },
 
   "dashboard": {

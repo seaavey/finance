@@ -63,6 +63,7 @@ const handleImageError = () => {
       :width="size"
       :height="size"
       class="icon-component"
+      :class="!color && 'text-white dark:text-zinc-950'"
       :style="{ color: color }"
     />
 
@@ -90,11 +91,14 @@ const handleImageError = () => {
       </div>
 
       <!-- Generic Fallback -->
-      <div v-else class="flex size-full items-center justify-center rounded-lg bg-muted/50">
+      <div
+        v-else
+        class="flex size-full items-center justify-center rounded-lg"
+      >
         <AppIcon
           :name="type === 'bank' ? 'hugeicons:bank' : 'hugeicons:wallet-03'"
           :size="Number(size) * 0.6"
-          class="text-muted-foreground/40"
+          class="text-white/60 dark:text-zinc-950/60"
         />
       </div>
     </template>
@@ -102,7 +106,7 @@ const handleImageError = () => {
     <!-- Fallback colored box -->
     <div
       v-else
-      class="rounded-lg"
+      class="rounded-lg shadow-inner border border-white/10 dark:border-black/10"
       :style="{ backgroundColor: color || '#6b7280', width: '100%', height: '100%' }"
     />
   </div>

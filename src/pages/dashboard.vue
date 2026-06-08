@@ -362,9 +362,14 @@
               >
                 <div class="flex items-center gap-2 min-w-0">
                   <div
-                    class="flex size-7 items-center justify-center rounded-lg bg-card shadow-sm border border-border/50"
+                    class="flex size-7 items-center justify-center rounded-lg bg-zinc-950 dark:bg-white shadow-sm border border-border/50"
                   >
-                    <AppIcon v-if="acct.icon" :name="acct.icon" :size="14" class="text-primary" />
+                    <AccountIcon
+                      v-if="acct.icon"
+                      :icon="acct.icon"
+                      :type="acct.type"
+                      :size="14"
+                    />
                   </div>
                   <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
                 </div>

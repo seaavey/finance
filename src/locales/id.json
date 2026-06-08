@@ -34,7 +34,8 @@
     "more": "Lainnya",
     "confirm": "Konfirmasi",
     "confirm_desc": "Apakah kamu yakin?",
-    "saving": "Menyimpan..."
+    "saving": "Menyimpan...",
+    "select_date": "Pilih tanggal"
   },
   "dashboard": {
     "greeting": "Halo",

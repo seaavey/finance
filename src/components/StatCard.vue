@@ -36,24 +36,28 @@ const bgClasses = computed(() => {
 
 <template>
   <div
-    class="group relative overflow-hidden rounded-4xl border p-6 transition-all"
+    class="group relative overflow-hidden rounded-4xl border p-5 transition-all"
     :class="bgClasses"
   >
     <div class="relative z-10">
       <div class="flex items-center gap-2">
-        <p class="text-[10px] font-black uppercase tracking-widest opacity-70" :class="colorClasses">
+        <p class="text-[10px] font-black uppercase tracking-widest opacity-70 truncate" :class="colorClasses">
           {{ label }}
         </p>
         <div
           v-if="trend"
-          class="flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] font-black"
+          class="flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] font-black shrink-0"
           :class="trend === 'up' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'"
         >
           <AppIcon :name="trend === 'up' ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'" :size="10" />
           {{ trendValue }}
         </div>
       </div>
-      <h3 class="mt-2 text-3xl font-black tracking-tighter" :class="colorClasses">
+      <h3 
+        class="mt-2 text-2xl font-black tracking-tighter truncate" 
+        :class="colorClasses"
+        :title="typeof value === 'number' ? formatCurrency(value, currency) : String(value)"
+      >
         {{ typeof value === 'number' ? formatCurrency(value, currency) : value }}
       </h3>
     </div>

@@ -57,47 +57,54 @@ export const useLocalePath = () => {
   return (path: string) => path
 }
 
-// Global state for color mode to act as a singleton like in Nuxt
-const mode = useVueUseColorMode({
-  emitAuto: true,
-  storageKey: 'vueuse-color-scheme',
-})
-
+// Internal state to act as a singleton
 interface ColorModeState {
   preference: string
   value: BasicColorMode | string
   unknown: boolean
 }
 
-const colorModeState = reactive<ColorModeState>({
-  preference: mode.value as string,
-  value: mode.value as BasicColorMode,
-  unknown: false,
-})
-
-// Sync preference change to actual mode
-watch(
-  () => colorModeState.preference,
-  (newPref) => {
-    mode.value = newPref as BasicColorMode
-  },
-)
-
-// Update value when mode changes externally
-watch(mode, (newMode) => {
-  colorModeState.value = newMode
-})
-
-// Allow external writes to colorModeState.value (e.g. toggle dark/light)
-watch(
-  () => colorModeState.value,
-  (newVal) => {
-    if (newVal !== mode.value) {
-      mode.value = newVal as BasicColorMode
-    }
-  },
-)
+let colorModeState: ColorModeState | null = null
 
 export const useColorMode = () => {
+  if (!colorModeState) {
+    // This will only run when useColorMode is first called inside a component/setup
+    const mode = useVueUseColorMode({
+      emitAuto: true,
+      storageKey: 'vueuse-color-scheme',
+    })
+
+    const state = reactive<ColorModeState>({
+      preference: mode.value as string,
+      value: mode.value as BasicColorMode,
+      unknown: false,
+    })
+
+    // Sync preference change to actual mode
+    watch(
+      () => state.preference,
+      (newPref) => {
+        mode.value = newPref as BasicColorMode
+      },
+    )
+
+    // Update value when mode changes externally
+    watch(mode, (newMode) => {
+      state.value = newMode
+    })
+
+    // Allow external writes to state.value (e.g. toggle dark/light)
+    watch(
+      () => state.value,
+      (newVal) => {
+        if (newVal !== mode.value) {
+          mode.value = newVal as BasicColorMode
+        }
+      },
+    )
+
+    colorModeState = state
+  }
+
   return colorModeState
 }
