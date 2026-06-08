@@ -1,6 +1,6 @@
 ## 6. Database Schema
 
-<sub>PostgreSQL 15 di Supabase · 11 tabel · 41 migrasi · 7 Jun 2026</sub>
+<sub>PostgreSQL 15 di Supabase · 12 tabel · 44 migrasi · 8 Jun 2026</sub>
 
 ---
 
@@ -14,15 +14,16 @@ profiles (1) ──── (*) transactions    # Owned transactions
 profiles (1) ──── (*) budgets         # Owned budgets
 profiles (1) ──── (*) bills           # Owned bills
 profiles (1) ──── (*) recurring       # Owned recurring
+profiles (1) ──── (*) subscriptions   # Owned subscriptions
 profiles (1) ──── (*) goals           # Owned goals
 profiles (1) ──── (*) activity_logs   # Owned audit trail
 
 categories (1) ──── (*) transactions   # Each transaction has a category
 accounts   (1) ──── (*) transactions   # Each transaction can be tied to an account
+```
 
 couple_invitations — standalone table (temporary invitation records)
-exchange_rates     — standalone table (rates cache, no user ownership)
-```
+exchange_rates — standalone table (rates cache, no user ownership)
 
 ### 6.1 Tabel: `profiles`
 
@@ -51,44 +52,47 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `created_at` | `timestamptz` | `now()`             | —                                       | —                 |
 
 **Default Categories:**
-| Income | Expense |
-|--------|---------|
-| Gaji 💰 | Makanan 🍽️ |
+
+| Income       | Expense      |
+| ------------ | ------------ |
+| Gaji 💰      | Makanan 🍽️   |
 | Freelance 💻 | Transport 🚗 |
-| Investasi 📈 | Belanja 🛍️ |
-| Lainnya 📌 | Tagihan 📄 |
-| | Hiburan 🎮 |
-| | Kesehatan 💊 |
-| | Lainnya 📌 |
+| Investasi 📈 | Belanja 🛍️   |
+| Lainnya 📌   | Tagihan 📄   |
+|              | Hiburan 🎮   |
+|              | Kesehatan 💊 |
+|              | Lainnya 📌   |
 
 ### 6.3 Tabel: `transactions`
 
-| Kolom         | Tipe          | Default             | Constraint                              | Deskripsi                  |
-| ------------- | ------------- | ------------------- | --------------------------------------- | -------------------------- |
-| `id`          | `uuid`        | `gen_random_uuid()` | PK                                      | —                          |
-| `user_id`     | `uuid`        | —                   | → auth.users(id) ON DELETE CASCADE      | Pemilik                    |
-| `category_id` | `uuid`        | —                   | → categories(id) ON DELETE SET NULL     | Kategori                   |
-| `account_id`  | `uuid`        | —                   | → accounts(id) ON DELETE SET NULL       | Akun (opsional)            |
-| `type`        | `text`        | —                   | `CHECK (type IN ('income', 'expense'))` | Tipe                       |
-| `amount`      | `numeric`     | `0`                 | NOT NULL                                | Jumlah                     |
-| `currency`    | `text`        | `'IDR'`             | —                                       | Mata uang                  |
-| `description` | `text`        | —                   | —                                       | Deskripsi/catatan          |
-| `date`        | `date`        | `current_date`      | NOT NULL                                | Tanggal transaksi          |
-| `image_url`   | `text`        | —                   | —                                       | URL lampiran (receipt)     |
-| `transfer_id` | `uuid`        | —                   | —                                       | ID untuk transfer terhubung|
-| `metadata`    | `jsonb`       | `'{}'`              | —                                       | Data tambahan/audit        |
-| `splits`      | `jsonb`       | `'[]'`              | —                                       | Split ke multiple kategori |
-| `created_at`  | `timestamptz` | `now()`             | —                                       | —                          |
-| `updated_at`  | `timestamptz` | `now()`             | —                                       | —                          |
+| Kolom         | Tipe          | Default             | Constraint                              | Deskripsi                   |
+| ------------- | ------------- | ------------------- | --------------------------------------- | --------------------------- |
+| `id`          | `uuid`        | `gen_random_uuid()` | PK                                      | —                           |
+| `user_id`     | `uuid`        | —                   | → auth.users(id) ON DELETE CASCADE      | Pemilik                     |
+| `category_id` | `uuid`        | —                   | → categories(id) ON DELETE SET NULL     | Kategori                    |
+| `account_id`  | `uuid`        | —                   | → accounts(id) ON DELETE SET NULL       | Akun (opsional)             |
+| `type`        | `text`        | —                   | `CHECK (type IN ('income', 'expense'))` | Tipe                        |
+| `amount`      | `numeric`     | `0`                 | NOT NULL                                | Jumlah                      |
+| `currency`    | `text`        | `'IDR'`             | —                                       | Mata uang                   |
+| `description` | `text`        | —                   | —                                       | Deskripsi/catatan           |
+| `date`        | `date`        | `current_date`      | NOT NULL                                | Tanggal transaksi           |
+| `image_url`   | `text`        | —                   | —                                       | URL lampiran (receipt)      |
+| `transfer_id` | `uuid`        | —                   | —                                       | ID untuk transfer terhubung |
+| `metadata`    | `jsonb`       | `'{}'`              | —                                       | Data tambahan/audit         |
+| `splits`      | `jsonb`       | `'[]'`              | —                                       | Split ke multiple kategori  |
+| `created_at`  | `timestamptz` | `now()`             | —                                       | —                           |
+| `updated_at`  | `timestamptz` | `now()`             | —                                       | —                           |
 
 **Indexes:**
-| Index Name | Columns | Type | Untuk Query |
-|-----------|---------|------|-------------|
-| `idx_transactions_user_date` | `(user_id, date DESC)` | B-tree | Dashboard: "transaksi saya, diurutkan tanggal" |
-| `idx_transactions_user_type` | `(user_id, type)` | B-tree | Filter: "transaksi expense saja" |
-| `idx_transactions_category_id` | `(category_id)` | B-tree | Budget: "jumlah spending per kategori" |
-| `idx_transactions_account_id` | `(account_id)` | B-tree | Balance: "saldo akun ini" |
-| `idx_transactions_transfer_id`| `(transfer_id)`| B-tree | "Cari pasangan transfer" |
+
+| Index Name                     | Columns                | Type   | Untuk Query                                    |
+| ------------------------------ | ---------------------- | ------ | ---------------------------------------------- |
+| `idx_transactions_user_date`   | `(user_id, date DESC)` | B-tree | Dashboard: "transaksi saya, diurutkan tanggal" |
+| `idx_transactions_user_type`   | `(user_id, type)`      | B-tree | Filter: "transaksi expense saja"               |
+| `idx_transactions_category_id` | `(category_id)`        | B-tree | Budget: "jumlah spending per kategori"         |
+| `idx_transactions_account_id`  | `(account_id)`         | B-tree | Balance: "saldo akun ini"                      |
+| `idx_transactions_transfer_id` | `(transfer_id)`        | B-tree | "Cari pasangan transfer"                       |
+
 | Plus indexes from migration `20260603000001` (composite + partial)
 
 ### 6.4 Tabel: `accounts`
@@ -155,7 +159,27 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 
 **Index:** `idx_recurring_user_active` ON `(user_id, active)`
 
-### 6.8 Tabel: `goals`
+### 6.8 Tabel: `subscriptions`
+
+| Kolom               | Tipe          | Default             | Constraint                                                 | Deskripsi              |
+| ------------------- | ------------- | ------------------- | ---------------------------------------------------------- | ---------------------- |
+| `id`                | `uuid`        | `gen_random_uuid()` | PK                                                         | —                      |
+| `user_id`           | `uuid`        | —                   | → auth.users(id) ON DELETE CASCADE                         | Pemilik                |
+| `name`              | `text`        | —                   | NOT NULL                                                   | Nama layanan           |
+| `amount`            | `numeric`     | —                   | NOT NULL                                                   | Biaya                  |
+| `currency`          | `text`        | `'IDR'`             | —                                                          | Mata uang              |
+| `billing_cycle`     | `text`        | —                   | `CHECK (billing_cycle IN ('weekly', 'monthly', 'yearly'))` | Siklus tagihan         |
+| `next_billing_date` | `date`        | —                   | NOT NULL                                                   | Tanggal tagihan berikt |
+| `category_id`       | `uuid`        | —                   | → categories(id) ON DELETE SET NULL                        | Kategori               |
+| `account_id`        | `uuid`        | —                   | → accounts(id) ON DELETE SET NULL                          | Akun pembayaran        |
+| `active`            | `boolean`     | `true`              | —                                                          | Status aktif           |
+| `reminder_days`     | `integer`     | `1`                 | —                                                          | H-x pengingat          |
+| `created_at`        | `timestamptz` | `now()`             | —                                                          | —                      |
+| `updated_at`        | `timestamptz` | `now()`             | —                                                          | —                      |
+
+**Index:** `idx_subscriptions_user_id` ON `(user_id)`
+
+### 6.9 Tabel: `goals`
 
 | Kolom            | Tipe          | Default             | Constraint                         | Deskripsi           |
 | ---------------- | ------------- | ------------------- | ---------------------------------- | ------------------- |
@@ -173,7 +197,7 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 
 **Index:** `idx_goals_user_id` ON `(user_id)`
 
-### 6.9 Tabel: `activity_logs`
+### 6.10 Tabel: `activity_logs`
 
 | Kolom         | Tipe          | Default             | Constraint                         | Deskripsi                                                |
 | ------------- | ------------- | ------------------- | ---------------------------------- | -------------------------------------------------------- |
@@ -185,7 +209,7 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `metadata`    | `jsonb`       | `'{}'`              | —                                  | Data tambahan                                            |
 | `created_at`  | `timestamptz` | `now()`             | —                                  | —                                                        |
 
-### 6.10 Tabel: `couple_invitations`
+### 6.11 Tabel: `couple_invitations`
 
 | Kolom             | Tipe          | Default             | Constraint                                                           | Deskripsi      |
 | ----------------- | ------------- | ------------------- | -------------------------------------------------------------------- | -------------- |
@@ -197,7 +221,7 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `created_at`      | `timestamptz` | `now()`             | —                                                                    | —              |
 | `updated_at`      | `timestamptz` | `now()`             | —                                                                    | —              |
 
-### 6.11 Tabel: `exchange_rates`
+### 6.12 Tabel: `exchange_rates`
 
 | Kolom             | Tipe          | Default | Constraint | Deskripsi                            |
 | ----------------- | ------------- | ------- | ---------- | ------------------------------------ |
@@ -205,14 +229,14 @@ exchange_rates     — standalone table (rates cache, no user ownership)
 | `rate`            | `numeric`     | —       | NOT NULL   | 1 IDR = X target                     |
 | `updated_at`      | `timestamptz` | `now()` | —          | —                                    |
 
-### 6.12 Storage Buckets
+### 6.13 Storage Buckets
 
 | Bucket        | Visibility | Fungsi                          | RLS                                          |
 | ------------- | ---------- | ------------------------------- | -------------------------------------------- |
 | `receipts`    | Private    | Upload gambar receipt untuk OCR | ✅ Signed URL 10 menit                       |
 | `goal-images` | Public     | Upload gambar target goal       | ✅ Row-level (user hanya bisa hapus sendiri) |
 
-### 6.13 Stored Procedures (RPC)
+### 6.14 Stored Procedures (RPC)
 
 | Nama                      | Parameter                                                      | Return  | Deskripsi                                              |
 | ------------------------- | -------------------------------------------------------------- | ------- | ------------------------------------------------------ |

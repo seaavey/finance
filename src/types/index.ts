@@ -131,6 +131,29 @@ export type RecurringUpdate = Omit<
   frequency?: RecurringFrequency
 }
 
+// Subscription
+export type BillingCycle = 'weekly' | 'monthly' | 'yearly'
+
+export type Subscription = Omit<
+  Database['public']['Tables']['subscriptions']['Row'],
+  'billing_cycle'
+> & {
+  billing_cycle: BillingCycle
+}
+export type SubscriptionRow = Subscription
+export type SubscriptionInsert = Omit<
+  Database['public']['Tables']['subscriptions']['Insert'],
+  'billing_cycle'
+> & {
+  billing_cycle: BillingCycle
+}
+export type SubscriptionUpdate = Omit<
+  Database['public']['Tables']['subscriptions']['Update'],
+  'billing_cycle'
+> & {
+  billing_cycle?: BillingCycle
+}
+
 // Profile & Partner
 export type Profile = Database['public']['Tables']['profiles']['Row']
 export type ProfileRow = Profile
@@ -153,6 +176,7 @@ export type EntityType =
   | 'bill'
   | 'account'
   | 'recurring'
+  | 'subscription'
   | 'todo'
   | 'partner'
   | 'auth'

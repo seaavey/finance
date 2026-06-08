@@ -2,16 +2,17 @@
 
 ### ✅ 13.0 Baru Selesai
 
-| Item                               | Tanggal   | Detail                                                |
-| ---------------------------------- | --------- | ----------------------------------------------------- |
-| Recurring auto-create transactions | 5 Jun '26 | Otomatis buat transaksi dari recurring di `next_date` |
-| Budget rollover                    | 5 Jun '26 | Sisa budget bulan lalu diakumulasi ke bulan ini       |
-| Transaction attachments            | 4 Jun '26 | Upload receipt/invoice ke transaksi                   |
-| Split transactions                 | 5 Jun '26 | Split satu transaksi ke multiple kategori             |
-| Multiple budgets/kategori          | 6 Jun '26 | Mendukung beberapa budget untuk kategori yang sama    |
-| Performance Engine (RPC)           | 5 Jun '26 | Optimasi query besar menggunakan database RPC         |
-| Currency Converter                 | 5 Jun '26 | Kalkulator konversi mata uang real-time               |
-| Account transfer                   | 7 Jun '26 | Pindah uang antar akun (rekening → cash → e-wallet)   |
+| Item                               | Tanggal   | Detail                                                                |
+| ---------------------------------- | --------- | --------------------------------------------------------------------- |
+| Recurring auto-create transactions | 5 Jun '26 | Otomatis buat transaksi dari recurring di `next_date`                 |
+| Budget rollover                    | 5 Jun '26 | Sisa budget bulan lalu diakumulasi ke bulan ini                       |
+| Transaction attachments            | 4 Jun '26 | Upload receipt/invoice ke transaksi                                   |
+| Split transactions                 | 5 Jun '26 | Split satu transaksi ke multiple kategori                             |
+| Multiple budgets/kategori          | 6 Jun '26 | Mendukung beberapa budget untuk kategori yang sama                    |
+| Performance Engine (RPC)           | 5 Jun '26 | Optimasi query besar menggunakan database RPC                         |
+| Currency Converter                 | 5 Jun '26 | Kalkulator konversi mata uang real-time                               |
+| Account transfer                   | 7 Jun '26 | Pindah uang antar akun (rekening → cash → e-wallet)                   |
+| Subscription manager               | 8 Jun '26 | Track semua langganan (Netflix, Spotify, dll) + reminder perpanjangan |
 
 ### 13.1 Short-term (1-2 bulan)
 
@@ -40,7 +41,6 @@
 | Investment portfolio tracking    | 🟢 Rendah | 2 minggu  | Track harga saham/reksadana/kripto otomatis                            |
 | Webhook API                      | 🟢 Rendah | 1 minggu  | REST API untuk integrasi pihak ketiga                                  |
 | Mobile app (Tauri/Capacitor)     | 🟢 Rendah | 2-3 bulan | Native mobile app experience                                           |
-| Subscription manager             | 🔴 Tinggi | 1 minggu  | Track semua langganan (Netflix, Spotify, dll) + reminder perpanjangan  |
 | Cashflow projection              | 🟡 Sedang | 1 minggu  | Proyeksi arus kas 30/60/90 hari ke depan berdasarkan recurring + saldo |
 | Financial health score           | 🟡 Sedang | 4 hari    | Skor kesehatan finansial berdasarkan aturan 50/30/20, rasio utang, dll |
 | Budget vs actual chart           | 🟡 Sedang | 4 hari    | Grafik perbandingan anggaran vs realisasi per kategori                 |
