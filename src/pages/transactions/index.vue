@@ -531,33 +531,6 @@ const filteredTransactions = computed(() => {
   return all
 })
 
-const formatRangeLabel = computed(() => {
-  const start = dateRange.value.start
-  const end = dateRange.value.end
-  if (!start && !end) return ''
-  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }
-  if (start && end) {
-    const startDate = start.toDate(getLocalTimeZone())
-    const endDate = end.toDate(getLocalTimeZone())
-    const sameMonth =
-      startDate.getMonth() === endDate.getMonth() &&
-      startDate.getFullYear() === endDate.getFullYear()
-    if (sameMonth && startDate.getFullYear() === new Date().getFullYear()) {
-      return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
-    }
-    return `${startDate.toLocaleDateString('id-ID', opts)} – ${endDate.toLocaleDateString('id-ID', { ...opts, year: 'numeric' })}`
-  }
-  if (start)
-    return start
-      .toDate(getLocalTimeZone())
-      .toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-  if (end)
-    return end
-      .toDate(getLocalTimeZone())
-      .toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-  return ''
-})
-
 const onDateRangeChange = () => {
   // Triggered when range calendar selection changes
 }

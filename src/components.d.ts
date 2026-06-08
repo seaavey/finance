@@ -83,6 +83,7 @@ declare module 'vue' {
     Cta: typeof import('./components/landing/Cta.vue')['default']
     CurrencyInput: typeof import('./components/CurrencyInput.vue')['default']
     DashboardSummary: typeof import('./components/DashboardSummary.vue')['default']
+    DateRangePicker: typeof import('./components/DateRangePicker.vue')['default']
     Dialog: typeof import('./components/ui/dialog/Dialog.vue')['default']
     DialogClose: typeof import('./components/ui/dialog/DialogClose.vue')['default']
     DialogContent: typeof import('./components/ui/dialog/DialogContent.vue')['default']

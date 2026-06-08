@@ -49,5 +49,7 @@ app.component('CurrencyInput', CurrencyInput)
 app.component('ListItemAction', ListItemAction)
 app.component('StatusBadge', StatusBadge)
 app.component('BaseDialog', BaseDialog)
+app.component('DateRangePicker', DateRangePicker)
 
 app.mount('#app')
+ount('#app')
