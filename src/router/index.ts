@@ -16,19 +16,29 @@ const blankLayoutRoutes = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routes.map((route) => {
-    // Check if this route should be blank
-    const isBlank = blankLayoutRoutes.includes(route.path)
+  routes: [
+    ...routes.map((route) => {
+      // Check if this route should be blank
+      const isBlank = blankLayoutRoutes.includes(route.path)
 
-    return {
-      ...route,
-      meta: {
-        ...route.meta,
-        layout: isBlank ? 'blank' : 'default',
-        title: getPageTitleKey(route.path),
+      return {
+        ...route,
+        meta: {
+          ...route.meta,
+          layout: isBlank ? 'blank' : 'default',
+          title: getPageTitleKey(route.path),
+        },
+      }
+    }),
+    {
+      path: '/source',
+      name: 'source',
+      component: { template: '<div>{{ $t("common.redirecting") }}</div>' },
+      beforeEnter() {
+        window.location.replace('https://github.com/seaavey/finance')
       },
-    }
-  }),
+    },
+  ],
 })
 
 // Public routes that don't need auth check — skip Supabase init entirely
@@ -41,6 +51,7 @@ const publicRoutes = [
   '/contact',
   '/privacy-policy',
   '/terms-of-service',
+  '/source',
 ]
 
 router.beforeEach(async (to) => {

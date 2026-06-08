@@ -323,8 +323,8 @@ const { user, getSession } = useAuth()
 const ownerFilter = ref<'mine' | 'partner' | 'all'>('all')
 
 const allGoals = computed(() => {
-  let mine = goals.value
-  let theirs = partnerGoals.value
+  const mine = goals.value
+  const theirs = partnerGoals.value
 
   switch (ownerFilter.value) {
     case 'mine':
