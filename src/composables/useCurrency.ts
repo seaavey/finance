@@ -55,7 +55,7 @@ export const useCurrency = () => {
   const t = globalI18n.t
   const locale = globalI18n.locale
 
-  // --- Exchange rates from Supabase (synced via Edge Function) ---
+  // --- Exchange rates from Supabase (synced via Edge Function every 10 min) ---
   const { data: ratesData } = useQuery({
     queryKey: ['exchange-rates'],
     queryFn: async () => {
@@ -68,7 +68,8 @@ export const useCurrency = () => {
       }
       return map
     },
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchInterval: 1000 * 60 * 10, // auto-refresh every 10 min
     retry: 2,
   })
 
