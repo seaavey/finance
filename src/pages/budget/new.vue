@@ -2,13 +2,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import CategoryPicker from '@/components/CategoryPicker.vue'
 import { useCurrency } from '@/composables/useCurrency'
@@ -22,7 +15,7 @@ defineOptions({
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
-const { categories, fetchCategories } = useCategories()
+const { fetchCategories } = useCategories()
 const { createBudget, loading } = useBudgets()
 const { defaultCurrency } = useCurrency()
 
@@ -31,7 +24,6 @@ const rawAmount = ref(0)
 const budgetName = ref('')
 const month = ref((route.query.month as string)?.substring(0, 7) || '')
 
-const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
 const isFormValid = computed(() => selectedCategoryId.value && rawAmount.value > 0)
 
 const handleSave = async () => {
@@ -94,53 +86,76 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="space-y-6 rounded-3xl border border-border/50 bg-card/20 p-6 backdrop-blur-sm">
-      <div class="space-y-2">
-        <Label>{{ $t('budget.month') }}</Label>
-        <Input v-model="month" type="month" :disabled="true" class="bg-muted/30" />
-      </div>
+    <!-- DETAIL FORM -->
+    <div
+      class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-5 shadow-lg backdrop-blur-md md:p-8"
+    >
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Category Selection -->
+        <div class="space-y-2">
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
+            <AppIcon name="hugeicons:grid-view" :size="12" />
+            {{ $t('categories.type_name') }}
+          </Label>
+          <CategoryPicker
+            v-model="selectedCategoryId"
+            type="expense"
+            :placeholder="t('categories.type_name')"
+            class="w-full"
+          />
+        </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('categories.type_name') }}</Label>
-        <Select v-model="selectedCategoryId">
-          <SelectTrigger>
-            <SelectValue :placeholder="t('categories.type_name')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="cat in expenseCategories" :key="cat.id" :value="cat.id">
-              <div class="flex items-center gap-2">
-                <AppIcon
-                  v-if="cat.icon?.startsWith('hugeicons:')"
-                  :name="cat.icon"
-                  :size="16"
-                  :style="{ color: cat.color }"
-                />
-                {{ cat.name }}
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        <!-- Month Selection (Styled Read-only) -->
+        <div class="space-y-2">
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
+            <AppIcon name="hugeicons:calendar-01" :size="12" />
+            {{ $t('budget.month') }}
+          </Label>
+          <div
+            class="flex h-11 items-center rounded-2xl border border-border/50 bg-muted/20 px-4 font-bold text-muted-foreground/80"
+          >
+            {{ month }}
+          </div>
+        </div>
 
-      <div class="space-y-2">
-        <Label>{{ $t('budget.name_label') }}</Label>
-        <Input
-          v-model="budgetName"
-          type="text"
-          maxlength="100"
-          :placeholder="t('budget.name_placeholder')"
-        />
-        <p class="text-xs text-muted-foreground">{{ $t('budget.name_hint') }}</p>
+        <!-- Budget Name -->
+        <div class="space-y-2 md:col-span-2">
+          <Label
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+          >
+            <AppIcon name="hugeicons:note-01" :size="12" />
+            {{ $t('budget.name_label') }}
+          </Label>
+          <Input
+            v-model="budgetName"
+            type="text"
+            maxlength="100"
+            :placeholder="t('budget.name_placeholder')"
+            class="h-11 rounded-2xl border-border/50 bg-background/50 px-4 font-bold transition-all hover:bg-background/80"
+          />
+        </div>
       </div>
+    </div>
 
-      <div class="flex justify-end gap-2 pt-2">
-        <Button variant="outline" @click="router.push('/budget')">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button :disabled="loading || !isFormValid" @click="handleSave">
-          {{ loading ? $t('common.saving') : $t('budget.set_budget') }}
-        </Button>
-      </div>
+    <div class="flex justify-end gap-3 pt-2">
+      <Button
+        variant="ghost"
+        class="rounded-2xl px-6 font-bold text-muted-foreground transition-all hover:bg-muted/50"
+        @click="router.push('/budget')"
+      >
+        {{ $t('common.cancel') }}
+      </Button>
+      <Button
+        :disabled="loading || !isFormValid"
+        class="rounded-2xl bg-foreground px-8 font-bold text-background transition-all hover:opacity-90 disabled:opacity-50"
+        @click="handleSave"
+      >
+        {{ loading ? $t('common.saving') : $t('budget.set_budget') }}
+      </Button>
     </div>
   </div>
 </template>
