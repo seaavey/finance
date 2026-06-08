@@ -117,7 +117,7 @@ watch(
 
 const onSubmit = async () => {
   if (!isFormValid.value) return
-  const { error } = await updateSubscription(subId, {
+  const result = await updateSubscription(subId, {
     name: form.name,
     amount: Number(form.amount),
     currency: form.currency,
@@ -128,7 +128,7 @@ const onSubmit = async () => {
     reminder_days: form.reminder_days,
     active: form.active,
   })
-  if (!error) {
+  if (result && !result.error) {
     router.push('/subscriptions')
   }
 }

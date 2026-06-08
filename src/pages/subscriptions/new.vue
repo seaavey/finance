@@ -25,7 +25,7 @@ import { useRouter } from 'vue-router'
 import { reactive, computed, onMounted } from 'vue'
 
 const router = useRouter()
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 const { currencies, defaultCurrency, formatNumberOnly, parseLocalizedNumber } = useCurrency()
 const { addSubscription } = useSubscriptions()
 const { fetchCategories } = useCategories()
@@ -93,7 +93,7 @@ onMounted(() => {
 
 const onSubmit = async () => {
   if (!isFormValid.value) return
-  const { error } = await addSubscription({
+  const result = await addSubscription({
     name: form.name,
     amount: Number(form.amount),
     currency: form.currency,
@@ -104,7 +104,7 @@ const onSubmit = async () => {
     reminder_days: form.reminder_days,
     active: form.active,
   })
-  if (!error) {
+  if (result && !result.error) {
     router.push('/subscriptions')
   }
 }
@@ -113,7 +113,12 @@ const onSubmit = async () => {
 <template>
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
-      <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/subscriptions')">
+      <Button
+        variant="ghost"
+        size="sm"
+        class="mb-4 rounded-xl"
+        @click="router.push('/subscriptions')"
+      >
         <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>
