@@ -10,7 +10,7 @@ import {
   updateSubscription as updateService,
   deleteSubscription as deleteService,
 } from '@/services/subscription.service'
-import type { Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
+import type { SubscriptionInsert, SubscriptionUpdate } from '@/types'
 
 export const useSubscriptions = () => {
   const { t } = useI18n()

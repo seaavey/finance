@@ -74,6 +74,7 @@ export interface TransactionFilters {
   amountMin?: number
   amountMax?: number
   account_id?: string
+  user_id?: string
   currency?: string
 }
 

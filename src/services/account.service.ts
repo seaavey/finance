@@ -1,12 +1,14 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Account, Result, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
+import { rpc } from '@/lib/rpc'
+import { ACCOUNT_FIELDS } from '@/services/fields'
+import type { Account, Result, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryAccounts(userId: string): Promise<Result<Account[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('accounts')
-    .select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at')
+    .select(ACCOUNT_FIELDS)
     .eq('user_id', userId)
     .order('created_at')
 
@@ -16,7 +18,7 @@ export async function queryAccounts(userId: string): Promise<Result<Account[]>> 
 
 export async function getAccount(id: string): Promise<Result<Account>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('accounts').select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at').eq('id', id).single()
+  const { data, error } = await supabase.from('accounts').select(ACCOUNT_FIELDS).eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: data as Account, error: null }
@@ -47,41 +49,5 @@ export async function deleteAccount(id: string): Promise<Result<null>> {
 }
 
 export async function queryAccountBalances(userId: string): Promise<Result<AccountWithBalance[]>> {
-  const supabase = useSupabase()
-
-  // 1. Fetch accounts
-  const { data: accounts, error: accountError } = await supabase
-    .from('accounts')
-    .select('id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at')
-    .eq('user_id', userId)
-
-  if (accountError)
-    return { data: null, error: new AppError(accountError.message, accountError.code, accountError) }
-  if (!accounts?.length) return { data: [], error: null }
-
-  // 2. Fetch all transactions for these accounts to calculate net change
-  const accountIds = accounts.map((a) => a.id)
-  const { data: txData } = await supabase
-    .from('transactions')
-    .select('account_id, amount, type, splits')
-    .in('account_id', accountIds)
-
-  const netMap = new Map<string, number>()
-  for (const tx of txData || []) {
-    const amount = Number(tx.amount)
-    const factor = tx.type === 'income' ? 1 : -1
-    const accountId = tx.account_id || ''
-    const current = netMap.get(accountId) || 0
-    netMap.set(accountId, current + amount * factor)
-  }
-
-  const result: AccountWithBalance[] = accounts.map(
-    (a) =>
-      ({
-        ...a,
-        balance: Number(a.initial_balance || 0) + (netMap.get(a.id) || 0),
-      }) as AccountWithBalance,
-  )
-
-  return { data: result, error: null }
+  return rpc<AccountWithBalance[]>('get_account_balances', { p_user_id: userId })
 }

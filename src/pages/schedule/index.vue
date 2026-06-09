@@ -12,53 +12,14 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div v-if="!loading" class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div class="rounded-2xl border border-border/50 bg-card p-4">
-        <p class="text-[10px] font-black uppercase tracking-widest text-amber-500/70">
-          {{ $t('schedule.unpaid') }}
-        </p>
-        <p class="mt-1 text-2xl font-black tracking-tighter text-amber-500">
-          {{ monthUnpaidBills.length }}
-        </p>
-        <p class="text-[10px] font-medium text-muted-foreground/60">
-          {{ $t('schedule.bills_due') }}
-        </p>
-      </div>
-      <div class="rounded-2xl border border-border/50 bg-card p-4">
-        <p class="text-[10px] font-black uppercase tracking-widest text-green-500/70">
-          {{ $t('schedule.paid') }}
-        </p>
-        <p class="mt-1 text-2xl font-black tracking-tighter text-green-500">
-          {{ monthPaidBills.length }}
-        </p>
-        <p class="text-[10px] font-medium text-muted-foreground/60">
-          {{ $t('schedule.total_bills', { count: monthBills.length }) }}
-        </p>
-      </div>
-      <div class="rounded-2xl border border-border/50 bg-card p-4">
-        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">
-          {{ $t('schedule.income') }}
-        </p>
-        <p class="mt-1 text-2xl font-black tracking-tighter text-emerald-600">
-          {{ formatCurrency(monthRecurringIncome) }}
-        </p>
-        <p class="text-[10px] font-medium text-muted-foreground/60">
-          {{ $t('schedule.total_recurring_income') }}
-        </p>
-      </div>
-      <div class="rounded-2xl border border-border/50 bg-card p-4">
-        <p class="text-[10px] font-black uppercase tracking-widest text-rose-500/70">
-          {{ $t('schedule.expense') }}
-        </p>
-        <p class="mt-1 text-2xl font-black tracking-tighter text-rose-500">
-          {{ formatCurrency(monthRecurringExpense) }}
-        </p>
-        <p class="text-[10px] font-medium text-muted-foreground/60">
-          {{ $t('schedule.total_recurring_expense') }}
-        </p>
-      </div>
-    </div>
+    <ScheduleStats
+      v-if="!loading"
+      :unpaid-count="monthUnpaidBills.length"
+      :paid-count="monthPaidBills.length"
+      :total-bills="monthBills.length"
+      :income-total="monthRecurringIncome"
+      :expense-total="monthRecurringExpense"
+    />
 
     <div v-if="loading" class="space-y-4">
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -186,109 +147,14 @@
       </div>
     </div>
 
-    <!-- Selected Day Details -->
-    <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="transform translate-y-2 opacity-0"
-      enter-to-class="transform translate-y-0 opacity-100"
-    >
-      <div v-if="selectedDayEvents.length > 0" class="mt-6">
-        <div class="rounded-3xl border border-border/50 bg-card shadow-sm">
-          <div
-            class="flex items-center justify-between border-b border-border/50 px-5 py-4 sm:px-6"
-          >
-            <h3 class="text-base font-black tracking-tighter text-foreground">
-              {{ formatSelectedDate }}
-            </h3>
-            <span class="text-xs font-bold text-muted-foreground">
-              {{ selectedDayEvents.length }}
-              {{
-                selectedDayEvents.length === 1 ? $t('schedule.no_events') : $t('schedule.no_events')
-              }}
-            </span>
-          </div>
-          <div class="divide-y divide-border/30">
-            <!-- Bills -->
-            <div
-              v-for="bill in selectedDayBills"
-              :key="'sb-' + bill.id"
-              class="flex cursor-pointer items-center gap-3 px-5 py-3 transition-colors hover:bg-muted/20 sm:gap-4 sm:px-6 sm:py-4"
-              @click="navigateToBill(bill.id)"
-            >
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-                :class="
-                  bill.is_paid ? 'bg-green-500/10 text-green-600' : 'bg-amber-500/10 text-amber-600'
-                "
-              >
-                <AppIcon name="hugeicons:receipt" :size="18" />
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-bold text-foreground">{{ bill.title }}</p>
-                <p class="text-[10px] font-bold text-muted-foreground/60">
-                  {{ $t('schedule.bills_due') }}
-                  <span
-                    class="ml-1 rounded-full px-2 py-0.5 text-[9px] font-bold"
-                    :class="
-                      bill.is_paid
-                        ? 'bg-green-500/10 text-green-600'
-                        : 'bg-amber-500/10 text-amber-600'
-                    "
-                  >
-                    {{ bill.is_paid ? $t('schedule.paid') : $t('schedule.unpaid') }}
-                  </span>
-                </p>
-              </div>
-              <p class="shrink-0 text-sm font-black text-foreground">
-                {{ formatCurrency(bill.amount) }}
-              </p>
-            </div>
-
-            <!-- Recurring -->
-            <div
-              v-for="rec in selectedDayRecurring"
-              :key="'sr-' + rec.id"
-              class="flex cursor-pointer items-center gap-3 px-5 py-3 transition-colors hover:bg-muted/20 sm:gap-4 sm:px-6 sm:py-4"
-              @click="navigateToRecurring(rec.id)"
-            >
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-                :class="
-                  rec.type === 'income'
-                    ? 'bg-emerald-500/10 text-emerald-600'
-                    : 'bg-rose-500/10 text-rose-600'
-                "
-              >
-                <AppIcon
-                  :name="
-                    rec.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'
-                  "
-                  :size="18"
-                />
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-bold text-foreground">
-                  {{ rec.description || $t('recurring.no_description') }}
-                </p>
-                <p class="text-[10px] font-bold text-muted-foreground/60">
-                  {{ $t('schedule.recurring_on') }}
-                  <span class="ml-1 rounded-lg bg-muted px-2 py-0.5 text-[9px] font-bold">
-                    {{ frequencyLabel(rec.frequency) }}
-                  </span>
-                </p>
-              </div>
-              <p
-                class="shrink-0 text-sm font-black"
-                :class="rec.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
-              >
-                {{ rec.type === 'income' ? '+' : '-'
-                }}{{ formatCurrency(Number(rec.amount), rec.currency || undefined) }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <ScheduleDayDetail
+      :formatted-date="formatSelectedDate"
+      :bills="selectedDayBills"
+      :recurring="selectedDayRecurring"
+      :events="selectedDayEvents"
+      @navigate-bill="navigateToBill"
+      @navigate-recurring="navigateToRecurring"
+    />
   </div>
 </template>
 
@@ -298,7 +164,9 @@ import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from '@/types'
+import type { RecurringTransaction, Bill } from '@/types'
+import ScheduleStats from '@/components/schedule/ScheduleStats.vue'
+import ScheduleDayDetail from '@/components/schedule/ScheduleDayDetail.vue'
 
 defineOptions({
   name: 'PagesScheduleIndex',

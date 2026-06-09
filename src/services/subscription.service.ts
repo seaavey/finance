@@ -1,4 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
+import { SUBSCRIPTION_FIELDS } from '@/services/fields'
 import type { Result, Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -6,7 +7,7 @@ export async function querySubscriptions(userId: string): Promise<Result<Subscri
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('subscriptions')
-    .select('*')
+    .select(SUBSCRIPTION_FIELDS)
     .eq('user_id', userId)
     .order('next_billing_date', { ascending: true })
 

@@ -1,4 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
+import { BILL_FIELDS } from '@/services/fields'
 import type { Result, BillRow, BillInsert, BillUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -6,7 +7,7 @@ export async function queryBills(userId: string): Promise<Result<BillRow[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('bills')
-    .select('amount, created_at, due_date, id, is_paid, paid_with_account_id, recurrence, title, updated_at, user_id')
+    .select(BILL_FIELDS)
     .eq('user_id', userId)
     .order('due_date')
 

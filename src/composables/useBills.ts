@@ -7,7 +7,7 @@ import {
   deleteBill as deleteBillService,
   markBillAsPaid as markAsPaidService,
 } from '@/services/bill.service'
-import type { Bill, BillInsert, Database } from '@/types'
+import type { BillInsert, Database } from '@/types'
 
 export const useBills = () => {
   const queryClient = useQueryClient()

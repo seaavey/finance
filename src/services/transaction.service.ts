@@ -1,4 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
+import { rpc } from '@/lib/rpc'
+import { TRANSACTION_FIELDS } from '@/services/fields'
 import type { Result, Transaction, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -10,14 +12,16 @@ export async function queryTransactions(
   partnerId?: string,
 ): Promise<Result<{ data: Transaction[]; count: number }>> {
   const supabase = useSupabase()
-  const { type, category_id, search, startDate, endDate, account_id } = filters
+  const { type, category_id, search, startDate, endDate, account_id, user_id } = filters
 
   let query = supabase
     .from('transactions')
-    .select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id', { count: 'exact' })
+    .select(TRANSACTION_FIELDS, { count: 'exact' })
 
   // Include partner transactions if partnered
-  if (partnerId) {
+  if (user_id) {
+    query = query.eq('user_id', user_id)
+  } else if (partnerId) {
     query = query.in('user_id', [userId, partnerId])
   } else {
     query = query.eq('user_id', userId)
@@ -43,7 +47,7 @@ export async function queryTransactions(
 
 export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('transactions').select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id').eq('id', id).single()
+  const { data, error } = await supabase.from('transactions').select(TRANSACTION_FIELDS).eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: data as unknown as Transaction, error: null }
@@ -173,7 +177,7 @@ export async function searchTransactions(
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('transactions')
-    .select('account_id, amount, category_id, created_at, currency, date, description, id, image_url, receipt_image, splits, type, updated_at, user_id')
+    .select(TRANSACTION_FIELDS)
     .eq('user_id', userId)
     .ilike('description', `%${term}%`)
     .order('date', { ascending: false })
@@ -189,18 +193,16 @@ export async function getTransactionSummary(
   endDate: string,
   targetCurrency: string,
 ): Promise<Result<{ total_income: number; total_expense: number; balance: number }>> {
-  const supabase = useSupabase()
-  // Cast to any to bypass generated types that don't include new RPCs yet
-  const { data, error } = await (supabase as any).rpc('get_transaction_summary', {
+  const result = await rpc<any[]>('get_transaction_summary', {
     p_user_id: userId,
     p_start_date: startDate,
     p_end_date: endDate,
     p_target_currency: targetCurrency,
   })
 
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  const result = data && data.length > 0 ? data[0] : { total_income: 0, total_expense: 0, balance: 0 }
-  return { data: result, error: null }
+  if (result.error) return result
+  const data = (result.data && result.data.length > 0) ? result.data[0] : { total_income: 0, total_expense: 0, balance: 0 }
+  return { data, error: null }
 }
 
 export async function getCategoryStats(
@@ -208,15 +210,11 @@ export async function getCategoryStats(
   startDate?: string,
   endDate?: string,
 ): Promise<Result<{ category_id: string; transaction_count: number; total_amount: number }[]>> {
-  const supabase = useSupabase()
-  const { data, error } = await (supabase as any).rpc('get_category_stats', {
+  return rpc<any[]>('get_category_stats', {
     p_user_id: userId,
     p_start_date: startDate || '1970-01-01',
     p_end_date: endDate || '9999-12-31',
   })
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (data as any) || [], error: null }
 }
 
 export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {

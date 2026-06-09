@@ -1,12 +1,13 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Result, BudgetWithProgress, BudgetRow, BudgetInsert, BudgetUpdate } from '@/types'
+import { BUDGET_FIELDS } from '@/services/fields'
+import type { Result, BudgetWithProgress, BudgetRow, BudgetUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('budgets')
-    .select('amount, category_id, created_at, id, month, name, updated_at, user_id')
+    .select(BUDGET_FIELDS)
     .eq('user_id', userId)
     .eq('month', month)
     .order('created_at')
@@ -66,7 +67,7 @@ export async function queryBudgetWithProgress(
   // 1. Fetch budgets
   const { data: budgets, error: budgetError } = await supabase
     .from('budgets')
-    .select('amount, category_id, created_at, id, month, name, updated_at, user_id')
+    .select(BUDGET_FIELDS)
     .eq('user_id', userId)
     .eq('month', month)
 

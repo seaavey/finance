@@ -1,5 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
+import { getLocalTimeZone } from '@internationalized/date'
+import type { DateRange } from 'reka-ui'
 import {
   queryTransactions,
   getTransaction as getTxService,
@@ -16,6 +18,8 @@ import {
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
 import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
+
+export type OwnerFilter = 'all' | 'mine' | 'partner'
 
 export const useTransactionSummary = (
   userId: Ref<string | undefined>,
@@ -72,10 +76,33 @@ export const useTransactions = () => {
   const { partner } = usePartner()
   const { categories } = useCategories()
 
-  const currentFilters = ref<TransactionFilters | undefined>(undefined)
   const currentPage = ref(1)
   const totalCount = ref(0)
   const pageSize = ref(20)
+
+  // UI Filters
+  const categoryFilter = ref('')
+  const ownerFilter = ref<OwnerFilter>('all')
+  const dateRange = shallowRef<DateRange>({ start: undefined, end: undefined })
+
+  const serverFilters = computed<TransactionFilters>(() => {
+    const res: TransactionFilters = {}
+    if (categoryFilter.value && categoryFilter.value !== '__all__') {
+      res.category_id = categoryFilter.value
+    }
+    if (ownerFilter.value === 'mine' && user.value?.id) {
+      res.user_id = user.value.id
+    } else if (ownerFilter.value === 'partner' && partner.value?.id) {
+      res.user_id = partner.value.id
+    }
+    if (dateRange.value.start) {
+      res.startDate = dateRange.value.start.toDate(getLocalTimeZone()).toISOString().slice(0, 10)
+    }
+    if (dateRange.value.end) {
+      res.endDate = dateRange.value.end.toDate(getLocalTimeZone()).toISOString().slice(0, 10)
+    }
+    return res
+  })
 
   const totalPages = computed(() => Math.max(1, Math.ceil(totalCount.value / pageSize.value)))
 
@@ -86,14 +113,14 @@ export const useTransactions = () => {
       'transactions',
       computed(() => user.value?.id),
       partnerId,
-      currentFilters,
+      serverFilters,
       currentPage,
       pageSize,
     ],
     queryFn: async () => {
       if (!user.value) return { data: [], count: 0 }
 
-      const result = await queryTransactions(user.value.id, currentFilters.value || {}, currentPage.value, pageSize.value, partnerId.value)
+      const result = await queryTransactions(user.value.id, serverFilters.value, currentPage.value, pageSize.value, partnerId.value)
       if (result.error) throw result.error
 
       totalCount.value = result.data?.count || 0
@@ -109,7 +136,7 @@ export const useTransactions = () => {
   const transactions = computed<Transaction[]>(() => transactionsData.value?.data || [])
 
   const fetchTransactions = async (filters?: TransactionFilters, page = 1) => {
-    currentFilters.value = filters
+    categoryFilter.value = filters?.category_id || ''
     currentPage.value = page
     await refetchTransactions()
   }
@@ -321,6 +348,10 @@ export const useTransactions = () => {
     currentPage,
     pageSize,
     fetchTransactions,
+    categoryFilter,
+    ownerFilter,
+    dateRange,
+    serverFilters,
     goToPage,
     changePage,
     searchTransactions,

@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { describe, expect, it } from 'bun:test'
 import { calculateProgress } from '../budget.service'
 import type { BudgetWithProgress } from '../budget.service'
 

@@ -53,6 +53,7 @@ declare global {
   const readonly: typeof import('vue').readonly
   const ref: typeof import('vue').ref
   const resolveComponent: typeof import('vue').resolveComponent
+  const rpc: typeof import('./lib/rpc').rpc
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
@@ -100,6 +101,7 @@ declare global {
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useToast: typeof import('./composables/useToast').useToast
   const useToggle: typeof import('@vueuse/core').useToggle
+  const useTransactionServerFilters: typeof import('./composables/useTransactionServerFilters').useTransactionServerFilters
   const useTransactionSummary: typeof import('./composables/useTransactions').useTransactionSummary
   const useTransactions: typeof import('./composables/useTransactions').useTransactions
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
@@ -129,6 +131,9 @@ declare global {
   // @ts-ignore
   export type { Reminder } from './composables/useReminders'
   import('./composables/useReminders')
+  // @ts-ignore
+  export type { OwnerFilter } from './composables/useTransactions'
+  import('./composables/useTransactions')
 }
 
 // for vue template auto import
@@ -182,6 +187,7 @@ declare module 'vue' {
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly rpc: UnwrapRef<typeof import('./lib/rpc')['rpc']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>

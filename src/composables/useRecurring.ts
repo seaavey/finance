@@ -9,7 +9,7 @@ import {
 } from '@/services/recurring.service'
 import { createTransaction as createTxService } from '@/services/transaction.service'
 import { formatDateSafe } from '@/lib/utils'
-import type { Database, RecurringTransaction, TransactionInsert, RecurringInsert, RecurringUpdate } from '@/types'
+import type { RecurringTransaction, TransactionInsert, RecurringInsert, RecurringUpdate } from '@/types'
 
 export type { RecurringTransaction }
 

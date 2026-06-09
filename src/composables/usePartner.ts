@@ -9,7 +9,7 @@ import {
   cancelInvitation as cancelInvitationService,
   disconnectPartner as disconnectPartnerService,
 } from '@/services/partner.service'
-import type { PartnerProfile, CoupleInvitation, Invitation } from '@/types'
+import type { Invitation } from '@/types'
 
 import { useSupabase } from '@/lib/supabase'
 
@@ -23,7 +23,7 @@ export const usePartner = () => {
 
   const sending = ref(false)
 
-  const { data: myProfileData, refetch: refetchMyProfile } = useQuery({
+  const { data: myProfileData, refetch: _refetchMyProfile } = useQuery({
     queryKey: ['myProfile', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return null

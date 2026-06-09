@@ -10,83 +10,7 @@
       </p>
     </div>
 
-    <!-- TYPE SELECTOR -->
-    <div class="grid grid-cols-3 gap-3 md:gap-4">
-      <Button
-        variant="ghost"
-        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
-        :class="
-          form.type === 'income'
-            ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 border-emerald-500'
-            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
-        "
-        @click="form.type = 'income'"
-      >
-        <div
-          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
-          :class="
-            form.type === 'income'
-              ? 'bg-white/20'
-              : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-          "
-        >
-          <AppIcon name="hugeicons:arrow-down-01" :size="28" />
-        </div>
-        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
-          $t('transaction_form.income')
-        }}</span>
-      </Button>
-
-      <Button
-        variant="ghost"
-        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
-        :class="
-          form.type === 'expense'
-            ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 border-rose-500'
-            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
-        "
-        @click="form.type = 'expense'"
-      >
-        <div
-          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
-          :class="
-            form.type === 'expense'
-              ? 'bg-white/20'
-              : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-          "
-        >
-          <AppIcon name="hugeicons:arrow-up-01" :size="28" />
-        </div>
-        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
-          $t('transaction_form.expense')
-        }}</span>
-      </Button>
-
-      <Button
-        variant="ghost"
-        class="group relative h-auto flex-col items-center gap-2 md:gap-3 py-4 md:py-6 rounded-3xl transition-all duration-300 border border-transparent overflow-hidden"
-        :class="
-          form.type === 'transfer'
-            ? 'bg-blue-500 text-white shadow-xl shadow-blue-500/20 border-blue-500'
-            : 'bg-secondary/40 hover:bg-secondary/60 text-muted-foreground border-border/50'
-        "
-        @click="form.type = 'transfer'"
-      >
-        <div
-          class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
-          :class="
-            form.type === 'transfer'
-              ? 'bg-white/20'
-              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-          "
-        >
-          <AppIcon name="hugeicons:exchange-01" :size="28" />
-        </div>
-        <span class="text-[10px] md:text-xs font-black uppercase tracking-widest text-center">{{
-          $t('transaction_form.transfer')
-        }}</span>
-      </Button>
-    </div>
+    <TransactionTypeSelector v-model="form.type" />
 
     <!-- SCAN RECEIPT BUTTON -->
     <div v-if="form.type !== 'transfer'" class="flex justify-center">
@@ -418,167 +342,27 @@
         />
       </div>
 
-      <!-- Attachment (Full Width) -->
-      <div
-        class="col-span-1 space-y-3 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30 md:col-span-2"
-      >
-        <Label
-          class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
-        >
-          <AppIcon name="hugeicons:image-01" :size="12" />
-          {{ $t('transaction_form.attachment') }}
-        </Label>
-        <p class="text-xs text-muted-foreground">{{ $t('transaction_form.attachment_desc') }}</p>
-
-        <!-- Existing image preview -->
-        <div
-          v-if="form.image_url && !uploadingImage"
-          class="relative overflow-hidden rounded-2xl border border-border/50"
-        >
-          <img
-            :src="form.image_url"
-            alt="Transaction attachment"
-            class="max-h-48 w-full object-cover"
-          />
-          <div class="absolute right-2 top-2 flex gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              class="h-8 rounded-xl px-3 text-xs font-bold shadow-sm backdrop-blur-sm"
-              @click="changeAttachment"
-            >
-              {{ $t('transaction_form.attachment_change') }}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              class="h-8 rounded-xl px-3 text-xs font-bold shadow-sm backdrop-blur-sm"
-              @click="removeAttachment"
-            >
-              {{ $t('transaction_form.attachment_remove') }}
-            </Button>
-          </div>
-        </div>
-
-        <!-- Upload area -->
-        <div v-else-if="!uploadingImage" class="flex items-center gap-3">
-          <input
-            ref="attachmentInputRef"
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            class="hidden"
-            @change="onAttachmentSelected"
-          />
-          <Button
-            variant="outline"
-            class="h-10 rounded-2xl border-dashed border-border/50 px-5 text-xs font-bold"
-            @click="attachmentInputRef?.click()"
-          >
-            <AppIcon name="hugeicons:upload-01" :size="14" class="mr-1" />
-            {{ $t('transaction_form.attachment_add') }}
-          </Button>
-        </div>
-
-        <!-- Uploading state -->
-        <div v-else class="flex items-center gap-3 rounded-2xl bg-muted/30 px-4 py-3">
-          <AppIcon name="hugeicons:loading-03" :size="18" class="animate-spin text-primary" />
-          <span class="text-xs font-medium text-muted-foreground">
-            {{ $t('transaction_form.attachment_uploading') }}
-          </span>
-        </div>
-      </div>
+      <TransactionAttachment
+        :image-url="form.image_url"
+        :uploading="uploadingImage"
+        @upload="uploadAttachment"
+        @remove="removeAttachment"
+      />
     </div>
 
-    <!-- SPLIT TRANSACTION -->
-    <div
+    <TransactionSplitEditor
       v-if="form.type !== 'transfer'"
-      class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
-    >
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <Label
-            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
-          >
-            <AppIcon name="hugeicons:share-07" :size="12" />
-            {{ $t('transaction_form.split_transaction') }}
-          </Label>
-          <p class="mt-1 text-xs text-muted-foreground">{{ $t('transaction_form.split_desc') }}</p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-8 rounded-xl px-3 text-xs font-bold shrink-0"
-          :class="splitEnabled ? 'border-primary/40 bg-primary/5 text-primary' : ''"
-          @click="toggleSplit"
-        >
-          {{
-            splitEnabled
-              ? $t('transaction_form.split_disable')
-              : $t('transaction_form.split_enable')
-          }}
-        </Button>
-      </div>
-
-      <template v-if="splitEnabled">
-        <div
-          v-for="(split, index) in splitItems"
-          :key="index"
-          class="flex flex-col gap-2 rounded-2xl border border-border/30 bg-background/30 p-3 md:flex-row md:items-center"
-        >
-          <div class="flex-1">
-            <CategoryPicker
-              v-model="split.category_id"
-              :type="form.type"
-              :placeholder="$t('transaction_form.split_category')"
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="relative flex-1 md:w-36">
-              <CurrencyInput
-                v-model="split.amount"
-                :currency="form.currency"
-                :placeholder="$t('transaction_form.split_amount')"
-                class="h-10"
-                required
-              />
-            </div>
-            <Button
-
-              variant="ghost"
-              size="sm"
-              class="h-10 w-10 shrink-0 rounded-xl text-muted-foreground hover:text-destructive"
-              @click="removeSplit(index)"
-            >
-              <AppIcon name="hugeicons:delete-01" :size="16" />
-            </Button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between gap-3">
-          <div
-            v-if="splitItems.length > 0"
-            class="flex items-center gap-2 text-xs font-medium"
-            :class="splitTotalMismatch ? 'text-destructive' : 'text-muted-foreground'"
-          >
-            <AppIcon
-              :name="splitTotalMismatch ? 'hugeicons:alert-circle' : 'hugeicons:tick-01'"
-              :size="14"
-            />
-            {{ formattedSplitTotal }} / {{ formattedAmount }}
-          </div>
-          <div class="flex-1" />
-          <Button
-            variant="outline"
-            size="sm"
-            class="h-8 rounded-xl border-dashed px-3 text-xs font-bold"
-            @click="addSplit"
-          >
-            <AppIcon name="hugeicons:plus-sign" :size="14" class="mr-1" />
-            {{ $t('transaction_form.split_add') }}
-          </Button>
-        </div>
-      </template>
-    </div>
+      :enabled="splitEnabled"
+      :items="splitItems"
+      :type="form.type"
+      :currency="form.currency"
+      :total-mismatch="splitTotalMismatch"
+      :formatted-split-total="formattedSplitTotal"
+      :formatted-amount="formattedAmount"
+      @toggle="toggleSplit"
+      @add="addSplit"
+      @remove="removeSplit"
+    />
 
     <!-- ACTION BUTTONS -->
     <div class="flex items-center justify-end gap-3 md:gap-4 pt-4">
@@ -617,6 +401,9 @@ import {
 import { formatDateSafe } from '@/lib/utils'
 import { useReceipts } from '@/composables/useReceipts'
 import { useBudgets } from '@/composables/useBudgets'
+import TransactionTypeSelector from '@/components/transaction/form/TransactionTypeSelector.vue'
+import TransactionAttachment from '@/components/transaction/form/TransactionAttachment.vue'
+import TransactionSplitEditor from '@/components/transaction/form/TransactionSplitEditor.vue'
 
 const { locale, t } = useI18n()
 
@@ -674,7 +461,6 @@ const submitting = ref(false)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const uploadingImage = ref(false)
-const attachmentInputRef = ref<HTMLInputElement | null>(null)
 
 const { uploading, scanning, scanReceiptFromFile } = useReceipts()
 
@@ -753,11 +539,7 @@ async function onCameraCaptured(file: File) {
   autoFillForm(receiptData)
 }
 
-async function onAttachmentSelected(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-
+async function uploadAttachment(file: File) {
   uploadingImage.value = true
   try {
     const url = await uploadTransactionImage(file)
@@ -766,14 +548,7 @@ async function onAttachmentSelected(event: Event) {
     }
   } finally {
     uploadingImage.value = false
-    if (attachmentInputRef.value) {
-      attachmentInputRef.value.value = ''
-    }
   }
-}
-
-function changeAttachment() {
-  attachmentInputRef.value?.click()
 }
 
 async function removeAttachment() {

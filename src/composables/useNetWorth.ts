@@ -17,7 +17,6 @@ export const useNetWorth = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const { locale } = useI18n()
-  const { getConvertedBalances } = useAccounts()
   const { defaultCurrency, convertTo } = useCurrency()
 
   const history = ref<NetWorthData[]>([])

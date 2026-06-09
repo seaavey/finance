@@ -1,12 +1,13 @@
 import { useSupabase } from '@/lib/supabase'
-import type { Result, RecurringRow, RecurringInsert, RecurringUpdate } from '@/types'
+import { RECURRING_FIELDS } from '@/services/fields'
+import type { Result, RecurringInsert, RecurringUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryRecurring(userId: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
-    .select('active, amount, category_id, created_at, currency, description, frequency, id, next_date, type, updated_at, user_id')
+    .select(RECURRING_FIELDS)
     .eq('user_id', userId)
     .order('next_date', { ascending: true })
 
@@ -45,7 +46,7 @@ export async function queryDueRecurring(userId: string, today: string): Promise<
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('recurring_transactions')
-    .select('active, amount, category_id, created_at, currency, description, frequency, id, next_date, type, updated_at, user_id')
+    .select(RECURRING_FIELDS)
     .eq('user_id', userId)
     .eq('active', true)
     .lte('next_date', today)

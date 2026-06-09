@@ -38,106 +38,20 @@
 
       <!-- Table Area -->
       <div class="p-0 md:p-0">
-        <!-- Filter Bar -->
-        <div class="flex flex-wrap items-center gap-3 border-b border-border/50 px-4 py-3 md:px-6">
-          <Select v-model="categoryFilter">
-            <SelectTrigger class="h-8 w-44 rounded-xl text-xs font-medium">
-              <SelectValue :placeholder="$t('transactions.all_categories')" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">
-                <span class="text-muted-foreground">{{ $t('transactions.all_categories') }}</span>
-              </SelectItem>
-
-              <SelectGroup>
-                <SelectLabel
-                  class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5"
-                >
-                  {{ $t('transactions.income') }}
-                </SelectLabel>
-                <SelectItem
-                  v-for="cat in incomeCategories"
-                  :key="cat.id"
-                  :value="cat.id"
-                  class="w-full"
-                >
-                  <div class="flex w-full items-center gap-2">
-                    <div
-                      class="size-2.5 shrink-0 rounded-full"
-                      :style="{ backgroundColor: cat.color || undefined }"
-                    />
-                    <span class="truncate">{{ cat.name }}</span>
-                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
-                      categoryCounts[cat.id] || 0
-                    }}</span>
-                  </div>
-                </SelectItem>
-              </SelectGroup>
-
-              <SelectSeparator class="mx-2 my-1" />
-
-              <SelectGroup>
-                <SelectLabel
-                  class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5"
-                >
-                  {{ $t('transactions.expense') }}
-                </SelectLabel>
-                <SelectItem
-                  v-for="cat in expenseCategories"
-                  :key="cat.id"
-                  :value="cat.id"
-                  class="w-full"
-                >
-                  <div class="flex w-full items-center gap-2">
-                    <div
-                      class="size-2.5 shrink-0 rounded-full"
-                      :style="{ backgroundColor: cat.color || undefined }"
-                    />
-                    <span class="truncate">{{ cat.name }}</span>
-                    <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
-                      categoryCounts[cat.id] || 0
-                    }}</span>
-                  </div>
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          <Select v-if="isPartnered" v-model="ownerFilter">
-            <SelectTrigger class="h-8 w-fit min-w-[100px] rounded-xl text-xs font-medium">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">
-                {{ $t('transactions.owner_filter_all') }}
-              </SelectItem>
-              <SelectItem value="mine">
-                <div class="flex items-center gap-2">
-                  <Avatar class="size-5">
-                    <AvatarImage :src="user?.user_metadata?.avatar_url ?? ''" />
-                    <AvatarFallback class="text-[9px]">
-                      {{ user?.email?.charAt(0)?.toUpperCase() || 'S' }}
-                    </AvatarFallback>
-                  </Avatar>
-                  {{ $t('transactions.owner_filter_mine') }}
-                </div>
-              </SelectItem>
-              <SelectItem value="partner">
-                <div class="flex items-center gap-2">
-                  <Avatar class="size-5">
-                    <AvatarImage :src="partner?.avatar_url ?? ''" />
-                    <AvatarFallback class="text-[9px]">
-                      {{ partnerInitial }}
-                    </AvatarFallback>
-                  </Avatar>
-                  {{ partnerDisplayName || $t('transactions.owner_filter_partner') }}
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-
-          <DateRangePicker v-model="dateRange" />
-          </div>
+        <TransactionFilterBar
+          v-model:category-filter="categoryFilter"
+          v-model:owner-filter="ownerFilter"
+          v-model:date-range="dateRange"
+          :income-categories="incomeCategories"
+          :expense-categories="expenseCategories"
+          :category-counts="categoryCounts"
+          :is-partnered="isPartnered"
+          :user-avatar-url="user?.user_metadata?.avatar_url ?? ''"
+          :user-initial="user?.email?.charAt(0)?.toUpperCase() || 'S'"
+          :partner-avatar-url="partner?.avatar_url ?? ''"
+          :partner-initial="partnerInitial"
+          :partner-display-name="partnerDisplayName"
+        />
 
           <!-- Top bar: info + per page -->
 
@@ -197,215 +111,33 @@
         </div>
 
         <!-- Table -->
-        <div v-else>
-          <Table>
-            <TableHeader>
-              <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-                <TableHead
-                  v-for="header in headerGroup.headers"
-                  :key="header.id"
-                  :style="{ width: header.getSize() !== 150 ? header.getSize() + 'px' : undefined }"
-                  class="px-0"
-                  :class="header.column.columnDef.meta?.headerClass"
-                >
-                  <FlexRender
-                    :render="header.column.columnDef.header"
-                    :props="header.getContext()"
-                  />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow
-                v-for="row in table.getRowModel().rows"
-                :key="row.id"
-                :data-state="row.getIsSelected() ? 'selected' : undefined"
-                class="cursor-pointer hover:bg-muted/30 transition-colors"
-                @click="viewTransaction(row.original.id)"
-              >
-                <TableCell
-                  v-for="cell in row.getVisibleCells()"
-                  :key="cell.id"
-                  :style="{
-                    width: cell.column.getSize() !== 150 ? cell.column.getSize() + 'px' : undefined,
-                  }"
-                  class="px-0"
-                  :class="cell.column.columnDef.meta?.cellClass"
-                >
-                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-
-          <!-- Pagination -->
-          <div class="flex items-center justify-center border-t border-border/50 px-4 py-4 md:px-6">
-            <Pagination
-              v-if="totalPages > 1"
-              :total="totalCount"
-              :items-per-page="pageSize"
-              :page="currentPage"
-              :sibling-count="1"
-              :show-edges="true"
-              @update:page="goToPage"
-            >
-              <PaginationFirst />
-              <PaginationPrev />
-              <PaginationContent v-slot="{ items }">
-                <template
-                  v-for="item in items"
-                  :key="item.type === 'page' ? `p-${item.value}` : `e-${Math.random()}`"
-                >
-                  <PaginationItem
-                    v-if="item.type === 'page'"
-                    :value="item.value"
-                    :is-active="item.value === currentPage"
-                  >
-                    <span class="text-xs font-bold">{{ item.value }}</span>
-                  </PaginationItem>
-                  <PaginationEllipsis v-else />
-                </template>
-              </PaginationContent>
-              <PaginationNext />
-              <PaginationLast />
-            </Pagination>
-          </div>
-        </div>
+        <TransactionDataTable
+          v-else
+          :table="table"
+          :total-pages="totalPages"
+          :total-count="totalCount"
+          :page-size="pageSize"
+          :current-page="currentPage"
+          @page="goToPage"
+          @view="viewTransaction"
+        />
       </div>
     </BaseCard>
   </div>
 
-  <!-- Floating bulk action bar -->
-  <Transition
-    enter-active-class="transition duration-300 ease-out"
-    enter-from-class="transform translate-y-4 opacity-0"
-    enter-to-class="transform translate-y-0 opacity-100"
-    leave-active-class="transition duration-200 ease-in"
-    leave-from-class="transform translate-y-0 opacity-100"
-    leave-to-class="transform translate-y-4 opacity-0"
-  >
-    <div
-      v-if="table.getSelectedRowModel().rows.length > 0"
-      class="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
-    >
-      <div
-        class="flex items-center gap-3 rounded-3xl border border-border/50 bg-card/95 px-5 py-3 shadow-2xl shadow-black/10 backdrop-blur-xl"
-      >
-        <span class="mr-2 whitespace-nowrap text-sm font-bold text-muted-foreground">
-          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
-        </span>
-
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-9 rounded-2xl border-border/50 text-xs font-bold"
-          @click="showBulkCategoryDialog = true"
-        >
-          <AppIcon name="hugeicons:folder-01" :size="16" class="mr-1" />
-          {{ $t('transactions.bulk_edit_category') }}
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-9 rounded-2xl border-border/50 text-xs font-bold"
-          @click="showBulkAccountDialog = true"
-        >
-          <AppIcon name="hugeicons:bank" :size="16" class="mr-1" />
-          {{ $t('transactions.bulk_move_account') }}
-        </Button>
-
-        <div class="mx-1 h-8 w-px bg-border/50" />
-
-        <Button
-          variant="destructive"
-          size="sm"
-          class="h-9 rounded-2xl text-xs font-bold"
-          @click="showBulkDeleteDialog = true"
-        >
-          <AppIcon name="hugeicons:delete-01" :size="16" class="mr-1" />
-          {{ $t('transactions.bulk_delete') }}
-        </Button>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Bulk Edit Category Dialog -->
-  <Dialog v-model:open="showBulkCategoryDialog">
-    <DialogContent class="sm:max-w-sm">
-      <DialogHeader>
-        <DialogTitle>{{ $t('transactions.bulk_edit_category') }}</DialogTitle>
-        <DialogDescription>
-          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
-        </DialogDescription>
-      </DialogHeader>
-      <div class="py-4">
-        <CategoryPicker v-model="bulkCategoryId" :placeholder="$t('transactions.category')" />
-      </div>
-      <DialogFooter>
-        <Button variant="outline" @click="showBulkCategoryDialog = false">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button @click="applyBulkCategory">
-          {{ $t('common.save') }}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-
-  <!-- Bulk Move Account Dialog -->
-  <Dialog v-model:open="showBulkAccountDialog">
-    <DialogContent class="sm:max-w-sm">
-      <DialogHeader>
-        <DialogTitle>{{ $t('transactions.bulk_move_account') }}</DialogTitle>
-        <DialogDescription>
-          {{ $t('transactions.bulk_selected', { count: table.getSelectedRowModel().rows.length }) }}
-        </DialogDescription>
-      </DialogHeader>
-      <div class="py-4">
-        <Select v-model="bulkAccountId">
-          <SelectTrigger class="w-full">
-            <SelectValue :placeholder="$t('transactions.all_accounts')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="acc in accounts" :key="acc.id" :value="acc.id" :text-value="acc.name">
-              <div class="flex items-center gap-2">
-                <div class="size-3 rounded-full" :style="{ backgroundColor: acc.color || undefined }" />
-                {{ acc.name }}
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <DialogFooter>
-        <Button variant="outline" @click="showBulkAccountDialog = false">
-          {{ $t('common.cancel') }}
-        </Button>
-        <Button @click="applyBulkAccount">
-          {{ $t('common.save') }}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-
-  <!-- Bulk Delete Confirmation -->
-  <ConfirmDialog
-    v-model:open="showBulkDeleteDialog"
-    :title="
-      $t('transactions.bulk_confirm_delete', { count: table.getSelectedRowModel().rows.length })
-    "
-    :description="$t('transactions.bulk_confirm_delete_desc')"
-    :confirm-text="$t('transactions.bulk_delete')"
-    variant="destructive"
-    @confirm="applyBulkDelete"
+  <TransactionBulkActions
+    :selected-count="selectedCount"
+    :accounts="accounts"
+    @category="applyBulkCategory"
+    @account="applyBulkAccount"
+    @delete="applyBulkDelete"
   />
 </template>
 
 <script setup lang="ts">
 import type { Transaction } from "@/types"
-import { h, type VNode, type Ref } from 'vue'
+import { h, type VNode } from 'vue'
 import {
-  FlexRender,
   useVueTable,
   getCoreRowModel,
   getSortedRowModel,
@@ -413,26 +145,13 @@ import {
 } from '@tanstack/vue-table'
 import type { RowData, SortingState } from '@tanstack/vue-table'
 import type { DateRange } from 'reka-ui'
-import { getLocalTimeZone } from '@internationalized/date'
 
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import AppIcon from '@/components/Icon.vue'
+import TransactionBulkActions from '@/components/transaction/TransactionBulkActions.vue'
+import TransactionDataTable from '@/components/transaction/TransactionDataTable.vue'
+import TransactionFilterBar from '@/components/transaction/TransactionFilterBar.vue'
+import type { OwnerFilter } from '@/composables/useTransactions'
 
 declare module '@tanstack/vue-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -447,16 +166,9 @@ defineOptions({
 })
 
 const {
-  transactions,
-  loading,
-  totalCount,
-  totalPages,
-  currentPage,
-  pageSize,
-  fetchTransactions,
-  goToPage,
-  bulkUpdateTransactions,
-  bulkDeleteTransactions,
+  transactions, loading, totalCount, totalPages, currentPage, pageSize,
+  categoryFilter, ownerFilter, dateRange, serverFilters,
+  goToPage, bulkUpdateTransactions, bulkDeleteTransactions,
 } = useTransactions()
 const { fetchCategories } = useCategories()
 const { partner, isPartnered, fetchPartner, partnerDisplayName } = usePartner()
@@ -468,41 +180,9 @@ const { formatCurrency, defaultCurrency } = useCurrency()
 const { user, getSession } = useAuth()
 const { categories } = useCategories()
 
-const ownerFilter = ref<'all' | 'mine' | 'partner'>('all')
 const sorting = ref<SortingState>([])
-const categoryFilter = ref('')
-const dateRange: Ref<DateRange> = shallowRef({ start: undefined, end: undefined } as DateRange)
 
-const filteredTransactions = computed(() => {
-  let all = transactions.value
-
-  // Owner filter
-  if (isPartnered.value && ownerFilter.value !== 'all') {
-    all = all.filter((tx) =>
-      ownerFilter.value === 'mine'
-        ? tx.user_id === user.value?.id
-        : tx.user_id === partner.value?.id,
-    )
-  }
-
-  // Category filter
-  if (categoryFilter.value && categoryFilter.value !== '__all__') {
-    all = all.filter((tx) => tx.category_id === categoryFilter.value)
-  }
-
-  // Date range filter
-  if (dateRange.value.start) {
-    const startDate = dateRange.value.start.toDate(getLocalTimeZone())
-    all = all.filter((tx) => new Date(tx.date) >= startDate)
-  }
-  if (dateRange.value.end) {
-    const end = dateRange.value.end.toDate(getLocalTimeZone())
-    end.setHours(23, 59, 59, 999)
-    all = all.filter((tx) => new Date(tx.date) <= end)
-  }
-
-  return all
-})
+const filteredTransactions = computed(() => transactions.value)
 
 const incomeCategories = computed(() => categories.value.filter((c) => c.type === 'income'))
 const expenseCategories = computed(() => categories.value.filter((c) => c.type === 'expense'))
@@ -550,38 +230,26 @@ function formatRowDate(date: string) {
 
 const partnerInitial = computed(() => partner.value?.display_name?.charAt(0)?.toUpperCase() || 'P')
 
-// Bulk Dialogs
-const showBulkCategoryDialog = ref(false)
-const showBulkAccountDialog = ref(false)
-const showBulkDeleteDialog = ref(false)
-const bulkCategoryId = ref('')
-const bulkAccountId = ref('')
+const selectedCount = computed(() => table.getSelectedRowModel().rows.length)
 
 function getSelectedIds() {
   return table.getSelectedRowModel().rows.map((r) => r.original.id)
 }
 
-const applyBulkCategory = async () => {
-  if (!bulkCategoryId.value) return
+const applyBulkCategory = async (categoryId: string) => {
   const ids = getSelectedIds()
-  await bulkUpdateTransactions(ids, { category_id: bulkCategoryId.value })
-  showBulkCategoryDialog.value = false
-  bulkCategoryId.value = ''
+  await bulkUpdateTransactions(ids, { category_id: categoryId })
   table.resetRowSelection()
 }
 
-const applyBulkAccount = async () => {
-  if (!bulkAccountId.value) return
+const applyBulkAccount = async (accountId: string) => {
   const ids = getSelectedIds()
-  await bulkUpdateTransactions(ids, { account_id: bulkAccountId.value })
-  showBulkAccountDialog.value = false
-  bulkAccountId.value = ''
+  await bulkUpdateTransactions(ids, { account_id: accountId })
   table.resetRowSelection()
 }
 
 const applyBulkDelete = async () => {
   const ids = getSelectedIds()
-  showBulkDeleteDialog.value = false
   await bulkDeleteTransactions(ids)
   table.resetRowSelection()
 }
@@ -618,11 +286,7 @@ const balanceByCurrency = computed(() => {
 
 onMounted(async () => {
   await getSession()
-  await Promise.all([fetchCategories(), fetchPartner(), fetchTransactions()])
-})
-
-watch(pageSize, () => {
-  fetchTransactions()
+  await Promise.all([fetchCategories(), fetchPartner()])
 })
 
 const viewTransaction = (id: string) => {

@@ -8,7 +8,7 @@ import {
   queryBudgetWithProgress as queryBudgetWithProgressService,
   calculateProgress,
 } from '@/services/budget.service'
-import type { Budget, BudgetWithProgress, BudgetUpdate } from '@/types'
+import type { BudgetWithProgress, BudgetUpdate } from '@/types'
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
@@ -42,7 +42,7 @@ export const useBudgets = () => {
   const {
     data: progressData,
     isLoading: progressLoading,
-    refetch: refetchBudgetProgress,
+    refetch: _refetchBudgetProgress,
   } = useQuery({
     queryKey: ['budgets:with-progress', computed(() => targetUserId.value || user.value?.id), currentMonth],
     queryFn: async () => {

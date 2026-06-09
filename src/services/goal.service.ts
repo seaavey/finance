@@ -1,4 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
+import { GOAL_FIELDS } from '@/services/fields'
 import type { Result, GoalRow, GoalInsert, GoalUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -6,7 +7,7 @@ export async function queryGoals(userId: string): Promise<Result<GoalRow[]>> {
   const supabase = useSupabase()
   const { data, error } = await supabase
     .from('goals')
-    .select('color, created_at, current_amount, deadline, icon, id, image_url, name, target_amount, updated_at, user_id')
+    .select(GOAL_FIELDS)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
@@ -16,7 +17,7 @@ export async function queryGoals(userId: string): Promise<Result<GoalRow[]>> {
 
 export async function getGoal(id: string): Promise<Result<GoalRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('goals').select('color, created_at, current_amount, deadline, icon, id, image_url, name, target_amount, updated_at, user_id').eq('id', id).single()
+  const { data, error } = await supabase.from('goals').select(GOAL_FIELDS).eq('id', id).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }

@@ -67,52 +67,11 @@
 
     <!-- Bento Grid Content -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
-      <!-- Main Balance Hero Card (3 cols) -->
-      <BaseCard class="md:col-span-6 lg:col-span-3" no-padding>
-        <div class="relative p-6 group h-full flex flex-col justify-between overflow-hidden">
-          <div class="relative z-10">
-            <div class="flex items-center gap-3">
-              <div
-                class="flex size-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-lg shadow-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:shadow-none"
-              >
-                <AppIcon name="hugeicons:wallet-01" :size="20" />
-              </div>
-              <span class="text-sm font-bold tracking-tight text-muted-foreground uppercase">{{
-                $t('dashboard.balance_this_month')
-              }}</span>
-            </div>
-            <div class="mt-4">
-              <h1
-                class="text-5xl font-black tracking-tighter text-foreground leading-none md:text-6xl"
-              >
-                {{ formatCurrency(balance, activeCurrency) }}
-              </h1>
-              <div class="mt-4 flex items-center gap-2">
-                <div
-                  class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
-                  :class="
-                    balance >= 0
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                      : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                  "
-                >
-                  <AppIcon
-                    :name="balance >= 0 ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
-                    :size="14"
-                  />
-                  {{ trendBalance === null ? $t('dashboard.new') : `${Math.abs(trendBalance)}%` }}
-                </div>
-                <span class="text-xs font-bold text-muted-foreground/90">{{
-                  $t('dashboard.vs_last_month_short')
-                }}</span>
-              </div>
-            </div>
-          </div>
-          <div
-            class="absolute -right-12 -top-12 size-64 rounded-full bg-muted/30 transition-all duration-700 group-hover:scale-110 group-hover:bg-muted/50"
-          />
-        </div>
-      </BaseCard>
+      <DashboardBalanceCard
+        :formatted-balance="formatCurrency(balance, activeCurrency)"
+        :trend-display="trendDisplay"
+        :is-positive="balance >= 0"
+      />
 
       <!-- Income Stats (1 col) -->
       <StatCard
@@ -390,47 +349,11 @@
         </div>
       </BaseCard>
 
-      <!-- Quick Actions -->
-      <BaseCard class="md:col-span-3" no-padding>
-        <button
-          class="flex w-full items-center gap-6 p-6 group"
-          @click="router.push('/transactions/new')"
-        >
-          <div
-            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transition-all duration-500 group-hover:scale-110"
-          >
-            <AppIcon name="hugeicons:add-01" :size="28" />
-          </div>
-          <div class="text-left">
-            <p class="text-lg font-black tracking-tighter text-foreground">
-              {{ $t('dashboard.actions_add_transaction') }}
-            </p>
-            <p class="text-sm font-bold text-muted-foreground">
-              {{ $t('dashboard.actions_add_transaction_desc') }}
-            </p>
-          </div>
-        </button>
-      </BaseCard>
-      <BaseCard class="md:col-span-3" no-padding>
-        <button
-          class="flex w-full items-center gap-6 p-6 group"
-          @click="router.push('/categories')"
-        >
-          <div
-            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/20 transition-all duration-500 group-hover:scale-110"
-          >
-            <AppIcon name="hugeicons:grid-view" :size="28" />
-          </div>
-          <div class="text-left">
-            <p class="text-lg font-black tracking-tighter text-foreground">
-              {{ $t('dashboard.actions_manage_categories') }}
-            </p>
-            <p class="text-sm font-bold text-muted-foreground">
-              {{ $t('dashboard.actions_manage_categories_desc') }}
-            </p>
-          </div>
-        </button>
-      </BaseCard>
+      <DashboardQuickActions
+        :action1="{ icon: 'hugeicons:add-01', color: '#4f46e5', title: $t('dashboard.actions_add_transaction'), desc: $t('dashboard.actions_add_transaction_desc'), to: '/transactions/new' }"
+        :action2="{ icon: 'hugeicons:grid-view', color: '#f59e0b', title: $t('dashboard.actions_manage_categories'), desc: $t('dashboard.actions_manage_categories_desc'), to: '/categories' }"
+        @navigate="(to) => router.push(to)"
+      />
     </div>
   </div>
 </template>
@@ -448,6 +371,8 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDateSafe } from '@/lib/utils'
 import BillDashboardWidget from '@/components/BillDashboardWidget.vue'
+import DashboardBalanceCard from '@/components/dashboard/DashboardBalanceCard.vue'
+import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions.vue'
 
 const ChartsMonthlyBar = defineAsyncComponent(() => import('@/components/charts/MonthlyBar.vue'))
 
@@ -534,6 +459,11 @@ const trendBalance = computed(() => {
     return balance.value !== 0 ? null : 0
   }
   return Math.round(((balance.value - prevSummary.value.balance) / prevSummary.value.balance) * 100)
+})
+
+const trendDisplay = computed(() => {
+  if (trendBalance.value === null) return 'New'
+  return `${Math.abs(trendBalance.value)}%`
 })
 
 const { fetchBudgetWithProgress, checkBudgetAlerts, budgetsWithProgress } = useBudgets()

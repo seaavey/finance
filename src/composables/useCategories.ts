@@ -7,7 +7,7 @@ import {
   deleteCategory as deleteCategoryService,
   createDefaultCategories as seedDefaultsService,
 } from '@/services/category.service'
-import type { Category, CategoryInsert, CategoryUpdate } from '@/types'
+import type { CategoryInsert, CategoryUpdate } from '@/types'
 
 export const useCategories = () => {
   const queryClient = useQueryClient()

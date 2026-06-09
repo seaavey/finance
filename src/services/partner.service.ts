@@ -1,10 +1,11 @@
 import { useSupabase } from '@/lib/supabase'
+import { PROFILE_FIELDS } from '@/services/fields'
 import type { Result, ProfileRow, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('profiles').select('avatar_url, created_at, currency, display_name, id, partner_id, updated_at').eq('id', userId).single()
+  const { data, error } = await supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId).single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }
