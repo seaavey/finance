@@ -14,7 +14,17 @@
 
     <DashboardSkeleton v-if="loading || summaryLoading" />
 
-    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
+    <DashboardQuickStats
+      v-if="!loading && !summaryLoading"
+      :total-income="totalIncome"
+      :total-expense="totalExpense"
+      :active-currency="activeCurrency"
+      :period="period"
+      :budget-summaries="budgetSummaries"
+      class="md:col-span-6"
+    />
+
+    <div v-if="!loading && !summaryLoading" class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
       <DashboardBalanceCard
         :formatted-balance="formatCurrency(balance, activeCurrency)"
         :trend-display="trendDisplay"

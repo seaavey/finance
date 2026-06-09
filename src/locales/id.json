@@ -77,7 +77,10 @@
     "latest_activity": "Aktivitas terbaru",
     "last_7_days": "7 Hari Terakhir",
     "last_30_days": "30 Hari Terakhir",
-    "all_time": "Semua Waktu"
+    "all_time": "Semua Waktu",
+    "avg_daily_spend": "Rata-rata Harian",
+    "savings_rate": "Tingkat Menabung",
+    "budget_used_short": "Anggaran"
   },
   "transactions": {
     "title": "Transaksi",

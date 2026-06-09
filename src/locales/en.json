@@ -78,7 +78,10 @@
     "latest_activity": "Latest activity",
     "last_7_days": "Last 7 Days",
     "last_30_days": "Last 30 Days",
-    "all_time": "All Time"
+    "all_time": "All Time",
+    "avg_daily_spend": "Avg Daily Spend",
+    "savings_rate": "Savings Rate",
+    "budget_used_short": "Budget"
   },
   "transactions": {
     "title": "Transactions",

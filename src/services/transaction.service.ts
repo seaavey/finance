@@ -167,6 +167,45 @@ export async function searchTransactions(
   )
 }
 
+export async function queryDuplicateTransactions(
+  userId: string,
+  criteria: {
+    amount: number
+    date: string
+    type: string
+    account_id?: string | null
+    category_id?: string | null
+    exclude_id?: string
+  },
+  limit = 5,
+): Promise<Result<Transaction[]>> {
+  const supabase = useSupabase()
+
+  let query = supabase
+    .from('transactions')
+    .select(TRANSACTION_FIELDS)
+    .eq('user_id', userId)
+    .eq('type', criteria.type)
+    .eq('amount', criteria.amount)
+    .eq('date', criteria.date)
+
+  if (criteria.account_id) {
+    query = query.eq('account_id', criteria.account_id)
+  }
+
+  if (criteria.category_id) {
+    query = query.eq('category_id', criteria.category_id)
+  }
+
+  if (criteria.exclude_id) {
+    query = query.neq('id', criteria.exclude_id)
+  }
+
+  query = query.order('date', { ascending: false }).limit(limit)
+
+  return queryList<Transaction>(query)
+}
+
 export async function getTransactionSummary(
   userId: string,
   startDate: string,

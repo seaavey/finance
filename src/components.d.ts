@@ -88,6 +88,7 @@ declare module 'vue' {
     DashboardCharts: typeof import('./components/dashboard/DashboardCharts.vue')['default']
     DashboardHeader: typeof import('./components/dashboard/DashboardHeader.vue')['default']
     DashboardQuickActions: typeof import('./components/dashboard/DashboardQuickActions.vue')['default']
+    DashboardQuickStats: typeof import('./components/dashboard/DashboardQuickStats.vue')['default']
     DashboardRecentTransactions: typeof import('./components/dashboard/DashboardRecentTransactions.vue')['default']
     DashboardSkeleton: typeof import('./components/dashboard/DashboardSkeleton.vue')['default']
     DashboardStats: typeof import('./components/dashboard/DashboardStats.vue')['default']

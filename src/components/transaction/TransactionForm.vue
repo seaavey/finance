@@ -128,6 +128,37 @@
           })
         }}
       </p>
+
+      <!-- DUPLICATE WARNING -->
+      <div
+        v-if="potentialDuplicates.length > 0"
+        class="mt-4 flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4"
+      >
+        <div
+          class="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400"
+        >
+          <AppIcon name="hugeicons:alert-02" :size="16" />
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">
+            {{ $t('transaction_form.duplicate_found') }}
+          </p>
+          <p class="mt-1 text-sm font-medium text-muted-foreground">
+            {{ $t('transaction_form.duplicate_desc', { count: potentialDuplicates.length }) }}
+          </p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span
+              v-for="dup in potentialDuplicates.slice(0, 3)"
+              :key="dup.id"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300"
+            >
+              <AppIcon name="hugeicons:currency-dollar" :size="12" />
+              {{ formatCurrency(dup.amount, dup.currency || form.currency) }}
+              <span v-if="dup.description" class="opacity-70">— {{ dup.description }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- DETAIL FORM GRID -->
@@ -402,6 +433,8 @@ import {
 import { formatDateSafe } from '@/lib/utils'
 import { useReceipts } from '@/composables/useReceipts'
 import { useBudgets } from '@/composables/useBudgets'
+import { queryDuplicateTransactions } from '@/services/transaction.service'
+import { useAuth } from '@/composables/useAuth'
 import TransactionTypeSelector from '@/components/transaction/form/TransactionTypeSelector.vue'
 import TransactionAttachment from '@/components/transaction/form/TransactionAttachment.vue'
 import TransactionSplitEditor from '@/components/transaction/form/TransactionSplitEditor.vue'
@@ -468,6 +501,53 @@ const { uploading, scanning, scanReceiptFromFile } = useReceipts()
 const { categories } = useCategories()
 
 const cameraDialogOpen = ref(false)
+
+// --- Duplicate detection ---
+const { user } = useAuth()
+const potentialDuplicates = ref<Transaction[]>([])
+const checkingDuplicates = ref(false)
+
+const duplicateFormKey = computed(() => {
+  const base = `${form.type}|${form.amount}|${form.date}|${form.account_id}|${form.category_id}`
+  if (props.transaction?.id) {
+    return `${base}|edit:${props.transaction.id}`
+  }
+  return base
+})
+
+watchDebounced(
+  duplicateFormKey,
+  async (newKey) => {
+    if (checkingDuplicates.value) return
+
+    const [type = '', amount, date, account_id, category_id] = newKey.split('|')
+    if (!type || !amount || Number(amount) <= 0 || !date) {
+      potentialDuplicates.value = []
+      return
+    }
+
+    checkingDuplicates.value = true
+    try {
+      const result = await queryDuplicateTransactions(
+        user.value?.id || '',
+        {
+          amount: Number(amount),
+          date,
+          type,
+          account_id: account_id || null,
+          category_id: category_id || null,
+          exclude_id: props.transaction?.id,
+        },
+      )
+      potentialDuplicates.value = (result.data as Transaction[]) || []
+    } catch {
+      potentialDuplicates.value = []
+    } finally {
+      checkingDuplicates.value = false
+    }
+  },
+  { debounce: 600 },
+)
 
 /**
  * Auto-fill the form fields from scanned receipt data.

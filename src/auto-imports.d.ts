@@ -121,6 +121,7 @@ declare global {
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const user: typeof import('./composables/useAuth').user
   const watch: typeof import('vue').watch
+  const watchDebounced: typeof import('@vueuse/core').watchDebounced
   const watchEffect: typeof import('vue').watchEffect
   const watchPostEffect: typeof import('vue').watchPostEffect
   const watchSyncEffect: typeof import('vue').watchSyncEffect
@@ -271,6 +272,7 @@ declare module 'vue' {
     readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
     readonly user: UnwrapRef<typeof import('./composables/useAuth')['user']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
+    readonly watchDebounced: UnwrapRef<typeof import('@vueuse/core')['watchDebounced']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>
     readonly watchSyncEffect: UnwrapRef<typeof import('vue')['watchSyncEffect']>
