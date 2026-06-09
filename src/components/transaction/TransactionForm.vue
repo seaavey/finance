@@ -386,7 +386,8 @@
 
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import type { TransactionType, Transaction, TransactionFilters, SplitItem } from "@/types"
+import type { TransactionType, Transaction, TransactionFilters, SplitItem, TransactionInsert, TransactionUpdate } from "@/types"
+import type { Json } from '@/types/database'
 
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -408,7 +409,7 @@ import TransactionSplitEditor from '@/components/transaction/form/TransactionSpl
 const { locale, t } = useI18n()
 
 const props = defineProps<{
-  transaction?: Transaction
+  transaction?: Transaction & { to_account_id?: string | null }
 }>()
 
 const emit = defineEmits<{
@@ -451,7 +452,7 @@ const form = reactive({
   currency: props.transaction?.currency ?? defaultCurrency.value,
   category_id: props.transaction?.category_id ?? '',
   account_id: props.transaction?.account_id ?? '',
-  to_account_id: (props.transaction as any)?.to_account_id ?? '',
+  to_account_id: props.transaction?.to_account_id ?? '',
   description: props.transaction?.description ?? '',
   date: props.transaction?.date ?? todayDate,
   image_url: props.transaction?.image_url ?? (null as string | null),
@@ -678,7 +679,7 @@ const onSubmit = async () => {
       submitting.value = false
       return
     }
-    const payload = {
+    const payload: Omit<TransactionInsert, 'user_id' | 'created_at'> = {
       type: form.type,
       amount: Number(form.amount),
       currency: form.currency,
@@ -687,7 +688,7 @@ const onSubmit = async () => {
       description: form.description || null,
       date: form.date!,
       image_url: form.image_url,
-      splits: splitEnabled.value ? splitItems.value : [],
+      splits: (splitEnabled.value ? splitItems.value : []) as unknown as Json,
     }
 
     let result
@@ -721,8 +722,8 @@ const onSubmit = async () => {
       })
     } else {
       result = props.transaction
-        ? await updateTransaction(props.transaction.id, payload as any)
-        : await addTransaction(payload as any)
+        ? await updateTransaction(props.transaction.id, payload as unknown as TransactionUpdate)
+        : await addTransaction(payload)
     }
 
     if (!result.error) {
