@@ -3,7 +3,7 @@ import { AppError } from '@/types/result'
 import type { Result } from '@/types'
 
 /**
- * Call a Supabase RPC with proper type safety.
+ * Call a Supabase RPC.
  * Centralizes the `(supabase as any).rpc()` cast so it's in one place.
  *
  * @example

@@ -1,23 +1,19 @@
 import { ref, computed } from 'vue'
-import { useSupabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/vue-query'
 import { user } from './useAuth'
 import i18n from '@/plugins/i18n'
+import { getProfileCurrency } from '@/services/profile.service'
+import { queryExchangeRates } from '@/services/exchange-rate.service'
 
 const defaultCurrency = ref<string>('IDR')
 
 export const loadCurrency = async () => {
-  const supabase = useSupabase()
   if (!user.value) {
     return
   }
-  const { data } = await supabase
-    .from('profiles')
-    .select('currency')
-    .eq('id', user.value.id)
-    .single()
-  if (data?.currency) {
-    defaultCurrency.value = data.currency
+  const { data, error } = await getProfileCurrency(user.value.id)
+  if (!error && data) {
+    defaultCurrency.value = data
   }
 }
 
@@ -59,14 +55,9 @@ export const useCurrency = () => {
   const { data: ratesData } = useQuery({
     queryKey: ['exchange-rates'],
     queryFn: async () => {
-      const supabase = useSupabase()
-      const { data, error } = await supabase.from('exchange_rates').select('target_currency, rate')
-      if (error) throw error
-      const map: Record<string, number> = {}
-      for (const row of data || []) {
-        map[row.target_currency] = Number(row.rate)
-      }
-      return map
+      const result = await queryExchangeRates()
+      if (result.error) throw result.error
+      return result.data
     },
     staleTime: 0, // selalu dianggap stale, refetch tiap kali mount/focus
     refetchInterval: 60_000, // auto-refresh setiap 1 menit

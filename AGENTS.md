@@ -28,11 +28,21 @@ No `npm run` — Bun is the package manager.
 - **File-based routing** via `vite-plugin-pages` from `src/pages/`.
 - **Layout system**: `blank` layout for public pages (landing, auth, static), `default` layout for authenticated pages (sidebar + topbar). Set via `route.meta.layout` in `src/router/index.ts`.
 - **Auto-imports** (unplugin-auto-import): Vue APIs, vue-router, composables in `src/composables/`, `src/lib/`. No manual imports needed.
-- **Auto-registered components** (unplugin-vue-components): all `.vue` files in `src/components/` (including `src/components/ui/` for shadcn-vue).
+- **Auto-registered components** (unplugin-vue-components): all `.vue` files in `src/components/` (including `src/components/ui/` for shadcn-vue). No manual `app.component()` calls needed.
 - **Nuxt compatibility layer**: `NuxtLink`, `NuxtLinkLocale`, `AppIcon`, `ClientOnly` globally registered in `src/main.ts`.
-- **Services** (`src/services/`): raw Supabase queries. **Composables** (`src/composables/`): TanStack Vue Query wrappers + activity logging + toasts. Composables consume services.
+- **Services** (`src/services/`): raw Supabase queries using `query-wrapper.ts` helpers. **Composables** (`src/composables/`): TanStack Vue Query wrappers + activity logging + toasts. Composables **must** consume services, never call `useSupabase()` directly.
 - **Result type**: `Result<T>` from `@/types/result` — `{ data: T; error: null } | { data: null; error: AppError }`.
-- **Supabase client**: singleton via `useSupabase()` in `src/lib/supabase.ts`. Uses `VITE_PUBLIC_SUPABASE_URL` + `VITE_PUBLIC_SUPABASE_ANON_KEY`.
+- **Supabase client**: singleton via `useSupabase()` in `src/lib/supabase.ts`. Has startup env validation — throws if `VITE_PUBLIC_SUPABASE_URL` or `VITE_PUBLIC_SUPABASE_ANON_KEY` are missing.
+
+## Utility Libraries
+
+| File | Purpose |
+|------|---------|
+| `src/lib/query-wrapper.ts` | `querySingle<T>`, `queryList<T>`, `mutationWithReturn<T>`, `mutationVoid`, `queryWithCount<T>` — eliminates ~45 duplicate error-handling blocks |
+| `src/lib/rpc.ts` | Wraps `supabase.rpc()` calls with `Result<T>` pattern |
+| `src/lib/storage-util.ts` | `uploadImage()`, `deleteImage()` — shared image upload/delete across buckets |
+| `src/lib/budget-util.ts` | `calculateSpendingByCategory()`, `calculateRollover()`, `calculateProgress()` — pure functions, no I/O, testable |
+| `src/constants/index.ts` | `FILTER_ALL`, `TRANSFER_CATEGORY_NAMES`, `DEFAULT_CURRENCY`, `STALE_TIMES`, `QUERY_KEYS` — centralised magic strings
 
 ## Conventions
 

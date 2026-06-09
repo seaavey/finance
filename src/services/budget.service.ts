@@ -1,19 +1,15 @@
 import { useSupabase } from '@/lib/supabase'
 import { BUDGET_FIELDS } from '@/services/fields'
+import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
+import { calculateSpendingByCategory, getNextMonth, getPrevMonth, calculateProgress as calcBudgetProgress, calculateRollover } from '@/lib/budget-util'
 import type { Result, BudgetWithProgress, BudgetRow, BudgetUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('budgets')
-    .select(BUDGET_FIELDS)
-    .eq('user_id', userId)
-    .eq('month', month)
-    .order('created_at')
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return queryList<BudgetRow>(
+    supabase.from('budgets').select(BUDGET_FIELDS).eq('user_id', userId).eq('month', month).order('created_at'),
+  )
 }
 
 export async function createBudget(
@@ -24,14 +20,9 @@ export async function createBudget(
   name?: string | null,
 ): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('budgets')
-    .insert({ user_id: userId, category_id: categoryId, month, amount, name: name || null })
-    .select()
-    .single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return mutationWithReturn<BudgetRow>(
+    supabase.from('budgets').insert({ user_id: userId, category_id: categoryId, month, amount, name: name || null }),
+  )
 }
 
 export async function updateBudget(
@@ -39,23 +30,12 @@ export async function updateBudget(
   updates: BudgetUpdate,
 ): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('budgets')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return mutationWithReturn<BudgetRow>(supabase.from('budgets').update(updates).eq('id', id))
 }
 
 export async function deleteBudget(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('budgets').delete().eq('id', id)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(supabase.from('budgets').delete().eq('id', id))
 }
 
 export async function queryBudgetWithProgress(
@@ -88,10 +68,7 @@ export async function queryBudgetWithProgress(
   )
 
   // 3. Calculate spending for the month
-  const [year, mon] = month.split('-').map(Number)
-  const date = new Date(year!, mon! - 1, 1)
-  date.setMonth(date.getMonth() + 1)
-  const nextMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
+  const nextMonth = getNextMonth(month)
 
   const { data: txData } = await supabase
     .from('transactions')
@@ -101,27 +78,17 @@ export async function queryBudgetWithProgress(
     .gte('date', month)
     .lt('date', nextMonth)
 
-  const spentMap = new Map<string, number>()
-  for (const tx of txData || []) {
-    const splits = tx.splits as unknown as Array<{ category_id: string; amount: number }> | null
-    if (splits?.length) {
-      for (const split of splits) {
-        if (categoryIds.includes(split.category_id)) {
-          spentMap.set(
-            split.category_id,
-            (spentMap.get(split.category_id) || 0) + Number(split.amount),
-          )
-        }
-      }
-    } else if (tx.category_id && categoryIds.includes(tx.category_id)) {
-      spentMap.set(tx.category_id, (spentMap.get(tx.category_id) || 0) + Number(tx.amount))
-    }
-  }
+  const spentMap = calculateSpendingByCategory(
+    (txData || []) as Array<{
+      category_id: string | null
+      amount: number
+      splits: Array<{ category_id: string; amount: number }> | null
+    }>,
+    categoryIds,
+  )
 
   // 4. Fetch rollover from previous month
-  const prevDate = new Date(year!, mon! - 1, 1)
-  prevDate.setMonth(prevDate.getMonth() - 1)
-  const prevMonth = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}-01`
+  const prevMonth = getPrevMonth(month)
 
   const rolloverMap = await getBudgetRollover(userId, categoryIds, prevMonth, month)
 
@@ -174,41 +141,19 @@ export async function getBudgetRollover(
     .gte('date', prevMonth)
     .lt('date', currentMonth)
 
-  const prevSpentMap = new Map<string, number>()
-  for (const tx of prevTxData || []) {
-    const splits = tx.splits as unknown as Array<{ category_id: string; amount: number }> | null
-    if (splits?.length) {
-      for (const split of splits) {
-        if (prevCatIds.includes(split.category_id)) {
-          prevSpentMap.set(
-            split.category_id,
-            (prevSpentMap.get(split.category_id) || 0) + Number(split.amount),
-          )
-        }
-      }
-    } else if (tx.category_id && prevCatIds.includes(tx.category_id)) {
-      prevSpentMap.set(tx.category_id, (prevSpentMap.get(tx.category_id) || 0) + Number(tx.amount))
-    }
-  }
+  const prevSpentMap = calculateSpendingByCategory(
+    (prevTxData || []) as Array<{
+      category_id: string | null
+      amount: number
+      splits: Array<{ category_id: string; amount: number }> | null
+    }>,
+    prevCatIds,
+  )
 
-  for (const catId of prevCatIds) {
-    rolloverMap.set(catId, (prevBudgetMap.get(catId) || 0) - (prevSpentMap.get(catId) || 0))
-  }
-
-  return rolloverMap
+  return calculateRollover(prevBudgetMap, prevSpentMap, prevCatIds)
 }
 
 // Pure calculation — no I/O, perfect for unit testing
-export function calculateProgress(budget: BudgetWithProgress) {
-  const pct = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0
-  const diff = budget.amount - budget.spent
-  const effectiveAmount = budget.amount + budget.rollover
-  const effectiveDiff = effectiveAmount - budget.spent
-  return {
-    percentage: Math.min(pct, 100),
-    remaining: Math.max(diff, 0),
-    overspent: Math.max(-diff, 0),
-    effectiveRemaining: Math.max(effectiveDiff, 0),
-    effectiveOverspent: Math.max(-effectiveDiff, 0),
-  }
+export function getBudgetProgress(budget: BudgetWithProgress) {
+  return calcBudgetProgress(budget.amount, budget.spent, budget.rollover)
 }

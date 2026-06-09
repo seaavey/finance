@@ -7,6 +7,9 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const calculateProgress: typeof import('./lib/budget-util').calculateProgress
+  const calculateRollover: typeof import('./lib/budget-util').calculateRollover
+  const calculateSpendingByCategory: typeof import('./lib/budget-util').calculateSpendingByCategory
   const cn: typeof import('./lib/utils').cn
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
@@ -14,13 +17,16 @@ declare global {
   const customRef: typeof import('vue').customRef
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
+  const deleteImage: typeof import('./lib/storage-util').deleteImage
   const effectScope: typeof import('vue').effectScope
   const formatDateSafe: typeof import('./lib/utils').formatDateSafe
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getNextMonth: typeof import('./lib/budget-util').getNextMonth
   const getOgImageUrl: typeof import('./lib/utils').getOgImageUrl
   const getPageTitleKey: typeof import('./lib/utils').getPageTitleKey
+  const getPrevMonth: typeof import('./lib/budget-util').getPrevMonth
   const h: typeof import('vue').h
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
@@ -31,6 +37,8 @@ declare global {
   const loadCurrency: typeof import('./composables/useCurrency').loadCurrency
   const loading: typeof import('./composables/useAuth').loading
   const markRaw: typeof import('vue').markRaw
+  const mutationVoid: typeof import('./lib/query-wrapper').mutationVoid
+  const mutationWithReturn: typeof import('./lib/query-wrapper').mutationWithReturn
   const nextTick: typeof import('vue').nextTick
   const onActivated: typeof import('vue').onActivated
   const onBeforeMount: typeof import('vue').onBeforeMount
@@ -49,6 +57,9 @@ declare global {
   const onUpdated: typeof import('vue').onUpdated
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
   const provide: typeof import('vue').provide
+  const queryList: typeof import('./lib/query-wrapper').queryList
+  const querySingle: typeof import('./lib/query-wrapper').querySingle
+  const queryWithCount: typeof import('./lib/query-wrapper').queryWithCount
   const reactive: typeof import('vue').reactive
   const readonly: typeof import('vue').readonly
   const ref: typeof import('vue').ref
@@ -63,6 +74,7 @@ declare global {
   const toValue: typeof import('vue').toValue
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
+  const uploadImage: typeof import('./lib/storage-util').uploadImage
   const useAccounts: typeof import('./composables/useAccounts').useAccounts
   const useActivityLog: typeof import('./composables/useActivityLog').useActivityLog
   const useAttrs: typeof import('vue').useAttrs
@@ -77,6 +89,7 @@ declare global {
   const useCssVars: typeof import('vue').useCssVars
   const useCurrency: typeof import('./composables/useCurrency').useCurrency
   const useDark: typeof import('@vueuse/core').useDark
+  const useDashboard: typeof import('./composables/useDashboard').useDashboard
   const useExport: typeof import('./composables/useExport').useExport
   const useGoals: typeof import('./composables/useGoals').useGoals
   const useHead: typeof import('@unhead/vue').useHead
@@ -94,6 +107,7 @@ declare global {
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
   const useSeoMeta: typeof import('@unhead/vue').useSeoMeta
+  const useSettings: typeof import('./composables/useSettings').useSettings
   const useSlots: typeof import('vue').useSlots
   const useStorage: typeof import('@vueuse/core').useStorage
   const useSubscriptions: typeof import('./composables/useSubscriptions').useSubscriptions
@@ -134,6 +148,9 @@ declare global {
   // @ts-ignore
   export type { OwnerFilter } from './composables/useTransactions'
   import('./composables/useTransactions')
+  // @ts-ignore
+  export type { BudgetProgress } from './lib/budget-util'
+  import('./lib/budget-util')
 }
 
 // for vue template auto import
@@ -142,19 +159,25 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly calculateProgress: UnwrapRef<typeof import('./lib/budget-util')['calculateProgress']>
+    readonly calculateRollover: UnwrapRef<typeof import('./lib/budget-util')['calculateRollover']>
+    readonly calculateSpendingByCategory: UnwrapRef<typeof import('./lib/budget-util')['calculateSpendingByCategory']>
     readonly cn: UnwrapRef<typeof import('./lib/utils')['cn']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly deleteImage: UnwrapRef<typeof import('./lib/storage-util')['deleteImage']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly formatDateSafe: UnwrapRef<typeof import('./lib/utils')['formatDateSafe']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
+    readonly getNextMonth: UnwrapRef<typeof import('./lib/budget-util')['getNextMonth']>
     readonly getOgImageUrl: UnwrapRef<typeof import('./lib/utils')['getOgImageUrl']>
     readonly getPageTitleKey: UnwrapRef<typeof import('./lib/utils')['getPageTitleKey']>
+    readonly getPrevMonth: UnwrapRef<typeof import('./lib/budget-util')['getPrevMonth']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
@@ -165,6 +188,8 @@ declare module 'vue' {
     readonly loadCurrency: UnwrapRef<typeof import('./composables/useCurrency')['loadCurrency']>
     readonly loading: UnwrapRef<typeof import('./composables/useAuth')['loading']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly mutationVoid: UnwrapRef<typeof import('./lib/query-wrapper')['mutationVoid']>
+    readonly mutationWithReturn: UnwrapRef<typeof import('./lib/query-wrapper')['mutationWithReturn']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
@@ -183,6 +208,9 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
+    readonly queryList: UnwrapRef<typeof import('./lib/query-wrapper')['queryList']>
+    readonly querySingle: UnwrapRef<typeof import('./lib/query-wrapper')['querySingle']>
+    readonly queryWithCount: UnwrapRef<typeof import('./lib/query-wrapper')['queryWithCount']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
@@ -197,6 +225,7 @@ declare module 'vue' {
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
+    readonly uploadImage: UnwrapRef<typeof import('./lib/storage-util')['uploadImage']>
     readonly useAccounts: UnwrapRef<typeof import('./composables/useAccounts')['useAccounts']>
     readonly useActivityLog: UnwrapRef<typeof import('./composables/useActivityLog')['useActivityLog']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
@@ -211,6 +240,7 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useCurrency: UnwrapRef<typeof import('./composables/useCurrency')['useCurrency']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
+    readonly useDashboard: UnwrapRef<typeof import('./composables/useDashboard')['useDashboard']>
     readonly useExport: UnwrapRef<typeof import('./composables/useExport')['useExport']>
     readonly useGoals: UnwrapRef<typeof import('./composables/useGoals')['useGoals']>
     readonly useHead: UnwrapRef<typeof import('@unhead/vue')['useHead']>
@@ -228,6 +258,7 @@ declare module 'vue' {
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useSeoMeta: UnwrapRef<typeof import('@unhead/vue')['useSeoMeta']>
+    readonly useSettings: UnwrapRef<typeof import('./composables/useSettings')['useSettings']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useStorage: UnwrapRef<typeof import('@vueuse/core')['useStorage']>
     readonly useSubscriptions: UnwrapRef<typeof import('./composables/useSubscriptions')['useSubscriptions']>

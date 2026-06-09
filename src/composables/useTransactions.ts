@@ -18,6 +18,7 @@ import {
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
 import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
+import { FILTER_ALL } from '@/constants'
 
 export type OwnerFilter = 'all' | 'mine' | 'partner'
 
@@ -87,7 +88,7 @@ export const useTransactions = () => {
 
   const serverFilters = computed<TransactionFilters>(() => {
     const res: TransactionFilters = {}
-    if (categoryFilter.value && categoryFilter.value !== '__all__') {
+    if (categoryFilter.value && categoryFilter.value !== FILTER_ALL) {
       res.category_id = categoryFilter.value
     }
     if (ownerFilter.value === 'mine' && user.value?.id) {

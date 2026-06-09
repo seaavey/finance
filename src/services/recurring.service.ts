@@ -1,26 +1,24 @@
 import { useSupabase } from '@/lib/supabase'
+import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
 import { RECURRING_FIELDS } from '@/services/fields'
-import type { Result, RecurringInsert, RecurringUpdate } from '@/types'
-import { AppError } from '@/types/result'
+import type { Result, RecurringTransaction, RecurringInsert, RecurringUpdate } from '@/types'
 
 export async function queryRecurring(userId: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('recurring_transactions')
-    .select(RECURRING_FIELDS)
-    .eq('user_id', userId)
-    .order('next_date', { ascending: true })
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (data as RecurringTransaction[]) || [], error: null }
+  return queryList<RecurringTransaction>(
+    supabase
+      .from('recurring_transactions')
+      .select(RECURRING_FIELDS)
+      .eq('user_id', userId)
+      .order('next_date', { ascending: true }),
+  )
 }
 
 export async function createRecurring(recurring: RecurringInsert): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('recurring_transactions').insert(recurring).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as RecurringTransaction, error: null }
+  return mutationWithReturn<RecurringTransaction>(
+    supabase.from('recurring_transactions').insert(recurring),
+  )
 }
 
 export async function updateRecurring(
@@ -28,29 +26,26 @@ export async function updateRecurring(
   updates: RecurringUpdate,
 ): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('recurring_transactions').update(updates).eq('id', id).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as RecurringTransaction, error: null }
+  return mutationWithReturn<RecurringTransaction>(
+    supabase.from('recurring_transactions').update(updates).eq('id', id),
+  )
 }
 
 export async function deleteRecurring(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('recurring_transactions').delete().eq('id', id)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(
+    supabase.from('recurring_transactions').delete().eq('id', id),
+  )
 }
 
 export async function queryDueRecurring(userId: string, today: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('recurring_transactions')
-    .select(RECURRING_FIELDS)
-    .eq('user_id', userId)
-    .eq('active', true)
-    .lte('next_date', today)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (data as RecurringTransaction[]) || [], error: null }
+  return queryList<RecurringTransaction>(
+    supabase
+      .from('recurring_transactions')
+      .select(RECURRING_FIELDS)
+      .eq('user_id', userId)
+      .eq('active', true)
+      .lte('next_date', today),
+  )
 }

@@ -1,27 +1,26 @@
 import { useSupabase } from '@/lib/supabase'
+import { querySingle, queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
 import { PROFILE_FIELDS } from '@/services/fields'
-import type { Result, ProfileRow, InvitationRow, CoupleInvitation } from '@/types'
+import type { Result, ProfileRow, Invitation, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId).single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return querySingle<ProfileRow>(
+    supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId),
+  )
 }
 
 export async function queryInvitations(email: string): Promise<Result<CoupleInvitation[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('couple_invitations')
-    .select('*, sender:profiles(display_name, avatar_url)')
-    .eq('recipient_email', email)
-    .eq('status', 'pending')
-    .order('created_at', { ascending: false })
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (data as unknown as CoupleInvitation[]) || [], error: null }
+  return queryList<CoupleInvitation>(
+    supabase
+      .from('couple_invitations')
+      .select('*, sender:profiles(display_name, avatar_url)')
+      .eq('recipient_email', email)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false }),
+  )
 }
 
 export async function sendInvitation(
@@ -30,20 +29,14 @@ export async function sendInvitation(
 ): Promise<Result<InvitationRow>> {
   const supabase = useSupabase()
   const token = crypto.randomUUID()
-
-  const { data, error } = await supabase
-    .from('couple_invitations')
-    .insert({
+  return mutationWithReturn<InvitationRow>(
+    supabase.from('couple_invitations').insert({
       sender_id: senderId,
       recipient_email: recipientEmail,
       token,
       status: 'pending',
-    })
-    .select()
-    .single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+    }),
+  )
 }
 
 export async function acceptInvitation(invitationId: string): Promise<Result<unknown>> {
@@ -62,24 +55,22 @@ export async function acceptInvitation(invitationId: string): Promise<Result<unk
 
 export async function rejectInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase
-    .from('couple_invitations')
-    .update({ status: 'rejected' })
-    .eq('id', invitationId)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(
+    supabase
+      .from('couple_invitations')
+      .update({ status: 'rejected' })
+      .eq('id', invitationId),
+  )
 }
 
 export async function cancelInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase
-    .from('couple_invitations')
-    .update({ status: 'cancelled' })
-    .eq('id', invitationId)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(
+    supabase
+      .from('couple_invitations')
+      .update({ status: 'cancelled' })
+      .eq('id', invitationId),
+  )
 }
 
 export async function disconnectPartner(): Promise<Result<unknown>> {
@@ -91,4 +82,32 @@ export async function disconnectPartner(): Promise<Result<unknown>> {
   if (err) return { data: null, error: new AppError(err, 'RPC_ERROR') }
 
   return { data, error: null }
+}
+
+export async function querySentInvitations(senderId: string): Promise<Result<Invitation[]>> {
+  const supabase = useSupabase()
+  return queryList<Invitation>(
+    supabase
+      .from('couple_invitations')
+      .select('created_at, id, recipient_email, sender_id, status, token, updated_at')
+      .eq('sender_id', senderId)
+      .order('created_at', { ascending: false }),
+  )
+}
+
+export async function getExistingPendingInvitation(
+  senderId: string,
+  email: string,
+): Promise<Result<{ id: string } | null>> {
+  const supabase = useSupabase()
+  const { data, error } = await supabase
+    .from('couple_invitations')
+    .select('id')
+    .eq('sender_id', senderId)
+    .eq('recipient_email', email)
+    .eq('status', 'pending')
+    .maybeSingle()
+
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: data as { id: string } | null, error: null }
 }

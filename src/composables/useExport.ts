@@ -1,8 +1,8 @@
-import { useSupabase } from '@/lib/supabase'
 import { formatDateSafe } from '@/lib/utils'
+import { queryExportTransactions } from '@/services/transaction.service'
+import { queryCategories } from '@/services/category.service'
 
 export const useExport = () => {
-  const supabase = useSupabase()
   const { t } = useI18n()
   const { toast } = useToast()
   const { user } = useAuth()
@@ -40,12 +40,8 @@ export const useExport = () => {
       }
 
       const [txResult, catResult] = await Promise.all([
-        supabase
-          .from('transactions')
-          .select('date, type, category_id, amount, currency, description')
-          .eq('user_id', user.value.id)
-          .order('date', { ascending: false }),
-        supabase.from('categories').select('id, name').eq('user_id', user.value.id),
+        queryExportTransactions(user.value.id),
+        queryCategories(user.value.id),
       ])
 
       const transactions = txResult.data || []

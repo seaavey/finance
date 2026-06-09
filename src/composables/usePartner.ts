@@ -8,9 +8,9 @@ import {
   rejectInvitation as rejectInvitationService,
   cancelInvitation as cancelInvitationService,
   disconnectPartner as disconnectPartnerService,
+  querySentInvitations,
+  getExistingPendingInvitation,
 } from '@/services/partner.service'
-import type { Invitation } from '@/types'
-
 import { useSupabase } from '@/lib/supabase'
 
 export const usePartner = () => {
@@ -70,12 +70,9 @@ export const usePartner = () => {
     queryKey: ['invitations:sent', computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return []
-      const { data } = await supabase
-        .from('couple_invitations')
-        .select('created_at, id, recipient_email, sender_id, status, token, updated_at')
-        .eq('sender_id', user.value.id)
-        .order('created_at', { ascending: false })
-      return (data as Invitation[]) || []
+      const result = await querySentInvitations(user.value.id)
+      if (result.error) throw result.error
+      return result.data || []
     },
     enabled: computed(() => !!user.value),
     staleTime: 60_000,
@@ -127,13 +124,12 @@ export const usePartner = () => {
     }
 
     // Check for existing pending invitation to this email
-    const { data: existing } = await supabase
-      .from('couple_invitations')
-      .select('id')
-      .eq('sender_id', user.value.id)
-      .eq('recipient_email', email)
-      .eq('status', 'pending')
-      .maybeSingle()
+    const existingResult = await getExistingPendingInvitation(user.value.id, email)
+    if (existingResult.error) {
+      sending.value = false
+      return { error: existingResult.error }
+    }
+    const existing = existingResult.data
 
     if (existing) {
       toast.error(t('toast.partner_invite_exists'))

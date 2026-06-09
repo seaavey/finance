@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'bun:test'
-import { calculateProgress } from '../budget.service'
+import { getBudgetProgress } from '../budget.service'
 import type { BudgetWithProgress } from '../budget.service'
 
 // Mock Supabase is handled via individual service methods if we want to test I/O
 // but calculateProgress is a pure function, easiest to test first.
 
-describe('Budget Service: calculateProgress', () => {
+describe('Budget Service: getBudgetProgress', () => {
   it('calculates basic progress correctly', () => {
     const budget: Partial<BudgetWithProgress> = {
       amount: 1000,
@@ -13,7 +13,7 @@ describe('Budget Service: calculateProgress', () => {
       rollover: 0,
     }
 
-    const progress = calculateProgress(budget as BudgetWithProgress)
+    const progress = getBudgetProgress(budget as BudgetWithProgress)
 
     expect(progress.percentage).toBe(40)
     expect(progress.remaining).toBe(600)
@@ -27,7 +27,7 @@ describe('Budget Service: calculateProgress', () => {
       rollover: 0,
     }
 
-    const progress = calculateProgress(budget as BudgetWithProgress)
+    const progress = getBudgetProgress(budget as BudgetWithProgress)
 
     expect(progress.percentage).toBe(100) // capped at 100 for percentage
     expect(progress.remaining).toBe(0)
@@ -41,7 +41,7 @@ describe('Budget Service: calculateProgress', () => {
       rollover: 500, // effective budget = 1500
     }
 
-    const progress = calculateProgress(budget as BudgetWithProgress)
+    const progress = getBudgetProgress(budget as BudgetWithProgress)
 
     expect(progress.effectiveRemaining).toBe(300)
     expect(progress.effectiveOverspent).toBe(0)
@@ -54,7 +54,7 @@ describe('Budget Service: calculateProgress', () => {
       rollover: -200, // effective budget = 800
     }
 
-    const progress = calculateProgress(budget as BudgetWithProgress)
+    const progress = getBudgetProgress(budget as BudgetWithProgress)
 
     expect(progress.effectiveRemaining).toBe(0)
     expect(progress.effectiveOverspent).toBe(100)
@@ -67,7 +67,7 @@ describe('Budget Service: calculateProgress', () => {
       rollover: 0,
     }
 
-    const progress = calculateProgress(budget as BudgetWithProgress)
+    const progress = getBudgetProgress(budget as BudgetWithProgress)
 
     expect(progress.percentage).toBe(0)
     expect(progress.remaining).toBe(0)

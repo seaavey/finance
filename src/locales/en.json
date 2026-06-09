@@ -946,7 +946,9 @@
     "partner_cancelled": "Invitation cancelled",
     "partner_cancel_error": "Failed to cancel invitation",
     "partner_disconnect_error": "Failed to disconnect",
-    "partner_disconnected": "Disconnected from partner"
+    "partner_disconnected": "Disconnected from partner",
+    "offline": "Connection lost — Some data may not be available.",
+    "back_online": "Back online — Latest data has been loaded."
   },
   "error": {
     "title_404": "Page not found",
@@ -960,6 +962,9 @@
     "no_data": "No data yet",
     "million": "M",
     "thousand": "k"
+  },
+  "offline": {
+    "banner": "You are offline — showing cached data"
   },
   "export": {
     "sheet_transactions": "Transactions",

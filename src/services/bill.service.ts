@@ -1,42 +1,38 @@
 import { useSupabase } from '@/lib/supabase'
+import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
 import { BILL_FIELDS } from '@/services/fields'
 import type { Result, BillRow, BillInsert, BillUpdate } from '@/types'
-import { AppError } from '@/types/result'
 
 export async function queryBills(userId: string): Promise<Result<BillRow[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('bills')
-    .select(BILL_FIELDS)
-    .eq('user_id', userId)
-    .order('due_date')
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data || [], error: null }
+  return queryList<BillRow>(
+    supabase
+      .from('bills')
+      .select(BILL_FIELDS)
+      .eq('user_id', userId)
+      .order('due_date'),
+  )
 }
 
 export async function createBill(bill: BillInsert): Promise<Result<BillRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('bills').insert(bill).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return mutationWithReturn<BillRow>(
+    supabase.from('bills').insert(bill),
+  )
 }
 
 export async function updateBill(id: string, updates: BillUpdate): Promise<Result<BillRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('bills').update(updates).eq('id', id).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data, error: null }
+  return mutationWithReturn<BillRow>(
+    supabase.from('bills').update(updates).eq('id', id),
+  )
 }
 
 export async function deleteBill(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('bills').delete().eq('id', id)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(
+    supabase.from('bills').delete().eq('id', id),
+  )
 }
 
 export async function markBillAsPaid(id: string, accountId?: string | null): Promise<Result<BillRow>> {

@@ -1,8 +1,9 @@
 import { ref, computed } from 'vue'
-import { useSupabase } from '@/lib/supabase'
 import { formatDateSafe } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useI18n } from './nuxt-compat'
+import { queryAccounts } from '@/services/account.service'
+import { queryNetWorthTransactions } from '@/services/transaction.service'
 
 export interface NetWorthData {
   label: string
@@ -13,7 +14,6 @@ export interface NetWorthData {
 }
 
 export const useNetWorth = () => {
-  const supabase = useSupabase()
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const { locale } = useI18n()
@@ -35,26 +35,19 @@ export const useNetWorth = () => {
         queryKey: cacheKey,
         queryFn: async () => {
           // 1. Fetch accounts — only columns needed
-          const { data: accounts, error: accError } = await supabase
-            .from('accounts')
-            .select('id, user_id, name, type, currency, color, icon, initial_balance, created_at')
-            .eq('user_id', user.value!.id)
+          const accountsResult = await queryAccounts(user.value!.id)
+          if (accountsResult.error) throw accountsResult.error
+          const accounts = accountsResult.data
 
-          if (accError) throw accError
           if (!accounts?.length) return []
 
           // 2. Fetch transactions — bounded by months lookback so payload doesn't grow unboundedly
           const now = new Date()
           const earliestDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth() - months, 1))
 
-          const { data: transactions, error: txError } = await supabase
-            .from('transactions')
-            .select('account_id, type, amount, date')
-            .eq('user_id', user.value!.id)
-            .gte('date', earliestDate)
-            .order('date', { ascending: true })
-
-          if (txError) throw txError
+          const transactionsResult = await queryNetWorthTransactions(user.value!.id, earliestDate!)
+          if (transactionsResult.error) throw transactionsResult.error
+          const transactions = transactionsResult.data
 
           const convertAmount = (amount: number, fromCurrency: string): number => {
             if (fromCurrency === defaultCurrency.value) return amount
@@ -142,6 +135,8 @@ export const useNetWorth = () => {
       history.value = result
     } catch (error) {
       console.error('Failed to fetch net worth history:', error)
+      const { toast } = useToast()
+      toast.error('Failed to load net worth history')
     } finally {
       loading.value = false
     }

@@ -41,18 +41,8 @@ const router = createRouter({
   ],
 })
 
-// Public routes that don't need auth check — skip Supabase init entirely
-const publicRoutes = [
-  '/',
-  '/auth/login',
-  '/auth/callback',
-  '/login',
-  '/about',
-  '/contact',
-  '/privacy-policy',
-  '/terms-of-service',
-  '/source',
-]
+// Public routes = blankLayoutRoutes + '/source'
+const publicRoutes = [...blankLayoutRoutes, '/source']
 
 router.beforeEach(async (to) => {
   if (to.hash?.includes('access_token') || to.query?.code) {

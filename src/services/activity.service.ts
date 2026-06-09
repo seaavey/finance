@@ -1,6 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
+import { queryWithCount, mutationWithReturn } from '@/lib/query-wrapper'
 import type { Result, ActivityLogRow, ActivityLogInsert, ActivityLogFilters } from '@/types'
-import { AppError } from '@/types/result'
 
 export async function queryActivityLogs(
   userId: string,
@@ -34,16 +34,14 @@ export async function queryActivityLogs(
   if (startDate) query = query.gte('created_at', startDate)
   if (endDate) query = query.lte('created_at', endDate)
 
-  const { data, error, count } = await query
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: { logs: (data as ActivityLogRow[]) || [], total: count || 0 }, error: null }
+  const result = await queryWithCount<ActivityLogRow>(query)
+  if (result.error) return { data: null, error: result.error }
+  return { data: { logs: result.data.data, total: result.data.count }, error: null }
 }
 
 export async function logActivity(log: ActivityLogInsert): Promise<Result<ActivityLogRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('activity_logs').insert(log).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as ActivityLogRow, error: null }
+  return mutationWithReturn<ActivityLogRow>(
+    supabase.from('activity_logs').insert(log),
+  )
 }

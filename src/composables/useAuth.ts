@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { User } from '@supabase/supabase-js'
 import { useSupabase } from '@/lib/supabase'
+import { logActivity } from '@/services/activity.service'
 
 // State shared across all useAuth calls
 export const user = ref<User | null>(null)
@@ -31,7 +32,7 @@ export const useAuth = () => {
     // Log activity BEFORE signOut — RLS needs the session
     try {
       if (user.value?.id) {
-        await supabase.from('activity_logs').insert({
+        await logActivity({
           user_id: user.value.id,
           entity_type: 'auth',
           action: 'logout',

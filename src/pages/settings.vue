@@ -15,335 +15,44 @@
     </div>
 
     <div v-else class="space-y-8">
-      <!-- PROFILE CARD -->
-      <section
-        class="relative overflow-hidden rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md md:p-8"
-      >
-        <div class="absolute -right-12 -top-12 size-48 rounded-full bg-primary/5 blur-3xl" />
+      <ProfileSettings
+        :profile="profile"
+        :user="user"
+        :is-partnered="isPartnered"
+      />
 
-        <div class="relative flex flex-col items-center gap-6 md:flex-row md:gap-8">
-          <Avatar class="size-20 border-2 border-background shadow-xl md:size-24">
-            <AvatarImage
-              v-if="user?.user_metadata?.avatar_url"
-              :src="user.user_metadata.avatar_url"
-              :alt="user?.user_metadata?.full_name"
-            />
-            <AvatarFallback class="bg-primary/10 text-2xl font-black text-primary md:text-3xl">
-              {{ (profile.display_name || user?.user_metadata?.full_name || '?').charAt(0) }}
-            </AvatarFallback>
-          </Avatar>
+      <AppearanceSettings
+        :profile="profile"
+        :selected-currency-label="selectedCurrencyLabel"
+        :theme-label="themeLabel"
+        :locale-label="localeLabel"
+        @edit-name="editName = true"
+        @edit-currency="editCurrency = true"
+        @cycle-theme="cycleTheme"
+        @cycle-language="cycleLanguage"
+      />
 
-          <div class="min-w-0 flex-1 text-center md:text-left">
-            <h2 class="text-2xl font-black tracking-tight text-foreground md:text-3xl truncate">
-              {{ profile.display_name || user?.user_metadata?.full_name }}
-            </h2>
-            <p class="mt-1 text-sm font-medium text-muted-foreground truncate">
-              {{ user?.email }}
-            </p>
-            <div class="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">
-              <span
-                class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-primary"
-              >
-                {{ isPartnered ? $t('settings.couple_mode') : $t('settings.personal_mode') }}
-              </span>
-              <span
-                v-if="user?.app_metadata?.provider"
-                class="inline-flex items-center rounded-full bg-muted px-3 py-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground"
-              >
-                {{ user.app_metadata.provider }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PartnerSettings
+        :partner-loading="partnerLoading"
+        :is-partnered="isPartnered"
+        :partner-sending="partnerSending"
+        :invite-email="inviteEmail"
+        :sent-invitations="sentInvitations"
+        :received-invitations="receivedInvitations"
+        :partner="partner"
+        :partner-display-name="partnerDisplayName"
+        @update:invite-email="inviteEmail = $event"
+        @send-invite="onSendInvite"
+        @accept-invite="onAcceptInvite"
+        @reject-invite="onRejectInvite"
+        @cancel-invite="onCancelInvite"
+        @show-disconnect="showDisconnectDialog = true"
+      />
 
-      <!-- PREFERENCES -->
-      <section>
-        <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-        >
-          {{ $t('settings.preferences') }}
-        </h3>
-        <div
-          class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
-        >
-          <SettingsItem
-            icon="user"
-            :label="$t('settings.display_name')"
-            :value="profile.display_name || $t('settings.not_set')"
-            @click="editName = true"
-          />
-          <div class="mx-6 border-t border-border/40" />
-          <SettingsItem
-            icon="currency"
-            :label="$t('settings.currency')"
-            :value="selectedCurrencyLabel"
-            @click="editCurrency = true"
-          />
-          <div class="mx-6 border-t border-border/40" />
-          <SettingsItem
-            icon="palette"
-            :label="$t('settings.theme')"
-            :value="themeLabel"
-            @click="cycleTheme"
-          />
-          <div class="mx-6 border-t border-border/40" />
-          <SettingsItem
-            icon="language"
-            :label="$t('settings.language')"
-            :value="localeLabel"
-            @click="cycleLanguage"
-          />
-        </div>
-      </section>
-
-      <!-- COUPLE -->
-      <section>
-        <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-        >
-          {{ $t('sidebar.partner') }}
-        </h3>
-
-        <!-- LOADING: PASANGAN -->
-        <div
-          v-if="partnerLoading"
-          class="flex w-full items-center justify-center rounded-4xl border border-border/50 bg-card p-10 shadow-sm"
-        >
-          <div class="flex flex-col items-center gap-3">
-            <div
-              class="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-            />
-            <span class="text-xs font-bold uppercase tracking-tight text-muted-foreground">{{
-              $t('settings.loading_partner')
-            }}</span>
-          </div>
-        </div>
-
-        <!-- NOT CONNECTED -->
-        <div v-else-if="!isPartnered" class="space-y-4">
-          <!-- Kirim Undangan -->
-          <div
-            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm transition-all hover:shadow-md"
-          >
-            <div class="mb-6 flex items-center gap-4">
-              <div
-                class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm"
-              >
-                <AppIcon name="hugeicons:mail-send-01" :size="24" />
-              </div>
-              <div>
-                <p class="text-sm font-black text-foreground">
-                  {{ $t('settings.invite_partner_title') }}
-                </p>
-                <p class="text-xs font-medium text-muted-foreground">
-                  {{ $t('settings.invite_partner_desc') }}
-                </p>
-              </div>
-            </div>
-            <div class="flex flex-col gap-3 sm:flex-row">
-              <Input
-                v-model="inviteEmail"
-                type="email"
-                :placeholder="$t('settings.invite_email_placeholder')"
-                class="h-11 flex-1 rounded-2xl bg-muted/30 border-border/50 focus:border-primary/50"
-                @keyup.enter="onSendInvite"
-              />
-              <Button
-                size="lg"
-                :disabled="partnerSending || !inviteEmail"
-                class="h-11 rounded-2xl bg-linear-to-b from-primary to-primary/90 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                @click="onSendInvite"
-              >
-                {{ partnerSending ? $t('settings.inviting') : $t('settings.invite_button') }}
-              </Button>
-            </div>
-          </div>
-
-          <!-- Undangan Terkirim -->
-          <div
-            v-if="sentInvitations.length > 0"
-            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
-          >
-            <p
-              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-            >
-              {{ $t('settings.sent_invitations_title') }}
-            </p>
-            <div class="space-y-3">
-              <div
-                v-for="inv in sentInvitations"
-                :key="inv.id"
-                class="flex items-center justify-between rounded-3xl border border-border/30 bg-muted/20 px-4 py-3"
-              >
-                <div class="flex min-w-0 items-center gap-3">
-                  <div
-                    class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50"
-                  >
-                    <AppIcon name="hugeicons:mail-01" :size="18" class="text-muted-foreground" />
-                  </div>
-                  <div class="min-w-0">
-                    <p class="truncate text-sm font-bold text-foreground">
-                      {{ inv.recipient_email }}
-                    </p>
-                    <p class="text-[9px] font-black uppercase tracking-widest text-primary">
-                      {{ inv.status }}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  v-if="inv.status === 'pending'"
-                  variant="ghost"
-                  size="sm"
-                  class="rounded-xl text-xs font-bold text-muted-foreground hover:bg-muted"
-                  @click="onCancelInvite(inv)"
-                >
-                  {{ $t('settings.cancel_invite') }}
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Undangan Masuk -->
-          <div
-            v-if="receivedInvitations.length > 0"
-            class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
-          >
-            <p
-              class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-            >
-              {{ $t('settings.received_invitations_title') }}
-            </p>
-            <div class="space-y-3">
-              <div
-                v-for="inv in receivedInvitations"
-                :key="inv.id"
-                class="flex items-center justify-between rounded-3xl border border-border/30 bg-muted/20 px-4 py-3"
-              >
-                <div class="flex min-w-0 items-center gap-3">
-                  <Avatar class="size-10 border-2 border-background shadow-sm">
-                    <AvatarImage
-                      v-if="inv.sender?.avatar_url"
-                      :src="inv.sender.avatar_url"
-                      :alt="inv.sender.display_name || ''"
-                    />
-                    <AvatarFallback class="bg-primary/10 text-xs font-black text-primary">
-                      {{ (inv.sender?.display_name || '?').charAt(0) }}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div class="min-w-0">
-                    <p class="truncate text-sm font-bold text-foreground">
-                      {{ inv.sender?.display_name || $t('settings.someone') }}
-                    </p>
-                    <p class="text-[10px] font-medium text-muted-foreground">
-                      {{ $t('settings.invite_wants_to_connect') }}
-                    </p>
-                  </div>
-                </div>
-                <div class="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    class="rounded-xl font-bold text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
-                    @click="onRejectInvite(inv)"
-                  >
-                    {{ $t('settings.reject') }}
-                  </Button>
-                  <Button
-                    size="sm"
-                    class="rounded-xl bg-primary px-4 font-bold text-white shadow-sm hover:bg-primary/90"
-                    @click="onAcceptInvite(inv)"
-                  >
-                    {{ $t('settings.accept') }}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CONNECTED -->
-        <div v-else class="space-y-4">
-          <div
-            class="relative overflow-hidden rounded-4xl border border-emerald-500/20 bg-emerald-500/[0.03] p-6 shadow-sm transition-all hover:bg-emerald-500/[0.05] md:p-8"
-          >
-            <div class="absolute -right-8 -top-8 size-32 rounded-full bg-emerald-500/10 blur-2xl" />
-            <div class="relative flex items-center gap-6">
-              <Avatar class="size-16 border-2 border-background shadow-xl">
-                <AvatarImage
-                  v-if="partner?.avatar_url"
-                  :src="partner.avatar_url"
-                  :alt="partner.display_name || ''"
-                />
-                <AvatarFallback class="bg-emerald-500/10 text-xl font-black text-emerald-600 dark:text-emerald-400">
-                  {{ (partnerDisplayName || '?').charAt(0) }}
-                </AvatarFallback>
-              </Avatar>
-              <div class="min-w-0">
-                <p class="truncate text-xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 md:text-2xl">
-                  {{ partnerDisplayName }}
-                </p>
-                <div class="mt-1 flex items-center gap-2">
-                  <div
-                    class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                  />
-                  <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70">
-                    {{ $t('settings.connected_status') }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            variant="ghost"
-            class="group w-full h-auto rounded-4xl border border-rose-500/20 bg-rose-500/[0.02] p-4 transition-all hover:bg-rose-500/5 hover:border-rose-500/40"
-            @click="showDisconnectDialog = true"
-          >
-            <div class="flex w-full items-center justify-between">
-              <div class="flex items-center gap-4">
-                <div
-                  class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-transform duration-300 group-hover:scale-110"
-                >
-                  <AppIcon name="hugeicons:unlink-01" :size="22" />
-                </div>
-                <div class="min-w-0 text-left">
-                  <p class="text-sm font-black text-rose-500 dark:text-rose-400 md:text-base">
-                    {{ $t('settings.disconnect_title') }}
-                  </p>
-                  <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60 dark:text-rose-400/60">
-                    {{ $t('settings.disconnect_desc') }}
-                  </p>
-                </div>
-              </div>
-              <AppIcon
-                name="hugeicons:arrow-right-01"
-                :size="20"
-                class="shrink-0 text-rose-500/30 dark:text-rose-400/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-rose-500/60 dark:group-hover:text-rose-400/60"
-              />
-            </div>
-          </Button>
-        </div>
-      </section>
-
-      <!-- EXPORT DATA -->
-      <section>
-        <h3
-          class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-        >
-          {{ $t('settings.data') }}
-        </h3>
-        <div
-          class="overflow-hidden rounded-4xl border border-border/50 bg-card shadow-sm transition-all hover:shadow-md"
-        >
-          <SettingsItem
-            icon="download"
-            :label="$t('settings.export')"
-            :value="exportLabel"
-            @click="exportData"
-          />
-        </div>
-      </section>
+      <ExportSettings
+        :export-label="exportLabel"
+        @export-data="exportData"
+      />
 
       <!-- DANGER ZONE -->
       <section>
@@ -497,10 +206,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
-defineOptions({
-  name: 'SettingsPage',
-})
 import { useExport } from '@/composables/useExport'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -514,7 +219,11 @@ import {
 } from '@/components/ui/dialog'
 import { useSupabase } from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/vue-query'
+import type { CoupleInvitation } from '@/types'
 
+defineOptions({
+  name: 'SettingsPage',
+})
 
 const { toast } = useToast()
 const queryClient = useQueryClient()
@@ -545,6 +254,7 @@ const saving = ref(false)
 const editName = ref(false)
 const editCurrency = ref(false)
 const inviteEmail = ref('')
+const showDisconnectDialog = ref(false)
 
 const profile = reactive({
   display_name: '',
@@ -683,8 +393,6 @@ const onRejectInvite = async (inv: CoupleInvitation) => {
 const onCancelInvite = async (inv: CoupleInvitation) => {
   await cancelInvite(inv.id)
 }
-
-const showDisconnectDialog = ref(false)
 
 const onConfirmDisconnect = async () => {
   showDisconnectDialog.value = false

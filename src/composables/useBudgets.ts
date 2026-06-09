@@ -6,7 +6,7 @@ import {
   updateBudget as updateBudgetService,
   deleteBudget as deleteBudgetService,
   queryBudgetWithProgress as queryBudgetWithProgressService,
-  calculateProgress,
+  getBudgetProgress,
 } from '@/services/budget.service'
 import type { BudgetWithProgress, BudgetUpdate } from '@/types'
 
@@ -236,7 +236,7 @@ export const useBudgets = () => {
     createBudget,
     updateBudget,
     deleteBudget,
-    getProgress: calculateProgress,
+    getProgress: getBudgetProgress,
     checkBudgetAlerts,
   }
 }

@@ -1,6 +1,8 @@
 import { useSupabase } from '@/lib/supabase'
 import { rpc } from '@/lib/rpc'
 import { TRANSACTION_FIELDS } from '@/services/fields'
+import { queryWithCount, querySingle, mutationWithReturn, mutationVoid, queryList } from '@/lib/query-wrapper'
+import { uploadImage, deleteImage } from '@/lib/storage-util'
 import type { Result, Transaction, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -39,26 +41,17 @@ export async function queryTransactions(
   if (endDate) query = query.lte('date', endDate)
   if (search) query = query.ilike('description', `%${search}%`)
 
-  const { data, error, count } = await query
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: { data: (data as unknown as Transaction[]) || [], count: count || 0 }, error: null }
+  return queryWithCount<Transaction>(query)
 }
 
 export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('transactions').select(TRANSACTION_FIELDS).eq('id', id).single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as unknown as Transaction, error: null }
+  return querySingle<Transaction>(supabase.from('transactions').select(TRANSACTION_FIELDS).eq('id', id))
 }
 
 export async function createTransaction(tx: TransactionInsert): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('transactions').insert(tx).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as unknown as Transaction, error: null }
+  return mutationWithReturn<Transaction>(supabase.from('transactions').insert(tx))
 }
 
 export async function createTransfer(
@@ -108,7 +101,7 @@ export async function createTransfer(
     .select()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (created as unknown as Transaction[]) || [], error: null }
+  return { data: (created as Transaction[]) || [], error: null }
 }
 
 export async function updateTransaction(
@@ -116,10 +109,7 @@ export async function updateTransaction(
   updates: TransactionUpdate,
 ): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('transactions').update(updates).eq('id', id).select().single()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as unknown as Transaction, error: null }
+  return mutationWithReturn<Transaction>(supabase.from('transactions').update(updates).eq('id', id))
 }
 
 export async function deleteTransaction(id: string): Promise<Result<null>> {
@@ -144,10 +134,7 @@ export async function deleteTransaction(id: string): Promise<Result<null>> {
     query = query.eq('id', id)
   }
 
-  const { error } = await query
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(query)
 }
 
 export async function bulkUpdateTransactions(
@@ -155,18 +142,12 @@ export async function bulkUpdateTransactions(
   updates: TransactionUpdate,
 ): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('transactions').update(updates).in('id', ids)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(supabase.from('transactions').update(updates).in('id', ids))
 }
 
 export async function bulkDeleteTransactions(ids: string[]): Promise<Result<null>> {
   const supabase = useSupabase()
-  const { error } = await supabase.from('transactions').delete().in('id', ids)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: null, error: null }
+  return mutationVoid(supabase.from('transactions').delete().in('id', ids))
 }
 
 export async function searchTransactions(
@@ -175,16 +156,15 @@ export async function searchTransactions(
   limit = 10,
 ): Promise<Result<Transaction[]>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('transactions')
-    .select(TRANSACTION_FIELDS)
-    .eq('user_id', userId)
-    .ilike('description', `%${term}%`)
-    .order('date', { ascending: false })
-    .limit(limit)
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: (data as unknown as Transaction[]) || [], error: null }
+  return queryList<Transaction>(
+    supabase
+      .from('transactions')
+      .select(TRANSACTION_FIELDS)
+      .eq('user_id', userId)
+      .ilike('description', `%${term}%`)
+      .order('date', { ascending: false })
+      .limit(limit),
+  )
 }
 
 export async function getTransactionSummary(
@@ -217,30 +197,38 @@ export async function getCategoryStats(
   })
 }
 
-export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {
+export async function queryNetWorthTransactions(
+  userId: string,
+  earliestDate: string,
+): Promise<Result<Pick<Transaction, 'account_id' | 'type' | 'amount' | 'date'>[]>> {
   const supabase = useSupabase()
-  const ext = file.name.split('.').pop() || 'jpg'
-  const path = `${userId}/${crypto.randomUUID()}.${ext}`
+  return queryList<Pick<Transaction, 'account_id' | 'type' | 'amount' | 'date'>>(
+    supabase
+      .from('transactions')
+      .select('account_id, type, amount, date')
+      .eq('user_id', userId)
+      .gte('date', earliestDate)
+      .order('date', { ascending: true }),
+  )
+}
 
-  const { error } = await supabase.storage.from('transaction-attachments').upload(path, file)
-  if (error) return { data: null, error: new AppError(error.message, 'UPLOAD_ERROR', error) }
+export async function queryExportTransactions(
+  userId: string,
+): Promise<Result<Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>[]>> {
+  const supabase = useSupabase()
+  return queryList<Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>>(
+    supabase
+      .from('transactions')
+      .select('date, type, category_id, amount, currency, description')
+      .eq('user_id', userId)
+      .order('date', { ascending: false }),
+  )
+}
 
-  const { data } = supabase.storage.from('transaction-attachments').getPublicUrl(path)
-  return { data: data.publicUrl, error: null }
+export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {
+  return uploadImage(userId, file, 'transaction-attachments', 'jpg')
 }
 
 export async function deleteTransactionImage(url: string): Promise<Result<null>> {
-  const supabase = useSupabase()
-  let path: string
-  try {
-    const parsed = new URL(url)
-    path = parsed.pathname.split('/').slice(-2).join('/')
-  } catch {
-    return { data: null, error: new AppError('Invalid image URL', 'INVALID_URL') }
-  }
-
-  const { error } = await supabase.storage.from('transaction-attachments').remove([path])
-  if (error) return { data: null, error: new AppError(error.message, 'DELETE_ERROR', error) }
-
-  return { data: null, error: null }
+  return deleteImage(url, 'transaction-attachments')
 }

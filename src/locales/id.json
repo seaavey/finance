@@ -944,7 +944,9 @@
     "partner_cancelled": "Undangan dibatalkan",
     "partner_cancel_error": "Gagal membatalkan undangan",
     "partner_disconnect_error": "Gagal memutuskan hubungan",
-    "partner_disconnected": "Hubungan dengan pasangan diputuskan"
+    "partner_disconnected": "Hubungan dengan pasangan diputuskan",
+    "offline": "Koneksi terputus — Beberapa data mungkin tidak tersedia.",
+    "back_online": "Kembali online — Data terbaru telah dimuat."
   },
   "error": {
     "title_404": "Halaman tidak ditemukan",
@@ -958,6 +960,9 @@
     "no_data": "Belum ada data",
     "million": "jt",
     "thousand": "rb"
+  },
+  "offline": {
+    "banner": "Kamu sedang offline — menampilkan data cache"
   },
   "export": {
     "sheet_transactions": "Transaksi",

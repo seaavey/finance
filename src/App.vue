@@ -37,9 +37,9 @@ const online = useOnline()
 
 watch(online, (val) => {
   if (!val) {
-    toast.error('Koneksi terputus — Beberapa data mungkin tidak tersedia.')
+    toast.error(t('toast.offline'))
   } else {
-    toast.info('Kembali online — Data terbaru telah dimuat.')
+    toast.info(t('toast.back_online'))
   }
 })
 
@@ -88,8 +88,11 @@ const layout = computed(() => {
   <div
     v-if="!online"
     class="sticky top-0 z-50 bg-destructive text-destructive-foreground text-center text-sm py-1 px-3"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
   >
-    Kamu sedang offline — menampilkan data cache
+    {{ t('offline.banner') }}
   </div>
   <component :is="layout">
     <router-view />
