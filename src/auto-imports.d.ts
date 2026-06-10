@@ -10,6 +10,7 @@ declare global {
   const calculateProgress: typeof import('./lib/budget-util').calculateProgress
   const calculateRollover: typeof import('./lib/budget-util').calculateRollover
   const calculateSpendingByCategory: typeof import('./lib/budget-util').calculateSpendingByCategory
+  const callEdgeFunction: typeof import('./lib/rpc').callEdgeFunction
   const cn: typeof import('./lib/utils').cn
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
@@ -121,6 +122,7 @@ declare global {
   const useTransactions: typeof import('./composables/useTransactions').useTransactions
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const user: typeof import('./composables/useAuth').user
+  const validateAmount: typeof import('./lib/utils').validateAmount
   const watch: typeof import('vue').watch
   const watchDebounced: typeof import('@vueuse/core').watchDebounced
   const watchEffect: typeof import('vue').watchEffect
@@ -164,6 +166,7 @@ declare module 'vue' {
     readonly calculateProgress: UnwrapRef<typeof import('./lib/budget-util')['calculateProgress']>
     readonly calculateRollover: UnwrapRef<typeof import('./lib/budget-util')['calculateRollover']>
     readonly calculateSpendingByCategory: UnwrapRef<typeof import('./lib/budget-util')['calculateSpendingByCategory']>
+    readonly callEdgeFunction: UnwrapRef<typeof import('./lib/rpc')['callEdgeFunction']>
     readonly cn: UnwrapRef<typeof import('./lib/utils')['cn']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
@@ -271,6 +274,7 @@ declare module 'vue' {
     readonly useTransactions: UnwrapRef<typeof import('./composables/useTransactions')['useTransactions']>
     readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
     readonly user: UnwrapRef<typeof import('./composables/useAuth')['user']>
+    readonly validateAmount: UnwrapRef<typeof import('./lib/utils')['validateAmount']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchDebounced: UnwrapRef<typeof import('@vueuse/core')['watchDebounced']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
