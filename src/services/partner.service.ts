@@ -1,5 +1,5 @@
 import { useSupabase } from '@/lib/supabase'
-import { querySingle, queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
+import { querySingle, queryList, mutationWithReturn, mutationVoid, queryMaybeSingle } from '@/lib/query-wrapper'
 import { PROFILE_FIELDS } from '@/services/fields'
 import type { Result, ProfileRow, Invitation, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
@@ -100,14 +100,12 @@ export async function getExistingPendingInvitation(
   email: string,
 ): Promise<Result<{ id: string } | null>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('couple_invitations')
-    .select('id')
-    .eq('sender_id', senderId)
-    .eq('recipient_email', email)
-    .eq('status', 'pending')
-    .maybeSingle()
-
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data as { id: string } | null, error: null }
+  return queryMaybeSingle<{ id: string }>(
+    supabase
+      .from('couple_invitations')
+      .select('id')
+      .eq('sender_id', senderId)
+      .eq('recipient_email', email)
+      .eq('status', 'pending'),
+  )
 }

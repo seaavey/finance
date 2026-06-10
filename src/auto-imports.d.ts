@@ -58,6 +58,7 @@ declare global {
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
   const provide: typeof import('vue').provide
   const queryList: typeof import('./lib/query-wrapper').queryList
+  const queryMaybeSingle: typeof import('./lib/query-wrapper').queryMaybeSingle
   const querySingle: typeof import('./lib/query-wrapper').querySingle
   const queryWithCount: typeof import('./lib/query-wrapper').queryWithCount
   const reactive: typeof import('vue').reactive
@@ -210,6 +211,7 @@ declare module 'vue' {
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly queryList: UnwrapRef<typeof import('./lib/query-wrapper')['queryList']>
+    readonly queryMaybeSingle: UnwrapRef<typeof import('./lib/query-wrapper')['queryMaybeSingle']>
     readonly querySingle: UnwrapRef<typeof import('./lib/query-wrapper')['querySingle']>
     readonly queryWithCount: UnwrapRef<typeof import('./lib/query-wrapper')['queryWithCount']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
@@ -241,7 +243,6 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useCurrency: UnwrapRef<typeof import('./composables/useCurrency')['useCurrency']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
-    readonly useDashboard: UnwrapRef<typeof import('./composables/useDashboard')['useDashboard']>
     readonly useExport: UnwrapRef<typeof import('./composables/useExport')['useExport']>
     readonly useGoals: UnwrapRef<typeof import('./composables/useGoals')['useGoals']>
     readonly useHead: UnwrapRef<typeof import('@unhead/vue')['useHead']>
@@ -259,7 +260,6 @@ declare module 'vue' {
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useSeoMeta: UnwrapRef<typeof import('@unhead/vue')['useSeoMeta']>
-    readonly useSettings: UnwrapRef<typeof import('./composables/useSettings')['useSettings']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useStorage: UnwrapRef<typeof import('@vueuse/core')['useStorage']>
     readonly useSubscriptions: UnwrapRef<typeof import('./composables/useSubscriptions')['useSubscriptions']>

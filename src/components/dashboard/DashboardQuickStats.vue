@@ -6,8 +6,8 @@
       :value="avgDailySpend"
       :currency="activeCurrency"
       icon="hugeicons:calendar-01"
-      :trend="spendTrend"
-      :trend-value="spendTrendLabel"
+      :trend="undefined"
+      :trend-value="undefined"
       variant="danger"
     />
 
@@ -67,13 +67,7 @@ const savingsRateDisplay = computed(() => {
   return `${savingsRate.value >= 0 ? '+' : ''}${savingsRate.value.toFixed(1)}%`
 })
 
-const spendTrend = computed(() => {
-  // "up" = spending more (bad) vs previous period
-  // Not enough data for trend without prev period, so we skip for now
-  return undefined
-})
-
-const spendTrendLabel = computed(() => '')
+// Trend computation skipped — needs previous period data that isn't available here
 
 // Budget usage aggregation
 const totalBudgetAmount = computed(() => {

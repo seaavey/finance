@@ -16,6 +16,18 @@ export async function querySingle<T>(
 }
 
 /**
+ * Wraps a Supabase query that returns a single row or null (no row).
+ * Uses .maybeSingle() so zero rows returns { data: null, error: null } instead of an error.
+ */
+export async function queryMaybeSingle<T>(
+  builder: ReturnType<ReturnType<typeof useSupabase>['from']>['select'],
+): Promise<Result<T | null>> {
+  const { data, error } = await builder.maybeSingle()
+  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
+  return { data: (data as T) || null, error: null }
+}
+
+/**
  * Wraps a Supabase query that returns multiple rows.
  */
 export async function queryList<T>(

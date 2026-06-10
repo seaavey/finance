@@ -595,15 +595,15 @@ watch(calendarDays, (days) => {
 
 // Refetch transactions when month/year changes to ensure we have data for the current view
 watch([currentMonth, currentYear], async ([m, y]) => {
-  const startDate = new Date(y, m, 1).toISOString().slice(0, 10)
-  const endDate = new Date(y, m + 1, 0).toISOString().slice(0, 10)
+  const startDate = formatDateSafe(new Date(y, m, 1))
+  const endDate = formatDateSafe(new Date(y, m + 1, 0))
   await fetchTransactions({ startDate, endDate })
 })
 
 onMounted(async () => {
   const now = new Date()
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10)
-  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10)
+  const startDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
+  const endDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth() + 1, 0))
   
   await Promise.all([
     fetchCategories(),

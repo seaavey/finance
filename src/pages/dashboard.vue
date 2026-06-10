@@ -262,10 +262,7 @@ const displayName = computed(() => {
 })
 
 const convertAmount = (amount: number, fromCurrency: string, toCurrency: string): number => {
-  if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return amount
-  const converted = convertTo(amount, fromCurrency, toCurrency)
-  if (converted !== null) return converted
-  return 0
+  return convertTo(amount, fromCurrency, toCurrency) ?? 0
 }
 
 const monthLabel = computed(() => {
