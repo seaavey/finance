@@ -59,6 +59,19 @@ export const useActivityLog = () => {
   ) => {
     if (!user.value) return
 
+    // Strip non-safe values from metadata to prevent log injection.
+    // Only allow string | number | boolean | null | undefined.
+    const safeMetadata: Record<string, SafeJson | undefined> = {}
+    if (metadata) {
+      for (const [key, val] of Object.entries(metadata)) {
+        if (val === undefined || val === null || typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+          safeMetadata[key] = val as SafeJson
+        } else {
+          safeMetadata[key] = String(val)
+        }
+      }
+    }
+
     // Fire-and-forget
     try {
       await logActivity({
@@ -66,11 +79,11 @@ export const useActivityLog = () => {
         entity_type: entityType,
         entity_id: entityId ?? null,
         action,
-        metadata: (metadata || {}) as Record<string, SafeJson | undefined>,
+        metadata: safeMetadata,
       } as ActivityLogInsert)
       queryClient.invalidateQueries({ queryKey: ['activity_logs'] })
-    } catch {
-      // Silently ignore
+    } catch (e) {
+      console.warn('[activity] Failed to log:', e)
     }
   }
 

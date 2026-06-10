@@ -49,3 +49,17 @@ export function getOgImageUrl(title: string, description: string) {
   })
   return `${baseUrl}?${params.toString()}`
 }
+
+/**
+ * Validate that an amount is a finite positive number within a safe range.
+ * Returns the validated amount or an error string.
+ */
+export function validateAmount(amount: unknown, allowZero = false, max = 999_999_999_999): { value: number; error: null } | { value: null; error: string } {
+  const num = Number(amount)
+  if (!Number.isFinite(num)) return { value: null, error: 'Amount must be a valid number' }
+  if (num < 0) return { value: null, error: 'Amount must be positive' }
+  if (num === 0 && !allowZero) return { value: null, error: 'Amount must be greater than zero' }
+  if (num > max) return { value: null, error: `Amount exceeds maximum (${max})` }
+  if (Number.isNaN(num)) return { value: null, error: 'Amount is not a valid number' }
+  return { value: num, error: null }
+}

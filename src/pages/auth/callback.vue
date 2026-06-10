@@ -39,16 +39,19 @@ onMounted(async () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
+        clearTimeout(timeoutId)
         subscription.unsubscribe()
         await router.replace('/dashboard')
       }
     })
 
-    // Timeout fallback — if nothing happens in 10s, go back to login
-    setTimeout(async () => {
+    // Timeout fallback — if nothing happens in 30s, go back to login.
+    // Stored so the auth handler above can cancel it on success, preventing
+    // a race between redirect-to-dashboard and redirect-to-login.
+    const timeoutId = setTimeout(async () => {
       subscription.unsubscribe()
       await router.replace('/auth/login')
-    }, 10000)
+    }, 30000)
   }
 })
 </script>

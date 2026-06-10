@@ -26,8 +26,10 @@ export async function uploadImage(
 /**
  * Delete a file from a Supabase storage bucket by its public URL.
  * Extracts the storage path from the URL automatically.
+ * Validates that the path belongs to the given userId (defense-in-depth
+ * against path traversal — primary protection is Supabase Storage RLS).
  */
-export async function deleteImage(url: string, bucket: string): Promise<Result<null>> {
+export async function deleteImage(url: string, bucket: string, userId?: string): Promise<Result<null>> {
   const supabase = useSupabase()
   let path: string
   try {
@@ -35,6 +37,15 @@ export async function deleteImage(url: string, bucket: string): Promise<Result<n
     path = parsed.pathname.split('/').slice(-2).join('/')
   } catch {
     return { data: null, error: new AppError('Invalid image URL', 'INVALID_URL') }
+  }
+
+  // Validate the extracted path starts with the user's ID to prevent
+  // one user from deleting another user's files via a manipulated URL.
+  if (userId) {
+    const expectedPrefix = `${userId}/`
+    if (!path.startsWith(expectedPrefix)) {
+      return { data: null, error: new AppError('Unauthorized', 'FORBIDDEN') }
+    }
   }
 
   const { error } = await supabase.storage.from(bucket).remove([path])

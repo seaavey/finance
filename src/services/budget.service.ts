@@ -4,6 +4,7 @@ import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper
 import { calculateSpendingByCategory, getNextMonth, getPrevMonth, calculateProgress as calcBudgetProgress, calculateRollover } from '@/lib/budget-util'
 import type { Result, BudgetWithProgress, BudgetRow, BudgetUpdate } from '@/types'
 import { AppError } from '@/types/result'
+import { validateAmount } from '@/lib/utils'
 
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
@@ -20,8 +21,10 @@ export async function createBudget(
   name?: string | null,
 ): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
+  const valid = validateAmount(amount, true)
+  if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   return mutationWithReturn<BudgetRow>(
-    supabase.from('budgets').insert({ user_id: userId, category_id: categoryId, month, amount, name: name || null }),
+    supabase.from('budgets').insert({ user_id: userId, category_id: categoryId, month, amount: amount, name: name || null }),
   )
 }
 
@@ -30,6 +33,10 @@ export async function updateBudget(
   updates: BudgetUpdate,
 ): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
+  if (updates.amount !== undefined) {
+    const valid = validateAmount(updates.amount, true)
+    if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
+  }
   return mutationWithReturn<BudgetRow>(supabase.from('budgets').update(updates).eq('id', id))
 }
 

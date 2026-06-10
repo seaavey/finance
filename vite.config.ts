@@ -19,7 +19,14 @@ export default defineConfig({
     }),
     AutoImport({
       include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
-      exclude: [/[\\/]node_modules[\\/]/, /[\\/]dist[\\/]/],
+      exclude: [
+        /[\\/]node_modules[\\/]/,
+        /[\\/]dist[\\/]/,
+        /[\\/]nuxt-compat\.ts$/,
+        /[\\/]useDashboard\.ts$/,
+        /[\\/]useSettings\.ts$/,
+        /[\\/]supabase\.ts$/,
+      ],
       imports: [
         'vue',
         'vue-router',
@@ -95,10 +102,11 @@ export default defineConfig({
           {
             urlPattern: /^https:\/\/[a-z]+\.[a-z]+\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
+            method: 'GET',
             options: {
               cacheName: 'supabase-api-cache',
               networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 },
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

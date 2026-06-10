@@ -305,7 +305,7 @@ export const useTransactions = () => {
   }
 
   const deleteTransactionImage = async (url: string) => {
-    const result = await deleteImageService(url)
+    const result = await deleteImageService(url, user.value?.id)
     return { error: result.error }
   }
 

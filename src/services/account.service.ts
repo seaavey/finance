@@ -1,8 +1,10 @@
 import { useSupabase } from '@/lib/supabase'
 import { rpc } from '@/lib/rpc'
 import { queryList, querySingle, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
+import { validateAmount } from '@/lib/utils'
 import { ACCOUNT_FIELDS } from '@/services/fields'
 import type { Account, Result, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
+import { AppError } from '@/types/result'
 
 export async function queryAccounts(userId: string): Promise<Result<Account[]>> {
   const supabase = useSupabase()
@@ -24,6 +26,10 @@ export async function getAccount(id: string): Promise<Result<Account>> {
 
 export async function createAccount(account: AccountInsert): Promise<Result<Account>> {
   const supabase = useSupabase()
+  if (account.initial_balance !== undefined) {
+    const valid = validateAmount(account.initial_balance, true)
+    if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
+  }
   return mutationWithReturn<Account>(
     supabase.from('accounts').insert(account),
   )
@@ -31,6 +37,10 @@ export async function createAccount(account: AccountInsert): Promise<Result<Acco
 
 export async function updateAccount(id: string, updates: AccountUpdate): Promise<Result<Account>> {
   const supabase = useSupabase()
+  if (updates.initial_balance !== undefined) {
+    const valid = validateAmount(updates.initial_balance, true)
+    if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
+  }
   return mutationWithReturn<Account>(
     supabase.from('accounts').update(updates).eq('id', id),
   )

@@ -11,7 +11,7 @@ import {
   querySentInvitations,
   getExistingPendingInvitation,
 } from '@/services/partner.service'
-import { useSupabase } from '@/lib/supabase'
+import { callEdgeFunction } from '@/lib/rpc'
 
 export const usePartner = () => {
   const queryClient = useQueryClient()
@@ -19,7 +19,6 @@ export const usePartner = () => {
   const { toast } = useToast()
   const { t } = useI18n()
   const activity = useActivityLog()
-  const supabase = useSupabase()
 
   const sending = ref(false)
 
@@ -144,22 +143,11 @@ export const usePartner = () => {
       toast.success(t('toast.partner_invite_sent'))
 
       // Notify recipient via email (fire-and-forget)
-      const edgeUrl = `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/functions/v1/send-couple-invite`
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        const token = session?.access_token
-        fetch(edgeUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            sender_id: user.value!.id,
-            recipient_email: email,
-          }),
-        }).catch((e) => {
-          console.warn('Failed to send notification email:', e)
-        })
+      callEdgeFunction('send-couple-invite', {
+        sender_id: user.value!.id,
+        recipient_email: email,
+      }).catch((e) => {
+        console.warn('Failed to send notification email:', e)
       })
     } else {
       toast.error(t('toast.partner_invite_error'))

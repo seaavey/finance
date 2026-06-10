@@ -1,7 +1,9 @@
 import { useSupabase } from '@/lib/supabase'
 import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
+import { validateAmount } from '@/lib/utils'
 import { RECURRING_FIELDS } from '@/services/fields'
 import type { Result, RecurringTransaction, RecurringInsert, RecurringUpdate } from '@/types'
+import { AppError } from '@/types/result'
 
 export async function queryRecurring(userId: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
@@ -16,6 +18,8 @@ export async function queryRecurring(userId: string): Promise<Result<RecurringTr
 
 export async function createRecurring(recurring: RecurringInsert): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
+  const valid = validateAmount(recurring.amount, true)
+  if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   return mutationWithReturn<RecurringTransaction>(
     supabase.from('recurring_transactions').insert(recurring),
   )
@@ -26,6 +30,10 @@ export async function updateRecurring(
   updates: RecurringUpdate,
 ): Promise<Result<RecurringTransaction>> {
   const supabase = useSupabase()
+  if (updates.amount !== undefined) {
+    const valid = validateAmount(updates.amount, true)
+    if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
+  }
   return mutationWithReturn<RecurringTransaction>(
     supabase.from('recurring_transactions').update(updates).eq('id', id),
   )

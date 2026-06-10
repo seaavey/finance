@@ -3,6 +3,7 @@ import { rpc } from '@/lib/rpc'
 import { TRANSACTION_FIELDS } from '@/services/fields'
 import { queryWithCount, querySingle, mutationWithReturn, mutationVoid, queryList } from '@/lib/query-wrapper'
 import { uploadImage, deleteImage } from '@/lib/storage-util'
+import { validateAmount } from '@/lib/utils'
 import type { Result, Transaction, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
 import { AppError } from '@/types/result'
 
@@ -39,7 +40,12 @@ export async function queryTransactions(
   if (account_id) query = query.eq('account_id', account_id)
   if (startDate) query = query.gte('date', startDate)
   if (endDate) query = query.lte('date', endDate)
-  if (search) query = query.ilike('description', `%${search}%`)
+  if (search) {
+    // Limit search term length and escape/reduce excessive wildcards
+    // to prevent pattern-matching DoS against PostgREST.
+    const sanitized = search.slice(0, 100).replace(/%/g, '')
+    if (sanitized) query = query.ilike('description', `%${sanitized}%`)
+  }
 
   return queryWithCount<Transaction>(query)
 }
@@ -51,6 +57,8 @@ export async function getTransaction(id: string): Promise<Result<Transaction>> {
 
 export async function createTransaction(tx: TransactionInsert): Promise<Result<Transaction>> {
   const supabase = useSupabase()
+  const valid = validateAmount(tx.amount, true)
+  if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   return mutationWithReturn<Transaction>(supabase.from('transactions').insert(tx))
 }
 
@@ -69,12 +77,20 @@ export async function createTransfer(
   },
 ): Promise<Result<Transaction[]>> {
   const supabase = useSupabase()
+
+  const amountVal = validateAmount(data.amount)
+  if (amountVal.error) return { data: null, error: new AppError(amountVal.error, 'VALIDATION_ERROR') }
+  if (data.to_amount !== undefined) {
+    const toVal = validateAmount(data.to_amount, true)
+    if (toVal.error) return { data: null, error: new AppError(toVal.error, 'VALIDATION_ERROR') }
+  }
+
   const transferId = crypto.randomUUID()
 
   const expense: TransactionInsert = {
     user_id: userId,
     account_id: data.from_account_id,
-    amount: data.amount,
+    amount: amountVal.value ?? data.amount,
     currency: data.currency,
     type: 'expense',
     date: data.date,
@@ -109,6 +125,10 @@ export async function updateTransaction(
   updates: TransactionUpdate,
 ): Promise<Result<Transaction>> {
   const supabase = useSupabase()
+  if (updates.amount !== undefined) {
+    const valid = validateAmount(updates.amount, true)
+    if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
+  }
   return mutationWithReturn<Transaction>(supabase.from('transactions').update(updates).eq('id', id))
 }
 
@@ -161,7 +181,7 @@ export async function searchTransactions(
       .from('transactions')
       .select(TRANSACTION_FIELDS)
       .eq('user_id', userId)
-      .ilike('description', `%${term}%`)
+      .ilike('description', `%${term.slice(0, 100).replace(/%/g, '')}%`)
       .order('date', { ascending: false })
       .limit(limit),
   )
@@ -268,6 +288,6 @@ export async function uploadTransactionImage(userId: string, file: File): Promis
   return uploadImage(userId, file, 'transaction-attachments', 'jpg')
 }
 
-export async function deleteTransactionImage(url: string): Promise<Result<null>> {
-  return deleteImage(url, 'transaction-attachments')
+export async function deleteTransactionImage(url: string, userId?: string): Promise<Result<null>> {
+  return deleteImage(url, 'transaction-attachments', userId)
 }
