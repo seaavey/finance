@@ -179,10 +179,24 @@ const confirmDelete = async () => {
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">
-          <ListItemAction
-            @edit="goToEdit(item)"
-            @delete="onDelete(item)"
-          />
+          <div class="flex gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-9 rounded-xl hover:bg-muted"
+              @click="goToEdit(item)"
+            >
+              <AppIcon name="hugeicons:pencil-edit-01" :size="16" class="text-muted-foreground" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-9 rounded-xl hover:bg-rose-500/10 hover:text-rose-500"
+              @click="onDelete(item)"
+            >
+              <AppIcon name="hugeicons:delete-01" :size="16" />
+            </Button>
+          </div>
           <div class="text-right">
             <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               {{ $t('subscriptions.amount') }}
