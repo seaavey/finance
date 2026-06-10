@@ -48,7 +48,7 @@ const props = defineProps<{
 const { formatCurrency, defaultCurrency } = useCurrency()
 
 const daysInPeriod = computed(() => {
-  const map = { '1d': 1, '7d': 7, '30d': 30, 'all': 30 }
+  const map = { '1d': 1, '7d': 7, '30d': 30, 'all': 0 }
   return map[props.period]
 })
 

@@ -330,21 +330,17 @@ const monthlyData = computed(() => {
 
       const dayTx = filteredTransactions.value.filter((tx) => tx.date === dateStr)
       const activeCur = activeCurrency.value
-      data.push({
-        label,
-        income: dayTx
-          .filter((t) => t.type === 'income')
-          .reduce(
-            (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-            0,
-          ),
-        expense: dayTx
-          .filter((t) => t.type === 'expense')
-          .reduce(
-            (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-            0,
-          ),
-      })
+      data.push(
+        dayTx.reduce(
+          (acc, t) => {
+            const val = convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur)
+            if (t.type === 'income') acc.income += val
+            else if (t.type === 'expense') acc.expense += val
+            return acc
+          },
+          { label, income: 0, expense: 0 },
+        ),
+      )
     }
     return data
   }
@@ -367,21 +363,17 @@ const monthlyData = computed(() => {
     })
 
     const activeCur = activeCurrency.value
-    months.push({
-      label,
-      income: monthTx
-        .filter((t) => t.type === 'income')
-        .reduce(
-          (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-          0,
-        ),
-      expense: monthTx
-        .filter((t) => t.type === 'expense')
-        .reduce(
-          (s, t) => s + convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur),
-          0,
-        ),
-    })
+    months.push(
+      monthTx.reduce(
+        (acc, t) => {
+          const val = convertAmount(t.amount, t.currency || defaultCurrency.value, activeCur)
+          if (t.type === 'income') acc.income += val
+          else if (t.type === 'expense') acc.expense += val
+          return acc
+        },
+        { label, income: 0, expense: 0 },
+      ),
+    )
   }
   return months
 })

@@ -332,16 +332,11 @@ function getOccurrencesInMonth(rec: RecurringTransaction): string[] {
   }
 }
 
-const calendarDays = computed(() => {
-  const daysInMonth = getDaysInMonth(currentYear.value, currentMonth.value)
-  const firstDay = getFirstDayOfMonth(currentYear.value, currentMonth.value)
-
-  // Build a map of date string -> events
+const dateMaps = computed(() => {
   const billsByDate = new Map<string, Bill[]>()
   const recurringByDate = new Map<string, RecurringTransaction[]>()
   const transactionsByDate = new Map<string, Transaction[]>()
 
-  // Collect bills in this month view
   for (const bill of bills.value) {
     const d = new Date(bill.due_date + 'T00:00:00')
     const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
@@ -349,7 +344,6 @@ const calendarDays = computed(() => {
     billsByDate.get(ds)!.push(bill)
   }
 
-  // Collect recurring in this month view
   for (const rec of recurring.value) {
     const dates = getOccurrencesInMonth(rec)
     for (const dateStr of dates) {
@@ -358,13 +352,20 @@ const calendarDays = computed(() => {
     }
   }
 
-  // Collect transactions in this month view
   for (const tx of transactions.value) {
     const d = new Date(tx.date)
     const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
     if (!transactionsByDate.has(ds)) transactionsByDate.set(ds, [])
     transactionsByDate.get(ds)!.push(tx)
   }
+
+  return { billsByDate, recurringByDate, transactionsByDate }
+})
+
+const calendarDays = computed(() => {
+  const daysInMonth = getDaysInMonth(currentYear.value, currentMonth.value)
+  const firstDay = getFirstDayOfMonth(currentYear.value, currentMonth.value)
+  const { billsByDate, recurringByDate, transactionsByDate } = dateMaps.value
 
   const days: CalendarDay[] = []
   const MAX_VISIBLE = 2
@@ -488,35 +489,20 @@ function navigateToTransaction(id: string) {
   router.push(`/transactions/${id}/edit`)
 }
 
-// Selected day details
+// Selected day details — reuse pre-built maps from dateMaps
 const selectedDayBills = computed(() => {
   if (!selectedDay.value) return []
-  return bills.value.filter((b) => {
-    const d = new Date(b.due_date + 'T00:00:00')
-    const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
-    return ds === selectedDay.value
-  })
+  return dateMaps.value.billsByDate.get(selectedDay.value) || []
 })
 
 const selectedDayRecurring = computed(() => {
   if (!selectedDay.value) return []
-  const result: RecurringTransaction[] = []
-  for (const rec of recurring.value) {
-    const dates = getOccurrencesInMonth(rec)
-    if (dates.includes(selectedDay.value)) {
-      result.push(rec)
-    }
-  }
-  return result
+  return dateMaps.value.recurringByDate.get(selectedDay.value) || []
 })
 
 const selectedDayTransactions = computed(() => {
   if (!selectedDay.value) return []
-  return transactions.value.filter((tx) => {
-    const d = new Date(tx.date)
-    const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
-    return ds === selectedDay.value
-  })
+  return dateMaps.value.transactionsByDate.get(selectedDay.value) || []
 })
 
 const selectedDayEvents = computed(() => {
