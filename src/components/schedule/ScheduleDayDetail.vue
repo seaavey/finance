@@ -23,9 +23,9 @@
           >
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-              :class="bill.is_paid ? 'bg-green-500/10 text-green-600' : 'bg-amber-500/10 text-amber-600'"
+              :class="bill.is_paid ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'"
             >
-              <AppIcon name="hugeicons:receipt" :size="18" />
+              <AppIcon name="hugeicons:calendar-03" :size="18" />
             </div>
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-bold text-foreground">{{ bill.title }}</p>
@@ -33,7 +33,7 @@
                 {{ $t('schedule.bills_due') }}
                 <span
                   class="ml-1 rounded-full px-2 py-0.5 text-[9px] font-bold"
-                  :class="bill.is_paid ? 'bg-green-500/10 text-green-600' : 'bg-amber-500/10 text-amber-600'"
+                  :class="bill.is_paid ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'"
                 >
                   {{ bill.is_paid ? $t('schedule.paid') : $t('schedule.unpaid') }}
                 </span>
@@ -52,7 +52,7 @@
           >
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-              :class="rec.type === 'income' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'"
+              :class="rec.type === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-500 dark:text-rose-400'"
             >
               <AppIcon
                 :name="rec.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -72,9 +72,40 @@
             </div>
             <p
               class="shrink-0 text-sm font-black"
-              :class="rec.type === 'income' ? 'text-emerald-600' : 'text-foreground'"
+              :class="rec.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'"
             >
               {{ rec.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(rec.amount), rec.currency || undefined) }}
+            </p>
+          </div>
+
+          <div
+            v-for="tx in transactions"
+            :key="'st-' + tx.id"
+            class="flex cursor-pointer items-center gap-3 px-5 py-3 transition-colors hover:bg-muted/20 sm:gap-4 sm:px-6 sm:py-4"
+            @click="$emit('navigate-transaction', tx.id)"
+          >
+            <div
+              class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
+              :class="tx.type === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'"
+            >
+              <AppIcon
+                :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
+                :size="18"
+              />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-bold text-foreground">
+                {{ tx.description || $t('transactions.no_description') }}
+              </p>
+              <p class="text-[10px] font-bold text-muted-foreground/60">
+                {{ $t('sidebar.transactions') }}
+              </p>
+            </div>
+            <p
+              class="shrink-0 text-sm font-black"
+              :class="tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'"
+            >
+              {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(tx.amount), tx.currency || undefined) }}
             </p>
           </div>
         </div>
@@ -84,18 +115,20 @@
 </template>
 
 <script setup lang="ts">
-import type { Bill, RecurringTransaction } from '@/types'
+import type { Bill, RecurringTransaction, Transaction } from '@/types'
 
 const props = defineProps<{
   formattedDate: string
   bills: Bill[]
   recurring: RecurringTransaction[]
-  events: Array<Bill | RecurringTransaction>
+  transactions: Transaction[]
+  events: Array<Bill | RecurringTransaction | Transaction>
 }>()
 
 defineEmits<{
   'navigate-bill': [id: string]
   'navigate-recurring': [id: string]
+  'navigate-transaction': [id: string]
 }>()
 
 const { formatCurrency } = useCurrency()

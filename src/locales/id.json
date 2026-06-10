@@ -441,6 +441,8 @@
     "view_recurring": "Lihat Transaksi Rutin",
     "monthly_summary": "Ringkasan Bulanan",
     "total_due": "Total Tagihan",
+    "total_income": "Total Pemasukan",
+    "total_expense": "Total Pengeluaran",
     "total_recurring_income": "Pemasukan Rutin",
     "total_recurring_expense": "Pengeluaran Rutin",
     "paid": "Lunas",

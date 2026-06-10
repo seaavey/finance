@@ -17,8 +17,8 @@
       :unpaid-count="monthUnpaidBills.length"
       :paid-count="monthPaidBills.length"
       :total-bills="monthBills.length"
-      :income-total="monthRecurringIncome"
-      :expense-total="monthRecurringExpense"
+      :income-total="totalIncome"
+      :expense-total="totalExpense"
     />
 
     <div v-if="loading" class="space-y-4">
@@ -91,17 +91,18 @@
           <!-- Day Number -->
           <div class="mb-1 flex items-center justify-between">
             <span
-              class="flex size-6 items-center justify-center rounded-full text-xs font-bold"
+              class="flex size-5 items-center justify-center rounded-full text-[10px] font-bold sm:size-6 sm:text-xs"
               :class="getDayNumberClass(day)"
             >
               {{ day.day }}
             </span>
             <span
               v-if="day.isToday"
-              class="text-[8px] font-black uppercase tracking-widest text-primary"
+              class="hidden text-[8px] font-black uppercase tracking-widest text-primary sm:block"
             >
               {{ $t('schedule.today') }}
             </span>
+            <div v-if="day.isToday" class="size-1 rounded-full bg-primary sm:hidden" />
           </div>
 
           <!-- Events -->
@@ -109,10 +110,10 @@
             <div
               v-for="bill in day.bills"
               :key="'b-' + bill.id"
-              class="flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition-colors"
+              class="flex cursor-pointer items-center gap-1 rounded-md px-1 py-0.5 text-[8px] font-bold transition-colors sm:px-1.5 sm:text-[10px]"
               :class="
                 bill.is_paid
-                  ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                   : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
               "
               :title="bill.title"
@@ -123,7 +124,7 @@
             <div
               v-for="rec in day.recurring"
               :key="'r-' + rec.id"
-              class="flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition-colors"
+              class="flex cursor-pointer items-center gap-1 rounded-md px-1 py-0.5 text-[8px] font-bold transition-colors sm:px-1.5 sm:text-[10px]"
               :class="
                 rec.type === 'income'
                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
@@ -133,6 +134,20 @@
               @click.stop="navigateToRecurring(rec.id)"
             >
               <span class="truncate">{{ rec.description || $t('recurring.no_description') }}</span>
+            </div>
+            <div
+              v-for="tx in day.transactions"
+              :key="'t-' + tx.id"
+              class="flex cursor-pointer items-center gap-1 rounded-md px-1 py-0.5 text-[8px] font-bold transition-colors sm:px-1.5 sm:text-[10px]"
+              :class="
+                tx.type === 'income'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              "
+              :title="tx.description || $t('transactions.no_description')"
+              @click.stop="navigateToTransaction(tx.id)"
+            >
+              <span class="truncate">{{ tx.description || $t('transactions.no_description') }}</span>
             </div>
           </div>
 
@@ -151,9 +166,11 @@
       :formatted-date="formatSelectedDate"
       :bills="selectedDayBills"
       :recurring="selectedDayRecurring"
+      :transactions="selectedDayTransactions"
       :events="selectedDayEvents"
       @navigate-bill="navigateToBill"
       @navigate-recurring="navigateToRecurring"
+      @navigate-transaction="navigateToTransaction"
     />
   </div>
 </template>
@@ -164,7 +181,7 @@ import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import type { RecurringTransaction, Bill } from '@/types'
+import type { RecurringTransaction, Bill, Transaction } from '@/types'
 import ScheduleStats from '@/components/schedule/ScheduleStats.vue'
 import ScheduleDayDetail from '@/components/schedule/ScheduleDayDetail.vue'
 
@@ -177,9 +194,10 @@ const { t } = useI18n()
 const { formatCurrency } = useCurrency()
 const { bills, fetchBills, loading: billsLoading } = useBills()
 const { recurring, fetchRecurring, loading: recurringLoading } = useRecurring()
+const { transactions, fetchTransactions, loading: transactionsLoading } = useTransactions()
 const { fetchCategories } = useCategories()
 
-const loading = computed(() => billsLoading.value || recurringLoading.value)
+const loading = computed(() => billsLoading.value || recurringLoading.value || transactionsLoading.value)
 
 // Calendar state
 const currentMonth = ref(new Date().getMonth())
@@ -215,6 +233,7 @@ interface CalendarDay {
   isToday: boolean
   bills: Bill[]
   recurring: RecurringTransaction[]
+  transactions: Transaction[]
   overflowCount: number
 }
 
@@ -320,6 +339,7 @@ const calendarDays = computed(() => {
   // Build a map of date string -> events
   const billsByDate = new Map<string, Bill[]>()
   const recurringByDate = new Map<string, RecurringTransaction[]>()
+  const transactionsByDate = new Map<string, Transaction[]>()
 
   // Collect bills in this month view
   for (const bill of bills.value) {
@@ -338,6 +358,14 @@ const calendarDays = computed(() => {
     }
   }
 
+  // Collect transactions in this month view
+  for (const tx of transactions.value) {
+    const d = new Date(tx.date)
+    const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
+    if (!transactionsByDate.has(ds)) transactionsByDate.set(ds, [])
+    transactionsByDate.get(ds)!.push(tx)
+  }
+
   const days: CalendarDay[] = []
   const MAX_VISIBLE = 2
 
@@ -351,6 +379,7 @@ const calendarDays = computed(() => {
       const dateStr = formatDateStr(prevYear, prevMonth, day)
       const dayBills = billsByDate.get(dateStr) || []
       const dayRecurring = recurringByDate.get(dateStr) || []
+      const dayTransactions = transactionsByDate.get(dateStr) || []
       days.push({
         date: dateStr,
         day,
@@ -358,7 +387,8 @@ const calendarDays = computed(() => {
         isToday: false,
         bills: dayBills.slice(0, MAX_VISIBLE),
         recurring: dayRecurring.slice(0, MAX_VISIBLE),
-        overflowCount: Math.max(0, dayBills.length + dayRecurring.length - MAX_VISIBLE),
+        transactions: dayTransactions.slice(0, MAX_VISIBLE),
+        overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
       })
     }
   }
@@ -368,6 +398,7 @@ const calendarDays = computed(() => {
     const dateStr = formatDateStr(currentYear.value, currentMonth.value, d)
     const dayBills = billsByDate.get(dateStr) || []
     const dayRecurring = recurringByDate.get(dateStr) || []
+    const dayTransactions = transactionsByDate.get(dateStr) || []
     const today = isToday(currentYear.value, currentMonth.value, d)
     days.push({
       date: dateStr,
@@ -376,7 +407,8 @@ const calendarDays = computed(() => {
       isToday: today,
       bills: dayBills.slice(0, MAX_VISIBLE),
       recurring: dayRecurring.slice(0, MAX_VISIBLE),
-      overflowCount: Math.max(0, dayBills.length + dayRecurring.length - MAX_VISIBLE),
+      transactions: dayTransactions.slice(0, MAX_VISIBLE),
+      overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
     })
 
     // Auto-select today is handled in watch
@@ -391,6 +423,7 @@ const calendarDays = computed(() => {
     const dateStr = formatDateStr(nextYear, nextMonth, d)
     const dayBills = billsByDate.get(dateStr) || []
     const dayRecurring = recurringByDate.get(dateStr) || []
+    const dayTransactions = transactionsByDate.get(dateStr) || []
     days.push({
       date: dateStr,
       day: d,
@@ -398,7 +431,8 @@ const calendarDays = computed(() => {
       isToday: false,
       bills: dayBills.slice(0, MAX_VISIBLE),
       recurring: dayRecurring.slice(0, MAX_VISIBLE),
-      overflowCount: Math.max(0, dayBills.length + dayRecurring.length - MAX_VISIBLE),
+      transactions: dayTransactions.slice(0, MAX_VISIBLE),
+      overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
     })
   }
 
@@ -450,6 +484,10 @@ function navigateToRecurring(id: string) {
   router.push(`/recurring/${id}/edit`)
 }
 
+function navigateToTransaction(id: string) {
+  router.push(`/transactions/${id}/edit`)
+}
+
 // Selected day details
 const selectedDayBills = computed(() => {
   if (!selectedDay.value) return []
@@ -472,8 +510,17 @@ const selectedDayRecurring = computed(() => {
   return result
 })
 
+const selectedDayTransactions = computed(() => {
+  if (!selectedDay.value) return []
+  return transactions.value.filter((tx) => {
+    const d = new Date(tx.date)
+    const ds = formatDateStr(d.getFullYear(), d.getMonth(), d.getDate())
+    return ds === selectedDay.value
+  })
+})
+
 const selectedDayEvents = computed(() => {
-  return [...selectedDayBills.value, ...selectedDayRecurring.value]
+  return [...selectedDayBills.value, ...selectedDayRecurring.value, ...selectedDayTransactions.value]
 })
 
 // Month stats
@@ -511,6 +558,21 @@ const monthRecurringExpense = computed(() => {
   return total
 })
 
+const monthTransactionIncome = computed(() => {
+  return transactions.value
+    .filter((tx) => tx.type === 'income')
+    .reduce((sum, tx) => sum + Number(tx.amount), 0)
+})
+
+const monthTransactionExpense = computed(() => {
+  return transactions.value
+    .filter((tx) => tx.type === 'expense')
+    .reduce((sum, tx) => sum + Number(tx.amount), 0)
+})
+
+const totalIncome = computed(() => monthRecurringIncome.value + monthTransactionIncome.value)
+const totalExpense = computed(() => monthRecurringExpense.value + monthTransactionExpense.value)
+
 function frequencyLabel(f: string) {
   const map: Record<string, string> = {
     daily: t('recurring.daily'),
@@ -531,7 +593,23 @@ watch(calendarDays, (days) => {
   }
 })
 
+// Refetch transactions when month/year changes to ensure we have data for the current view
+watch([currentMonth, currentYear], async ([m, y]) => {
+  const startDate = new Date(y, m, 1).toISOString().slice(0, 10)
+  const endDate = new Date(y, m + 1, 0).toISOString().slice(0, 10)
+  await fetchTransactions({ startDate, endDate })
+})
+
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchBills(), fetchRecurring()])
+  const now = new Date()
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10)
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10)
+  
+  await Promise.all([
+    fetchCategories(),
+    fetchBills(),
+    fetchRecurring(),
+    fetchTransactions({ startDate, endDate })
+  ])
 })
 </script>

@@ -442,6 +442,8 @@
     "view_recurring": "View Recurring",
     "monthly_summary": "Monthly Summary",
     "total_due": "Total Bills",
+    "total_income": "Total Income",
+    "total_expense": "Total Expense",
     "total_recurring_income": "Recurring Income",
     "total_recurring_expense": "Recurring Expense",
     "paid": "Paid",
