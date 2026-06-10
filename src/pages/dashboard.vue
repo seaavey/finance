@@ -112,6 +112,7 @@
       </BaseCard>
 
       <DashboardQuickActions
+        class="md:col-span-6"
         :action1="{ icon: 'hugeicons:add-01', color: '#4f46e5', title: $t('dashboard.actions_add_transaction'), desc: $t('dashboard.actions_add_transaction_desc'), to: '/transactions/new' }"
         :action2="{ icon: 'hugeicons:grid-view', color: '#f59e0b', title: $t('dashboard.actions_manage_categories'), desc: $t('dashboard.actions_manage_categories_desc'), to: '/categories' }"
         @navigate="(to) => router.push(to)"
