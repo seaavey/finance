@@ -285,9 +285,9 @@ export async function queryExportTransactions(
 }
 
 export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {
-  return uploadImage(userId, file, 'transaction-attachments', 'jpg')
+  return uploadImage(userId, file, 'transaction-images', 'jpg')
 }
 
 export async function deleteTransactionImage(url: string, userId?: string): Promise<Result<null>> {
-  return deleteImage(url, 'transaction-attachments', userId)
+  return deleteImage(url, 'transaction-images', userId)
 }

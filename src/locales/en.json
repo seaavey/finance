@@ -953,7 +953,8 @@
     "partner_disconnect_error": "Failed to disconnect",
     "partner_disconnected": "Disconnected from partner",
     "offline": "Connection lost — Some data may not be available.",
-    "back_online": "Back online — Latest data has been loaded."
+    "back_online": "Back online — Latest data has been loaded.",
+    "upload_error": "Failed to upload file"
   },
   "error": {
     "title_404": "Page not found",

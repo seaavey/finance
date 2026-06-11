@@ -951,7 +951,8 @@
     "partner_disconnect_error": "Gagal memutuskan hubungan",
     "partner_disconnected": "Hubungan dengan pasangan diputuskan",
     "offline": "Koneksi terputus — Beberapa data mungkin tidak tersedia.",
-    "back_online": "Kembali online — Data terbaru telah dimuat."
+    "back_online": "Kembali online — Data terbaru telah dimuat.",
+    "upload_error": "Gagal mengunggah file"
   },
   "error": {
     "title_404": "Halaman tidak ditemukan",
