@@ -256,9 +256,13 @@
                     <div
                       class="flex size-8 shrink-0 items-center justify-center rounded-xl sm:size-9"
                       :class="getBadgeClass(log.entity_type as EntityType)"
-
                     >
-                      <AppIcon :name="getActivityIcon(log.entity_type as EntityType, log.action as ActionType)" :size="14" />
+                      <AppIcon
+                        :name="
+                          getActivityIcon(log.entity_type as EntityType, log.action as ActionType)
+                        "
+                        :size="14"
+                      />
                     </div>
 
                     <!-- Content -->
@@ -326,14 +330,60 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 defineOptions({
   name: 'ActivityHistoryPage',
 })
 import { ref, computed } from 'vue'
 import { Button } from '@/components/ui/button'
 import { formatDateSafe } from '@/lib/utils'
-
 
 const { logs, loading, total, fetchAll } = useActivityLog()
 const { t, locale } = useI18n()

@@ -14,7 +14,14 @@ import { reactive, watch, onMounted, computed, ref } from 'vue'
 import type { Subscription } from '@/types'
 
 const router = useRouter()
-const { subscriptions, loading, fetchSubscriptions, toggleActive, deleteSubscription, monthlyTotal } = useSubscriptions()
+const {
+  subscriptions,
+  loading,
+  fetchSubscriptions,
+  toggleActive,
+  deleteSubscription,
+  monthlyTotal,
+} = useSubscriptions()
 const { categories, fetchCategories } = useCategories()
 const { formatCurrency } = useCurrency()
 const { t, locale } = useI18n()
@@ -114,11 +121,7 @@ const confirmDelete = async () => {
 
     <!-- STATS -->
     <div v-if="!loading && subscriptions.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <StatCard
-        label="Total Est. Per Month"
-        :value="monthlyTotal"
-        icon="hugeicons:license"
-      />
+      <StatCard label="Total Est. Per Month" :value="monthlyTotal" icon="hugeicons:license" />
     </div>
 
     <!-- LOADING -->
@@ -165,7 +168,8 @@ const confirmDelete = async () => {
                   {{ billingCycleLabel(item.billing_cycle) }}
                 </StatusBadge>
                 <span class="text-[10px] font-bold text-muted-foreground/90">
-                  {{ $t('subscriptions.next_billing') }}: {{ formatNextBilling(item.next_billing_date) }}
+                  {{ $t('subscriptions.next_billing') }}:
+                  {{ formatNextBilling(item.next_billing_date) }}
                 </span>
               </div>
               <div v-if="item.category_id" class="mt-1">
@@ -175,7 +179,10 @@ const confirmDelete = async () => {
               </div>
             </div>
           </div>
-          <Switch v-model="checkedStates[item.id]" @update:modelValue="handleToggle(item.id, $event)" />
+          <Switch
+            v-model="checkedStates[item.id]"
+            @update:modelValue="handleToggle(item.id, $event)"
+          />
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">

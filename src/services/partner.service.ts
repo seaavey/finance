@@ -1,14 +1,18 @@
 import { useSupabase } from '@/lib/supabase'
-import { querySingle, queryList, mutationWithReturn, mutationVoid, queryMaybeSingle } from '@/lib/query-wrapper'
+import {
+  querySingle,
+  queryList,
+  mutationWithReturn,
+  mutationVoid,
+  queryMaybeSingle,
+} from '@/lib/query-wrapper'
 import { PROFILE_FIELDS } from '@/services/fields'
 import type { Result, ProfileRow, Invitation, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
 
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
-  return querySingle<ProfileRow>(
-    supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId),
-  )
+  return querySingle<ProfileRow>(supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId))
 }
 
 export async function queryInvitations(email: string): Promise<Result<CoupleInvitation[]>> {
@@ -56,20 +60,14 @@ export async function acceptInvitation(invitationId: string): Promise<Result<unk
 export async function rejectInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(
-    supabase
-      .from('couple_invitations')
-      .update({ status: 'rejected' })
-      .eq('id', invitationId),
+    supabase.from('couple_invitations').update({ status: 'rejected' }).eq('id', invitationId),
   )
 }
 
 export async function cancelInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(
-    supabase
-      .from('couple_invitations')
-      .update({ status: 'cancelled' })
-      .eq('id', invitationId),
+    supabase.from('couple_invitations').update({ status: 'cancelled' }).eq('id', invitationId),
   )
 }
 

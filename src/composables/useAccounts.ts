@@ -53,7 +53,9 @@ export const useAccounts = () => {
   const accounts = computed(() => accountsData.value || [])
   const accountBalances = computed(() => balancesData.value || [])
 
-  const addAccount = async (account: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addAccount = async (
+    account: Omit<Account, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+  ) => {
     if (!user.value) {
       return { error: new Error('Not authenticated') }
     }
@@ -73,10 +75,7 @@ export const useAccounts = () => {
     return { error: result.error }
   }
 
-  const updateAccount = async (
-    id: string,
-    updates: AccountUpdate,
-  ) => {
+  const updateAccount = async (id: string, updates: AccountUpdate) => {
     const result = await updateAccountService(id, updates)
 
     if (!result.error) {

@@ -147,7 +147,9 @@
               :title="tx.description || $t('transactions.no_description')"
               @click.stop="navigateToTransaction(tx.id)"
             >
-              <span class="truncate">{{ tx.description || $t('transactions.no_description') }}</span>
+              <span class="truncate">{{
+                tx.description || $t('transactions.no_description')
+              }}</span>
             </div>
           </div>
 
@@ -197,7 +199,9 @@ const { recurring, fetchRecurring, loading: recurringLoading } = useRecurring()
 const { transactions, fetchTransactions, loading: transactionsLoading } = useTransactions()
 const { fetchCategories } = useCategories()
 
-const loading = computed(() => billsLoading.value || recurringLoading.value || transactionsLoading.value)
+const loading = computed(
+  () => billsLoading.value || recurringLoading.value || transactionsLoading.value,
+)
 
 // Calendar state
 const currentMonth = ref(new Date().getMonth())
@@ -389,7 +393,10 @@ const calendarDays = computed(() => {
         bills: dayBills.slice(0, MAX_VISIBLE),
         recurring: dayRecurring.slice(0, MAX_VISIBLE),
         transactions: dayTransactions.slice(0, MAX_VISIBLE),
-        overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
+        overflowCount: Math.max(
+          0,
+          dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE,
+        ),
       })
     }
   }
@@ -409,7 +416,10 @@ const calendarDays = computed(() => {
       bills: dayBills.slice(0, MAX_VISIBLE),
       recurring: dayRecurring.slice(0, MAX_VISIBLE),
       transactions: dayTransactions.slice(0, MAX_VISIBLE),
-      overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
+      overflowCount: Math.max(
+        0,
+        dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE,
+      ),
     })
 
     // Auto-select today is handled in watch
@@ -433,7 +443,10 @@ const calendarDays = computed(() => {
       bills: dayBills.slice(0, MAX_VISIBLE),
       recurring: dayRecurring.slice(0, MAX_VISIBLE),
       transactions: dayTransactions.slice(0, MAX_VISIBLE),
-      overflowCount: Math.max(0, dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE),
+      overflowCount: Math.max(
+        0,
+        dayBills.length + dayRecurring.length + dayTransactions.length - MAX_VISIBLE,
+      ),
     })
   }
 
@@ -506,7 +519,11 @@ const selectedDayTransactions = computed(() => {
 })
 
 const selectedDayEvents = computed(() => {
-  return [...selectedDayBills.value, ...selectedDayRecurring.value, ...selectedDayTransactions.value]
+  return [
+    ...selectedDayBills.value,
+    ...selectedDayRecurring.value,
+    ...selectedDayTransactions.value,
+  ]
 })
 
 // Month stats
@@ -590,12 +607,12 @@ onMounted(async () => {
   const now = new Date()
   const startDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
   const endDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth() + 1, 0))
-  
+
   await Promise.all([
     fetchCategories(),
     fetchBills(),
     fetchRecurring(),
-    fetchTransactions({ startDate, endDate })
+    fetchTransactions({ startDate, endDate }),
   ])
 })
 </script>

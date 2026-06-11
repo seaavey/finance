@@ -25,7 +25,9 @@
           <TableCell
             v-for="cell in row.getVisibleCells()"
             :key="cell.id"
-            :style="{ width: cell.column.getSize() !== 150 ? cell.column.getSize() + 'px' : undefined }"
+            :style="{
+              width: cell.column.getSize() !== 150 ? cell.column.getSize() + 'px' : undefined,
+            }"
             class="px-0"
             :class="cell.column.columnDef.meta?.cellClass"
           >
@@ -48,8 +50,15 @@
         <PaginationFirst />
         <PaginationPrev />
         <PaginationContent v-slot="{ items }">
-          <template v-for="item in items" :key="item.type === 'page' ? `p-${item.value}` : `e-${item.type}`">
-            <PaginationItem v-if="item.type === 'page'" :value="item.value" :is-active="item.value === currentPage">
+          <template
+            v-for="item in items"
+            :key="item.type === 'page' ? `p-${item.value}` : `e-${item.type}`"
+          >
+            <PaginationItem
+              v-if="item.type === 'page'"
+              :value="item.value"
+              :is-active="item.value === currentPage"
+            >
               <span class="text-xs font-bold">{{ item.value }}</span>
             </PaginationItem>
             <PaginationEllipsis v-else />

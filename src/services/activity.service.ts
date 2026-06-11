@@ -41,7 +41,5 @@ export async function queryActivityLogs(
 
 export async function logActivity(log: ActivityLogInsert): Promise<Result<ActivityLogRow>> {
   const supabase = useSupabase()
-  return mutationWithReturn<ActivityLogRow>(
-    supabase.from('activity_logs').insert(log),
-  )
+  return mutationWithReturn<ActivityLogRow>(supabase.from('activity_logs').insert(log))
 }

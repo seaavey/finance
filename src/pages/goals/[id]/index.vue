@@ -89,7 +89,9 @@
               {{ formatCurrency(Number(goalDetail.current_amount)) }} /
               {{ formatCurrency(Number(goalDetail.target_amount)) }}
             </span>
-            <span class="font-black" :style="{ color: goalDetail.color || undefined }"> {{ percentage }}% </span>
+            <span class="font-black" :style="{ color: goalDetail.color || undefined }">
+              {{ percentage }}%
+            </span>
           </div>
           <Progress :model-value="percentage" class="h-4">
             <template #indicator>
@@ -121,7 +123,10 @@
 
         <!-- Add Funds (if not completed) -->
         <div v-if="percentage < 100" class="mt-6">
-          <Button class="w-full rounded-2xl shadow-lg shadow-primary/20" @click="showFundsDialog = true">
+          <Button
+            class="w-full rounded-2xl shadow-lg shadow-primary/20"
+            @click="showFundsDialog = true"
+          >
             <AppIcon name="hugeicons:add-01" :size="16" class="mr-2" />
             {{ $t('goals.add_funds') }}
           </Button>
@@ -130,10 +135,7 @@
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard
-          :label="$t('goals.target_amount')"
-          :value="Number(goalDetail.target_amount)"
-        />
+        <StatCard :label="$t('goals.target_amount')" :value="Number(goalDetail.target_amount)" />
         <StatCard
           :label="$t('goals.current_amount')"
           :value="Number(goalDetail.current_amount)"
@@ -166,7 +168,54 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 defineOptions({
   name: 'PagesGoalsDetailIndex',
 })
@@ -174,7 +223,6 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
-
 
 const router = useRouter()
 const route = useRoute()

@@ -5,46 +5,46 @@ import { useTransactions } from '../useTransactions'
 // Mock dependencies
 mock.module('../nuxt-compat', () => ({
   useI18n: () => ({
-    t: (key: string) => key
-  })
+    t: (key: string) => key,
+  }),
 }))
 
 mock.module('@tanstack/vue-query', () => ({
   useQueryClient: () => ({
-    invalidateQueries: mock(() => {})
+    invalidateQueries: mock(() => {}),
   }),
   useQuery: () => ({
     data: ref({ data: [], count: 0 }),
     isLoading: ref(false),
-    refetch: mock(async () => {})
-  })
+    refetch: mock(async () => {}),
+  }),
 }))
 
 mock.module('../useToast', () => ({
   useToast: () => ({
     toast: {
       success: mock(() => {}),
-      error: mock(() => {})
-    }
-  })
+      error: mock(() => {}),
+    },
+  }),
 }))
 
 mock.module('../useActivityLog', () => ({
   useActivityLog: () => ({
-    log: mock(() => {})
-  })
+    log: mock(() => {}),
+  }),
 }))
 
 mock.module('../useAuth', () => ({
   useAuth: () => ({
-    user: ref({ id: 'user-123' })
-  })
+    user: ref({ id: 'user-123' }),
+  }),
 }))
 
 mock.module('../usePartner', () => ({
   usePartner: () => ({
-    partner: ref(null)
-  })
+    partner: ref(null),
+  }),
 }))
 
 mock.module('@/services/transaction.service', () => ({
@@ -67,9 +67,9 @@ mock.module('../useCategories', () => ({
   useCategories: () => ({
     categories: ref([
       { id: 'cat-transfer', name: 'Transfer' },
-      { id: 'cat-other', name: 'Other' }
-    ])
-  })
+      { id: 'cat-other', name: 'Other' },
+    ]),
+  }),
 }))
 
 describe('useTransactions', () => {
@@ -82,14 +82,14 @@ describe('useTransactions', () => {
   it('addTransfer should call createTransfer service', async () => {
     const { addTransfer } = useTransactions()
     const { createTransfer } = await import('@/services/transaction.service')
-    
+
     const transferData = {
       from_account_id: 'acc-1',
       to_account_id: 'acc-2',
       amount: 1000,
       currency: 'IDR',
       date: '2026-06-07',
-      description: 'Test transfer'
+      description: 'Test transfer',
     }
 
     await addTransfer(transferData)

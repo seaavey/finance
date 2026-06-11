@@ -39,7 +39,9 @@
                   name="material-symbols:star"
                   :size="16"
                   :class="
-                    n <= (testimonial.rating as number) ? 'text-amber-400' : 'text-muted-foreground/20'
+                    n <= (testimonial.rating as number)
+                      ? 'text-amber-400'
+                      : 'text-muted-foreground/20'
                   "
                 />
               </div>

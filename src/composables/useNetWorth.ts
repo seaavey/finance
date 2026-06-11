@@ -43,7 +43,9 @@ export const useNetWorth = () => {
 
           // 2. Fetch transactions — bounded by months lookback so payload doesn't grow unboundedly
           const now = new Date()
-          const earliestDate = formatDateSafe(new Date(now.getFullYear(), now.getMonth() - months, 1))
+          const earliestDate = formatDateSafe(
+            new Date(now.getFullYear(), now.getMonth() - months, 1),
+          )
 
           const transactionsResult = await queryNetWorthTransactions(user.value!.id, earliestDate!)
           if (transactionsResult.error) throw transactionsResult.error
@@ -109,7 +111,10 @@ export const useNetWorth = () => {
               if ((accountCreated.get(acc.id) ?? new Date()) > mb.end) continue
 
               const balance = runningBalances.get(acc.id) ?? 0
-              const converted = convertAmount(balance, accountCurrency.get(acc.id) || defaultCurrency.value)
+              const converted = convertAmount(
+                balance,
+                accountCurrency.get(acc.id) || defaultCurrency.value,
+              )
 
               if (isLiability.get(acc.id)) {
                 totalDebts += converted

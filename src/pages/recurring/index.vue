@@ -5,7 +5,54 @@ defineOptions({
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from '@/types'
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 import { formatDateSafe } from '@/lib/utils'
 import { useBudgets } from '@/composables/useBudgets'
 
@@ -49,9 +96,7 @@ const handleToggle = async (id: string, newActive: boolean) => {
         const monthStr = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
         checkBudgetAlerts(monthStr).catch(() => {})
       })
-      .catch((err) =>
-        console.error('Auto-process after toggle failed (toggle persisted OK):', err),
-      )
+      .catch((err) => console.error('Auto-process after toggle failed (toggle persisted OK):', err))
   }
 }
 
@@ -231,7 +276,10 @@ const confirmDelete = async () => {
               </div>
             </div>
           </div>
-          <Switch v-model="checkedStates[item.id]" @update:modelValue="handleToggle(item.id, $event)" />
+          <Switch
+            v-model="checkedStates[item.id]"
+            @update:modelValue="handleToggle(item.id, $event)"
+          />
         </div>
 
         <div class="mt-6 flex items-end justify-between border-t border-border/50 pt-4">

@@ -9,7 +9,12 @@ import {
 } from '@/services/recurring.service'
 import { createTransaction as createTxService } from '@/services/transaction.service'
 import { formatDateSafe } from '@/lib/utils'
-import type { RecurringTransaction, TransactionInsert, RecurringInsert, RecurringUpdate } from '@/types'
+import type {
+  RecurringTransaction,
+  TransactionInsert,
+  RecurringInsert,
+  RecurringUpdate,
+} from '@/types'
 
 export type { RecurringTransaction }
 
@@ -38,9 +43,7 @@ export const useRecurring = () => {
 
   const recurring = computed(() => recurringData.value || [])
 
-  const addRecurring = async (
-    item: Omit<RecurringInsert, 'user_id' | 'created_at'>,
-  ) => {
+  const addRecurring = async (item: Omit<RecurringInsert, 'user_id' | 'created_at'>) => {
     if (!user.value) return
 
     const result = await createRecurringService({
@@ -63,10 +66,7 @@ export const useRecurring = () => {
     return { error: result.error }
   }
 
-  const updateRecurring = async (
-    id: string,
-    updates: RecurringUpdate,
-  ) => {
+  const updateRecurring = async (id: string, updates: RecurringUpdate) => {
     const result = await updateRecurringService(id, updates)
 
     if (!result.error) {

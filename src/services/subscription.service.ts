@@ -16,13 +16,13 @@ export async function querySubscriptions(userId: string): Promise<Result<Subscri
   )
 }
 
-export async function createSubscription(subscription: SubscriptionInsert): Promise<Result<Subscription>> {
+export async function createSubscription(
+  subscription: SubscriptionInsert,
+): Promise<Result<Subscription>> {
   const supabase = useSupabase()
   const valid = validateAmount(subscription.amount, true)
   if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
-  return mutationWithReturn<Subscription>(
-    supabase.from('subscriptions').insert(subscription),
-  )
+  return mutationWithReturn<Subscription>(supabase.from('subscriptions').insert(subscription))
 }
 
 export async function updateSubscription(
@@ -41,7 +41,5 @@ export async function updateSubscription(
 
 export async function deleteSubscription(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  return mutationVoid(
-    supabase.from('subscriptions').delete().eq('id', id),
-  )
+  return mutationVoid(supabase.from('subscriptions').delete().eq('id', id))
 }

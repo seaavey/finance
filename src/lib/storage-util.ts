@@ -29,7 +29,11 @@ export async function uploadImage(
  * Validates that the path belongs to the given userId (defense-in-depth
  * against path traversal — primary protection is Supabase Storage RLS).
  */
-export async function deleteImage(url: string, bucket: string, userId?: string): Promise<Result<null>> {
+export async function deleteImage(
+  url: string,
+  bucket: string,
+  userId?: string,
+): Promise<Result<null>> {
   const supabase = useSupabase()
   let path: string
   try {

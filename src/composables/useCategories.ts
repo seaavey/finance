@@ -67,7 +67,8 @@ export const useCategories = () => {
     if (!result.error) {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success(t('toast.category_added'))
-      if (result.data) activity.log('category', 'created', { name: category.name || '' }, result.data.id)
+      if (result.data)
+        activity.log('category', 'created', { name: category.name || '' }, result.data.id)
     } else {
       toast.error(t('toast.category_add_error'))
     }

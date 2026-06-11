@@ -7,9 +7,7 @@
     <template #action>
       <div class="flex gap-4">
         <div class="flex items-center gap-2">
-          <span
-            class="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
-          />
+          <span class="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
           <span class="text-xs font-bold text-muted-foreground">{{ $t('dashboard.income') }}</span>
         </div>
         <div class="flex items-center gap-2">

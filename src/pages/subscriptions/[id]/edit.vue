@@ -106,7 +106,12 @@ const onSubmit = async () => {
 <template>
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div v-if="!subLoading || initialized">
-      <Button variant="ghost" size="sm" class="mb-4 rounded-xl" @click="router.push('/subscriptions')">
+      <Button
+        variant="ghost"
+        size="sm"
+        class="mb-4 rounded-xl"
+        @click="router.push('/subscriptions')"
+      >
         <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>

@@ -15,9 +15,7 @@
       <div
         class="flex size-10 md:size-12 items-center justify-center rounded-2xl transition-colors"
         :class="
-          modelValue === type.id
-            ? 'bg-white/20'
-            : `${type.iconBgClass} ${type.iconTextClass}`
+          modelValue === type.id ? 'bg-white/20' : `${type.iconBgClass} ${type.iconTextClass}`
         "
       >
         <AppIcon :name="type.icon" :size="28" />

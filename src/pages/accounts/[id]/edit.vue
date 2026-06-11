@@ -199,7 +199,9 @@ const selectBrand = (brandId: string, brandLabel: string) => {
                 ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-primary'
                 : 'bg-secondary/40 hover:bg-secondary/60 text-foreground border-border/50'
             "
-            @click="form.type = opt.value as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'"
+            @click="
+              form.type = opt.value as 'bank' | 'e-wallet' | 'cash' | 'investment' | 'liability'
+            "
           >
             <AppIcon :name="opt.icon" :size="24" />
             <span class="text-[10px] font-black tracking-tight uppercase">{{ opt.label }}</span>
@@ -278,7 +280,12 @@ const selectBrand = (brandId: string, brandLabel: string) => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="c in currencies" :key="c.value" :value="c.value" :text-value="c.value">
+              <SelectItem
+                v-for="c in currencies"
+                :key="c.value"
+                :value="c.value"
+                :text-value="c.value"
+              >
                 {{ c.label }}
               </SelectItem>
             </SelectContent>

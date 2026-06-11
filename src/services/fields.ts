@@ -9,14 +9,12 @@ export const TRANSACTION_FIELDS =
 export const ACCOUNT_FIELDS =
   'id, name, type, color, icon, initial_balance, currency, user_id, created_at, updated_at'
 
-export const CATEGORY_FIELDS =
-  'color, created_at, icon, id, name, type, user_id'
+export const CATEGORY_FIELDS = 'color, created_at, icon, id, name, type, user_id'
 
 export const GOAL_FIELDS =
   'color, created_at, current_amount, deadline, icon, id, image_url, name, target_amount, updated_at, user_id'
 
-export const BUDGET_FIELDS =
-  'amount, category_id, created_at, id, month, name, updated_at, user_id'
+export const BUDGET_FIELDS = 'amount, category_id, created_at, id, month, name, updated_at, user_id'
 
 export const RECURRING_FIELDS =
   'active, amount, category_id, created_at, currency, description, frequency, id, next_date, type, updated_at, user_id'

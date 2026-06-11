@@ -16,16 +16,12 @@ export async function queryCategories(userId: string): Promise<Result<CategoryRo
 
 export async function getCategory(id: string): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
-  return querySingle<CategoryRow>(
-    supabase.from('categories').select(CATEGORY_FIELDS).eq('id', id),
-  )
+  return querySingle<CategoryRow>(supabase.from('categories').select(CATEGORY_FIELDS).eq('id', id))
 }
 
 export async function createCategory(category: CategoryInsert): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
-  return mutationWithReturn<CategoryRow>(
-    supabase.from('categories').insert(category),
-  )
+  return mutationWithReturn<CategoryRow>(supabase.from('categories').insert(category))
 }
 
 export async function updateCategory(
@@ -33,16 +29,12 @@ export async function updateCategory(
   updates: CategoryUpdate,
 ): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
-  return mutationWithReturn<CategoryRow>(
-    supabase.from('categories').update(updates).eq('id', id),
-  )
+  return mutationWithReturn<CategoryRow>(supabase.from('categories').update(updates).eq('id', id))
 }
 
 export async function deleteCategory(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  return mutationVoid(
-    supabase.from('categories').delete().eq('id', id),
-  )
+  return mutationVoid(supabase.from('categories').delete().eq('id', id))
 }
 
 export async function createDefaultCategories(
@@ -51,7 +43,5 @@ export async function createDefaultCategories(
 ): Promise<Result<CategoryRow[]>> {
   const supabase = useSupabase()
   const items = defaults.map((d) => ({ ...d, user_id: userId }))
-  return queryList<CategoryRow>(
-    supabase.from('categories').insert(items).select(),
-  )
+  return queryList<CategoryRow>(supabase.from('categories').insert(items).select())
 }

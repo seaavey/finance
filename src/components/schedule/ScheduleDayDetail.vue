@@ -23,7 +23,11 @@
           >
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-              :class="bill.is_paid ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'"
+              :class="
+                bill.is_paid
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+              "
             >
               <AppIcon name="hugeicons:calendar-03" :size="18" />
             </div>
@@ -33,7 +37,11 @@
                 {{ $t('schedule.bills_due') }}
                 <span
                   class="ml-1 rounded-full px-2 py-0.5 text-[9px] font-bold"
-                  :class="bill.is_paid ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'"
+                  :class="
+                    bill.is_paid
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                  "
                 >
                   {{ bill.is_paid ? $t('schedule.paid') : $t('schedule.unpaid') }}
                 </span>
@@ -52,7 +60,11 @@
           >
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-              :class="rec.type === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-500 dark:text-rose-400'"
+              :class="
+                rec.type === 'income'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-500/10 text-rose-500 dark:text-rose-400'
+              "
             >
               <AppIcon
                 :name="rec.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -72,9 +84,12 @@
             </div>
             <p
               class="shrink-0 text-sm font-black"
-              :class="rec.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'"
+              :class="
+                rec.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'
+              "
             >
-              {{ rec.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(rec.amount), rec.currency || undefined) }}
+              {{ rec.type === 'income' ? '+' : '-'
+              }}{{ formatCurrency(Number(rec.amount), rec.currency || undefined) }}
             </p>
           </div>
 
@@ -86,7 +101,11 @@
           >
             <div
               class="flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-10"
-              :class="tx.type === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'"
+              :class="
+                tx.type === 'income'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              "
             >
               <AppIcon
                 :name="tx.type === 'income' ? 'hugeicons:arrow-down-01' : 'hugeicons:arrow-up-01'"
@@ -103,9 +122,12 @@
             </div>
             <p
               class="shrink-0 text-sm font-black"
-              :class="tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'"
+              :class="
+                tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'
+              "
             >
-              {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(Number(tx.amount), tx.currency || undefined) }}
+              {{ tx.type === 'income' ? '+' : '-'
+              }}{{ formatCurrency(Number(tx.amount), tx.currency || undefined) }}
             </p>
           </div>
         </div>

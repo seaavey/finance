@@ -19,9 +19,16 @@
           <div v-if="trendDisplay" class="mt-4 flex items-center gap-2">
             <div
               class="flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black"
-              :class="isPositive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'"
+              :class="
+                isPositive
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              "
             >
-              <AppIcon :name="isPositive ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'" :size="14" />
+              <AppIcon
+                :name="isPositive ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
+                :size="14"
+              />
               {{ trendDisplay }}
             </div>
             <span class="text-xs font-bold text-muted-foreground/90">
@@ -30,7 +37,9 @@
           </div>
         </div>
       </div>
-      <div class="absolute -right-12 -top-12 size-64 rounded-full bg-muted/30 transition-all duration-700 group-hover:scale-110 group-hover:bg-muted/50" />
+      <div
+        class="absolute -right-12 -top-12 size-64 rounded-full bg-muted/30 transition-all duration-700 group-hover:scale-110 group-hover:bg-muted/50"
+      />
     </div>
   </BaseCard>
 </template>

@@ -140,7 +140,9 @@
           <AppIcon name="hugeicons:alert-02" :size="16" />
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">
+          <p
+            class="text-xs font-black uppercase tracking-widest text-amber-600 dark:text-amber-400"
+          >
             {{ $t('transaction_form.duplicate_found') }}
           </p>
           <p class="mt-1 text-sm font-medium text-muted-foreground">
@@ -417,9 +419,15 @@
 
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import type { TransactionType, Transaction, TransactionFilters, SplitItem, TransactionInsert, TransactionUpdate } from "@/types"
+import type {
+  TransactionType,
+  Transaction,
+  TransactionFilters,
+  SplitItem,
+  TransactionInsert,
+  TransactionUpdate,
+} from '@/types'
 import type { Json } from '@/types/database'
-
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
@@ -528,17 +536,14 @@ watchDebounced(
 
     checkingDuplicates.value = true
     try {
-      const result = await queryDuplicateTransactions(
-        user.value?.id || '',
-        {
-          amount: Number(amount),
-          date,
-          type,
-          account_id: account_id || null,
-          category_id: category_id || null,
-          exclude_id: props.transaction?.id,
-        },
-      )
+      const result = await queryDuplicateTransactions(user.value?.id || '', {
+        amount: Number(amount),
+        date,
+        type,
+        account_id: account_id || null,
+        category_id: category_id || null,
+        exclude_id: props.transaction?.id,
+      })
       potentialDuplicates.value = (result.data as Transaction[]) || []
     } catch {
       potentialDuplicates.value = []

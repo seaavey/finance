@@ -53,7 +53,7 @@
           :partner-display-name="partnerDisplayName"
         />
 
-          <!-- Top bar: info + per page -->
+        <!-- Top bar: info + per page -->
 
         <div class="flex items-center justify-between border-b border-border/50 px-4 py-2 md:px-6">
           <p class="text-sm font-medium text-muted-foreground">
@@ -135,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from "@/types"
+import type { Transaction } from '@/types'
 import { h, type VNode } from 'vue'
 import {
   useVueTable,
@@ -166,9 +166,19 @@ defineOptions({
 })
 
 const {
-  transactions, loading, totalCount, totalPages, currentPage, pageSize,
-  categoryFilter, ownerFilter, dateRange, serverFilters,
-  goToPage, bulkUpdateTransactions, bulkDeleteTransactions,
+  transactions,
+  loading,
+  totalCount,
+  totalPages,
+  currentPage,
+  pageSize,
+  categoryFilter,
+  ownerFilter,
+  dateRange,
+  serverFilters,
+  goToPage,
+  bulkUpdateTransactions,
+  bulkDeleteTransactions,
 } = useTransactions()
 const { fetchCategories } = useCategories()
 const { partner, isPartnered, fetchPartner, partnerDisplayName } = usePartner()
@@ -532,10 +542,8 @@ const columns = [
         h(
           'div',
           { class: 'mt-0.5' },
-          h(
-            'StatusBadge',
-            { type: isIncome ? 'success' : 'danger' },
-            () => isIncome ? t('transactions.income') : t('transactions.expense'),
+          h('StatusBadge', { type: isIncome ? 'success' : 'danger' }, () =>
+            isIncome ? t('transactions.income') : t('transactions.expense'),
           ),
         ),
       ])

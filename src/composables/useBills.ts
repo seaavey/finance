@@ -35,7 +35,10 @@ export const useBills = () => {
   const bills = computed(() => billsData.value || [])
 
   const addBill = async (
-    bill: Omit<Database['public']['Tables']['bills']['Insert'], 'user_id' | 'created_at' | 'is_paid'>,
+    bill: Omit<
+      Database['public']['Tables']['bills']['Insert'],
+      'user_id' | 'created_at' | 'is_paid'
+    >,
   ) => {
     if (!user.value) return { error: new Error('Not authenticated') }
 
@@ -55,7 +58,10 @@ export const useBills = () => {
     return { error: result.error }
   }
 
-  const updateBill = async (id: string, updates: Database['public']['Tables']['bills']['Update']) => {
+  const updateBill = async (
+    id: string,
+    updates: Database['public']['Tables']['bills']['Update'],
+  ) => {
     const result = await updateBillService(id, updates)
 
     if (!result.error) {

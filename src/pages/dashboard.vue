@@ -24,7 +24,10 @@
       class="md:col-span-6"
     />
 
-    <div v-if="!loading && !summaryLoading" class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6">
+    <div
+      v-if="!loading && !summaryLoading"
+      class="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-6"
+    >
       <DashboardBalanceCard
         :formatted-balance="formatCurrency(balance, activeCurrency)"
         :trend-display="trendDisplay"
@@ -39,9 +42,7 @@
         :default-currency="defaultCurrency"
       />
 
-      <DashboardCharts
-        :monthly-data="monthlyData"
-      />
+      <DashboardCharts :monthly-data="monthlyData" />
 
       <!-- Side Section: Budget/Accounts/Reminders (2 cols) -->
       <div class="flex flex-col gap-4 md:col-span-6 lg:col-span-2">
@@ -61,10 +62,7 @@
       />
 
       <!-- Quick Accounts -->
-      <BaseCard
-        class="md:col-span-6"
-        :title="$t('dashboard.accounts_title')"
-      >
+      <BaseCard class="md:col-span-6" :title="$t('dashboard.accounts_title')">
         <template #action>
           <router-link
             to="/accounts"
@@ -85,12 +83,7 @@
                   <div
                     class="flex size-7 items-center justify-center rounded-lg bg-zinc-950 dark:bg-white shadow-sm border border-border/50"
                   >
-                    <AccountIcon
-                      v-if="acct.icon"
-                      :icon="acct.icon"
-                      :type="acct.type"
-                      :size="14"
-                    />
+                    <AccountIcon v-if="acct.icon" :icon="acct.icon" :type="acct.type" :size="14" />
                   </div>
                   <span class="truncate text-xs font-bold text-foreground">{{ acct.name }}</span>
                 </div>
@@ -113,8 +106,20 @@
 
       <DashboardQuickActions
         class="md:col-span-6"
-        :action1="{ icon: 'hugeicons:add-01', color: '#4f46e5', title: $t('dashboard.actions_add_transaction'), desc: $t('dashboard.actions_add_transaction_desc'), to: '/transactions/new' }"
-        :action2="{ icon: 'hugeicons:grid-view', color: '#f59e0b', title: $t('dashboard.actions_manage_categories'), desc: $t('dashboard.actions_manage_categories_desc'), to: '/categories' }"
+        :action1="{
+          icon: 'hugeicons:add-01',
+          color: '#4f46e5',
+          title: $t('dashboard.actions_add_transaction'),
+          desc: $t('dashboard.actions_add_transaction_desc'),
+          to: '/transactions/new',
+        }"
+        :action2="{
+          icon: 'hugeicons:grid-view',
+          color: '#f59e0b',
+          title: $t('dashboard.actions_manage_categories'),
+          desc: $t('dashboard.actions_manage_categories_desc'),
+          to: '/categories',
+        }"
         @navigate="(to) => router.push(to)"
       />
     </div>
@@ -124,7 +129,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
 import { getTransactionSummary as getTxSummaryService } from '@/services/transaction.service'
-import type { BudgetWithProgress, AccountWithBalance, TransactionType } from "@/types"
+import type { BudgetWithProgress, AccountWithBalance, TransactionType } from '@/types'
 
 defineOptions({
   name: 'DashboardPage',
@@ -161,7 +166,9 @@ const startDate = computed(() => {
   const now = new Date()
   if (period.value === 'all') return '1970-01-01'
   const daysMap = { '1d': 0, '7d': 6, '30d': 29 }
-  const d = new Date(now.getTime() - (daysMap[period.value as keyof typeof daysMap] || 0) * 24 * 60 * 60 * 1000)
+  const d = new Date(
+    now.getTime() - (daysMap[period.value as keyof typeof daysMap] || 0) * 24 * 60 * 60 * 1000,
+  )
   return formatDateSafe(d)
 })
 
@@ -186,13 +193,13 @@ const prevSummaryParams = computed(() => {
   const now = new Date()
   const daysMap = { '1d': 1, '7d': 7, '30d': 30 }
   const days = daysMap[period.value as keyof typeof daysMap] || 0
-  
+
   const end = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
   const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000)
-  
+
   return {
     start: formatDateSafe(start),
-    end: formatDateSafe(end)
+    end: formatDateSafe(end),
   }
 })
 
@@ -204,7 +211,7 @@ const { data: prevSummary } = useQuery({
       targetUserId.value,
       prevSummaryParams.value.start,
       prevSummaryParams.value.end,
-      activeCurrency.value
+      activeCurrency.value,
     )
     if (result.error) throw result.error
     return result.data
@@ -254,7 +261,11 @@ const viewModes = computed(() => [
 ])
 
 const displayName = computed(() => {
-  const name = myProfile.value?.display_name || user.value?.user_metadata?.full_name || user.value?.user_metadata?.name || ''
+  const name =
+    myProfile.value?.display_name ||
+    user.value?.user_metadata?.full_name ||
+    user.value?.user_metadata?.name ||
+    ''
   if (!name) {
     return t('dashboard.user')
   }
@@ -400,11 +411,7 @@ onMounted(async () => {
   await processDueRecurring()
 
   const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`
-  await Promise.all([
-    fetchBudgetWithProgress(monthStr),
-    fetchAccounts(),
-    fetchAccountBalances(),
-  ])
+  await Promise.all([fetchBudgetWithProgress(monthStr), fetchAccounts(), fetchAccountBalances()])
   budgetSummaries.value = budgetsWithProgress.value
 
   // Check budget thresholds for alerts after fresh budget data is loaded

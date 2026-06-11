@@ -87,9 +87,9 @@
         >
           <AppIcon name="hugeicons:user" :size="14" class="text-primary" />
           <span>{{ partnerDisplayName }}</span>
-          <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground"
-            >{{ $t('sidebar.partner') }}</span
-          >
+          <span class="ml-auto text-[8px] uppercase tracking-widest text-muted-foreground">{{
+            $t('sidebar.partner')
+          }}</span>
         </router-link>
       </div>
     </ClientOnly>

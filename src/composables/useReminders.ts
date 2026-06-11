@@ -72,7 +72,9 @@ export const useReminders = () => {
         }
       })
 
-    return [...recurringReminders, ...subscriptionReminders].sort((a, b) => a.days_left - b.days_left)
+    return [...recurringReminders, ...subscriptionReminders].sort(
+      (a, b) => a.days_left - b.days_left,
+    )
   })
 
   const activeReminders = computed(() => {

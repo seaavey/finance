@@ -44,7 +44,11 @@ export const useBudgets = () => {
     isLoading: progressLoading,
     refetch: _refetchBudgetProgress,
   } = useQuery({
-    queryKey: ['budgets:with-progress', computed(() => targetUserId.value || user.value?.id), currentMonth],
+    queryKey: [
+      'budgets:with-progress',
+      computed(() => targetUserId.value || user.value?.id),
+      currentMonth,
+    ],
     queryFn: async () => {
       const uid = targetUserId.value || user.value?.id
       if (!uid || !currentMonth.value) return []

@@ -153,7 +153,54 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 defineOptions({
   name: 'PagesGoalsDetailEdit',
 })
@@ -166,7 +213,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 import { cn } from '@/lib/utils'
-
 
 const router = useRouter()
 const route = useRoute()

@@ -55,11 +55,7 @@ export const useCategoryStats = (
     queryKey: ['category-stats', userId, startDate, endDate],
     queryFn: async () => {
       if (!userId.value) return []
-      const result = await getCategoryStatsService(
-        userId.value,
-        startDate?.value,
-        endDate?.value,
-      )
+      const result = await getCategoryStatsService(userId.value, startDate?.value, endDate?.value)
       if (result.error) throw result.error
       return result.data || []
     },
@@ -109,7 +105,11 @@ export const useTransactions = () => {
 
   const partnerId = computed(() => partner.value?.id)
 
-  const { data: transactionsData, isLoading: loading, refetch: refetchTransactions } = useQuery({
+  const {
+    data: transactionsData,
+    isLoading: loading,
+    refetch: refetchTransactions,
+  } = useQuery({
     queryKey: [
       'transactions',
       computed(() => user.value?.id),
@@ -121,13 +121,19 @@ export const useTransactions = () => {
     queryFn: async () => {
       if (!user.value) return { data: [], count: 0 }
 
-      const result = await queryTransactions(user.value.id, serverFilters.value, currentPage.value, pageSize.value, partnerId.value)
+      const result = await queryTransactions(
+        user.value.id,
+        serverFilters.value,
+        currentPage.value,
+        pageSize.value,
+        partnerId.value,
+      )
       if (result.error) throw result.error
 
       totalCount.value = result.data?.count || 0
       return {
         data: (result.data?.data as Transaction[]) || [],
-        count: result.data?.count || 0
+        count: result.data?.count || 0,
       }
     },
     enabled: computed(() => !!user.value),
@@ -152,9 +158,7 @@ export const useTransactions = () => {
     await goToPage(currentPage.value + delta)
   }
 
-  const addTransaction = async (
-    tx: Omit<TransactionInsert, 'user_id' | 'created_at'>,
-  ) => {
+  const addTransaction = async (tx: Omit<TransactionInsert, 'user_id' | 'created_at'>) => {
     if (!user.value) return { error: { message: 'Not authenticated' } }
 
     const result = await createTxService({ ...tx, user_id: user.value.id } as TransactionInsert)
@@ -226,10 +230,7 @@ export const useTransactions = () => {
     return { error: result.error }
   }
 
-  const updateTransaction = async (
-    id: string,
-    updates: TransactionUpdate,
-  ) => {
+  const updateTransaction = async (id: string, updates: TransactionUpdate) => {
     const result = await updateTxService(id, updates)
 
     if (!result.error) {
@@ -263,10 +264,7 @@ export const useTransactions = () => {
     return { error: result.error }
   }
 
-  const bulkUpdateTransactions = async (
-    ids: string[],
-    updates: TransactionUpdate,
-  ) => {
+  const bulkUpdateTransactions = async (ids: string[], updates: TransactionUpdate) => {
     if (ids.length === 0) return { error: null }
     const result = await bulkUpdateTxService(ids, updates)
 

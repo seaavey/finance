@@ -55,8 +55,6 @@
 </template>
 
 <script setup lang="ts">
-
-
 import type { TransactionFilters, TransactionType } from '@/types'
 
 const emit = defineEmits<{

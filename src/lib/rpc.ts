@@ -55,12 +55,18 @@ export async function callEdgeFunction<T = unknown>(
     const data: T = await res.json()
 
     if (!res.ok) {
-      const msg = res.status === 401 || res.status === 403 ? 'Unauthorized' : `Edge function error: ${res.status}`
+      const msg =
+        res.status === 401 || res.status === 403
+          ? 'Unauthorized'
+          : `Edge function error: ${res.status}`
       return { data: null, error: new AppError(msg, `EDGE_${res.status}`) }
     }
 
     return { data, error: null }
   } catch (e) {
-    return { data: null, error: new AppError('Network error calling edge function', 'EDGE_NETWORK') }
+    return {
+      data: null,
+      error: new AppError('Network error calling edge function', 'EDGE_NETWORK'),
+    }
   }
 }

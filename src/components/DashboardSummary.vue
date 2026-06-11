@@ -3,7 +3,9 @@
     <Card class="col-span-1">
       <CardContent class="p-3">
         <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.income') }}</p>
-        <p class="text-sm font-bold text-green-600 dark:text-green-400">{{ formatCurrency(summary.income) }}</p>
+        <p class="text-sm font-bold text-green-600 dark:text-green-400">
+          {{ formatCurrency(summary.income) }}
+        </p>
         <p v-if="convertedIncome !== null" class="text-[9px] text-muted-foreground">
           ≈ {{ formatCurrency(convertedIncome, 'USD') }}
         </p>
@@ -12,7 +14,9 @@
     <Card class="col-span-1">
       <CardContent class="p-3">
         <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.expense') }}</p>
-        <p class="text-sm font-bold text-red-600 dark:text-red-400">{{ formatCurrency(summary.expense) }}</p>
+        <p class="text-sm font-bold text-red-600 dark:text-red-400">
+          {{ formatCurrency(summary.expense) }}
+        </p>
         <p v-if="convertedExpense !== null" class="text-[9px] text-muted-foreground">
           ≈ {{ formatCurrency(convertedExpense, 'USD') }}
         </p>
@@ -23,7 +27,11 @@
         <p class="text-[10px] font-medium text-muted-foreground">{{ $t('dashboard.balance') }}</p>
         <p
           class="text-sm font-bold"
-          :class="summary.balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
+          :class="
+            summary.balance >= 0
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400'
+          "
         >
           {{ formatCurrency(summary.balance) }}
         </p>

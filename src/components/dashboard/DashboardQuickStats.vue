@@ -48,7 +48,7 @@ const props = defineProps<{
 const { formatCurrency, defaultCurrency } = useCurrency()
 
 const daysInPeriod = computed(() => {
-  const map = { '1d': 1, '7d': 7, '30d': 30, 'all': 0 }
+  const map = { '1d': 1, '7d': 7, '30d': 30, all: 0 }
   return map[props.period]
 })
 
@@ -92,7 +92,7 @@ const budgetUsedDisplay = computed(() => {
 
 const budgetTrend = computed(() => {
   if (budgetUsedPercent.value === null) return undefined
-  return budgetUsedPercent.value > 80 ? 'up' as const : undefined
+  return budgetUsedPercent.value > 80 ? ('up' as const) : undefined
 })
 
 const budgetTrendLabel = computed(() => {

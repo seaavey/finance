@@ -41,20 +41,28 @@ const bgClasses = computed(() => {
   >
     <div class="relative z-10">
       <div class="flex items-center gap-2">
-        <p class="text-[10px] font-black uppercase tracking-widest opacity-70 truncate" :class="colorClasses">
+        <p
+          class="text-[10px] font-black uppercase tracking-widest opacity-70 truncate"
+          :class="colorClasses"
+        >
           {{ label }}
         </p>
         <div
           v-if="trend"
           class="flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] font-black shrink-0"
-          :class="trend === 'up' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'"
+          :class="
+            trend === 'up' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+          "
         >
-          <AppIcon :name="trend === 'up' ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'" :size="10" />
+          <AppIcon
+            :name="trend === 'up' ? 'hugeicons:arrow-up-01' : 'hugeicons:arrow-down-01'"
+            :size="10"
+          />
           {{ trendValue }}
         </div>
       </div>
-      <h3 
-        class="mt-2 text-2xl font-black tracking-tighter truncate" 
+      <h3
+        class="mt-2 text-2xl font-black tracking-tighter truncate"
         :class="colorClasses"
         :title="typeof value === 'number' ? formatCurrency(value, currency) : String(value)"
       >

@@ -30,11 +30,13 @@ defineProps<{
     <!-- CARD CONTENT -->
     <div
       :class="[
-        noPadding ? 'p-0' : {
-          'p-4': paddingSize === 'sm',
-          'p-6': paddingSize === 'md' || !paddingSize,
-          'p-6 md:p-10': paddingSize === 'lg',
-        }
+        noPadding
+          ? 'p-0'
+          : {
+              'p-4': paddingSize === 'sm',
+              'p-6': paddingSize === 'md' || !paddingSize,
+              'p-6 md:p-10': paddingSize === 'lg',
+            },
       ]"
     >
       <slot />

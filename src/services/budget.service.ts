@@ -1,7 +1,13 @@
 import { useSupabase } from '@/lib/supabase'
 import { BUDGET_FIELDS } from '@/services/fields'
 import { queryList, mutationWithReturn, mutationVoid } from '@/lib/query-wrapper'
-import { calculateSpendingByCategory, getNextMonth, getPrevMonth, calculateProgress as calcBudgetProgress, calculateRollover } from '@/lib/budget-util'
+import {
+  calculateSpendingByCategory,
+  getNextMonth,
+  getPrevMonth,
+  calculateProgress as calcBudgetProgress,
+  calculateRollover,
+} from '@/lib/budget-util'
 import type { Result, BudgetWithProgress, BudgetRow, BudgetUpdate } from '@/types'
 import { AppError } from '@/types/result'
 import { validateAmount } from '@/lib/utils'
@@ -9,7 +15,12 @@ import { validateAmount } from '@/lib/utils'
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
   return queryList<BudgetRow>(
-    supabase.from('budgets').select(BUDGET_FIELDS).eq('user_id', userId).eq('month', month).order('created_at'),
+    supabase
+      .from('budgets')
+      .select(BUDGET_FIELDS)
+      .eq('user_id', userId)
+      .eq('month', month)
+      .order('created_at'),
   )
 }
 
@@ -24,14 +35,17 @@ export async function createBudget(
   const valid = validateAmount(amount, true)
   if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   return mutationWithReturn<BudgetRow>(
-    supabase.from('budgets').insert({ user_id: userId, category_id: categoryId, month, amount: amount, name: name || null }),
+    supabase.from('budgets').insert({
+      user_id: userId,
+      category_id: categoryId,
+      month,
+      amount: amount,
+      name: name || null,
+    }),
   )
 }
 
-export async function updateBudget(
-  id: string,
-  updates: BudgetUpdate,
-): Promise<Result<BudgetRow>> {
+export async function updateBudget(id: string, updates: BudgetUpdate): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
   if (updates.amount !== undefined) {
     const valid = validateAmount(updates.amount, true)

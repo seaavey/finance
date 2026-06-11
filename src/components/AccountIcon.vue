@@ -91,10 +91,7 @@ const handleImageError = () => {
       </div>
 
       <!-- Generic Fallback -->
-      <div
-        v-else
-        class="flex size-full items-center justify-center rounded-lg"
-      >
+      <div v-else class="flex size-full items-center justify-center rounded-lg">
         <AppIcon
           :name="type === 'bank' ? 'hugeicons:bank' : 'hugeicons:wallet-03'"
           :size="Number(size) * 0.6"

@@ -9,19 +9,13 @@ import { AppError } from '@/types/result'
 export async function queryAccounts(userId: string): Promise<Result<Account[]>> {
   const supabase = useSupabase()
   return queryList<Account>(
-    supabase
-      .from('accounts')
-      .select(ACCOUNT_FIELDS)
-      .eq('user_id', userId)
-      .order('created_at'),
+    supabase.from('accounts').select(ACCOUNT_FIELDS).eq('user_id', userId).order('created_at'),
   )
 }
 
 export async function getAccount(id: string): Promise<Result<Account>> {
   const supabase = useSupabase()
-  return querySingle<Account>(
-    supabase.from('accounts').select(ACCOUNT_FIELDS).eq('id', id),
-  )
+  return querySingle<Account>(supabase.from('accounts').select(ACCOUNT_FIELDS).eq('id', id))
 }
 
 export async function createAccount(account: AccountInsert): Promise<Result<Account>> {
@@ -30,9 +24,7 @@ export async function createAccount(account: AccountInsert): Promise<Result<Acco
     const valid = validateAmount(account.initial_balance, true)
     if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   }
-  return mutationWithReturn<Account>(
-    supabase.from('accounts').insert(account),
-  )
+  return mutationWithReturn<Account>(supabase.from('accounts').insert(account))
 }
 
 export async function updateAccount(id: string, updates: AccountUpdate): Promise<Result<Account>> {
@@ -41,16 +33,12 @@ export async function updateAccount(id: string, updates: AccountUpdate): Promise
     const valid = validateAmount(updates.initial_balance, true)
     if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
   }
-  return mutationWithReturn<Account>(
-    supabase.from('accounts').update(updates).eq('id', id),
-  )
+  return mutationWithReturn<Account>(supabase.from('accounts').update(updates).eq('id', id))
 }
 
 export async function deleteAccount(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
-  return mutationVoid(
-    supabase.from('accounts').delete().eq('id', id),
-  )
+  return mutationVoid(supabase.from('accounts').delete().eq('id', id))
 }
 
 export async function queryAccountBalances(userId: string): Promise<Result<AccountWithBalance[]>> {

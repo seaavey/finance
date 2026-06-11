@@ -15,11 +15,7 @@
     </div>
 
     <div v-else class="space-y-8">
-      <ProfileSettings
-        :profile="profile"
-        :user="user"
-        :is-partnered="isPartnered"
-      />
+      <ProfileSettings :profile="profile" :user="user" :is-partnered="isPartnered" />
 
       <AppearanceSettings
         :profile="profile"
@@ -49,10 +45,7 @@
         @show-disconnect="showDisconnectDialog = true"
       />
 
-      <ExportSettings
-        :export-label="exportLabel"
-        @export-data="exportData"
-      />
+      <ExportSettings :export-label="exportLabel" @export-data="exportData" />
 
       <!-- DANGER ZONE -->
       <section>

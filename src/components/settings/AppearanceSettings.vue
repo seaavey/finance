@@ -1,8 +1,6 @@
 <template>
   <section>
-    <h3
-      class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-    >
+    <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
       {{ $t('settings.preferences') }}
     </h3>
     <div

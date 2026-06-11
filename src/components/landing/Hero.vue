@@ -126,9 +126,15 @@
           <!-- Browser-like Top bar -->
           <div class="flex items-center gap-3 border-b border-border/50 px-6 py-4 bg-muted/30">
             <div class="flex gap-2">
-              <div class="h-3 w-3 rounded-full bg-rose-500/40 border border-rose-500/20 dark:bg-rose-500/60 dark:border-rose-500/40" />
-              <div class="h-3 w-3 rounded-full bg-amber-500/40 border border-amber-500/20 dark:bg-amber-500/60 dark:border-amber-500/40" />
-              <div class="h-3 w-3 rounded-full bg-emerald-500/40 border border-emerald-500/20 dark:bg-emerald-500/60 dark:border-emerald-500/40" />
+              <div
+                class="h-3 w-3 rounded-full bg-rose-500/40 border border-rose-500/20 dark:bg-rose-500/60 dark:border-rose-500/40"
+              />
+              <div
+                class="h-3 w-3 rounded-full bg-amber-500/40 border border-amber-500/20 dark:bg-amber-500/60 dark:border-amber-500/40"
+              />
+              <div
+                class="h-3 w-3 rounded-full bg-emerald-500/40 border border-emerald-500/20 dark:bg-emerald-500/60 dark:border-emerald-500/40"
+              />
             </div>
             <div class="flex-1 flex justify-center">
               <div
@@ -170,7 +176,9 @@
                 >
                   {{ $t('landing.hero_preview.income') }}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400">
+                <p
+                  class="mt-2 text-3xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400"
+                >
                   Rp 18.200.000
                 </p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-emerald-500/10">
@@ -189,7 +197,11 @@
                 >
                   {{ $t('landing.hero_preview.expense') }}
                 </p>
-                <p class="mt-2 text-3xl font-black tracking-tighter text-rose-500 dark:text-rose-400">Rp 5.750.000</p>
+                <p
+                  class="mt-2 text-3xl font-black tracking-tighter text-rose-500 dark:text-rose-400"
+                >
+                  Rp 5.750.000
+                </p>
                 <div class="mt-6 h-1.5 w-full rounded-full bg-rose-500/10">
                   <div
                     class="h-full w-1/3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
@@ -291,7 +303,11 @@
               <p class="text-[10px] font-black text-muted-foreground/90 uppercase tracking-widest">
                 {{ $t('landing.hero_preview.savings') }}
               </p>
-              <p class="text-2xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400">Rp 2.100.000</p>
+              <p
+                class="text-2xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400"
+              >
+                Rp 2.100.000
+              </p>
             </div>
           </div>
         </div>

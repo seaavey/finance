@@ -1,8 +1,12 @@
 <template>
-  <div class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30">
+  <div
+    class="space-y-4 rounded-3xl border border-border/50 bg-card/20 p-4 md:p-5 shadow-sm transition-all hover:bg-card/30"
+  >
     <div class="flex items-start justify-between gap-3">
       <div>
-        <Label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+        <Label
+          class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+        >
           <AppIcon name="hugeicons:share-07" :size="12" />
           {{ $t('transaction_form.split_transaction') }}
         </Label>
@@ -59,11 +63,19 @@
           class="flex items-center gap-2 text-xs font-medium"
           :class="totalMismatch ? 'text-destructive' : 'text-muted-foreground'"
         >
-          <AppIcon :name="totalMismatch ? 'hugeicons:alert-circle' : 'hugeicons:tick-01'" :size="14" />
+          <AppIcon
+            :name="totalMismatch ? 'hugeicons:alert-circle' : 'hugeicons:tick-01'"
+            :size="14"
+          />
           {{ formattedSplitTotal }} / {{ formattedAmount }}
         </div>
         <div class="flex-1" />
-        <Button variant="outline" size="sm" class="h-8 rounded-xl border-dashed px-3 text-xs font-bold" @click="emit('add')">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-8 rounded-xl border-dashed px-3 text-xs font-bold"
+          @click="emit('add')"
+        >
           <AppIcon name="hugeicons:plus-sign" :size="14" class="mr-1" />
           {{ $t('transaction_form.split_add') }}
         </Button>

@@ -230,18 +230,19 @@ export const useCurrency = () => {
       if (!res.ok) return null
       const data = await res.json()
 
-      return Object.entries(data.rates || {}).map(([date, rates]: [string, any]) => {
-        const rateFrom = from === 'EUR' ? 1 : rates[from]
-        const rateTo = to === 'EUR' ? 1 : rates[to]
+      return Object.entries(data.rates || {})
+        .map(([date, rates]: [string, any]) => {
+          const rateFrom = from === 'EUR' ? 1 : rates[from]
+          const rateTo = to === 'EUR' ? 1 : rates[to]
 
-        return {
-          date,
-          // If we want from -> to, and we have EUR -> from and EUR -> to:
-          // 1 from = (1/rateFrom) EUR
-          // (1/rateFrom) EUR = (rateTo/rateFrom) to
-          value: rateFrom && rateTo ? rateTo / rateFrom : undefined,
-        }
-      })
+          return {
+            date,
+            // If we want from -> to, and we have EUR -> from and EUR -> to:
+            // 1 from = (1/rateFrom) EUR
+            // (1/rateFrom) EUR = (rateTo/rateFrom) to
+            value: rateFrom && rateTo ? rateTo / rateFrom : undefined,
+          }
+        })
         .filter((item) => item.value !== undefined)
         .sort((a, b) => a.date.localeCompare(b.date)) as { date: string; value: number }[]
     } catch {

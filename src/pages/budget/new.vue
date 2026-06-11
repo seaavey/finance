@@ -59,7 +59,12 @@ onMounted(async () => {
 <template>
   <div class="mx-auto max-w-2xl space-y-8 pb-12 pt-4">
     <div>
-      <Button variant="ghost" size="sm" class="mb-4 rounded-xl px-2" @click="router.push('/budget')">
+      <Button
+        variant="ghost"
+        size="sm"
+        class="mb-4 rounded-xl px-2"
+        @click="router.push('/budget')"
+      >
         <AppIcon name="hugeicons:arrow-left-01" :size="16" class="mr-1" />
         {{ $t('common.back') }}
       </Button>

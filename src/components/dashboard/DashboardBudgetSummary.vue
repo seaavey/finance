@@ -1,8 +1,5 @@
 <template>
-  <BaseCard
-    class="flex-1"
-    :title="$t('budget.dashboard_title')"
-  >
+  <BaseCard class="flex-1" :title="$t('budget.dashboard_title')">
     <template #action>
       <router-link
         to="/budget"

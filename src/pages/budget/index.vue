@@ -1,5 +1,52 @@
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 defineOptions({
   name: 'PagesBudgetIndex',
 })
@@ -7,11 +54,11 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDateSafe } from '@/lib/utils'
 
-
 const router = useRouter()
 const { t, locale } = useI18n()
 const { fetchCategories } = useCategories()
-const { loading, fetchBudgetWithProgress, budgetsWithProgress, deleteBudget, getProgress } = useBudgets()
+const { loading, fetchBudgetWithProgress, budgetsWithProgress, deleteBudget, getProgress } =
+  useBudgets()
 const { partner, isPartnered, partnerDisplayName } = usePartner()
 const { formatCurrency: fmtCurrency } = useCurrency()
 const { user, getSession } = useAuth()
@@ -33,7 +80,10 @@ const budgetList = computed(() => {
 
 const totals = computed(() => {
   const totalLimit = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.amount, 0)
-  const totalRollover = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.rollover, 0)
+  const totalRollover = budgetList.value.reduce(
+    (s: number, b: BudgetWithProgress) => s + b.rollover,
+    0,
+  )
   const totalSpent = budgetList.value.reduce((s: number, b: BudgetWithProgress) => s + b.spent, 0)
   const effectiveLimit = totalLimit + totalRollover
   return {
@@ -290,8 +340,12 @@ const goToDetail = (budget: BudgetWithProgress) => {
                 />
               </div>
               <div>
-                <p class="text-sm font-semibold text-foreground">{{ budget.name || budget.category_name }}</p>
-                <p v-if="budget.name" class="text-xs text-muted-foreground">{{ budget.category_name }}</p>
+                <p class="text-sm font-semibold text-foreground">
+                  {{ budget.name || budget.category_name }}
+                </p>
+                <p v-if="budget.name" class="text-xs text-muted-foreground">
+                  {{ budget.category_name }}
+                </p>
                 <p class="text-xs text-muted-foreground">
                   {{ $t('budget.monthly_limit') }}: {{ fmtCurrency(budget.amount) }}
                   <span

@@ -22,7 +22,7 @@ const { locale } = useI18n()
 const { currencies, defaultCurrency } = useCurrency()
 const { addRecurring } = useRecurring()
 const { fetchCategories } = useCategories()
-import type { TransactionType } from "@/types"
+import type { TransactionType } from '@/types'
 
 const df = new DateFormatter(locale.value === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'long' })
 const todayDate = today(getLocalTimeZone()).toString()

@@ -35,7 +35,12 @@ export async function createGoal(goal: GoalInsert): Promise<Result<GoalRow>> {
 
 export async function updateGoal(id: string, updates: GoalUpdate): Promise<Result<GoalRow>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase.from('goals').update(updates).eq('id', id).select().single()
+  const { data, error } = await supabase
+    .from('goals')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data, error: null }
@@ -54,7 +59,8 @@ export async function addGoalFunds(goalId: string, amount: number): Promise<Resu
   if (valid.error) return { data: null, error: new AppError(valid.error, 'VALIDATION_ERROR') }
 
   const { data: goal, error: fetchError } = await getGoal(goalId)
-  if (fetchError || !goal) return { data: null, error: fetchError || new AppError('Goal not found', 'NOT_FOUND') }
+  if (fetchError || !goal)
+    return { data: null, error: fetchError || new AppError('Goal not found', 'NOT_FOUND') }
 
   const newAmount = Number(goal.current_amount) + (valid.value ?? 0)
   return updateGoal(goalId, { current_amount: newAmount })

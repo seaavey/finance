@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-wrap items-center gap-3 border-b border-border/50 px-4 py-3 md:px-6">
-    <Select :model-value="categoryFilter" @update:model-value="emit('update:categoryFilter', String($event))">
+    <Select
+      :model-value="categoryFilter"
+      @update:model-value="emit('update:categoryFilter', String($event))"
+    >
       <SelectTrigger class="h-8 w-44 rounded-xl text-xs font-medium">
         <SelectValue :placeholder="$t('transactions.all_categories')" />
       </SelectTrigger>
@@ -10,14 +13,21 @@
         </SelectItem>
 
         <SelectGroup>
-          <SelectLabel class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5">
+          <SelectLabel
+            class="text-[11px] font-bold text-emerald-600 tracking-wider uppercase px-2 py-1.5"
+          >
             {{ $t('transactions.income') }}
           </SelectLabel>
           <SelectItem v-for="cat in incomeCategories" :key="cat.id" :value="cat.id" class="w-full">
             <div class="flex w-full items-center gap-2">
-              <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color || undefined }" />
+              <div
+                class="size-2.5 shrink-0 rounded-full"
+                :style="{ backgroundColor: cat.color || undefined }"
+              />
               <span class="truncate">{{ cat.name }}</span>
-              <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
+              <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
+                categoryCounts[cat.id] || 0
+              }}</span>
             </div>
           </SelectItem>
         </SelectGroup>
@@ -25,21 +35,32 @@
         <SelectSeparator class="mx-2 my-1" />
 
         <SelectGroup>
-          <SelectLabel class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5">
+          <SelectLabel
+            class="text-[11px] font-bold text-rose-600 tracking-wider uppercase px-2 py-1.5"
+          >
             {{ $t('transactions.expense') }}
           </SelectLabel>
           <SelectItem v-for="cat in expenseCategories" :key="cat.id" :value="cat.id" class="w-full">
             <div class="flex w-full items-center gap-2">
-              <div class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: cat.color || undefined }" />
+              <div
+                class="size-2.5 shrink-0 rounded-full"
+                :style="{ backgroundColor: cat.color || undefined }"
+              />
               <span class="truncate">{{ cat.name }}</span>
-              <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{ categoryCounts[cat.id] || 0 }}</span>
+              <span class="ml-auto text-xs font-bold text-muted-foreground/50">{{
+                categoryCounts[cat.id] || 0
+              }}</span>
             </div>
           </SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
 
-    <Select v-if="isPartnered" :model-value="ownerFilter" @update:model-value="emit('update:ownerFilter', $event as OwnerFilter)">
+    <Select
+      v-if="isPartnered"
+      :model-value="ownerFilter"
+      @update:model-value="emit('update:ownerFilter', $event as OwnerFilter)"
+    >
       <SelectTrigger class="h-8 w-fit min-w-[100px] rounded-xl text-xs font-medium">
         <SelectValue />
       </SelectTrigger>
@@ -66,7 +87,10 @@
       </SelectContent>
     </Select>
 
-    <DateRangePicker :model-value="dateRange" @update:model-value="emit('update:dateRange', $event)" />
+    <DateRangePicker
+      :model-value="dateRange"
+      @update:model-value="emit('update:dateRange', $event)"
+    />
   </div>
 </template>
 

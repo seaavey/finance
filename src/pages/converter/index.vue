@@ -1,5 +1,7 @@
 <template>
-  <div class="mx-auto max-w-2xl space-y-6 px-4 py-5 sm:space-y-10 sm:py-8 md:space-y-12 md:py-8 md:px-0">
+  <div
+    class="mx-auto max-w-2xl space-y-6 px-4 py-5 sm:space-y-10 sm:py-8 md:space-y-12 md:py-8 md:px-0"
+  >
     <!-- HEADER -->
     <div class="text-center space-y-1 sm:space-y-2">
       <h2 class="text-2xl font-black tracking-tighter text-foreground sm:text-4xl md:text-5xl">
@@ -13,7 +15,9 @@
     <!-- HERO CONVERTER -->
     <div class="space-y-2 sm:space-y-4">
       <!-- FROM INPUT -->
-      <div class="group relative rounded-2xl bg-card/10 p-3 transition-all hover:bg-card/20 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8">
+      <div
+        class="group relative rounded-2xl bg-card/10 p-3 transition-all hover:bg-card/20 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8"
+      >
         <div class="flex items-center gap-3 sm:gap-4">
           <!-- Currency select as a prominent tappable badge on the left -->
           <Select v-model="fromCurrency">
@@ -26,9 +30,10 @@
             </SelectTrigger>
             <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel class="text-[10px] font-black uppercase tracking-widest text-primary">{{
-                  group.label
-                }}</SelectLabel>
+                <SelectLabel
+                  class="text-[10px] font-black uppercase tracking-widest text-primary"
+                  >{{ group.label }}</SelectLabel
+                >
                 <SelectItem
                   v-for="cur in group.currencies"
                   :key="cur.value"
@@ -70,7 +75,9 @@
       </div>
 
       <!-- TO DISPLAY -->
-      <div class="group relative rounded-2xl bg-card/5 p-3 transition-all hover:bg-card/10 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8">
+      <div
+        class="group relative rounded-2xl bg-card/5 p-3 transition-all hover:bg-card/10 sm:rounded-3xl sm:p-5 md:rounded-4xl md:p-8"
+      >
         <div class="flex items-center gap-3 sm:gap-4">
           <!-- Currency select on the left -->
           <Select v-model="toCurrency">
@@ -83,9 +90,10 @@
             </SelectTrigger>
             <SelectContent class="rounded-2xl border-border/50 backdrop-blur-xl">
               <SelectGroup v-for="group in currencyGroups" :key="group.label">
-                <SelectLabel class="text-[10px] font-black uppercase tracking-widest text-primary">{{
-                  group.label
-                }}</SelectLabel>
+                <SelectLabel
+                  class="text-[10px] font-black uppercase tracking-widest text-primary"
+                  >{{ group.label }}</SelectLabel
+                >
                 <SelectItem
                   v-for="cur in group.currencies"
                   :key="cur.value"
@@ -113,8 +121,8 @@
         <span
           class="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1 text-[11px] font-bold text-primary animate-in fade-in slide-in-from-bottom-2 sm:gap-2 sm:px-4 sm:py-1.5 sm:text-xs"
         >
-          1 {{ displayRate.from }} =
-          {{ formatNumberOnly(displayRate.amount, displayRate.to, 4) }} {{ displayRate.to }}
+          1 {{ displayRate.from }} = {{ formatNumberOnly(displayRate.amount, displayRate.to, 4) }}
+          {{ displayRate.to }}
         </span>
       </div>
     </div>
@@ -153,12 +161,7 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 
-const {
-  currencyGroups,
-  formatNumberOnly,
-  parseLocalizedNumber,
-  convertTo,
-} = useCurrency()
+const { currencyGroups, formatNumberOnly, parseLocalizedNumber, convertTo } = useCurrency()
 
 const fromCurrency = ref('USD')
 const toCurrency = ref('IDR')

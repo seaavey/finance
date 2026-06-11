@@ -45,7 +45,12 @@ const mockSupabase: MockSupabaseChain = {
   gte: () => mockSupabase,
   lte: () => mockSupabase,
   in: () => mockSupabase,
-  then: (resolve) => resolve({ data: mockReturnData, count: Array.isArray(mockReturnData) ? mockReturnData.length : 1, error: null }),
+  then: (resolve) =>
+    resolve({
+      data: mockReturnData,
+      count: Array.isArray(mockReturnData) ? mockReturnData.length : 1,
+      error: null,
+    }),
 }
 
 mock.module('@/lib/supabase', () => ({
@@ -73,7 +78,7 @@ describe('Transaction Service: createTransfer', () => {
       currency: 'IDR',
       date: '2026-06-07',
       description: 'Pocket money',
-      category_id: 'cat-transfer'
+      category_id: 'cat-transfer',
     }
     const result = await createTransfer('user-123', transferData)
 

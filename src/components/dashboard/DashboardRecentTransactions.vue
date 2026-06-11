@@ -20,11 +20,7 @@
         class="flex flex-col items-center gap-4 py-12 text-center"
       >
         <div class="flex size-16 items-center justify-center rounded-full bg-muted/50">
-          <AppIcon
-            name="hugeicons:arrow-left-right"
-            :size="32"
-            class="text-muted-foreground/30"
-          />
+          <AppIcon name="hugeicons:arrow-left-right" :size="32" class="text-muted-foreground/30" />
         </div>
         <div>
           <p class="text-base font-black text-foreground tracking-tight">
@@ -59,9 +55,7 @@
             <div class="flex items-center gap-2">
               <p class="truncate text-sm font-black text-foreground">
                 {{
-                  tx.description ||
-                  getCategoryName(tx.category_id) ||
-                  $t('sidebar.transactions')
+                  tx.description || getCategoryName(tx.category_id) || $t('sidebar.transactions')
                 }}
               </p>
               <span
@@ -78,12 +72,11 @@
           <p
             class="shrink-0 text-lg font-black tracking-tighter"
             :class="
-              tx.type === 'income'
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-foreground'
+              tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'
             "
           >
-            {{ tx.type === 'income' ? '+' : '-' }}{{ formatCurrency(tx.amount, tx.currency || undefined) }}
+            {{ tx.type === 'income' ? '+' : '-'
+            }}{{ formatCurrency(tx.amount, tx.currency || undefined) }}
           </p>
         </router-link>
       </div>

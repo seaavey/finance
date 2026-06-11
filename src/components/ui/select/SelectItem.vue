@@ -6,7 +6,9 @@ import { reactiveOmit } from '@vueuse/core'
 import { SelectItem, SelectItemIndicator, SelectItemText, useForwardProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
-const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'], textValue?: string }>()
+const props = defineProps<
+  SelectItemProps & { class?: HTMLAttributes['class']; textValue?: string }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 

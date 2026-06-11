@@ -1,10 +1,22 @@
 import { useSupabase } from '@/lib/supabase'
 import { rpc } from '@/lib/rpc'
 import { TRANSACTION_FIELDS } from '@/services/fields'
-import { queryWithCount, querySingle, mutationWithReturn, mutationVoid, queryList } from '@/lib/query-wrapper'
+import {
+  queryWithCount,
+  querySingle,
+  mutationWithReturn,
+  mutationVoid,
+  queryList,
+} from '@/lib/query-wrapper'
 import { uploadImage, deleteImage } from '@/lib/storage-util'
 import { validateAmount } from '@/lib/utils'
-import type { Result, Transaction, TransactionInsert, TransactionUpdate, TransactionFilters } from '@/types'
+import type {
+  Result,
+  Transaction,
+  TransactionInsert,
+  TransactionUpdate,
+  TransactionFilters,
+} from '@/types'
 import { AppError } from '@/types/result'
 
 export async function queryTransactions(
@@ -17,9 +29,7 @@ export async function queryTransactions(
   const supabase = useSupabase()
   const { type, category_id, search, startDate, endDate, account_id, user_id } = filters
 
-  let query = supabase
-    .from('transactions')
-    .select(TRANSACTION_FIELDS, { count: 'exact' })
+  let query = supabase.from('transactions').select(TRANSACTION_FIELDS, { count: 'exact' })
 
   // Include partner transactions if partnered
   if (user_id) {
@@ -52,7 +62,9 @@ export async function queryTransactions(
 
 export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
-  return querySingle<Transaction>(supabase.from('transactions').select(TRANSACTION_FIELDS).eq('id', id))
+  return querySingle<Transaction>(
+    supabase.from('transactions').select(TRANSACTION_FIELDS).eq('id', id),
+  )
 }
 
 export async function createTransaction(tx: TransactionInsert): Promise<Result<Transaction>> {
@@ -79,7 +91,8 @@ export async function createTransfer(
   const supabase = useSupabase()
 
   const amountVal = validateAmount(data.amount)
-  if (amountVal.error) return { data: null, error: new AppError(amountVal.error, 'VALIDATION_ERROR') }
+  if (amountVal.error)
+    return { data: null, error: new AppError(amountVal.error, 'VALIDATION_ERROR') }
   if (data.to_amount !== undefined) {
     const toVal = validateAmount(data.to_amount, true)
     if (toVal.error) return { data: null, error: new AppError(toVal.error, 'VALIDATION_ERROR') }
@@ -240,7 +253,10 @@ export async function getTransactionSummary(
   })
 
   if (result.error) return result
-  const data = (result.data && result.data.length > 0) ? result.data[0] : { total_income: 0, total_expense: 0, balance: 0 }
+  const data =
+    result.data && result.data.length > 0
+      ? result.data[0]
+      : { total_income: 0, total_expense: 0, balance: 0 }
   return { data, error: null }
 }
 
@@ -273,9 +289,15 @@ export async function queryNetWorthTransactions(
 
 export async function queryExportTransactions(
   userId: string,
-): Promise<Result<Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>[]>> {
+): Promise<
+  Result<
+    Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>[]
+  >
+> {
   const supabase = useSupabase()
-  return queryList<Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>>(
+  return queryList<
+    Pick<Transaction, 'date' | 'type' | 'category_id' | 'amount' | 'currency' | 'description'>
+  >(
     supabase
       .from('transactions')
       .select('date, type, category_id, amount, currency, description')

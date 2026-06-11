@@ -39,7 +39,8 @@ const rangeLabel = computed(() => {
     return `${startDate.toLocaleDateString(l, opts)} – ${endDate.toLocaleDateString(l, { ...opts, year: 'numeric' })}`
   }
 
-  if (start) return start.toDate(getLocalTimeZone()).toLocaleDateString(l, { ...opts, year: 'numeric' })
+  if (start)
+    return start.toDate(getLocalTimeZone()).toLocaleDateString(l, { ...opts, year: 'numeric' })
   return props.placeholder || t('common.select_date')
 })
 </script>
@@ -49,7 +50,13 @@ const rangeLabel = computed(() => {
     <PopoverTrigger as-child>
       <Button
         variant="outline"
-        :class="cn('h-9 justify-start text-left font-medium rounded-xl border-border/50 bg-card/30 px-4 text-xs', !props.modelValue.start && 'text-muted-foreground', props.class)"
+        :class="
+          cn(
+            'h-9 justify-start text-left font-medium rounded-xl border-border/50 bg-card/30 px-4 text-xs',
+            !props.modelValue.start && 'text-muted-foreground',
+            props.class,
+          )
+        "
       >
         <AppIcon name="hugeicons:calendar-03" :size="16" class="mr-2 opacity-50" />
         {{ rangeLabel }}

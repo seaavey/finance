@@ -36,7 +36,7 @@
     "confirm_desc": "Are you sure you want to proceed?",
     "saving": "Saving...",
     "select_date": "Select date"
-    },
+  },
 
   "dashboard": {
     "greeting": "Hello",
@@ -895,9 +895,8 @@
     "message": "Are you sure?",
     "delete": "Delete",
     "cancel": "Cancel"
-    },
-    "toast": {
-
+  },
+  "toast": {
     "transaction_added": "Transaction added successfully",
     "transfer_added": "Transfer saved successfully",
     "transaction_add_error": "Failed to add transaction",

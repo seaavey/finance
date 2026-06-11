@@ -64,11 +64,7 @@ export interface BudgetProgress {
 /**
  * Calculate budget progress percentages and remaining amounts.
  */
-export function calculateProgress(
-  amount: number,
-  spent: number,
-  rollover: number,
-): BudgetProgress {
+export function calculateProgress(amount: number, spent: number, rollover: number): BudgetProgress {
   const pct = amount > 0 ? (spent / amount) * 100 : 0
   const diff = amount - spent
   const effectiveAmount = amount + rollover

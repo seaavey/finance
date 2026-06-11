@@ -1,8 +1,6 @@
 <template>
   <section>
-    <h3
-      class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-    >
+    <h3 class="mb-4 px-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
       {{ $t('sidebar.partner') }}
     </h3>
 
@@ -67,9 +65,7 @@
         v-if="sentInvitations.length > 0"
         class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
       >
-        <p
-          class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-        >
+        <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
           {{ $t('settings.sent_invitations_title') }}
         </p>
         <div class="space-y-3">
@@ -111,9 +107,7 @@
         v-if="receivedInvitations.length > 0"
         class="rounded-4xl border border-border/50 bg-card p-6 shadow-sm"
       >
-        <p
-          class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90"
-        >
+        <p class="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
           {{ $t('settings.received_invitations_title') }}
         </p>
         <div class="space-y-3">
@@ -177,19 +171,25 @@
               :src="partner.avatar_url"
               :alt="partner.display_name || ''"
             />
-            <AvatarFallback class="bg-emerald-500/10 text-xl font-black text-emerald-600 dark:text-emerald-400">
+            <AvatarFallback
+              class="bg-emerald-500/10 text-xl font-black text-emerald-600 dark:text-emerald-400"
+            >
               {{ (partnerDisplayName || '?').charAt(0) }}
             </AvatarFallback>
           </Avatar>
           <div class="min-w-0">
-            <p class="truncate text-xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 md:text-2xl">
+            <p
+              class="truncate text-xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 md:text-2xl"
+            >
               {{ partnerDisplayName }}
             </p>
             <div class="mt-1 flex items-center gap-2">
               <div
                 class="size-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
               />
-              <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70">
+              <p
+                class="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70"
+              >
                 {{ $t('settings.connected_status') }}
               </p>
             </div>
@@ -213,7 +213,9 @@
               <p class="text-sm font-black text-rose-500 dark:text-rose-400 md:text-base">
                 {{ $t('settings.disconnect_title') }}
               </p>
-              <p class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60 dark:text-rose-400/60">
+              <p
+                class="text-[10px] font-bold uppercase tracking-tight text-rose-500/60 dark:text-rose-400/60"
+              >
                 {{ $t('settings.disconnect_desc') }}
               </p>
             </div>

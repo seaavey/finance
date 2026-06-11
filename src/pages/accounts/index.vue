@@ -1,16 +1,62 @@
 <script setup lang="ts">
-import type { Transaction, TransactionType, TransactionFilters, SplitItem, Account, AccountRow, AccountInsert, AccountUpdate, AccountWithBalance, AccountType, Budget, BudgetRow, BudgetInsert, BudgetUpdate, BudgetWithProgress, Category, CategoryRow, CategoryInsert, CategoryUpdate, Goal, GoalRow, GoalInsert, GoalUpdate, Bill, BillRow, BillInsert, BillUpdate, RecurringTransaction, RecurringRow, RecurringInsert, RecurringUpdate, RecurringFrequency, Profile, ProfileRow, PartnerProfile, Invitation, InvitationRow, CoupleInvitation, EntityType, ActionType, ActivityLog, ActivityLogRow, ActivityLogInsert, ActivityLogFilters, SafeJson, Result } from "@/types"
+import type {
+  Transaction,
+  TransactionType,
+  TransactionFilters,
+  SplitItem,
+  Account,
+  AccountRow,
+  AccountInsert,
+  AccountUpdate,
+  AccountWithBalance,
+  AccountType,
+  Budget,
+  BudgetRow,
+  BudgetInsert,
+  BudgetUpdate,
+  BudgetWithProgress,
+  Category,
+  CategoryRow,
+  CategoryInsert,
+  CategoryUpdate,
+  Goal,
+  GoalRow,
+  GoalInsert,
+  GoalUpdate,
+  Bill,
+  BillRow,
+  BillInsert,
+  BillUpdate,
+  RecurringTransaction,
+  RecurringRow,
+  RecurringInsert,
+  RecurringUpdate,
+  RecurringFrequency,
+  Profile,
+  ProfileRow,
+  PartnerProfile,
+  Invitation,
+  InvitationRow,
+  CoupleInvitation,
+  EntityType,
+  ActionType,
+  ActivityLog,
+  ActivityLogRow,
+  ActivityLogInsert,
+  ActivityLogFilters,
+  SafeJson,
+  Result,
+} from '@/types'
 defineOptions({
   name: 'PagesAccountsIndex',
 })
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-
-
 const router = useRouter()
 useI18n()
-const { loading, fetchAccounts, fetchAccountBalances, accountBalances, deleteAccount } = useAccounts()
+const { loading, fetchAccounts, fetchAccountBalances, accountBalances, deleteAccount } =
+  useAccounts()
 const { fetchCategories } = useCategories()
 const { formatCurrency, convertTo, defaultCurrency } = useCurrency()
 
@@ -58,7 +104,11 @@ const goToDetail = (account: AccountWithBalance) => {
 const totalBalance = computed(() => {
   let total = 0
   for (const a of accountBalances.value) {
-    const converted = convertTo(a.balance, a.currency || defaultCurrency.value, defaultCurrency.value)
+    const converted = convertTo(
+      a.balance,
+      a.currency || defaultCurrency.value,
+      defaultCurrency.value,
+    )
     total += converted ?? a.balance
   }
   return total
@@ -97,11 +147,7 @@ const totalBalance = computed(() => {
     <!-- Account List -->
     <div v-else class="space-y-6">
       <!-- Total Balance Bar -->
-      <StatCard
-        :label="$t('dashboard.balance')"
-        :value="totalBalance"
-        icon="hugeicons:bank"
-      />
+      <StatCard :label="$t('dashboard.balance')" :value="totalBalance" icon="hugeicons:bank" />
 
       <!-- Account Cards -->
       <div class="grid gap-3 grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
@@ -128,16 +174,15 @@ const totalBalance = computed(() => {
             </div>
           </div>
           <div class="ml-3 shrink-0 text-right">
-            <p class="font-semibold">{{ formatCurrency(account.balance, account.currency || undefined) }}</p>
+            <p class="font-semibold">
+              {{ formatCurrency(account.balance, account.currency || undefined) }}
+            </p>
           </div>
           <div
             class="ml-2 flex shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
             @click.stop
           >
-            <ListItemAction
-              @edit="goToEdit(account)"
-              @delete="onDeleteRequest(account)"
-            />
+            <ListItemAction @edit="goToEdit(account)" @delete="onDeleteRequest(account)" />
           </div>
         </div>
       </div>

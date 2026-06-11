@@ -64,7 +64,13 @@ export const useActivityLog = () => {
     const safeMetadata: Record<string, SafeJson | undefined> = {}
     if (metadata) {
       for (const [key, val] of Object.entries(metadata)) {
-        if (val === undefined || val === null || typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+        if (
+          val === undefined ||
+          val === null ||
+          typeof val === 'string' ||
+          typeof val === 'number' ||
+          typeof val === 'boolean'
+        ) {
           safeMetadata[key] = val as SafeJson
         } else {
           safeMetadata[key] = String(val)
