@@ -12,6 +12,7 @@
 | `bun format`                               | `prettier --write src/`                              |
 | `bun test`                                 | Run all tests (Bun's built-in test runner)           |
 | `bun test --preload ./src/lib/supabase.ts` | Single test file                                     |
+| `bun audit:security`                       | Security scan (deps + secrets) via claude-flow       |
 
 No `npm run` — Bun is the package manager.
 
@@ -19,7 +20,8 @@ No `npm run` — Bun is the package manager.
 
 - Uses **Bun's test runner** (`bun:test`), not Vitest. No `vitest.config.*`.
 - Services mock `@/lib/supabase` via `mock.module()` (Bun API).
-- Composables test with mock Supabase client.
+- Composables test with mock TanStack Query, Toast, ActivityLog, Auth, Partner, and Categories.
+- Service tests use pure functions from `budget-util.ts` (no I/O) for unit testing.
 - No explicit test script in `package.json` — `bun test` works directly.
 
 ## Architecture
@@ -49,7 +51,7 @@ No `npm run` — Bun is the package manager.
 - **Default locale**: Indonesian (`id`), with English (`en`) as fallback. Add translation keys to both `src/locales/id.json` and `src/locales/en.json`.
 - **Vue Query defaults**: `staleTime: 30000`, `refetchOnWindowFocus: false`.
 - **Composables pattern**: `useSupabase()` → TanStack Query (`useQuery`) → CRUD functions → `queryClient.invalidateQueries()` → `useActivityLog().log()` → `useToast()`.
-- **Component style**: shadcn-vue with **Reka UI** (not Radix), `reka-vega` style. Icons via **HugeIcons** (`@iconify/vue` as `<AppIcon>`).
+- **Component style**: shadcn-vue with **Reka UI** (not Radix), `reka-vega` style (configured in `components.json`). Icons via **HugeIcons** (`@iconify/vue` as `<AppIcon>`). Fonts: DM Sans (body), JetBrains Mono (headings).
 - **Tailwind v4** (`@import 'tailwindcss'`), not v3. Use `@theme inline` for CSS variables. Dark mode via `.dark` class.
 - **Fonts**: DM Sans (body), JetBrains Mono (headings).
 - **Formatting**: Prettier with `semi: false`, `singleQuote: true`, `printWidth: 100`.
@@ -61,7 +63,7 @@ No `npm run` — Bun is the package manager.
 - **Environment**: `cp .env .env.local` (`.env` has working defaults for the live Supabase project).
 - **Supabase Edge Function secrets** are set via `supabase secrets set`, **never** in `.env`.
 - **Docker**: Multi-stage build (Bun → Vite build → nginx), serves on port 3000. Use `docker compose up`.
-- **Vercel**: SPA fallback via rewrites, strict CSP headers in `vercel.json`.
+- **Vercel**: SPA fallback via rewrites, strict CSP headers in `vercel.json` (see `vercel.json` for allowed domains).
 - **PWA**: Service worker with runtime caching for Iconify, exchangerate.fun, Unsplash, Supabase APIs.
 - **OAuth callback**: Handled at `/auth/callback` — route guard skips auth check if URL hash contains `access_token` or query contains `code`.
 
@@ -69,5 +71,5 @@ No `npm run` — Bun is the package manager.
 
 - `noUncheckedIndexedAccess: true` — array/object access may return `undefined`.
 - Path alias: `@/` → `src/`.
-- Separate tsconfig for Node (vite config, eslint) vs. DOM (app code).
+- Separate tsconfig for Node (`tsconfig.node.json` for vite config, eslint) vs. DOM (`tsconfig.app.json` for app code).
 - Generated `src/auto-imports.d.ts` and `src/components.d.ts` included in tsconfig.
