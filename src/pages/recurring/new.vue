@@ -56,7 +56,7 @@ const onSubmit = async () => {
     type: form.type,
     amount: Number(form.amount),
     currency: form.currency,
-    category_id: (form.category_id || null) as unknown as string,
+    category_id: form.category_id || null,
     description: form.description || null,
     frequency: form.frequency,
     next_date: form.next_date,
