@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useTransactions } from '../useTransactions'
 
 // Mock dependencies
-mock.module('../nuxt-compat', () => ({
+mock.module('../i18n-compat', () => ({
   useI18n: () => ({
     t: (key: string) => key,
   }),

@@ -8,7 +8,7 @@ interface I18nLocale {
 }
 
 /**
- * Compatibility layer for Nuxt-specific i18n features in pure Vue 3.
+ * Compatibility layer for i18n features in pure Vue 3 (vue-i18n + vueuse).
  * Resolves ESLint 'any' warnings by using proper interfaces and unknown casts.
  */
 export const useI18n = () => {

@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { useI18n } from './nuxt-compat'
+import { useI18n } from './i18n-compat'
 import {
   queryAccounts,
   createAccount as createAccountService,

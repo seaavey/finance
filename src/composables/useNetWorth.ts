@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { formatDateSafe } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/vue-query'
-import { useI18n } from './nuxt-compat'
+import { useI18n } from './i18n-compat'
 import { queryAccounts } from '@/services/account.service'
 import { queryNetWorthTransactions } from '@/services/transaction.service'
 

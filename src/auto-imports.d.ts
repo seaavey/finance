@@ -86,7 +86,7 @@ declare global {
   const useCamera: typeof import('./composables/useCamera').useCamera
   const useCategories: typeof import('./composables/useCategories').useCategories
   const useCategoryStats: typeof import('./composables/useTransactions').useCategoryStats
-  const useColorMode: typeof import('./composables/nuxt-compat').useColorMode
+  const useColorMode: typeof import('./composables/i18n-compat').useColorMode
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
   const useCurrency: typeof import('./composables/useCurrency').useCurrency
@@ -95,10 +95,10 @@ declare global {
   const useExport: typeof import('./composables/useExport').useExport
   const useGoals: typeof import('./composables/useGoals').useGoals
   const useHead: typeof import('@unhead/vue').useHead
-  const useI18n: typeof import('./composables/nuxt-compat').useI18n
+  const useI18n: typeof import('./composables/i18n-compat').useI18n
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
-  const useLocalePath: typeof import('./composables/nuxt-compat').useLocalePath
+  const useLocalePath: typeof import('./composables/i18n-compat').useLocalePath
   const useModel: typeof import('vue').useModel
   const useNetWorth: typeof import('./composables/useNetWorth').useNetWorth
   const useOnline: typeof import('@vueuse/core').useOnline
@@ -269,7 +269,7 @@ declare module 'vue' {
     readonly useCategoryStats: UnwrapRef<
       (typeof import('./composables/useTransactions'))['useCategoryStats']
     >
-    readonly useColorMode: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useColorMode']>
+    readonly useColorMode: UnwrapRef<(typeof import('./composables/i18n-compat'))['useColorMode']>
     readonly useCssModule: UnwrapRef<(typeof import('vue'))['useCssModule']>
     readonly useCssVars: UnwrapRef<(typeof import('vue'))['useCssVars']>
     readonly useCurrency: UnwrapRef<(typeof import('./composables/useCurrency'))['useCurrency']>
@@ -277,10 +277,10 @@ declare module 'vue' {
     readonly useExport: UnwrapRef<(typeof import('./composables/useExport'))['useExport']>
     readonly useGoals: UnwrapRef<(typeof import('./composables/useGoals'))['useGoals']>
     readonly useHead: UnwrapRef<(typeof import('@unhead/vue'))['useHead']>
-    readonly useI18n: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useI18n']>
+    readonly useI18n: UnwrapRef<(typeof import('./composables/i18n-compat'))['useI18n']>
     readonly useId: UnwrapRef<(typeof import('vue'))['useId']>
     readonly useLink: UnwrapRef<(typeof import('vue-router'))['useLink']>
-    readonly useLocalePath: UnwrapRef<(typeof import('./composables/nuxt-compat'))['useLocalePath']>
+    readonly useLocalePath: UnwrapRef<(typeof import('./composables/i18n-compat'))['useLocalePath']>
     readonly useModel: UnwrapRef<(typeof import('vue'))['useModel']>
     readonly useNetWorth: UnwrapRef<(typeof import('./composables/useNetWorth'))['useNetWorth']>
     readonly useOnline: UnwrapRef<(typeof import('@vueuse/core'))['useOnline']>
