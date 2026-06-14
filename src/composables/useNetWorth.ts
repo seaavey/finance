@@ -28,14 +28,15 @@ export const useNetWorth = () => {
     }
     loading.value = true
 
-    const cacheKey = ['netWorth', user.value.id, months]
+    const userId = user.value.id
+    const cacheKey = ['netWorth', userId, months]
 
     try {
       const result = await queryClient.fetchQuery({
         queryKey: cacheKey,
         queryFn: async () => {
           // 1. Fetch accounts — only columns needed
-          const accountsResult = await queryAccounts(user.value!.id)
+          const accountsResult = await queryAccounts(userId)
           if (accountsResult.error) throw accountsResult.error
           const accounts = accountsResult.data
 
@@ -45,9 +46,9 @@ export const useNetWorth = () => {
           const now = new Date()
           const earliestDate = formatDateSafe(
             new Date(now.getFullYear(), now.getMonth() - months, 1),
-          )
+          )!
 
-          const transactionsResult = await queryNetWorthTransactions(user.value!.id, earliestDate!)
+          const transactionsResult = await queryNetWorthTransactions(userId, earliestDate)
           if (transactionsResult.error) throw transactionsResult.error
           const transactions = transactionsResult.data
 
