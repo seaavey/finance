@@ -143,8 +143,9 @@ export const usePartner = () => {
       toast.success(t('toast.partner_invite_sent'))
 
       // Notify recipient via email (fire-and-forget)
+      const senderId = user.value.id
       callEdgeFunction('send-couple-invite', {
-        sender_id: user.value!.id,
+        sender_id: senderId,
         recipient_email: email,
       }).catch((e) => {
         console.warn('Failed to send notification email:', e)
