@@ -352,11 +352,15 @@ const scrollToSection = (href: string) => {
 
 const goToLogin = () => router.push(localePath('/auth/login'))
 
+let resizeHandler: (() => void) | null = null
+let intersectionObserver: IntersectionObserver | null = null
+
 onMounted(() => {
   updateCachedLayout()
-  window.addEventListener('resize', updateCachedLayout)
+  resizeHandler = updateCachedLayout
+  window.addEventListener('resize', resizeHandler)
 
-  const observer = new IntersectionObserver(
+  intersectionObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -373,8 +377,19 @@ onMounted(() => {
   navItems.forEach((item) => {
     const el = document.getElementById(item.href.replace('#', ''))
     if (el) {
-      observer.observe(el)
+      intersectionObserver!.observe(el)
     }
   })
+})
+
+onUnmounted(() => {
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler)
+    resizeHandler = null
+  }
+  if (intersectionObserver) {
+    intersectionObserver.disconnect()
+    intersectionObserver = null
+  }
 })
 </script>
