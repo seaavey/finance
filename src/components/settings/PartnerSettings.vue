@@ -232,6 +232,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Invitation, CoupleInvitation, PartnerProfile } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -245,18 +246,18 @@ const props = defineProps<{
   isPartnered: boolean
   partnerSending: boolean
   inviteEmail: string
-  sentInvitations: any[]
-  receivedInvitations: any[]
-  partner: any
+  sentInvitations: Invitation[]
+  receivedInvitations: CoupleInvitation[]
+  partner: PartnerProfile | null
   partnerDisplayName: string
 }>()
 
 defineEmits<{
   'update:inviteEmail': [value: string]
   sendInvite: []
-  acceptInvite: [inv: any]
-  rejectInvite: [inv: any]
-  cancelInvite: [inv: any]
+  acceptInvite: [inv: CoupleInvitation]
+  rejectInvite: [inv: CoupleInvitation]
+  cancelInvite: [inv: Invitation]
   showDisconnect: []
 }>()
 </script>
