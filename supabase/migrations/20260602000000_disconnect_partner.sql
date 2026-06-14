@@ -41,6 +41,7 @@ begin
   return json_build_object('success', true);
 exception
   when others then
+    raise log 'disconnect_partner() failed: % (SQLSTATE: %)', sqlerrm, sqlstate;
     return json_build_object('error', sqlerrm);
 end;
 $$;

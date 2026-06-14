@@ -99,7 +99,7 @@ watch(videoRef, (el) => {
     // If stream is already active but wasn't linked because el was null
     if (isActive.value && stream.value) {
       el.srcObject = stream.value
-      el.play().catch(() => {})
+      el.play().catch((err) => console.warn('Camera autoplay rejected (expected on some browsers):', err))
     }
   }
 })

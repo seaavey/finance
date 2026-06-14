@@ -816,7 +816,7 @@ const onSubmit = async () => {
       // Fire-and-forget: check budget thresholds without blocking navigation
       const now = new Date()
       const monthStr = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
-      checkBudgetAlerts(monthStr).catch(() => {})
+      checkBudgetAlerts(monthStr).catch((err) => console.error('Budget alert check failed (non-blocking):', err))
     }
   } finally {
     submitting.value = false

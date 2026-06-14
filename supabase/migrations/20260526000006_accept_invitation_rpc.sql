@@ -73,6 +73,7 @@ begin
   return json_build_object('success', true);
 exception
   when others then
+    raise log 'accept_couple_invitation() failed: % (SQLSTATE: %)', sqlerrm, sqlstate;
     return json_build_object('error', sqlerrm);
 end;
 $$;

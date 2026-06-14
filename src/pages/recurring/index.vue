@@ -94,7 +94,7 @@ const handleToggle = async (id: string, newActive: boolean) => {
       .then(() => {
         const now = new Date()
         const monthStr = formatDateSafe(new Date(now.getFullYear(), now.getMonth(), 1))
-        checkBudgetAlerts(monthStr).catch(() => {})
+        checkBudgetAlerts(monthStr).catch((err) => console.error('Budget alert check failed (non-blocking):', err))
       })
       .catch((err) => console.error('Auto-process after toggle failed (toggle persisted OK):', err))
   }

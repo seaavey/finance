@@ -161,7 +161,7 @@ export const useReceipts = (): UseReceiptsReturn => {
         await supabase.storage
           .from('receipts')
           .remove([path])
-          .catch(() => {})
+          .catch((err) => console.error('Failed to clean up duplicate receipt file (non-blocking):', err))
         const retryUuid = crypto.randomUUID()
         const retryPath = `receipts/${userId}/${retryUuid}.jpg`
         const { error: retryError } = await supabase.storage

@@ -83,9 +83,10 @@ export function useCamera(): UseCameraReturn {
    */
   function attachStream(el: HTMLVideoElement, mediaStream: MediaStream) {
     el.srcObject = mediaStream
-    el.play().catch(() => {
-      // Silently ignore — play() can reject if user hasn't interacted yet,
-      // but the stream is still attached and will play once the browser allows it.
+    el.play().catch((err) => {
+      // play() can reject if user hasn't interacted yet — stream is still attached
+      // and will play once the browser allows it. Log for debugging.
+      console.warn('Camera autoplay rejected (expected on some browsers):', err)
     })
   }
 
