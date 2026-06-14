@@ -108,11 +108,11 @@ const rawTestimonials = tm('landing.testimonials_items') as Record<string, unkno
 const testimonials = rawTestimonials.map((t) => ({
   ...t,
   rating:
-    typeof t.rating === 'number' ? t.rating : parseInt(rt(t.rating as unknown as string)) || 5,
-})) as unknown as Testimonial[]
+    typeof t.rating === 'number' ? t.rating : Number(rt(t.rating)) || 5,
+})) satisfies Testimonial[]
 
 const getColorClasses = (color: string | object) => {
-  const colorStr = typeof color === 'string' ? color : rt(color as unknown as string)
+  const colorStr = typeof color === 'string' ? color : rt(color)
   switch (colorStr) {
     case 'pink':
       return 'bg-pink-500/15 text-pink-500 dark:text-pink-400'
