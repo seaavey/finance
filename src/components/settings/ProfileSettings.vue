@@ -42,13 +42,15 @@
 </template>
 
 <script setup lang="ts">
+import type { User } from '@supabase/supabase-js'
+
 defineOptions({
   name: 'ProfileSettings',
 })
 
 defineProps<{
   profile: { display_name: string; currency: string }
-  user: any
+  user: User | null
   isPartnered: boolean
 }>()
 </script>
