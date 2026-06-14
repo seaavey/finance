@@ -6,6 +6,12 @@ import type { Result } from '@/types'
  * Call a Supabase RPC.
  * Centralizes the `(supabase as any).rpc()` cast so it's in one place.
  *
+ * The `as any` cast is intentional: Supabase `rpc()` return type varies
+ * between `{ data: T }` (newer) and `{ data: T; count: null }` depending
+ * on the PostgREST version. The app's Database type (PostgrestVersion 14.5)
+ * doesn't provide per-function return generics yet — once it does, remove
+ * the cast and use `supabase.rpc<T>(name, params)` directly.
+ *
  * @example
  *   const result = await rpc<AccountWithBalance[]>('get_account_balances', { p_user_id: userId })
  */
@@ -14,7 +20,8 @@ export async function rpc<T>(
   params: Record<string, unknown> = {},
 ): Promise<Result<T>> {
   const supabase = useSupabase()
-  const { data, error } = await (supabase as any).rpc(name, params)
+  // @ts-expect-error Supabase RPC return type depends on PostgREST version — see JSDoc above
+  const { data, error } = await supabase.rpc(name, params)
 
   if (error) return { data: null, error: new AppError(error.message, error.code, error) }
   return { data: data as T, error: null }
