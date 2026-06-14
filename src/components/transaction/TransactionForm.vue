@@ -701,7 +701,7 @@ function onSplitAmountInput(event: Event, index: number) {
 watch(
   () => props.transaction,
   (tx) => {
-    const splits = (tx?.splits as unknown as SplitItem[]) || []
+    const splits: SplitItem[] = tx?.splits ?? []
     if (splits.length > 0) {
       splitItems.value = splits.map((s) => ({ ...s }))
       splitEnabled.value = true
@@ -773,7 +773,7 @@ const onSubmit = async () => {
       description: form.description || null,
       date: form.date!,
       image_url: form.image_url,
-      splits: (splitEnabled.value ? splitItems.value : []) as unknown as Json,
+      splits: splitEnabled.value ? splitItems.value : [],
     }
 
     let result
@@ -807,7 +807,7 @@ const onSubmit = async () => {
       })
     } else {
       result = props.transaction
-        ? await updateTransaction(props.transaction.id, payload as unknown as TransactionUpdate)
+        ? await updateTransaction(props.transaction.id, payload as TransactionUpdate)
         : await addTransaction(payload)
     }
 
