@@ -1,15 +1,13 @@
 import { useSupabase } from '@/lib/supabase'
+import { querySingle } from '@/lib/query-wrapper'
 import type { Result } from '@/types'
-import { AppError } from '@/types/result'
 
 export async function getProfileCurrency(userId: string): Promise<Result<string | null>> {
   const supabase = useSupabase()
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('currency')
-    .eq('id', userId)
-    .single()
+  const result = await querySingle<{ currency: string | null }>(
+    supabase.from('profiles').select('currency').eq('id', userId),
+  )
 
-  if (error) return { data: null, error: new AppError(error.message, error.code, error) }
-  return { data: data?.currency || null, error: null }
+  if (result.error) return result
+  return { data: result.data?.currency || null, error: null }
 }
