@@ -8,6 +8,7 @@ import {
   createDefaultCategories as seedDefaultsService,
 } from '@/services/category.service'
 import type { Category, CategoryInsert, CategoryUpdate } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const useCategories = () => {
   const queryClient = useQueryClient()
@@ -19,7 +20,7 @@ export const useCategories = () => {
     isLoading: loading,
     refetch: fetchCategories,
   } = useQuery({
-    queryKey: ['categories', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.CATEGORIES, computed(() => user.value?.id)],
     queryFn: async (): Promise<Category[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryCategories(user.value.id)
@@ -27,7 +28,7 @@ export const useCategories = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 300_000,
+    staleTime: STALE_TIMES.STATIC,
   })
 
   const categories = computed(() => categoriesData.value || [])
@@ -48,7 +49,7 @@ export const useCategories = () => {
     ]
     const result = await seedDefaultsService(userId, defaults)
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES] })
       await fetchCategories()
     }
     return result

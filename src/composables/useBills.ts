@@ -8,6 +8,7 @@ import {
   markBillAsPaid as markAsPaidService,
 } from '@/services/bill.service'
 import type { Bill, BillInsert, Database } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const useBills = () => {
   const queryClient = useQueryClient()
@@ -19,7 +20,7 @@ export const useBills = () => {
     isLoading: loading,
     refetch: fetchBills,
   } = useQuery({
-    queryKey: ['bills', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.BILLS, computed(() => user.value?.id)],
     queryFn: async (): Promise<Bill[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryBills(user.value.id)
@@ -27,7 +28,7 @@ export const useBills = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const bills = computed(() => billsData.value || [])

@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useI18n } from './i18n-compat'
 import { queryAccounts } from '@/services/account.service'
 import { queryNetWorthTransactions } from '@/services/transaction.service'
+import { STALE_TIMES } from '@/constants'
 
 export interface NetWorthData {
   label: string
@@ -135,7 +136,7 @@ export const useNetWorth = () => {
 
           return result
         },
-        staleTime: 60_000, // 1 min cache — net worth recalc is expensive
+        staleTime: STALE_TIMES.DAILY, // 1 min cache — net worth recalc is expensive
       })
 
       history.value = result

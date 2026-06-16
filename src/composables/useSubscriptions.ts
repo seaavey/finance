@@ -7,6 +7,7 @@ import {
   deleteSubscription as deleteService,
 } from '@/services/subscription.service'
 import type { Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const useSubscriptions = () => {
   const queryClient = useQueryClient()
@@ -18,7 +19,7 @@ export const useSubscriptions = () => {
     isLoading: loading,
     refetch: fetchSubscriptions,
   } = useQuery({
-    queryKey: ['subscriptions', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.SUBSCRIPTIONS, computed(() => user.value?.id)],
     queryFn: async (): Promise<Subscription[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await querySubscriptions(user.value.id)
@@ -26,7 +27,7 @@ export const useSubscriptions = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 120_000,
+    staleTime: STALE_TIMES.RARELY,
   })
 
   const subscriptions = computed(() => subscriptionsData.value || [])

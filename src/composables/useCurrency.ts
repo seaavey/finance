@@ -4,6 +4,7 @@ import { user } from './useAuth'
 import i18n from '@/plugins/i18n'
 import { getProfileCurrency } from '@/services/profile.service'
 import { queryExchangeRates } from '@/services/exchange-rate.service'
+import { QUERY_KEYS } from '@/constants'
 
 const defaultCurrency = ref<string>('IDR')
 
@@ -53,7 +54,7 @@ export const useCurrency = () => {
 
   // --- Exchange rates from Supabase (synced via Edge Function every 10 min) ---
   const { data: ratesData } = useQuery({
-    queryKey: ['exchange-rates'],
+    queryKey: [QUERY_KEYS.EXCHANGE_RATES],
     queryFn: async () => {
       const result = await queryExchangeRates()
       if (result.error) throw result.error

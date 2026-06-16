@@ -9,6 +9,7 @@ import {
   queryAccountBalances as queryAccountBalancesService,
 } from '@/services/account.service'
 import type { Account, AccountWithBalance, AccountInsert, AccountUpdate } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const useAccounts = () => {
   const queryClient = useQueryClient()
@@ -21,7 +22,7 @@ export const useAccounts = () => {
     isLoading: loading,
     refetch: fetchAccounts,
   } = useQuery({
-    queryKey: ['accounts', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.ACCOUNTS, computed(() => user.value?.id)],
     queryFn: async (): Promise<Account[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryAccounts(user.value.id)
@@ -29,7 +30,7 @@ export const useAccounts = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 120_000,
+    staleTime: STALE_TIMES.RARELY,
   })
 
   const {
@@ -37,7 +38,7 @@ export const useAccounts = () => {
     isLoading: balancesLoading,
     refetch: fetchAccountBalances,
   } = useQuery({
-    queryKey: ['account-balances', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.ACCOUNT_BALANCES, computed(() => user.value?.id)],
     queryFn: async (): Promise<AccountWithBalance[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryAccountBalancesService(user.value.id)
@@ -45,7 +46,7 @@ export const useAccounts = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const accounts = computed(() => accountsData.value || [])

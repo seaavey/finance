@@ -15,6 +15,7 @@ import type {
   RecurringInsert,
   RecurringUpdate,
 } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export type { RecurringTransaction }
 
@@ -30,7 +31,7 @@ export const useRecurring = () => {
     isLoading: loading,
     refetch: fetchRecurring,
   } = useQuery({
-    queryKey: ['recurring', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.RECURRING, computed(() => user.value?.id)],
     queryFn: async (): Promise<RecurringTransaction[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryRecurring(user.value.id)
@@ -38,7 +39,7 @@ export const useRecurring = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 120_000,
+    staleTime: STALE_TIMES.RARELY,
   })
 
   const recurring = computed(() => recurringData.value || [])
@@ -154,8 +155,8 @@ export const useRecurring = () => {
     }
 
     if (created > 0) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      queryClient.invalidateQueries({ queryKey: ['recurring'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRANSACTIONS] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RECURRING] })
       toast.success(t('toast.recurring_processed', { count: String(created) }))
     }
 

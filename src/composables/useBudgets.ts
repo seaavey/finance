@@ -8,6 +8,7 @@ import {
   queryBudgetWithProgress as queryBudgetWithProgressService,
   getBudgetProgress,
 } from '@/services/budget.service'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 import type { BudgetWithProgress, BudgetUpdate } from '@/types'
 
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
@@ -28,7 +29,7 @@ export const useBudgets = () => {
     isLoading: budgetsLoading,
     refetch: refetchBudgets,
   } = useQuery({
-    queryKey: ['budgets', computed(() => user.value?.id), currentMonth],
+    queryKey: [QUERY_KEYS.BUDGETS, computed(() => user.value?.id), currentMonth],
     queryFn: async () => {
       if (!user.value || !currentMonth.value) return []
       const result = await queryBudgets(user.value.id, currentMonth.value)
@@ -36,7 +37,7 @@ export const useBudgets = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value && !!currentMonth.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const {
@@ -57,7 +58,7 @@ export const useBudgets = () => {
       return result.data || []
     },
     enabled: computed(() => !!(targetUserId.value || user.value?.id) && !!currentMonth.value),
-    staleTime: 30_000,
+    staleTime: STALE_TIMES.DEFAULT,
   })
 
   const budgets = computed(() => budgetsData.value || [])
@@ -78,13 +79,13 @@ export const useBudgets = () => {
     if (!uid) return []
 
     return queryClient.fetchQuery({
-      queryKey: ['budgets:with-progress', uid, month],
+      queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS, uid, month],
       queryFn: async () => {
         const result = await queryBudgetWithProgressService(uid, month)
         if (result.error) throw result.error
         return result.data || []
       },
-      staleTime: 30_000,
+      staleTime: STALE_TIMES.DEFAULT,
     })
   }
 
@@ -102,8 +103,8 @@ export const useBudgets = () => {
     const result = await createBudgetService(user.value.id, categoryId, month, amount, name)
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['budgets'] })
-      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
       activity.log('budget', 'created', { category_name: name || categoryId, amount })
@@ -132,8 +133,8 @@ export const useBudgets = () => {
     }
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['budgets'] })
-      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
       activity.log('budget', existing ? 'updated' : 'created', {
@@ -160,8 +161,8 @@ export const useBudgets = () => {
     const result = await updateBudgetService(id, data as BudgetUpdate)
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['budgets'] })
-      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
       toast.success(t('budget.saved'))
       activity.log('budget', 'updated', { id, ...data })
@@ -178,8 +179,8 @@ export const useBudgets = () => {
     const result = await deleteBudgetService(id)
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['budgets'] })
-      queryClient.invalidateQueries({ queryKey: ['budgets:with-progress'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
       toast.success(t('budget.deleted'))
       activity.log('budget', 'deleted', { category_name: categoryId }, id)

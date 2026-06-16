@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { queryActivityLogs, logActivity } from '@/services/activity.service'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 import type {
   ActivityLog,
   ActivityLogFilters,
@@ -21,7 +22,7 @@ export const useActivityLog = () => {
     isLoading: loading,
     refetch: refetchLogs,
   } = useQuery({
-    queryKey: ['activity_logs', computed(() => user.value?.id), currentFilters],
+    queryKey: [QUERY_KEYS.ACTIVITY_LOGS, computed(() => user.value?.id), currentFilters],
     queryFn: async () => {
       if (!user.value) return { logs: [], total: 0 }
       const result = await queryActivityLogs(user.value.id, currentFilters.value)
@@ -29,7 +30,7 @@ export const useActivityLog = () => {
       return result.data || { logs: [], total: 0 }
     },
     enabled: computed(() => !!user.value),
-    staleTime: 5_000,
+    staleTime: STALE_TIMES.FREQUENT,
   })
 
   // Append logic - we keep existing logs if page > 1, otherwise we replace
@@ -87,7 +88,7 @@ export const useActivityLog = () => {
         action,
         metadata: safeMetadata,
       } as ActivityLogInsert)
-      queryClient.invalidateQueries({ queryKey: ['activity_logs'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ACTIVITY_LOGS] })
     } catch (e) {
       console.warn('[activity] Failed to log:', e)
     }

@@ -18,7 +18,7 @@ import {
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
 import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
-import { FILTER_ALL, TRANSFER_CATEGORY_NAMES } from '@/constants'
+import { FILTER_ALL, QUERY_KEYS, STALE_TIMES, TRANSFER_CATEGORY_NAMES } from '@/constants'
 
 export type OwnerFilter = 'all' | 'mine' | 'partner'
 
@@ -29,7 +29,7 @@ export const useTransactionSummary = (
   targetCurrency: Ref<string>,
 ) => {
   return useQuery({
-    queryKey: ['transaction-summary', userId, startDate, endDate, targetCurrency],
+    queryKey: [QUERY_KEYS.TRANSACTION_SUMMARY, userId, startDate, endDate, targetCurrency],
     queryFn: async () => {
       if (!userId.value) return null
       const result = await getTxSummaryService(
@@ -42,7 +42,7 @@ export const useTransactionSummary = (
       return result.data
     },
     enabled: computed(() => !!userId.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 }
 
@@ -52,7 +52,7 @@ export const useCategoryStats = (
   endDate?: Ref<string | undefined>,
 ) => {
   return useQuery({
-    queryKey: ['category-stats', userId, startDate, endDate],
+    queryKey: [QUERY_KEYS.CATEGORY_STATS, userId, startDate, endDate],
     queryFn: async () => {
       if (!userId.value) return []
       const result = await getCategoryStatsService(userId.value, startDate?.value, endDate?.value)
@@ -60,7 +60,7 @@ export const useCategoryStats = (
       return result.data || []
     },
     enabled: computed(() => !!userId.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 }
 
@@ -138,7 +138,7 @@ export const useTransactions = () => {
       }
     },
     enabled: computed(() => !!user.value),
-    staleTime: 30_000,
+    staleTime: STALE_TIMES.DEFAULT,
   })
 
   const transactions = computed<Transaction[]>(() => transactionsData.value?.data || [])
@@ -168,7 +168,7 @@ export const useTransactions = () => {
         entity: 'transaction',
         action: 'created',
         queryClient,
-        queryKeys: [['transactions']],
+        queryKeys: [[QUERY_KEYS.TRANSACTIONS]],
         successKey: 'toast.transaction_added',
         errorKey: 'toast.transaction_add_error',
         meta: { description: tx.description || '', amount: tx.amount, type: tx.type },
@@ -202,7 +202,7 @@ export const useTransactions = () => {
         entity: 'transaction',
         action: 'created',
         queryClient,
-        queryKeys: [['transactions'], ['account-balances']],
+        queryKeys: [[QUERY_KEYS.TRANSACTIONS], ['account-balances']],
         successKey: 'toast.transfer_added',
         errorKey: 'toast.transaction_add_error',
         meta: { description: data.description || 'Transfer', amount: data.amount, type: 'transfer' },
@@ -215,7 +215,7 @@ export const useTransactions = () => {
       entity: 'transaction',
       action: 'updated',
       queryClient,
-      queryKeys: [['transactions']],
+      queryKeys: [[QUERY_KEYS.TRANSACTIONS]],
       successKey: 'toast.transaction_updated',
       errorKey: 'toast.transaction_update_error',
       meta: { description: updates.description || '', amount: updates.amount },
@@ -228,7 +228,7 @@ export const useTransactions = () => {
       entity: 'transaction',
       action: 'deleted',
       queryClient,
-      queryKeys: [['transactions']],
+      queryKeys: [[QUERY_KEYS.TRANSACTIONS]],
       successKey: 'toast.transaction_deleted',
       errorKey: 'toast.transaction_delete_error',
       entityId: id,
@@ -242,7 +242,7 @@ export const useTransactions = () => {
       entity: 'transaction',
       action: 'updated',
       queryClient,
-      queryKeys: [['transactions']],
+      queryKeys: [[QUERY_KEYS.TRANSACTIONS]],
       successKey: 'toast.bulk_transactions_updated',
       errorKey: 'toast.bulk_transactions_update_error',
       meta: { count: ids.length, ...updates },
@@ -256,7 +256,7 @@ export const useTransactions = () => {
       entity: 'transaction',
       action: 'deleted',
       queryClient,
-      queryKeys: [['transactions']],
+      queryKeys: [[QUERY_KEYS.TRANSACTIONS]],
       successKey: 'toast.bulk_transactions_deleted',
       errorKey: 'toast.bulk_transactions_delete_error',
       meta: { count: ids.length },

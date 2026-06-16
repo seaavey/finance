@@ -10,6 +10,7 @@ import {
   deleteGoalImage as deleteImageService,
 } from '@/services/goal.service'
 import type { Goal, GoalInsert, GoalUpdate } from '@/types'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const useGoals = () => {
   const { t } = useI18n()
@@ -26,7 +27,7 @@ export const useGoals = () => {
     isLoading: loadingGoals,
     refetch: fetchGoals,
   } = useQuery({
-    queryKey: ['goals', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.GOALS, computed(() => user.value?.id)],
     queryFn: async (): Promise<Goal[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryGoals(user.value.id)
@@ -42,7 +43,7 @@ export const useGoals = () => {
     isLoading: loadingPartnerGoals,
     refetch: fetchPartnerGoals,
   } = useQuery({
-    queryKey: ['goals', partnerId],
+    queryKey: [QUERY_KEYS.GOALS, partnerId],
     queryFn: async (): Promise<Goal[]> => {
       if (!partnerId.value) return []
       const result = await queryGoals(partnerId.value)

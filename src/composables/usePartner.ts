@@ -12,6 +12,7 @@ import {
   getExistingPendingInvitation,
 } from '@/services/partner.service'
 import { callEdgeFunction } from '@/lib/rpc'
+import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export const usePartner = () => {
   const queryClient = useQueryClient()
@@ -24,7 +25,7 @@ export const usePartner = () => {
   const sending = ref(false)
 
   const { data: myProfileData, refetch: _refetchMyProfile } = useQuery({
-    queryKey: ['myProfile', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.MY_PROFILE, computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return null
       const result = await getProfile(user.value.id)
@@ -32,13 +33,13 @@ export const usePartner = () => {
       return result.data
     },
     enabled: computed(() => !!user.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const myProfile = computed(() => myProfileData.value || null)
 
   const { data: partnerData, refetch: fetchPartner } = useQuery({
-    queryKey: ['partner', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.PARTNER, computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return null
       const myProfileResult = await getProfile(user.value.id)
@@ -52,7 +53,7 @@ export const usePartner = () => {
       return null
     },
     enabled: computed(() => !!user.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const partner = computed(() => partnerData.value || null)
@@ -67,7 +68,7 @@ export const usePartner = () => {
     isLoading: loadingSent,
     refetch: fetchSentInvitations,
   } = useQuery({
-    queryKey: ['invitations:sent', computed(() => user.value?.id)],
+    queryKey: [QUERY_KEYS.INVITATIONS_SENT, computed(() => user.value?.id)],
     queryFn: async () => {
       if (!user.value) return []
       const result = await querySentInvitations(user.value.id)
@@ -75,7 +76,7 @@ export const usePartner = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value),
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DAILY,
   })
 
   const {
@@ -83,7 +84,7 @@ export const usePartner = () => {
     isLoading: loadingReceived,
     refetch: fetchReceivedInvitations,
   } = useQuery({
-    queryKey: ['invitations:received', computed(() => user.value?.email)],
+    queryKey: [QUERY_KEYS.INVITATIONS_RECEIVED, computed(() => user.value?.email)],
     queryFn: async () => {
       if (!user.value?.email) return []
       const result = await queryInvitations(user.value.email)
@@ -91,7 +92,7 @@ export const usePartner = () => {
       return result.data || []
     },
     enabled: computed(() => !!user.value?.email),
-    staleTime: 30_000,
+    staleTime: STALE_TIMES.DEFAULT,
   })
 
   const sentInvitations = computed(() => sentInvitationsData.value || [])
@@ -140,7 +141,7 @@ export const usePartner = () => {
     const result = await sendInvitation(user.value.id, email)
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.INVITATIONS_SENT] })
       toast.success(t('toast.partner_invite_sent'))
 
       // Notify recipient via email (fire-and-forget)
@@ -160,8 +161,8 @@ export const usePartner = () => {
   }
 
   const partnerQueryKeys = [
-    ['partner'],
-    ['accounts'],
+    [QUERY_KEYS.PARTNER],
+    [QUERY_KEYS.ACCOUNTS],
     ['invitations:sent'],
     ['invitations:received'],
   ]

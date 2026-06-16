@@ -26,7 +26,7 @@ export const STALE_TIMES = {
   DEFAULT: 30_000,
   /** Data that changes daily (bills, budgets) */
   DAILY: 60_000,
-  /** Data that rarely changes (accounts, recurring) */
+  /** Data that rarely changes (accounts, recurring, subscriptions) */
   RARELY: 120_000,
   /** Reference data (categories) */
   STATIC: 300_000,
@@ -40,7 +40,9 @@ export const DEFAULT_PAGE_SIZE = 20
 
 export const QUERY_KEYS = {
   ACCOUNTS: 'accounts',
+  ACCOUNT_BALANCES: 'account-balances',
   BUDGETS: 'budgets',
+  BUDGETS_WITH_PROGRESS: 'budgets:with-progress',
   CATEGORIES: 'categories',
   EXCHANGE_RATES: 'exchange-rates',
   GOALS: 'goals',
@@ -49,8 +51,12 @@ export const QUERY_KEYS = {
   INVITATIONS_SENT: 'invitations:sent',
   INVITATIONS_RECEIVED: 'invitations:received',
   TRANSACTIONS: 'transactions',
+  TRANSACTION_SUMMARY: 'transaction-summary',
+  CATEGORY_STATS: 'category-stats',
   RECURRING: 'recurring',
   BILLS: 'bills',
+  SUBSCRIPTIONS: 'subscriptions',
   ACTIVITIES: 'activities',
+  ACTIVITY_LOGS: 'activity_logs',
   NET_WORTH: 'netWorth',
 } as const
