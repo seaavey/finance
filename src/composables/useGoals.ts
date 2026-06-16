@@ -17,6 +17,7 @@ export const useGoals = () => {
   const activity = useActivityLog()
   const queryClient = useQueryClient()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const partnerId = ref<string | undefined>()
 
@@ -26,7 +27,7 @@ export const useGoals = () => {
     refetch: fetchGoals,
   } = useQuery({
     queryKey: ['goals', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<Goal[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryGoals(user.value.id)
       if (result.error) throw result.error
@@ -42,7 +43,7 @@ export const useGoals = () => {
     refetch: fetchPartnerGoals,
   } = useQuery({
     queryKey: ['goals', partnerId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Goal[]> => {
       if (!partnerId.value) return []
       const result = await queryGoals(partnerId.value)
       if (result.error) throw result.error
@@ -66,59 +67,56 @@ export const useGoals = () => {
   }
 
   const addGoal = async (goal: Omit<GoalInsert, 'user_id' | 'created_at' | 'current_amount'>) => {
-    if (!user.value) return { error: { message: 'Not authenticated' } }
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createGoalService({
-      ...goal,
-      user_id: user.value.id,
-      current_amount: 0,
-    } as GoalInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-      toast.success(t('toast.goal_added'))
-      if (result.data) {
-        activity.log(
-          'goal',
-          'created',
-          { name: goal.name || '', target_amount: goal.target_amount || 0 },
-          result.data.id,
-        )
-      }
-    } else {
-      toast.error(t('toast.goal_add_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createGoalService({
+          ...goal,
+          user_id: user.value!.id,
+          current_amount: 0,
+        } as GoalInsert),
+      {
+        entity: 'goal',
+        action: 'created',
+        queryClient,
+        queryKeys: [['goals']],
+        successKey: 'toast.goal_added',
+        errorKey: 'toast.goal_add_error',
+        meta: { name: goal.name || '', target_amount: goal.target_amount || 0 },
+      },
+    )
   }
 
   const updateGoal = async (id: string, updates: GoalUpdate) => {
     const goalName = goals.value.find((g) => g.id === id)?.name || ''
-    const result = await updateGoalService(id, updates)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-      toast.success(t('toast.goal_updated'))
-      activity.log('goal', 'updated', { name: goalName, ...updates }, id)
-    } else {
-      toast.error(t('toast.goal_update_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateGoalService(id, updates), {
+      entity: 'goal',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['goals']],
+      successKey: 'toast.goal_updated',
+      errorKey: 'toast.goal_update_error',
+      meta: { name: goalName, ...updates },
+      entityId: id,
+    })
   }
 
   const addFunds = async (goalId: string, amount: number) => {
     const goal = goals.value.find((g) => g.id === goalId)
-    if (!goal) return { error: { message: 'Goal not found' } }
+    if (!goal) return { error: new Error('Goal not found') }
 
-    const result = await addFundsService(goalId, amount)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-      toast.success(t('toast.funds_added'))
-      activity.log('goal', 'updated', { name: goal.name, amount_added: amount }, goalId)
-    } else {
-      toast.error(t('toast.funds_add_error'))
-    }
-    return { data: result.data, error: result.error }
+    return mutate(() => addFundsService(goalId, amount), {
+      entity: 'goal',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['goals']],
+      successKey: 'toast.funds_added',
+      errorKey: 'toast.funds_add_error',
+      meta: { name: goal.name, amount_added: amount },
+      entityId: goalId,
+    })
   }
 
   const uploadGoalImage = async (file: File): Promise<string | null> => {
@@ -142,16 +140,16 @@ export const useGoals = () => {
       await deleteGoalImage(goal.image_url)
     }
 
-    const result = await deleteGoalService(id)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-      toast.success(t('toast.goal_deleted'))
-      activity.log('goal', 'deleted', { name: goal?.name || '' }, id)
-    } else {
-      toast.error(t('toast.goal_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteGoalService(id), {
+      entity: 'goal',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['goals']],
+      successKey: 'toast.goal_deleted',
+      errorKey: 'toast.goal_delete_error',
+      meta: { name: goal?.name || '' },
+      entityId: id,
+    })
   }
 
   return {
