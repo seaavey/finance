@@ -21,9 +21,9 @@ export type { RecurringTransaction }
 export const useRecurring = () => {
   const { t } = useI18n()
   const { toast } = useToast()
-  const activity = useActivityLog()
   const queryClient = useQueryClient()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const {
     data: recurringData,
@@ -31,7 +31,7 @@ export const useRecurring = () => {
     refetch: fetchRecurring,
   } = useQuery({
     queryKey: ['recurring', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<RecurringTransaction[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryRecurring(user.value.id)
       if (result.error) throw result.error
@@ -44,65 +44,52 @@ export const useRecurring = () => {
   const recurring = computed(() => recurringData.value || [])
 
   const addRecurring = async (item: Omit<RecurringInsert, 'user_id' | 'created_at'>) => {
-    if (!user.value) return
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createRecurringService({
-      ...item,
-      user_id: user.value.id,
-    } as RecurringInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['recurring'] })
-      toast.success(t('toast.recurring_added'))
-      if (result.data) {
-        activity.log('recurring', 'created', {
-          description: result.data.description || result.data.type,
-          amount: result.data.amount,
-        })
-      }
-    } else {
-      toast.error(t('toast.recurring_add_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createRecurringService({
+          ...item,
+          user_id: user.value!.id,
+        } as RecurringInsert),
+      {
+        entity: 'recurring',
+        action: 'created',
+        queryClient,
+        queryKeys: [['recurring']],
+        successKey: 'toast.recurring_added',
+        errorKey: 'toast.recurring_add_error',
+        meta: { description: item.description || item.type, amount: item.amount },
+      },
+    )
   }
 
   const updateRecurring = async (id: string, updates: RecurringUpdate) => {
-    const result = await updateRecurringService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['recurring'] })
-      toast.success(t('toast.recurring_updated'))
-      if (result.data) {
-        activity.log(
-          'recurring',
-          'updated',
-          { description: result.data.description || result.data.type },
-          id,
-        )
-      }
-    } else {
-      toast.error(t('toast.recurring_update_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateRecurringService(id, updates), {
+      entity: 'recurring',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['recurring']],
+      successKey: 'toast.recurring_updated',
+      errorKey: 'toast.recurring_update_error',
+      meta: { description: updates.description ?? updates.type ?? '' },
+      entityId: id,
+    })
   }
 
   const deleteRecurring = async (id: string) => {
     const recurringItem = recurring.value.find((r) => r.id === id)
-    const result = await deleteRecurringService(id)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['recurring'] })
-      toast.success(t('toast.recurring_deleted'))
-      activity.log(
-        'recurring',
-        'deleted',
-        { description: recurringItem?.description || recurringItem?.type || '' },
-        id,
-      )
-    } else {
-      toast.error(t('toast.recurring_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteRecurringService(id), {
+      entity: 'recurring',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['recurring']],
+      successKey: 'toast.recurring_deleted',
+      errorKey: 'toast.recurring_delete_error',
+      meta: { description: recurringItem?.description || recurringItem?.type || '' },
+      entityId: id,
+    })
   }
 
   const toggleActive = async (id: string, active: boolean) => {
