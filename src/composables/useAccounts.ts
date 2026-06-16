@@ -12,11 +12,9 @@ import type { Account, AccountWithBalance, AccountInsert, AccountUpdate } from '
 
 export const useAccounts = () => {
   const queryClient = useQueryClient()
-  const { t } = useI18n()
-  const { toast } = useToast()
-  const activity = useActivityLog()
   const { user } = useAuth()
   const { defaultCurrency, convertTo } = useCurrency()
+  const { mutate } = useMutationFeedback()
 
   const {
     data: accountsData,
@@ -24,7 +22,7 @@ export const useAccounts = () => {
     refetch: fetchAccounts,
   } = useQuery({
     queryKey: ['accounts', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<Account[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryAccounts(user.value.id)
       if (result.error) throw result.error
@@ -40,7 +38,7 @@ export const useAccounts = () => {
     refetch: fetchAccountBalances,
   } = useQuery({
     queryKey: ['account-balances', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<AccountWithBalance[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryAccountBalancesService(user.value.id)
       if (result.error) throw result.error
@@ -59,50 +57,51 @@ export const useAccounts = () => {
     if (!user.value) {
       return { error: new Error('Not authenticated') }
     }
-    const result = await createAccountService({
-      ...account,
-      user_id: user.value.id,
-    } as AccountInsert)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
-      toast.success(t('accounts.saved'))
-      activity.log('account', 'created', { name: account.name, type: account.type })
-    } else {
-      toast.error(t('accounts.save_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createAccountService({
+          ...account,
+          user_id: user.value!.id,
+        } as AccountInsert),
+      {
+        entity: 'account',
+        action: 'created',
+        queryClient,
+        queryKeys: [['accounts'], ['account-balances']],
+        successKey: 'accounts.saved',
+        errorKey: 'accounts.save_error',
+        meta: { name: account.name, type: account.type },
+      },
+    )
   }
 
   const updateAccount = async (id: string, updates: AccountUpdate) => {
-    const result = await updateAccountService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
-      toast.success(t('accounts.saved'))
-      if (result.data) activity.log('account', 'updated', { name: result.data.name }, id)
-    } else {
-      toast.error(t('accounts.save_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateAccountService(id, updates), {
+      entity: 'account',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['accounts'], ['account-balances']],
+      successKey: 'accounts.saved',
+      errorKey: 'accounts.save_error',
+      meta: { name: updates.name ?? '' },
+      entityId: id,
+    })
   }
 
   const deleteAccount = async (id: string) => {
     const accountName = accounts.value.find((a) => a.id === id)?.name || ''
-    const result = await deleteAccountService(id)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('accounts.deleted'))
-      activity.log('account', 'deleted', { name: accountName }, id)
-    } else {
-      toast.error(t('accounts.delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteAccountService(id), {
+      entity: 'account',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['accounts'], ['account-balances'], ['transactions']],
+      successKey: 'accounts.deleted',
+      errorKey: 'accounts.delete_error',
+      meta: { name: accountName },
+      entityId: id,
+    })
   }
 
   const getAccountBalance = async (accountId: string): Promise<number> => {
