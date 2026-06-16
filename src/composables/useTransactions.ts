@@ -18,7 +18,7 @@ import {
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
 import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
-import { FILTER_ALL } from '@/constants'
+import { FILTER_ALL, TRANSFER_CATEGORY_NAMES } from '@/constants'
 
 export type OwnerFilter = 'all' | 'mine' | 'partner'
 
@@ -72,6 +72,7 @@ export const useTransactions = () => {
   const { user } = useAuth()
   const { partner } = usePartner()
   const { categories } = useCategories()
+  const { mutate } = useMutationFeedback()
 
   const currentPage = ref(1)
   const totalCount = ref(0)
@@ -119,7 +120,7 @@ export const useTransactions = () => {
       pageSize,
     ],
     queryFn: async () => {
-      if (!user.value) return { data: [], count: 0 }
+      if (!user.value) return { data: [] as Transaction[], count: 0 }
 
       const result = await queryTransactions(
         user.value.id,
@@ -132,7 +133,7 @@ export const useTransactions = () => {
 
       totalCount.value = result.data?.count || 0
       return {
-        data: (result.data?.data as Transaction[]) || [],
+        data: (result.data?.data ?? []) as Transaction[],
         count: result.data?.count || 0,
       }
     },
@@ -159,29 +160,20 @@ export const useTransactions = () => {
   }
 
   const addTransaction = async (tx: Omit<TransactionInsert, 'user_id' | 'created_at'>) => {
-    if (!user.value) return { error: { message: 'Not authenticated' } }
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createTxService({ ...tx, user_id: user.value.id } as TransactionInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('toast.transaction_added'))
-      if (result.data) {
-        activity.log(
-          'transaction',
-          'created',
-          {
-            description: tx.description || '',
-            amount: tx.amount,
-            type: tx.type,
-          },
-          result.data.id,
-        )
-      }
-    } else {
-      toast.error(t('toast.transaction_add_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () => createTxService({ ...tx, user_id: user.value!.id } as TransactionInsert),
+      {
+        entity: 'transaction',
+        action: 'created',
+        queryClient,
+        queryKeys: [['transactions']],
+        successKey: 'toast.transaction_added',
+        errorKey: 'toast.transaction_add_error',
+        meta: { description: tx.description || '', amount: tx.amount, type: tx.type },
+      },
+    )
   }
 
   const addTransfer = async (data: {
@@ -194,102 +186,81 @@ export const useTransactions = () => {
     date: string
     description?: string
   }) => {
-    if (!user.value) return { error: { message: 'Not authenticated' } }
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const transferCategory = categories.value.find(
-      (c) =>
-        c.name.toLowerCase() === 'transfer' ||
-        c.name.toLowerCase() === 'pindah buku' ||
-        c.name.toLowerCase() === 'mutasi',
+    const transferCategory = categories.value.find((c) =>
+      TRANSFER_CATEGORY_NAMES.includes(c.name.toLowerCase()),
     )
 
-    const result = await createTransferService(user.value.id, {
-      ...data,
-      category_id: transferCategory?.id || '',
-    })
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      queryClient.invalidateQueries({ queryKey: ['account-balances'] })
-      toast.success(t('toast.transfer_added'))
-      if (result.data?.[0]) {
-        activity.log(
-          'transaction',
-          'created',
-          {
-            description: data.description || 'Transfer',
-            amount: data.amount,
-            type: 'transfer',
-          },
-          result.data[0].id,
-        )
-      }
-    } else {
-      toast.error(t('toast.transaction_add_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createTransferService(user.value!.id, {
+          ...data,
+          category_id: transferCategory?.id || '',
+        }),
+      {
+        entity: 'transaction',
+        action: 'created',
+        queryClient,
+        queryKeys: [['transactions'], ['account-balances']],
+        successKey: 'toast.transfer_added',
+        errorKey: 'toast.transaction_add_error',
+        meta: { description: data.description || 'Transfer', amount: data.amount, type: 'transfer' },
+      },
+    )
   }
 
   const updateTransaction = async (id: string, updates: TransactionUpdate) => {
-    const result = await updateTxService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('toast.transaction_updated'))
-      activity.log(
-        'transaction',
-        'updated',
-        {
-          description: updates.description || '',
-          amount: updates.amount,
-        },
-        id,
-      )
-    } else {
-      toast.error(t('toast.transaction_update_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateTxService(id, updates), {
+      entity: 'transaction',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['transactions']],
+      successKey: 'toast.transaction_updated',
+      errorKey: 'toast.transaction_update_error',
+      meta: { description: updates.description || '', amount: updates.amount },
+      entityId: id,
+    })
   }
 
   const deleteTransaction = async (id: string) => {
-    const result = await deleteTxService(id)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('toast.transaction_deleted'))
-      activity.log('transaction', 'deleted', {}, id)
-    } else {
-      toast.error(t('toast.transaction_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteTxService(id), {
+      entity: 'transaction',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['transactions']],
+      successKey: 'toast.transaction_deleted',
+      errorKey: 'toast.transaction_delete_error',
+      entityId: id,
+    })
   }
 
   const bulkUpdateTransactions = async (ids: string[], updates: TransactionUpdate) => {
     if (ids.length === 0) return { error: null }
-    const result = await bulkUpdateTxService(ids, updates)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('toast.bulk_transactions_updated', { count: ids.length }))
-      activity.log('transaction', 'bulk_updated', { count: ids.length, ...updates })
-    } else {
-      toast.error(t('toast.bulk_transactions_update_error'))
-    }
-    return { error: result.error }
+    return mutate(() => bulkUpdateTxService(ids, updates), {
+      entity: 'transaction',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['transactions']],
+      successKey: 'toast.bulk_transactions_updated',
+      errorKey: 'toast.bulk_transactions_update_error',
+      meta: { count: ids.length, ...updates },
+    })
   }
 
   const bulkDeleteTransactions = async (ids: string[]) => {
     if (ids.length === 0) return { error: null }
-    const result = await bulkDeleteTxService(ids)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success(t('toast.bulk_transactions_deleted', { count: ids.length }))
-      activity.log('transaction', 'bulk_deleted', { count: ids.length })
-    } else {
-      toast.error(t('toast.bulk_transactions_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => bulkDeleteTxService(ids), {
+      entity: 'transaction',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['transactions']],
+      successKey: 'toast.bulk_transactions_deleted',
+      errorKey: 'toast.bulk_transactions_delete_error',
+      meta: { count: ids.length },
+    })
   }
 
   const getTransaction = async (id: string) => {
