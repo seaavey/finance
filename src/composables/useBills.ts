@@ -7,14 +7,12 @@ import {
   deleteBill as deleteBillService,
   markBillAsPaid as markAsPaidService,
 } from '@/services/bill.service'
-import type { BillInsert, Database } from '@/types'
+import type { Bill, BillInsert, Database } from '@/types'
 
 export const useBills = () => {
   const queryClient = useQueryClient()
-  const { t } = useI18n()
-  const { toast } = useToast()
-  const activity = useActivityLog()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const {
     data: billsData,
@@ -22,7 +20,7 @@ export const useBills = () => {
     refetch: fetchBills,
   } = useQuery({
     queryKey: ['bills', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<Bill[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryBills(user.value.id)
       if (result.error) throw result.error
@@ -42,66 +40,66 @@ export const useBills = () => {
   ) => {
     if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createBillService({
-      ...bill,
-      user_id: user.value.id,
-      is_paid: false,
-    } as BillInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['bills'] })
-      toast.success(t('bills.saved'))
-      activity.log('bill', 'created', { name: bill.title, amount: bill.amount })
-    } else {
-      toast.error(t('bills.save_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createBillService({
+          ...bill,
+          user_id: user.value!.id,
+          is_paid: false,
+        } as BillInsert),
+      {
+        entity: 'bill',
+        action: 'created',
+        queryClient,
+        queryKeys: [['bills']],
+        successKey: 'bills.saved',
+        errorKey: 'bills.save_error',
+        meta: { name: bill.title, amount: bill.amount },
+      },
+    )
   }
 
   const updateBill = async (
     id: string,
     updates: Database['public']['Tables']['bills']['Update'],
   ) => {
-    const result = await updateBillService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['bills'] })
-      toast.success(t('bills.saved'))
-      if (result.data) {
-        activity.log('bill', 'updated', { name: result.data.title, amount: result.data.amount }, id)
-      }
-    } else {
-      toast.error(t('bills.save_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateBillService(id, updates), {
+      entity: 'bill',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['bills']],
+      successKey: 'bills.saved',
+      errorKey: 'bills.save_error',
+      meta: { name: updates.title ?? '', amount: updates.amount ?? 0 },
+      entityId: id,
+    })
   }
 
   const deleteBill = async (id: string) => {
     const billTitle = bills.value.find((b) => b.id === id)?.title || ''
-    const result = await deleteBillService(id)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['bills'] })
-      toast.success(t('bills.deleted'))
-      activity.log('bill', 'deleted', { name: billTitle }, id)
-    } else {
-      toast.error(t('bills.delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteBillService(id), {
+      entity: 'bill',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['bills']],
+      successKey: 'bills.deleted',
+      errorKey: 'bills.delete_error',
+      meta: { name: billTitle },
+      entityId: id,
+    })
   }
 
   const markAsPaid = async (id: string, accountId?: string) => {
-    const result = await markAsPaidService(id, accountId)
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['bills'] })
-      toast.success(t('bills.saved'))
-      if (result.data) {
-        activity.log('bill', 'updated', { name: result.data.title, amount: result.data.amount }, id)
-      }
-    } else {
-      toast.error(t('bills.save_error'))
-    }
-    return { error: result.error }
+    return mutate(() => markAsPaidService(id, accountId), {
+      entity: 'bill',
+      action: 'paid',
+      queryClient,
+      queryKeys: [['bills']],
+      successKey: 'bills.saved',
+      errorKey: 'bills.save_error',
+      entityId: id,
+    })
   }
 
   return {
