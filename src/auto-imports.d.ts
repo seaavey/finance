@@ -101,6 +101,7 @@ declare global {
   const useLocalePath: typeof import('./composables/i18n-compat').useLocalePath
   const useModel: typeof import('vue').useModel
   const useNetWorth: typeof import('./composables/useNetWorth').useNetWorth
+  const useMutationFeedback: typeof import('./composables/useMutationFeedback').useMutationFeedback
   const useOnline: typeof import('@vueuse/core').useOnline
   const usePartner: typeof import('./composables/usePartner').usePartner
   const useReceipts: typeof import('./composables/useReceipts').useReceipts
@@ -283,6 +284,9 @@ declare module 'vue' {
     readonly useLocalePath: UnwrapRef<(typeof import('./composables/i18n-compat'))['useLocalePath']>
     readonly useModel: UnwrapRef<(typeof import('vue'))['useModel']>
     readonly useNetWorth: UnwrapRef<(typeof import('./composables/useNetWorth'))['useNetWorth']>
+    readonly useMutationFeedback: UnwrapRef<
+      (typeof import('./composables/useMutationFeedback'))['useMutationFeedback']
+    >
     readonly useOnline: UnwrapRef<(typeof import('@vueuse/core'))['useOnline']>
     readonly usePartner: UnwrapRef<(typeof import('./composables/usePartner'))['usePartner']>
     readonly useReceipts: UnwrapRef<(typeof import('./composables/useReceipts'))['useReceipts']>
