@@ -19,6 +19,7 @@ export const usePartner = () => {
   const { toast } = useToast()
   const { t } = useI18n()
   const activity = useActivityLog()
+  const { mutate } = useMutationFeedback()
 
   const sending = ref(false)
 
@@ -158,53 +159,56 @@ export const usePartner = () => {
     return { error: result.error }
   }
 
-  const acceptInvite = async (invitationId: string) => {
-    const result = await acceptInvitationService(invitationId)
+  const partnerQueryKeys = [
+    ['partner'],
+    ['accounts'],
+    ['invitations:sent'],
+    ['invitations:received'],
+  ]
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['partner'] })
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] })
-      queryClient.invalidateQueries({ queryKey: ['invitations:received'] })
-      toast.success(t('toast.partner_connected'))
-      activity.log('partner', 'connected')
-    } else {
-      toast.error(t('toast.partner_accept_error'))
-    }
-    return { error: result.error }
+  const acceptInvite = async (invitationId: string) => {
+    return mutate(() => acceptInvitationService(invitationId), {
+      entity: 'partner',
+      action: 'created',
+      queryClient,
+      queryKeys: partnerQueryKeys,
+      successKey: 'toast.partner_connected',
+      errorKey: 'toast.partner_accept_error',
+      silent: false,
+    })
   }
 
   const rejectInvite = async (invitationId: string) => {
-    const result = await rejectInvitationService(invitationId)
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['invitations:received'] })
-      toast.success(t('toast.partner_rejected'))
-    }
-    return { error: result.error }
+    return mutate(() => rejectInvitationService(invitationId), {
+      entity: 'partner',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['invitations:received']],
+      successKey: 'toast.partner_rejected',
+      errorKey: 'toast.partner_reject_error',
+    })
   }
 
   const cancelInvite = async (invitationId: string) => {
-    const result = await cancelInvitationService(invitationId)
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] })
-      toast.success(t('toast.partner_cancelled'))
-    }
-    return { error: result.error }
+    return mutate(() => cancelInvitationService(invitationId), {
+      entity: 'partner',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['invitations:sent']],
+      successKey: 'toast.partner_cancelled',
+      errorKey: 'toast.partner_cancel_error',
+    })
   }
 
   const disconnectPartner = async () => {
-    const result = await disconnectPartnerService()
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['partner'] })
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
-      queryClient.invalidateQueries({ queryKey: ['invitations:sent'] })
-      queryClient.invalidateQueries({ queryKey: ['invitations:received'] })
-      toast.success(t('toast.partner_disconnected'))
-      activity.log('partner', 'disconnected')
-    } else {
-      toast.error(t('toast.partner_disconnect_error'))
-    }
-    return { error: result.error }
+    return mutate(() => disconnectPartnerService(), {
+      entity: 'partner',
+      action: 'deleted',
+      queryClient,
+      queryKeys: partnerQueryKeys,
+      successKey: 'toast.partner_disconnected',
+      errorKey: 'toast.partner_disconnect_error',
+    })
   }
 
   return {
