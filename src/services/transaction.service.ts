@@ -245,17 +245,20 @@ export async function getTransactionSummary(
   endDate: string,
   targetCurrency: string,
 ): Promise<Result<{ total_income: number; total_expense: number; balance: number }>> {
-  const result = await rpc<any[]>('get_transaction_summary', {
-    p_user_id: userId,
-    p_start_date: startDate,
-    p_end_date: endDate,
-    p_target_currency: targetCurrency,
-  })
+  const result = await rpc<{ total_income: number; total_expense: number; balance: number }[]>(
+    'get_transaction_summary',
+    {
+      p_user_id: userId,
+      p_start_date: startDate,
+      p_end_date: endDate,
+      p_target_currency: targetCurrency,
+    },
+  )
 
   if (result.error) return result
   const data =
     result.data && result.data.length > 0
-      ? result.data[0]
+      ? result.data[0]!
       : { total_income: 0, total_expense: 0, balance: 0 }
   return { data, error: null }
 }
@@ -265,11 +268,14 @@ export async function getCategoryStats(
   startDate?: string,
   endDate?: string,
 ): Promise<Result<{ category_id: string; transaction_count: number; total_amount: number }[]>> {
-  return rpc<any[]>('get_category_stats', {
-    p_user_id: userId,
-    p_start_date: startDate || '1970-01-01',
-    p_end_date: endDate || '9999-12-31',
-  })
+  return rpc<{ category_id: string; transaction_count: number; total_amount: number }[]>(
+    'get_category_stats',
+    {
+      p_user_id: userId,
+      p_start_date: startDate || '1970-01-01',
+      p_end_date: endDate || '9999-12-31',
+    },
+  )
 }
 
 export async function queryNetWorthTransactions(

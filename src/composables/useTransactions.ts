@@ -17,10 +17,10 @@ import {
   uploadTransactionImage as uploadImageService,
   deleteTransactionImage as deleteImageService,
 } from '@/services/transaction.service'
-import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate } from '@/types'
+import type { Transaction, TransactionFilters, TransactionInsert, TransactionUpdate, OwnerFilter } from '@/types'
 import { FILTER_ALL, QUERY_KEYS, STALE_TIMES, TRANSFER_CATEGORY_NAMES } from '@/constants'
 
-export type OwnerFilter = 'all' | 'mine' | 'partner'
+export type { OwnerFilter }
 
 export const useTransactionSummary = (
   userId: Ref<string | undefined>,

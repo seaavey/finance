@@ -48,7 +48,11 @@ fetchFallbackRates()
 export const useCurrency = () => {
   // Use global i18n.global instance directly to avoid Vue's "inject() can only be used inside setup()" warnings.
   // This is the most robust way to support useCurrency calls from any context (async, top-level, etc.)
-  const globalI18n = i18n.global as any
+  interface I18nGlobal {
+    t: (key: string) => string
+    locale: { value: string }
+  }
+  const globalI18n = i18n.global as unknown as I18nGlobal
   const t = globalI18n.t
   const locale = globalI18n.locale
 

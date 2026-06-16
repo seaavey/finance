@@ -5,14 +5,9 @@ import { useI18n } from './i18n-compat'
 import { queryAccounts } from '@/services/account.service'
 import { queryNetWorthTransactions } from '@/services/transaction.service'
 import { STALE_TIMES } from '@/constants'
+import type { NetWorthData } from '@/types'
 
-export interface NetWorthData {
-  label: string
-  assets: number
-  debts: number
-  netWorth: number
-  date: string
-}
+export type { NetWorthData }
 
 export const useNetWorth = () => {
   const queryClient = useQueryClient()
