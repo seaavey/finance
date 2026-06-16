@@ -1,23 +1,17 @@
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useAuth } from '@/composables/useAuth'
-import { useToast } from '@/composables/useToast'
-import { useActivityLog } from '@/composables/useActivityLog'
 import {
   querySubscriptions,
   createSubscription as createService,
   updateSubscription as updateService,
   deleteSubscription as deleteService,
 } from '@/services/subscription.service'
-import type { SubscriptionInsert, SubscriptionUpdate } from '@/types'
+import type { Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
 
 export const useSubscriptions = () => {
-  const { t } = useI18n()
-  const { toast } = useToast()
-  const activity = useActivityLog()
   const queryClient = useQueryClient()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const {
     data: subscriptionsData,
@@ -25,7 +19,7 @@ export const useSubscriptions = () => {
     refetch: fetchSubscriptions,
   } = useQuery({
     queryKey: ['subscriptions', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<Subscription[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await querySubscriptions(user.value.id)
       if (result.error) throw result.error
@@ -38,55 +32,52 @@ export const useSubscriptions = () => {
   const subscriptions = computed(() => subscriptionsData.value || [])
 
   const addSubscription = async (item: Omit<SubscriptionInsert, 'user_id' | 'created_at'>) => {
-    if (!user.value) return
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createService({
-      ...item,
-      user_id: user.value.id,
-    } as SubscriptionInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['subscriptions'] })
-      toast.success(t('toast.subscription_added'))
-      if (result.data) {
-        activity.log('subscription', 'created', {
-          name: result.data.name,
-          amount: result.data.amount,
-        })
-      }
-    } else {
-      toast.error(t('toast.subscription_add_error'))
-    }
-    return { error: result.error, data: result.data }
+    return mutate(
+      () =>
+        createService({
+          ...item,
+          user_id: user.value!.id,
+        } as SubscriptionInsert),
+      {
+        entity: 'subscription',
+        action: 'created',
+        queryClient,
+        queryKeys: [['subscriptions']],
+        successKey: 'toast.subscription_added',
+        errorKey: 'toast.subscription_add_error',
+        meta: { name: item.name || '', amount: item.amount ?? 0 },
+      },
+    )
   }
 
   const updateSubscription = async (id: string, updates: SubscriptionUpdate) => {
-    const result = await updateService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['subscriptions'] })
-      toast.success(t('toast.subscription_updated'))
-      if (result.data) {
-        activity.log('subscription', 'updated', { name: result.data.name }, id)
-      }
-    } else {
-      toast.error(t('toast.subscription_update_error'))
-    }
-    return { error: result.error, data: result.data }
+    return mutate(() => updateService(id, updates), {
+      entity: 'subscription',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['subscriptions']],
+      successKey: 'toast.subscription_updated',
+      errorKey: 'toast.subscription_update_error',
+      meta: { name: updates.name ?? '' },
+      entityId: id,
+    })
   }
 
   const deleteSubscription = async (id: string) => {
     const subItem = subscriptions.value.find((s) => s.id === id)
-    const result = await deleteService(id)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['subscriptions'] })
-      toast.success(t('toast.subscription_deleted'))
-      activity.log('subscription', 'deleted', { name: subItem?.name || '' }, id)
-    } else {
-      toast.error(t('toast.subscription_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteService(id), {
+      entity: 'subscription',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['subscriptions']],
+      successKey: 'toast.subscription_deleted',
+      errorKey: 'toast.subscription_delete_error',
+      meta: { name: subItem?.name || '' },
+      entityId: id,
+    })
   }
 
   const toggleActive = async (id: string, active: boolean) => {
@@ -95,13 +86,8 @@ export const useSubscriptions = () => {
 
   const monthlyTotal = computed(() => {
     return subscriptions.value
-      .filter((s) => s.active)
-      .reduce((total, s) => {
-        let amount = Number(s.amount)
-        if (s.billing_cycle === 'yearly') amount = amount / 12
-        if (s.billing_cycle === 'weekly') amount = amount * 4
-        return total + amount
-      }, 0)
+      .filter((s) => s.active !== false)
+      .reduce((sum, s) => sum + Number(s.amount || 0), 0)
   })
 
   return {
