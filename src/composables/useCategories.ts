@@ -7,14 +7,12 @@ import {
   deleteCategory as deleteCategoryService,
   createDefaultCategories as seedDefaultsService,
 } from '@/services/category.service'
-import type { CategoryInsert, CategoryUpdate } from '@/types'
+import type { Category, CategoryInsert, CategoryUpdate } from '@/types'
 
 export const useCategories = () => {
   const queryClient = useQueryClient()
-  const { t } = useI18n()
-  const { toast } = useToast()
-  const activity = useActivityLog()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const {
     data: categoriesData,
@@ -22,7 +20,7 @@ export const useCategories = () => {
     refetch: fetchCategories,
   } = useQuery({
     queryKey: ['categories', computed(() => user.value?.id)],
-    queryFn: async () => {
+    queryFn: async (): Promise<Category[]> => {
       if (!user.value) throw new Error('Not authenticated')
       const result = await queryCategories(user.value.id)
       if (result.error) throw result.error
@@ -57,49 +55,53 @@ export const useCategories = () => {
   }
 
   const addCategory = async (category: Omit<CategoryInsert, 'user_id' | 'created_at'>) => {
-    if (!user.value) return
+    if (!user.value) return { error: new Error('Not authenticated') }
 
-    const result = await createCategoryService({
-      ...category,
-      user_id: user.value.id,
-    } as CategoryInsert)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      toast.success(t('toast.category_added'))
-      if (result.data)
-        activity.log('category', 'created', { name: category.name || '' }, result.data.id)
-    } else {
-      toast.error(t('toast.category_add_error'))
-    }
-    return { error: result.error }
+    return mutate(
+      () =>
+        createCategoryService({
+          ...category,
+          user_id: user.value!.id,
+        } as CategoryInsert),
+      {
+        entity: 'category',
+        action: 'created',
+        queryClient,
+        queryKeys: [['categories']],
+        successKey: 'toast.category_added',
+        errorKey: 'toast.category_add_error',
+        meta: { name: category.name || '' },
+        entityId: undefined,
+      },
+    )
   }
 
   const updateCategory = async (id: string, updates: CategoryUpdate) => {
-    const result = await updateCategoryService(id, updates)
-
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      toast.success(t('toast.category_updated'))
-      if (result.data) activity.log('category', 'updated', { name: result.data.name }, id)
-    } else {
-      toast.error(t('toast.category_update_error'))
-    }
-    return { error: result.error }
+    return mutate(() => updateCategoryService(id, updates), {
+      entity: 'category',
+      action: 'updated',
+      queryClient,
+      queryKeys: [['categories']],
+      successKey: 'toast.category_updated',
+      errorKey: 'toast.category_update_error',
+      meta: { name: updates.name ?? '' },
+      entityId: id,
+    })
   }
 
   const deleteCategory = async (id: string) => {
     const deletedCategoryName = categories.value.find((c) => c.id === id)?.name || ''
-    const result = await deleteCategoryService(id)
 
-    if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      toast.success(t('toast.category_deleted'))
-      activity.log('category', 'deleted', { name: deletedCategoryName }, id)
-    } else {
-      toast.error(t('toast.category_delete_error'))
-    }
-    return { error: result.error }
+    return mutate(() => deleteCategoryService(id), {
+      entity: 'category',
+      action: 'deleted',
+      queryClient,
+      queryKeys: [['categories']],
+      successKey: 'toast.category_deleted',
+      errorKey: 'toast.category_delete_error',
+      meta: { name: deletedCategoryName },
+      entityId: id,
+    })
   }
 
   const incomeCategories = computed(() => categories.value.filter((c) => c.type === 'income'))
