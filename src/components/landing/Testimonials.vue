@@ -104,12 +104,12 @@ interface Testimonial {
   avatar: string | object
 }
 
-const rawTestimonials = tm('landing.testimonials_items') as Record<string, unknown>[]
+const rawTestimonials = tm('landing.testimonials_items') as Testimonial[]
 const testimonials = rawTestimonials.map((t) => ({
   ...t,
   rating:
     typeof t.rating === 'number' ? t.rating : Number(rt(t.rating)) || 5,
-})) satisfies Testimonial[]
+}))
 
 const getColorClasses = (color: string | object) => {
   const colorStr = typeof color === 'string' ? color : rt(color)
