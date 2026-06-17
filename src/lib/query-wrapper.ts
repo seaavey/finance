@@ -1,7 +1,6 @@
 import { useSupabase } from '@/lib/supabase'
 import { AppError } from '@/types/result'
 import type { Result } from '@/types'
-import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 /**
  * Executes a Supabase query and returns exactly one row.
