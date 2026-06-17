@@ -11,6 +11,8 @@ import {
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 import type { BudgetWithProgress, BudgetUpdate } from '@/types'
 
+const queryKeys = [[QUERY_KEYS.BUDGETS], [QUERY_KEYS.BUDGETS_WITH_PROGRESS]]
+
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
 
@@ -20,6 +22,7 @@ export const useBudgets = () => {
   const { toast } = useToast()
   const activity = useActivityLog()
   const { user } = useAuth()
+  const { mutate } = useMutationFeedback()
 
   const currentMonth = ref<string>('')
   const targetUserId = ref<string | undefined>()
@@ -46,7 +49,7 @@ export const useBudgets = () => {
     refetch: _refetchBudgetProgress,
   } = useQuery({
     queryKey: [
-      'budgets:with-progress',
+      QUERY_KEYS.BUDGETS_WITH_PROGRESS,
       computed(() => targetUserId.value || user.value?.id),
       currentMonth,
     ],
@@ -100,16 +103,21 @@ export const useBudgets = () => {
       return { error: new Error('Not authenticated') }
     }
 
-    const result = await createBudgetService(user.value.id, categoryId, month, amount, name)
+    const result = await mutate(
+      () => createBudgetService(user.value!.id, categoryId, month, amount, name),
+      {
+        entity: 'budget',
+        action: 'created',
+        queryClient,
+        queryKeys,
+        successKey: 'budget.saved',
+        errorKey: 'budget.save_error',
+        meta: { category_name: name || categoryId, amount },
+      },
+    )
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
-      toast.success(t('budget.saved'))
-      activity.log('budget', 'created', { category_name: name || categoryId, amount })
-    } else {
-      toast.error(t('budget.save_error'))
     }
 
     return { error: result.error }
@@ -125,24 +133,24 @@ export const useBudgets = () => {
     const budgets = await fetchBudgetWithProgress(month)
     const existing = budgets.find((b) => b.category_id === categoryId)
 
-    let result
-    if (existing) {
-      result = await updateBudgetService(existing.id, { amount })
-    } else {
-      result = await createBudgetService(user.value.id, categoryId, month, amount)
-    }
+    const result = await mutate(
+      () =>
+        existing
+          ? updateBudgetService(existing.id, { amount })
+          : createBudgetService(user.value!.id, categoryId, month, amount),
+      {
+        entity: 'budget',
+        action: existing ? 'updated' : 'created',
+        queryClient,
+        queryKeys,
+        successKey: 'budget.saved',
+        errorKey: 'budget.save_error',
+        meta: { category_name: categoryId, amount },
+      },
+    )
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
-      toast.success(t('budget.saved'))
-      activity.log('budget', existing ? 'updated' : 'created', {
-        category_name: categoryId,
-        amount,
-      })
-    } else {
-      toast.error(t('budget.save_error'))
     }
 
     return { error: result.error }
@@ -158,16 +166,21 @@ export const useBudgets = () => {
       return { error: new Error('Not authenticated') }
     }
 
-    const result = await updateBudgetService(id, data as BudgetUpdate)
+    const result = await mutate(
+      () => updateBudgetService(id, data as BudgetUpdate),
+      {
+        entity: 'budget',
+        action: 'updated',
+        queryClient,
+        queryKeys,
+        successKey: 'budget.saved',
+        errorKey: 'budget.save_error',
+        meta: { id, ...data },
+      },
+    )
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
-      toast.success(t('budget.saved'))
-      activity.log('budget', 'updated', { id, ...data })
-    } else {
-      toast.error(t('budget.save_error'))
     }
 
     return { error: result.error }
@@ -176,16 +189,20 @@ export const useBudgets = () => {
   const deleteBudget = async (id: string, month: string) => {
     const budget = budgets.value.find((b) => b.id === id)
     const categoryId = budget?.category_id || ''
-    const result = await deleteBudgetService(id)
+
+    const result = await mutate(() => deleteBudgetService(id), {
+      entity: 'budget',
+      action: 'deleted',
+      queryClient,
+      queryKeys,
+      successKey: 'budget.deleted',
+      errorKey: 'budget.delete_error',
+      meta: { category_name: categoryId },
+      entityId: id,
+    })
 
     if (!result.error) {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS] })
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BUDGETS_WITH_PROGRESS] })
       await fetchBudgets(month)
-      toast.success(t('budget.deleted'))
-      activity.log('budget', 'deleted', { category_name: categoryId }, id)
-    } else {
-      toast.error(t('budget.delete_error'))
     }
 
     return { error: result.error }
