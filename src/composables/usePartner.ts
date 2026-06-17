@@ -29,7 +29,6 @@ export const usePartner = () => {
   const { user } = useAuth()
   const { toast } = useToast()
   const { t } = useI18n()
-  const activity = useActivityLog()
   const { mutate } = useMutationFeedback()
 
   const sending = ref(false)

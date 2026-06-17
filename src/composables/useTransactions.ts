@@ -98,7 +98,6 @@ export const useTransactions = () => {
   const { t } = useI18n()
   const { toast } = useToast()
   const queryClient = useQueryClient()
-  const activity = useActivityLog()
   const { user } = useAuth()
   const { partner } = usePartner()
   const { categories } = useCategories()

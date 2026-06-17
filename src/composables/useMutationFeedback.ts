@@ -12,7 +12,7 @@ export type EntityType =
   | 'transaction'
   | 'partner'
 
-interface MutationFeedbackOptions<T = unknown> {
+interface MutationFeedbackOptions {
   entity: EntityType
   action: ActionType
   queryClient: QueryClient
@@ -38,7 +38,7 @@ export function useMutationFeedback() {
 
   async function mutate<T>(
     fn: () => Promise<Result<T>>,
-    opts: MutationFeedbackOptions<T>,
+    opts: MutationFeedbackOptions,
   ): Promise<Result<T>> {
     const result = await fn()
 

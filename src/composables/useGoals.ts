@@ -10,7 +10,7 @@ import {
   deleteGoalImage as deleteImageService,
 } from '@/services/goal.service'
 import type { Goal, GoalInsert, GoalUpdate } from '@/types'
-import { QUERY_KEYS, STALE_TIMES } from '@/constants'
+import { QUERY_KEYS } from '@/constants'
 
 /**
  * Manages savings goals with image uploads and fund tracking.
@@ -24,7 +24,6 @@ import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 export const useGoals = () => {
   const { t } = useI18n()
   const { toast } = useToast()
-  const activity = useActivityLog()
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const { mutate } = useMutationFeedback()

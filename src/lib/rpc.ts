@@ -71,7 +71,7 @@ export async function callEdgeFunction<T = unknown>(
     }
 
     return { data, error: null }
-  } catch (e) {
+  } catch (_e) {
     return {
       data: null,
       error: new AppError('Network error calling edge function', 'EDGE_NETWORK'),
