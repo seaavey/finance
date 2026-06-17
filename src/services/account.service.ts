@@ -6,6 +6,7 @@ import { ACCOUNT_FIELDS } from '@/services/fields'
 import type { Account, Result, AccountInsert, AccountUpdate, AccountWithBalance } from '@/types'
 import { AppError } from '@/types/result'
 
+/** Fetches all accounts for a user, ordered by creation date. */
 export async function queryAccounts(userId: string): Promise<Result<Account[]>> {
   const supabase = useSupabase()
   return queryList<Account>(
@@ -13,11 +14,13 @@ export async function queryAccounts(userId: string): Promise<Result<Account[]>> 
   )
 }
 
+/** Fetches a single account by its ID. */
 export async function getAccount(id: string): Promise<Result<Account>> {
   const supabase = useSupabase()
   return querySingle<Account>(supabase.from('accounts').select(ACCOUNT_FIELDS).eq('id', id))
 }
 
+/** Creates a new account. Validates initial_balance when provided. */
 export async function createAccount(account: AccountInsert): Promise<Result<Account>> {
   const supabase = useSupabase()
   if (account.initial_balance !== undefined) {
@@ -27,6 +30,7 @@ export async function createAccount(account: AccountInsert): Promise<Result<Acco
   return mutationWithReturn<Account>(supabase.from('accounts').insert(account))
 }
 
+/** Updates an account by ID. Validates initial_balance when provided. */
 export async function updateAccount(id: string, updates: AccountUpdate): Promise<Result<Account>> {
   const supabase = useSupabase()
   if (updates.initial_balance !== undefined) {
@@ -36,11 +40,13 @@ export async function updateAccount(id: string, updates: AccountUpdate): Promise
   return mutationWithReturn<Account>(supabase.from('accounts').update(updates).eq('id', id))
 }
 
+/** Deletes an account by ID. */
 export async function deleteAccount(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('accounts').delete().eq('id', id))
 }
 
+/** Fetches computed balances for all accounts via RPC. */
 export async function queryAccountBalances(userId: string): Promise<Result<AccountWithBalance[]>> {
   return rpc<AccountWithBalance[]>('get_account_balances', { p_user_id: userId })
 }

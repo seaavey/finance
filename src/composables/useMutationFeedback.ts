@@ -26,10 +26,10 @@ interface MutationFeedbackOptions<T = unknown> {
 }
 
 /**
- * Handles the common mutation feedback pattern:
- * result check → invalidate → toast → activity log
+ * Wraps TanStack Query mutations with consistent feedback:
+ * invalidates queries, shows toast, and logs activity on success/error.
  *
- * Returns the raw result so callers can read .data or .error.
+ * @returns Object with `mutate` function that handles the feedback pattern.
  */
 export function useMutationFeedback() {
   const { t } = useI18n()

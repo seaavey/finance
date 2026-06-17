@@ -8,8 +8,10 @@ interface I18nLocale {
 }
 
 /**
- * Compatibility layer for i18n features in pure Vue 3 (vue-i18n + vueuse).
- * Resolves ESLint 'any' warnings by using proper interfaces and unknown casts.
+ * Provides i18n helpers compatible with Nuxt's `useI18n` interface.
+ * Wraps vue-i18n with type-safe locale, translation, and message utilities.
+ *
+ * @returns Object with `locale`, `locales`, `t`, `tm`, `rt`, and `setLocale` helpers.
  */
 export const useI18n = () => {
   const i18n = useVueI18n()
@@ -53,6 +55,12 @@ export const useI18n = () => {
   }
 }
 
+/**
+ * Returns a no-op path resolver that passes the path through unchanged.
+ * Compatibility shim for Nuxt's `useLocalePath`.
+ *
+ * @returns A function that accepts a path string and returns it as-is.
+ */
 export const useLocalePath = () => {
   return (path: string) => path
 }
@@ -66,6 +74,12 @@ interface ColorModeState {
 
 let colorModeState: ColorModeState | null = null
 
+/**
+ * Provides a singleton reactive color mode state backed by vueuse.
+ * Syncs preference and value bidirectionally with the underlying `useColorMode`.
+ *
+ * @returns Reactive object with `preference`, `value`, and `unknown` properties.
+ */
 export const useColorMode = () => {
   if (!colorModeState) {
     // This will only run when useColorMode is first called inside a component/setup

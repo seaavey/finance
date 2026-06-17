@@ -12,6 +12,15 @@ import {
 import type { Goal, GoalInsert, GoalUpdate } from '@/types'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages savings goals with image uploads and fund tracking.
+ * Provides CRUD operations, fund additions, and image management,
+ * with query invalidation and activity logging on mutations.
+ *
+ * @returns Reactive `goals`, `partnerGoals`, `loading`, and functions:
+ * `fetchGoals`, `fetchPartnerGoals`, `fetchUserGoals`, `setPartnerId`, `addGoal`, `updateGoal`,
+ * `addFunds`, `uploadGoalImage`, `deleteGoalImage`, `deleteGoal`.
+ */
 export const useGoals = () => {
   const { t } = useI18n()
   const { toast } = useToast()

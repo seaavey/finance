@@ -11,6 +11,12 @@ import type {
   SafeJson,
 } from '@/types'
 
+/**
+ * Logs user actions and queries activity history with pagination.
+ * Supports appending log pages for infinite scroll and fetching recent entries.
+ *
+ * @returns Reactive `logs`, `total`, `loading`, and functions: `log`, `fetchAll`, `fetchRecent`.
+ */
 export const useActivityLog = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

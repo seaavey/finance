@@ -9,6 +9,12 @@ export const user = ref<User | null>(null)
 export const loading = ref(true)
 let loginLogged = false
 
+/**
+ * Manages authentication state via Supabase.
+ * Provides Google OAuth sign-in, sign-out with activity logging, and session retrieval.
+ *
+ * @returns Reactive `user`, `loading`, and functions: `signInWithGoogle`, `signOut`, `getSession`.
+ */
 export const useAuth = () => {
   const supabase = useSupabase()
   const router = useRouter()

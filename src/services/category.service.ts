@@ -3,6 +3,7 @@ import { queryList, querySingle, mutationWithReturn, mutationVoid } from '@/lib/
 import { CATEGORY_FIELDS } from '@/services/fields'
 import type { Result, CategoryRow, CategoryInsert, CategoryUpdate } from '@/types'
 
+/** Fetches all categories for a user, ordered by creation date ascending. */
 export async function queryCategories(userId: string): Promise<Result<CategoryRow[]>> {
   const supabase = useSupabase()
   return queryList<CategoryRow>(
@@ -14,16 +15,19 @@ export async function queryCategories(userId: string): Promise<Result<CategoryRo
   )
 }
 
+/** Fetches a single category by ID. */
 export async function getCategory(id: string): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
   return querySingle<CategoryRow>(supabase.from('categories').select(CATEGORY_FIELDS).eq('id', id))
 }
 
+/** Creates a new category. */
 export async function createCategory(category: CategoryInsert): Promise<Result<CategoryRow>> {
   const supabase = useSupabase()
   return mutationWithReturn<CategoryRow>(supabase.from('categories').insert(category))
 }
 
+/** Updates a category by ID. */
 export async function updateCategory(
   id: string,
   updates: CategoryUpdate,
@@ -32,11 +36,13 @@ export async function updateCategory(
   return mutationWithReturn<CategoryRow>(supabase.from('categories').update(updates).eq('id', id))
 }
 
+/** Deletes a category by ID. */
 export async function deleteCategory(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('categories').delete().eq('id', id))
 }
 
+/** Bulk-inserts default categories for a new user. */
 export async function createDefaultCategories(
   userId: string,
   defaults: Array<{ name: string; type: string; icon: string; color: string }>,

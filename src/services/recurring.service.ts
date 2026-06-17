@@ -5,6 +5,7 @@ import { RECURRING_FIELDS } from '@/services/fields'
 import type { Result, RecurringTransaction, RecurringInsert, RecurringUpdate } from '@/types'
 import { AppError } from '@/types/result'
 
+/** Fetches all recurring transactions for a user, ordered by next date ascending. */
 export async function queryRecurring(userId: string): Promise<Result<RecurringTransaction[]>> {
   const supabase = useSupabase()
   return queryList<RecurringTransaction>(
@@ -16,6 +17,7 @@ export async function queryRecurring(userId: string): Promise<Result<RecurringTr
   )
 }
 
+/** Creates a recurring transaction. Validates the amount. */
 export async function createRecurring(
   recurring: RecurringInsert,
 ): Promise<Result<RecurringTransaction>> {
@@ -27,6 +29,7 @@ export async function createRecurring(
   )
 }
 
+/** Updates a recurring transaction by ID. Validates the amount when provided. */
 export async function updateRecurring(
   id: string,
   updates: RecurringUpdate,
@@ -41,11 +44,13 @@ export async function updateRecurring(
   )
 }
 
+/** Deletes a recurring transaction by ID. */
 export async function deleteRecurring(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('recurring_transactions').delete().eq('id', id))
 }
 
+/** Fetches active recurring transactions whose next_date is on or before the given date. */
 export async function queryDueRecurring(
   userId: string,
   today: string,

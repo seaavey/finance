@@ -124,6 +124,14 @@ function validateFile(file: File): string | null {
   return null
 }
 
+/**
+ * Handles receipt scanning via OCR Edge Function.
+ * Compresses images, uploads to Supabase Storage, and calls the OCR endpoint
+ * to extract transaction data from receipt photos.
+ *
+ * @returns Reactive `uploading`, `scanning`, `statusMessage`, `lastResult`,
+ * and functions: `scanReceiptFromFile`, `reset`.
+ */
 export const useReceipts = (): UseReceiptsReturn => {
   const supabase = useSupabase()
   const { user } = useAuth()

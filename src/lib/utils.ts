@@ -2,12 +2,21 @@ import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+/**
+ * Merges Tailwind CSS class names, resolving conflicts via tailwind-merge.
+ *
+ * @param inputs - Class values to merge (strings, arrays, objects, falsy values)
+ * @returns Merged class string with conflicting Tailwind utilities resolved
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 /**
- * Format date as YYYY-MM-DD in local time
+ * Formats a Date as YYYY-MM-DD in local time (not UTC).
+ *
+ * @param date - The date to format
+ * @returns Date string in YYYY-MM-DD format
  */
 export function formatDateSafe(date: Date): string {
   const year = date.getFullYear()
@@ -17,7 +26,11 @@ export function formatDateSafe(date: Date): string {
 }
 
 /**
- * Resolves a route path to a translation key for the page title.
+ * Resolves a route path to its corresponding i18n translation key.
+ * Returns an empty string for unknown paths.
+ *
+ * @param path - The current route path (e.g. '/dashboard')
+ * @returns Translation key string (e.g. 'nav.dashboard') or empty string
  */
 export function getPageTitleKey(path: string): string {
   if (path === '/') return 'common.home'
@@ -40,6 +53,13 @@ export function getPageTitleKey(path: string): string {
   return ''
 }
 
+/**
+ * Builds a URL to the og-image Edge Function for social media previews.
+ *
+ * @param title - The page title to render in the OG image
+ * @param description - The page description to render in the OG image
+ * @returns Full URL to the og-image Edge Function with query parameters
+ */
 export function getOgImageUrl(title: string, description: string) {
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL
   const baseUrl = `${supabaseUrl}/functions/v1/og-image`
@@ -51,8 +71,12 @@ export function getOgImageUrl(title: string, description: string) {
 }
 
 /**
- * Validate that an amount is a finite positive number within a safe range.
- * Returns the validated amount or an error string.
+ * Validates that an amount is a finite positive number within a safe range.
+ *
+ * @param amount - The value to validate (will be coerced to Number)
+ * @param allowZero - Whether zero is a valid amount (default: false)
+ * @param max - Maximum allowed value (default: 999_999_999_999)
+ * @returns An object with the validated number or an error message string
  */
 export function validateAmount(
   amount: unknown,
@@ -66,4 +90,31 @@ export function validateAmount(
   if (num > max) return { value: null, error: `Amount exceeds maximum (${max})` }
   if (Number.isNaN(num)) return { value: null, error: 'Amount is not a valid number' }
   return { value: num, error: null }
+}
+
+/**
+ * Returns a new Date set to midnight (00:00:00.000) of the same day.
+ * Does not mutate the input.
+ *
+ * @param date - The input date
+ * @returns A new Date at midnight of the same day
+ */
+export function startOfDay(date: Date): Date {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+/**
+ * Returns the number of whole days between two dates.
+ * Positive means the target is in the future, negative means the past.
+ *
+ * @param target - The date to count toward
+ * @param from - The starting date (default: now)
+ * @returns Whole number of days between the two dates
+ */
+export function daysUntil(target: Date | string, from: Date | string = new Date()): number {
+  const t = typeof target === 'string' ? new Date(target) : target
+  const f = typeof from === 'string' ? new Date(from) : from
+  return Math.round((startOfDay(t).getTime() - startOfDay(f).getTime()) / (1000 * 60 * 60 * 24))
 }

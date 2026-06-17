@@ -2,6 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import { queryWithCount, mutationWithReturn } from '@/lib/query-wrapper'
 import type { Result, ActivityLogRow, ActivityLogInsert, ActivityLogFilters } from '@/types'
 
+/** Queries paginated activity logs with optional entity type, action, and date range filters. */
 export async function queryActivityLogs(
   userId: string,
   filters: ActivityLogFilters = {},
@@ -39,6 +40,7 @@ export async function queryActivityLogs(
   return { data: { logs: result.data.data, total: result.data.count }, error: null }
 }
 
+/** Inserts a new activity log entry. */
 export async function logActivity(log: ActivityLogInsert): Promise<Result<ActivityLogRow>> {
   const supabase = useSupabase()
   return mutationWithReturn<ActivityLogRow>(supabase.from('activity_logs').insert(log))

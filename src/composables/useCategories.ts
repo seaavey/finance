@@ -10,6 +10,14 @@ import {
 import type { Category, CategoryInsert, CategoryUpdate } from '@/types'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages income and expense categories.
+ * Fetches categories via TanStack Query and provides CRUD operations with
+ * query invalidation and activity logging.
+ *
+ * @returns Reactive `categories`, `incomeCategories`, `expenseCategories`, `loading`,
+ * and functions: `fetchCategories`, `seedDefaults`, `addCategory`, `updateCategory`, `deleteCategory`.
+ */
 export const useCategories = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

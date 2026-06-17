@@ -16,6 +16,15 @@ const queryKeys = [[QUERY_KEYS.BUDGETS], [QUERY_KEYS.BUDGETS_WITH_PROGRESS]]
 // Session-level dedup: prevents re-alerting the same budget+threshold until page refresh
 const alertedThresholds = new Set<string>()
 
+/**
+ * Manages monthly budget allocations and spending progress.
+ * Fetches budgets with progress data, supports CRUD, and checks thresholds
+ * for alert toasts when spending approaches or exceeds limits.
+ *
+ * @returns Reactive `budgets`, `budgetsWithProgress`, `loading`, and functions:
+ * `fetchBudgets`, `fetchBudgetWithProgress`, `setBudget`, `createBudget`, `updateBudget`,
+ * `deleteBudget`, `getProgress`, `checkBudgetAlerts`.
+ */
 export const useBudgets = () => {
   const queryClient = useQueryClient()
   const { t } = useI18n()

@@ -10,11 +10,13 @@ import { PROFILE_FIELDS } from '@/services/fields'
 import type { Result, ProfileRow, Invitation, InvitationRow, CoupleInvitation } from '@/types'
 import { AppError } from '@/types/result'
 
+/** Fetches a user profile by ID. */
 export async function getProfile(userId: string): Promise<Result<ProfileRow>> {
   const supabase = useSupabase()
   return querySingle<ProfileRow>(supabase.from('profiles').select(PROFILE_FIELDS).eq('id', userId))
 }
 
+/** Queries pending couple invitations addressed to the given email. */
 export async function queryInvitations(email: string): Promise<Result<CoupleInvitation[]>> {
   const supabase = useSupabase()
   return queryList<CoupleInvitation>(
@@ -27,6 +29,7 @@ export async function queryInvitations(email: string): Promise<Result<CoupleInvi
   )
 }
 
+/** Creates a new couple invitation with a unique token. */
 export async function sendInvitation(
   senderId: string,
   recipientEmail: string,
@@ -43,6 +46,7 @@ export async function sendInvitation(
   )
 }
 
+/** Accepts a couple invitation via the accept_couple_invitation RPC. */
 export async function acceptInvitation(invitationId: string): Promise<Result<unknown>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.rpc('accept_couple_invitation', {
@@ -57,6 +61,7 @@ export async function acceptInvitation(invitationId: string): Promise<Result<unk
   return { data, error: null }
 }
 
+/** Marks a couple invitation as rejected. */
 export async function rejectInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(
@@ -64,6 +69,7 @@ export async function rejectInvitation(invitationId: string): Promise<Result<nul
   )
 }
 
+/** Marks a couple invitation as cancelled. */
 export async function cancelInvitation(invitationId: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(
@@ -71,6 +77,7 @@ export async function cancelInvitation(invitationId: string): Promise<Result<nul
   )
 }
 
+/** Removes the partner link via the disconnect_partner RPC. */
 export async function disconnectPartner(): Promise<Result<unknown>> {
   const supabase = useSupabase()
   const { data, error } = await supabase.rpc('disconnect_partner')
@@ -82,6 +89,7 @@ export async function disconnectPartner(): Promise<Result<unknown>> {
   return { data, error: null }
 }
 
+/** Queries couple invitations sent by a user. */
 export async function querySentInvitations(senderId: string): Promise<Result<Invitation[]>> {
   const supabase = useSupabase()
   return queryList<Invitation>(
@@ -93,6 +101,7 @@ export async function querySentInvitations(senderId: string): Promise<Result<Inv
   )
 }
 
+/** Checks whether a pending invitation already exists between a sender and recipient. */
 export async function getExistingPendingInvitation(
   senderId: string,
   email: string,

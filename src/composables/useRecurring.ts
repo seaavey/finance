@@ -19,6 +19,14 @@ import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
 export type { RecurringTransaction }
 
+/**
+ * Manages recurring transaction templates.
+ * Provides CRUD operations, active/inactive toggling, and processes due
+ * items by creating actual transactions and advancing the next date.
+ *
+ * @returns Reactive `recurring`, `loading`, and functions: `fetchRecurring`,
+ * `addRecurring`, `updateRecurring`, `deleteRecurring`, `toggleActive`, `processDueRecurring`.
+ */
 export const useRecurring = () => {
   const { t } = useI18n()
   const { toast } = useToast()

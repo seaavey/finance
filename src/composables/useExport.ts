@@ -2,6 +2,13 @@ import { formatDateSafe } from '@/lib/utils'
 import { queryExportTransactions } from '@/services/transaction.service'
 import { queryCategories } from '@/services/category.service'
 
+/**
+ * Exports all user transactions as a CSV file.
+ * Fetches transactions and categories in parallel, formats them with
+ * localized column headers, and triggers a browser download.
+ *
+ * @returns Object with `exportAllData` function and reactive `loading` ref.
+ */
 export const useExport = () => {
   const { t } = useI18n()
   const { toast } = useToast()

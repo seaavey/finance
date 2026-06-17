@@ -12,6 +12,7 @@ import type { Result, BudgetWithProgress, BudgetRow, BudgetUpdate } from '@/type
 import { AppError } from '@/types/result'
 import { validateAmount } from '@/lib/utils'
 
+/** Fetches budgets for a user in a given month, ordered by creation date. */
 export async function queryBudgets(userId: string, month: string): Promise<Result<BudgetRow[]>> {
   const supabase = useSupabase()
   return queryList<BudgetRow>(
@@ -24,6 +25,7 @@ export async function queryBudgets(userId: string, month: string): Promise<Resul
   )
 }
 
+/** Creates a budget for a category in a given month. Validates the amount. */
 export async function createBudget(
   userId: string,
   categoryId: string,
@@ -45,6 +47,7 @@ export async function createBudget(
   )
 }
 
+/** Updates a budget by ID. Validates the amount when provided. */
 export async function updateBudget(id: string, updates: BudgetUpdate): Promise<Result<BudgetRow>> {
   const supabase = useSupabase()
   if (updates.amount !== undefined) {
@@ -54,11 +57,13 @@ export async function updateBudget(id: string, updates: BudgetUpdate): Promise<R
   return mutationWithReturn<BudgetRow>(supabase.from('budgets').update(updates).eq('id', id))
 }
 
+/** Deletes a budget by ID. */
 export async function deleteBudget(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('budgets').delete().eq('id', id))
 }
 
+/** Fetches budgets for a month enriched with category info, spending totals, and rollover data. */
 export async function queryBudgetWithProgress(
   userId: string,
   month: string,
@@ -130,6 +135,7 @@ export async function queryBudgetWithProgress(
 }
 
 // Extracted pure rollover logic
+/** Calculates rollover amounts from the previous month's unused budget. */
 export async function getBudgetRollover(
   userId: string,
   categoryIds: string[],
@@ -175,6 +181,7 @@ export async function getBudgetRollover(
 }
 
 // Pure calculation — no I/O, perfect for unit testing
+/** Calculates the progress percentage for a budget, accounting for rollover. */
 export function getBudgetProgress(budget: BudgetWithProgress) {
   return calcBudgetProgress(budget.amount, budget.spent, budget.rollover)
 }

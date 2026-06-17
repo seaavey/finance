@@ -9,6 +9,14 @@ import {
 import type { Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages recurring subscription records with TanStack Query.
+ * Provides CRUD operations, active/inactive toggling, and computes
+ * the monthly total of active subscriptions.
+ *
+ * @returns Reactive `subscriptions`, `loading`, `monthlyTotal`, and functions:
+ * `fetchSubscriptions`, `addSubscription`, `updateSubscription`, `deleteSubscription`, `toggleActive`.
+ */
 export const useSubscriptions = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

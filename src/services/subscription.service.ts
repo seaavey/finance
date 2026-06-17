@@ -5,6 +5,7 @@ import { AppError } from '@/types/result'
 import { SUBSCRIPTION_FIELDS } from '@/services/fields'
 import type { Result, Subscription, SubscriptionInsert, SubscriptionUpdate } from '@/types'
 
+/** Fetches all subscriptions for a user, ordered by next billing date ascending. */
 export async function querySubscriptions(userId: string): Promise<Result<Subscription[]>> {
   const supabase = useSupabase()
   return queryList<Subscription>(
@@ -16,6 +17,7 @@ export async function querySubscriptions(userId: string): Promise<Result<Subscri
   )
 }
 
+/** Creates a new subscription. Validates the amount. */
 export async function createSubscription(
   subscription: SubscriptionInsert,
 ): Promise<Result<Subscription>> {
@@ -25,6 +27,7 @@ export async function createSubscription(
   return mutationWithReturn<Subscription>(supabase.from('subscriptions').insert(subscription))
 }
 
+/** Updates a subscription by ID. Validates the amount when provided. */
 export async function updateSubscription(
   id: string,
   updates: SubscriptionUpdate,
@@ -39,6 +42,7 @@ export async function updateSubscription(
   )
 }
 
+/** Deletes a subscription by ID. */
 export async function deleteSubscription(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('subscriptions').delete().eq('id', id))

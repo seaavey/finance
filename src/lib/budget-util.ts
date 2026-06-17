@@ -4,10 +4,12 @@
  */
 
 /**
- * Calculate spending by category from a list of transactions.
- * Handles both regular transactions and split transactions.
+ * Sums spending per category from a list of transactions.
+ * Handles both regular and split transactions.
  *
- * Returns a Map<category_id, total_spent>
+ * @param transactions - Array of transactions with optional splits
+ * @param categoryIds - Category IDs to include in the result
+ * @returns Map from category ID to total amount spent
  */
 export function calculateSpendingByCategory(
   transactions: Array<{
@@ -39,7 +41,12 @@ export function calculateSpendingByCategory(
 }
 
 /**
- * Calculate budget rollover: previous month's budget amount minus previous month's spending.
+ * Computes rollover amounts from the previous month's budget and spending.
+ *
+ * @param prevBudgetMap - Map of category IDs to budget amounts from the previous month
+ * @param prevSpentMap - Map of category IDs to spending amounts from the previous month
+ * @param categoryIds - Category IDs to compute rollover for
+ * @returns Map from category ID to rollover amount (budget minus spending)
  */
 export function calculateRollover(
   prevBudgetMap: Map<string, number>,
@@ -62,7 +69,12 @@ export interface BudgetProgress {
 }
 
 /**
- * Calculate budget progress percentages and remaining amounts.
+ * Calculates budget progress including percentage, remaining, and overspent amounts.
+ *
+ * @param amount - Budget amount for the current month
+ * @param spent - Total spent against this budget
+ * @param rollover - Amount rolled over from the previous month
+ * @returns BudgetProgress with percentage, remaining, overspent, and effective values
  */
 export function calculateProgress(amount: number, spent: number, rollover: number): BudgetProgress {
   const pct = amount > 0 ? (spent / amount) * 100 : 0
@@ -79,7 +91,10 @@ export function calculateProgress(amount: number, spent: number, rollover: numbe
 }
 
 /**
- * Get the next month string in YYYY-MM-DD format (first of the month).
+ * Returns the first day of the next month as YYYY-MM-DD.
+ *
+ * @param month - A date string in YYYY-MM-DD format
+ * @returns First day of the following month as YYYY-MM-DD
  */
 export function getNextMonth(month: string): string {
   const [year, mon] = month.split('-').map(Number)
@@ -89,7 +104,10 @@ export function getNextMonth(month: string): string {
 }
 
 /**
- * Get the previous month string in YYYY-MM-DD format (first of the month).
+ * Returns the first day of the previous month as YYYY-MM-DD.
+ *
+ * @param month - A date string in YYYY-MM-DD format
+ * @returns First day of the preceding month as YYYY-MM-DD
  */
 export function getPrevMonth(month: string): string {
   const [year, mon] = month.split('-').map(Number)

@@ -22,6 +22,16 @@ import { FILTER_ALL, QUERY_KEYS, STALE_TIMES, TRANSFER_CATEGORY_NAMES } from '@/
 
 export type { OwnerFilter }
 
+/**
+ * Queries transaction summary (total income, expense, balance) for a date range,
+ * with currency conversion to a target currency.
+ *
+ * @param userId - Reactive ref of the current user's ID.
+ * @param startDate - Reactive ref of the start date (ISO string).
+ * @param endDate - Reactive ref of the end date (ISO string).
+ * @param targetCurrency - Reactive ref of the currency to convert amounts into.
+ * @returns TanStack Query result with summary data or null.
+ */
 export const useTransactionSummary = (
   userId: Ref<string | undefined>,
   startDate: Ref<string>,
@@ -46,6 +56,14 @@ export const useTransactionSummary = (
   })
 }
 
+/**
+ * Queries per-category spending stats (income/expense totals) for a date range.
+ *
+ * @param userId - Reactive ref of the current user's ID.
+ * @param startDate - Optional reactive ref for the start date filter.
+ * @param endDate - Optional reactive ref for the end date filter.
+ * @returns TanStack Query result with an array of category stat objects.
+ */
 export const useCategoryStats = (
   userId: Ref<string | undefined>,
   startDate?: Ref<string | undefined>,
@@ -64,6 +82,18 @@ export const useCategoryStats = (
   })
 }
 
+/**
+ * Manages transactions with pagination, filtering, and CRUD operations.
+ * Supports category and owner filters, date range, search, bulk updates/deletes,
+ * image uploads, and inter-account transfers.
+ *
+ * @returns Reactive `transactions`, `loading`, `totalCount`, `totalPages`, `currentPage`,
+ * `pageSize`, `categoryFilter`, `ownerFilter`, `dateRange`, `serverFilters`, `monthlySummary`,
+ * and functions: `fetchTransactions`, `goToPage`, `changePage`, `searchTransactions`,
+ * `addTransaction`, `addTransfer`, `updateTransaction`, `deleteTransaction`,
+ * `bulkUpdateTransactions`, `bulkDeleteTransactions`, `getTransaction`,
+ * `uploadTransactionImage`, `deleteTransactionImage`.
+ */
 export const useTransactions = () => {
   const { t } = useI18n()
   const { toast } = useToast()

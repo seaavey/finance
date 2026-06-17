@@ -3,8 +3,14 @@ import { AppError } from '@/types/result'
 import type { Result } from '@/types'
 
 /**
- * Upload a file to a Supabase storage bucket.
- * Returns the public URL of the uploaded file.
+ * Uploads a file to a Supabase storage bucket under the user's directory.
+ * Generates a random UUID-based path to avoid collisions.
+ *
+ * @param userId - ID of the user uploading the file (used as directory prefix)
+ * @param file - The File object to upload
+ * @param bucket - Supabase storage bucket name
+ * @param defaultExt - Fallback file extension if none can be extracted (default: 'jpg')
+ * @returns Result containing the public URL of the uploaded file, or an AppError
  */
 export async function uploadImage(
   userId: string,
@@ -24,10 +30,13 @@ export async function uploadImage(
 }
 
 /**
- * Delete a file from a Supabase storage bucket by its public URL.
- * Extracts the storage path from the URL automatically.
- * Validates that the path belongs to the given userId (defense-in-depth
- * against path traversal — primary protection is Supabase Storage RLS).
+ * Deletes a file from a Supabase storage bucket by its public URL.
+ * Extracts the storage path from the URL and optionally validates ownership.
+ *
+ * @param url - Public URL of the file to delete
+ * @param bucket - Supabase storage bucket name
+ * @param userId - If provided, validates the file path belongs to this user
+ * @returns Result containing null on success, or an AppError
  */
 export async function deleteImage(
   url: string,

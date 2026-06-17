@@ -2,6 +2,7 @@ import { useSupabase } from '@/lib/supabase'
 import { querySingle } from '@/lib/query-wrapper'
 import type { Result } from '@/types'
 
+/** Fetches the currency setting for a user profile. Returns null if unset. */
 export async function getProfileCurrency(userId: string): Promise<Result<string | null>> {
   const supabase = useSupabase()
   const result = await querySingle<{ currency: string | null }>(

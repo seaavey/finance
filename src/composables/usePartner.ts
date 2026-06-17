@@ -14,6 +14,16 @@ import {
 import { callEdgeFunction } from '@/lib/rpc'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages partner connections via invitation system.
+ * Handles sending, accepting, rejecting, and canceling invitations,
+ * as well as disconnecting an existing partner link.
+ *
+ * @returns Reactive `partner`, `myProfile`, `sentInvitations`, `receivedInvitations`,
+ * `isPartnered`, `partnerDisplayName`, `loading`, `sending`, and functions:
+ * `fetchPartner`, `fetchInvitations`, `sendInvite`, `acceptInvite`, `rejectInvite`,
+ * `cancelInvite`, `disconnectPartner`.
+ */
 export const usePartner = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

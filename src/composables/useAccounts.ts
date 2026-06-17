@@ -11,6 +11,14 @@ import {
 import type { Account, AccountWithBalance, AccountInsert, AccountUpdate } from '@/types'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages bank, e-wallet, cash, investment, and liability accounts.
+ * Fetches accounts and balances via TanStack Query, with CRUD operations
+ * that invalidate related queries and log activity.
+ *
+ * @returns Reactive account lists, balance data, and mutation functions
+ * (`addAccount`, `updateAccount`, `deleteAccount`, `getAccountBalance`, `getConvertedBalances`).
+ */
 export const useAccounts = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

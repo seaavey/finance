@@ -3,14 +3,13 @@ import { AppError } from '@/types/result'
 import type { Result } from '@/types'
 
 /**
- * Call a Supabase RPC.
- * Centralizes the `(supabase as any).rpc()` cast so it's in one place.
+ * Calls a Supabase RPC function by name.
+ * Centralizes the `as any` cast needed because the Database type
+ * lacks per-function return generics.
  *
- * The `as any` cast is intentional: Supabase `rpc()` return type varies
- * between `{ data: T }` (newer) and `{ data: T; count: null }` depending
- * on the PostgREST version. The app's Database type (PostgrestVersion 14.5)
- * doesn't provide per-function return generics yet — once it does, remove
- * the cast and use `supabase.rpc<T>(name, params)` directly.
+ * @param name - Name of the RPC function defined in Supabase
+ * @param params - Parameters to pass to the RPC function
+ * @returns Result containing the RPC return value, or an AppError
  *
  * @example
  *   const result = await rpc<AccountWithBalance[]>('get_account_balances', { p_user_id: userId })
@@ -28,11 +27,13 @@ export async function rpc<T>(
 }
 
 /**
- * Call a Supabase Edge Function with anti-forgery (Authorization header).
- * Replaces raw fetch() calls to Edge Functions scattered across the codebase.
+ * Calls a Supabase Edge Function via POST with an Authorization header.
+ * The header acts as a CSRF shield — browsers cannot set custom headers
+ * cross-origin without CORS preflight.
  *
- * The `Authorization: Bearer <session>` header acts as a CSRF shield because
- * browsers cannot set custom headers cross-origin without CORS preflight.
+ * @param functionName - Name of the Edge Function (the path segment after /functions/v1/)
+ * @param body - JSON payload to send in the request body
+ * @returns Result containing the parsed response, or an AppError
  *
  * @example
  *   const result = await callEdgeFunction('send-couple-invite', { recipient_email })

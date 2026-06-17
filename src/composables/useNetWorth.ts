@@ -9,6 +9,12 @@ import type { NetWorthData } from '@/types'
 
 export type { NetWorthData }
 
+/**
+ * Computes net worth history over multiple months by summing account balances
+ * (assets minus liabilities), with currency conversion to the user's default currency.
+ *
+ * @returns Reactive `history`, `loading`, `currentNetWorth`, and `fetchNetWorthHistory` function.
+ */
 export const useNetWorth = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

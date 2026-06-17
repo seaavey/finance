@@ -3,6 +3,13 @@ type ToastFn = (message: string, type?: ToastType) => void
 
 const toastFn = ref<ToastFn | null>(null)
 
+/**
+ * Provides a global toast notification system.
+ * The `register` function connects a UI toast implementation;
+ * `toast.success`, `toast.error`, `toast.info` dispatch messages through it.
+ *
+ * @returns Object with `toast` (success/error/info methods) and `register` function.
+ */
 export const useToast = () => {
   const register = (fn: ToastFn) => {
     toastFn.value = fn

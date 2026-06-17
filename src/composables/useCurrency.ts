@@ -8,6 +8,10 @@ import { QUERY_KEYS } from '@/constants'
 
 const defaultCurrency = ref<string>('IDR')
 
+/**
+ * Loads the user's default currency from their profile.
+ * Must be called after authentication is established.
+ */
 export const loadCurrency = async () => {
   if (!user.value) {
     return
@@ -45,6 +49,15 @@ const fetchFallbackRates = async () => {
 // Eagerly kick off the fallback fetch so rates are ready ASAP
 fetchFallbackRates()
 
+/**
+ * Provides currency formatting, conversion, and exchange rate utilities.
+ * Fetches live exchange rates from Supabase (synced every 10 min via Edge Function)
+ * with an in-memory API fallback.
+ *
+ * @returns Object with `formatCurrency`, `formatNumberOnly`, `parseLocalizedNumber`,
+ * `hasDecimals`, `currencies`, `currencyGroups`, `defaultCurrency`, `exchangeRates`,
+ * `convertTo`, `fetchHistoricalRates`, `locale`.
+ */
 export const useCurrency = () => {
   // Use global i18n.global instance directly to avoid Vue's "inject() can only be used inside setup()" warnings.
   // This is the most robust way to support useCurrency calls from any context (async, top-level, etc.)

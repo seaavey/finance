@@ -10,6 +10,13 @@ import {
 import type { Bill, BillInsert, Database } from '@/types'
 import { QUERY_KEYS, STALE_TIMES } from '@/constants'
 
+/**
+ * Manages bill records with TanStack Query.
+ * Provides CRUD operations and a mark-as-paid action, with query invalidation
+ * and activity logging on each mutation.
+ *
+ * @returns Reactive `bills`, `loading`, and functions: `addBill`, `updateBill`, `deleteBill`, `markAsPaid`.
+ */
 export const useBills = () => {
   const queryClient = useQueryClient()
   const { user } = useAuth()

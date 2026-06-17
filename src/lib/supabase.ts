@@ -14,6 +14,12 @@ function getEnvOrThrow(key: string): string {
   return value
 }
 
+/**
+ * Returns the singleton Supabase client, creating it on first call.
+ * Reads VITE_PUBLIC_SUPABASE_URL and VITE_PUBLIC_SUPABASE_ANON_KEY from the environment.
+ *
+ * @returns A typed SupabaseClient instance
+ */
 export const useSupabase = () => {
   if (!client) {
     const supabaseUrl = getEnvOrThrow('VITE_PUBLIC_SUPABASE_URL')

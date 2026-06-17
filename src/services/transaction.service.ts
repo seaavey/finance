@@ -19,6 +19,7 @@ import type {
 } from '@/types'
 import { AppError } from '@/types/result'
 
+/** Queries transactions with filters, pagination, and optional partner inclusion. */
 export async function queryTransactions(
   userId: string,
   filters: TransactionFilters = {},
@@ -60,6 +61,7 @@ export async function queryTransactions(
   return queryWithCount<Transaction>(query)
 }
 
+/** Fetches a single transaction by ID. */
 export async function getTransaction(id: string): Promise<Result<Transaction>> {
   const supabase = useSupabase()
   return querySingle<Transaction>(
@@ -67,6 +69,7 @@ export async function getTransaction(id: string): Promise<Result<Transaction>> {
   )
 }
 
+/** Creates a new transaction. Validates the amount. */
 export async function createTransaction(tx: TransactionInsert): Promise<Result<Transaction>> {
   const supabase = useSupabase()
   const valid = validateAmount(tx.amount, true)
@@ -74,6 +77,7 @@ export async function createTransaction(tx: TransactionInsert): Promise<Result<T
   return mutationWithReturn<Transaction>(supabase.from('transactions').insert(tx))
 }
 
+/** Creates a transfer as a paired expense and income transaction with a shared transfer_id. */
 export async function createTransfer(
   userId: string,
   data: {
@@ -133,6 +137,7 @@ export async function createTransfer(
   return { data: (created as Transaction[]) || [], error: null }
 }
 
+/** Updates a transaction by ID. Validates the amount when provided. */
 export async function updateTransaction(
   id: string,
   updates: TransactionUpdate,
@@ -145,6 +150,7 @@ export async function updateTransaction(
   return mutationWithReturn<Transaction>(supabase.from('transactions').update(updates).eq('id', id))
 }
 
+/** Deletes a transaction. If it belongs to a transfer, deletes both sides. */
 export async function deleteTransaction(id: string): Promise<Result<null>> {
   const supabase = useSupabase()
 
@@ -170,6 +176,7 @@ export async function deleteTransaction(id: string): Promise<Result<null>> {
   return mutationVoid(query)
 }
 
+/** Updates multiple transactions at once by their IDs. */
 export async function bulkUpdateTransactions(
   ids: string[],
   updates: TransactionUpdate,
@@ -178,11 +185,13 @@ export async function bulkUpdateTransactions(
   return mutationVoid(supabase.from('transactions').update(updates).in('id', ids))
 }
 
+/** Deletes multiple transactions at once by their IDs. */
 export async function bulkDeleteTransactions(ids: string[]): Promise<Result<null>> {
   const supabase = useSupabase()
   return mutationVoid(supabase.from('transactions').delete().in('id', ids))
 }
 
+/** Searches transactions by description, returning up to the given limit. */
 export async function searchTransactions(
   userId: string,
   term: string,
@@ -200,6 +209,7 @@ export async function searchTransactions(
   )
 }
 
+/** Finds transactions that match the given criteria to detect potential duplicates. */
 export async function queryDuplicateTransactions(
   userId: string,
   criteria: {
@@ -239,6 +249,7 @@ export async function queryDuplicateTransactions(
   return queryList<Transaction>(query)
 }
 
+/** Fetches income, expense, and balance totals for a date range via RPC. */
 export async function getTransactionSummary(
   userId: string,
   startDate: string,
@@ -263,6 +274,7 @@ export async function getTransactionSummary(
   return { data, error: null }
 }
 
+/** Fetches per-category transaction counts and totals via RPC. */
 export async function getCategoryStats(
   userId: string,
   startDate?: string,
@@ -278,6 +290,7 @@ export async function getCategoryStats(
   )
 }
 
+/** Fetches minimal transaction data (account, type, amount, date) for net worth calculation. */
 export async function queryNetWorthTransactions(
   userId: string,
   earliestDate: string,
@@ -293,6 +306,7 @@ export async function queryNetWorthTransactions(
   )
 }
 
+/** Fetches transactions with export-relevant fields for CSV download. */
 export async function queryExportTransactions(
   userId: string,
 ): Promise<
@@ -312,10 +326,12 @@ export async function queryExportTransactions(
   )
 }
 
+/** Uploads a receipt image to the transaction-images storage bucket. */
 export async function uploadTransactionImage(userId: string, file: File): Promise<Result<string>> {
   return uploadImage(userId, file, 'transaction-images', 'jpg')
 }
 
+/** Deletes a receipt image from the transaction-images storage bucket. */
 export async function deleteTransactionImage(url: string, userId?: string): Promise<Result<null>> {
   return deleteImage(url, 'transaction-images', userId)
 }
