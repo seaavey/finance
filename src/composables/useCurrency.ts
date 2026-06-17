@@ -235,10 +235,11 @@ export const useCurrency = () => {
       if (!res.ok) return null
       const data = await res.json()
 
-      return Object.entries(data.rates || {})
-        .map(([date, rates]: [string, any]) => {
-          const rateFrom = from === 'EUR' ? 1 : rates[from]
-          const rateTo = to === 'EUR' ? 1 : rates[to]
+      const rates = data.rates as Record<string, Record<string, number>> | undefined
+      return (Object.entries(rates || {}) as [string, Record<string, number>][])
+        .map(([date, dayRates]) => {
+          const rateFrom = from === 'EUR' ? 1 : dayRates[from]
+          const rateTo = to === 'EUR' ? 1 : dayRates[to]
 
           return {
             date,
