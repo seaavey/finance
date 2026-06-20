@@ -1,78 +1,57 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
 import { useTransactions } from '../useTransactions'
 
-// Mock dependencies
-mock.module('../i18n-compat', () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
+// Auto-imported composables — stub as globals since unplugin-auto-import doesn't run in vitest
+vi.stubGlobal('useI18n', () => ({ t: vi.fn((k: string) => k) }))
+vi.stubGlobal('useToast', () => ({
+  toast: { success: vi.fn(), error: vi.fn() },
+}))
+vi.stubGlobal('useActivityLog', () => ({ log: vi.fn() }))
+vi.stubGlobal('useAuth', () => ({ user: ref({ id: 'user-123' }) }))
+vi.stubGlobal('usePartner', () => ({ partner: ref(null) }))
+vi.stubGlobal('useCategories', () => ({
+  categories: ref([
+    { id: 'cat-transfer', name: 'Transfer' },
+    { id: 'cat-other', name: 'Other' },
+  ]),
+}))
+vi.stubGlobal('useMutationFeedback', () => ({
+  mutate: vi.fn(async (fn: () => Promise<unknown>) => fn()),
 }))
 
-mock.module('@tanstack/vue-query', () => ({
+vi.mock('@tanstack/vue-query', () => ({
   useQueryClient: () => ({
-    invalidateQueries: mock(() => {}),
+    invalidateQueries: vi.fn(),
   }),
   useQuery: () => ({
     data: ref({ data: [], count: 0 }),
     isLoading: ref(false),
-    refetch: mock(async () => {}),
+    refetch: vi.fn(async () => {}),
   }),
 }))
 
-mock.module('../useToast', () => ({
-  useToast: () => ({
-    toast: {
-      success: mock(() => {}),
-      error: mock(() => {}),
-    },
-  }),
-}))
-
-mock.module('../useActivityLog', () => ({
-  useActivityLog: () => ({
-    log: mock(() => {}),
-  }),
-}))
-
-mock.module('../useAuth', () => ({
-  useAuth: () => ({
-    user: ref({ id: 'user-123' }),
-  }),
-}))
-
-mock.module('../usePartner', () => ({
-  usePartner: () => ({
-    partner: ref(null),
-  }),
-}))
-
-mock.module('@/services/transaction.service', () => ({
-  queryTransactions: mock(async () => ({ data: { data: [], count: 0 }, error: null })),
-  createTransfer: mock(async () => ({ data: [], error: null })),
-  getTransaction: mock(async () => ({ data: null, error: null })),
-  createTransaction: mock(async () => ({ data: null, error: null })),
-  updateTransaction: mock(async () => ({ data: null, error: null })),
-  deleteTransaction: mock(async () => ({ data: null, error: null })),
-  bulkUpdateTransactions: mock(async () => ({ data: null, error: null })),
-  bulkDeleteTransactions: mock(async () => ({ data: null, error: null })),
-  searchTransactions: mock(async () => ({ data: [], error: null })),
-  getTransactionSummary: mock(async () => ({ data: null, error: null })),
-  getCategoryStats: mock(async () => ({ data: [], error: null })),
-  uploadTransactionImage: mock(async () => ({ data: null, error: null })),
-  deleteTransactionImage: mock(async () => ({ data: null, error: null })),
-}))
-
-mock.module('../useCategories', () => ({
-  useCategories: () => ({
-    categories: ref([
-      { id: 'cat-transfer', name: 'Transfer' },
-      { id: 'cat-other', name: 'Other' },
-    ]),
-  }),
+vi.mock('@/services/transaction.service', () => ({
+  queryTransactions: vi.fn(async () => ({ data: { data: [], count: 0 }, error: null })),
+  createTransfer: vi.fn(async () => ({ data: [], error: null })),
+  getTransaction: vi.fn(async () => ({ data: null, error: null })),
+  createTransaction: vi.fn(async () => ({ data: null, error: null })),
+  updateTransaction: vi.fn(async () => ({ data: null, error: null })),
+  deleteTransaction: vi.fn(async () => ({ data: null, error: null })),
+  bulkUpdateTransactions: vi.fn(async () => ({ data: null, error: null })),
+  bulkDeleteTransactions: vi.fn(async () => ({ data: null, error: null })),
+  searchTransactions: vi.fn(async () => ({ data: [], error: null })),
+  getTransactionSummary: vi.fn(async () => ({ data: null, error: null })),
+  getCategoryStats: vi.fn(async () => ({ data: [], error: null })),
+  uploadTransactionImage: vi.fn(async () => ({ data: null, error: null })),
+  deleteTransactionImage: vi.fn(async () => ({ data: null, error: null })),
 }))
 
 describe('useTransactions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should have addTransfer method', () => {
     const { addTransfer } = useTransactions()
     expect(addTransfer).toBeDefined()
@@ -81,7 +60,7 @@ describe('useTransactions', () => {
 
   it('addTransfer should call createTransfer service', async () => {
     const { addTransfer } = useTransactions()
-    const { createTransfer } = await import('@/services/transaction.service')
+    const service = await import('@/services/transaction.service')
 
     const transferData = {
       from_account_id: 'acc-1',
@@ -93,6 +72,6 @@ describe('useTransactions', () => {
     }
 
     await addTransfer(transferData)
-    expect(createTransfer).toHaveBeenCalled()
+    expect(service.createTransfer).toHaveBeenCalled()
   })
 })
