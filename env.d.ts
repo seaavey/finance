@@ -15,6 +15,14 @@ declare module '@vue/runtime-core' {
     $localePath: (path: string) => string;
   }
 }
+interface ImportMetaEnv {
+  readonly VITE_ENABLE_EMAIL_AUTH: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
 
 // Ensure global functions are typed
 declare global {
