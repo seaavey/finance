@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { describe, expect, it, vi } from 'vitest'
 import { queryAccounts } from '../account.service'
 
 interface MockSupabaseChain {
@@ -17,7 +17,7 @@ const mockSupabase: MockSupabaseChain = {
   then: (resolve) => resolve({ data: [], error: null }),
 }
 
-mock.module('@/lib/supabase', () => ({
+vi.mock('@/lib/supabase', () => ({
   useSupabase: () => mockSupabase,
 }))
 
