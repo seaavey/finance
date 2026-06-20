@@ -20,26 +20,6 @@
             {{ $t('auth.login_google') }}
           </Button>
         </div>
-
-        <!-- Email/password login (for testing only) -->
-        <div v-if="enableEmailAuth" class="mt-6">
-          <Separator class="my-4" />
-          <p class="mb-3 text-center text-xs text-muted-foreground">Email Login (Testing)</p>
-          <form class="space-y-3" @submit.prevent="handleEmailLogin">
-            <Input v-model="email" placeholder="Email" type="email" required />
-            <Input v-model="password" placeholder="Password" type="password" required />
-            <Button
-              type="submit"
-              variant="outline"
-              class="w-full rounded-xl"
-              size="lg"
-              :disabled="emailLoading"
-            >
-              {{ emailLoading ? 'Logging in...' : 'Sign in with Email' }}
-            </Button>
-            <p v-if="emailError" class="text-center text-sm text-destructive">{{ emailError }}</p>
-          </form>
-        </div>
       </div>
 
       <p class="text-center">
@@ -59,31 +39,9 @@ defineOptions({
   name: 'PagesAuthLogin',
 })
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
 
-const { signInWithGoogle, signInWithPassword, getSession, user, loading } = useAuth()
+const { signInWithGoogle, getSession, user } = useAuth()
 const router = useRouter()
-
-const enableEmailAuth = import.meta.env.VITE_ENABLE_EMAIL_AUTH === 'true'
-const email = ref('')
-const password = ref('')
-const emailLoading = ref(false)
-const emailError = ref('')
-
-const handleEmailLogin = async () => {
-  emailLoading.value = true
-  emailError.value = ''
-  try {
-    await signInWithPassword(email.value, password.value)
-    await router.replace('/dashboard')
-  } catch (e: unknown) {
-    const err = e as { message?: string }
-    emailError.value = err.message || 'Login failed'
-  } finally {
-    emailLoading.value = false
-  }
-}
 
 const { t: tSeo } = useI18n()
 useSeoMeta({
