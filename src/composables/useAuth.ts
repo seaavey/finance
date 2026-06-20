@@ -11,10 +11,9 @@ let loginLogged = false
 
 /**
  * Manages authentication state via Supabase.
- * Provides Google OAuth sign-in, email/password sign-in (for testing),
- * sign-out with activity logging, and session retrieval.
+ * Provides Google OAuth sign-in, sign-out with activity logging, and session retrieval.
  *
- * @returns Reactive `user`, `loading`, and functions: `signInWithGoogle`, `signInWithPassword`, `signOut`, `getSession`.
+ * @returns Reactive `user`, `loading`, and functions: `signInWithGoogle`, `signOut`, `getSession`.
  */
 export const useAuth = () => {
   const supabase = useSupabase()
@@ -28,17 +27,6 @@ export const useAuth = () => {
       options: {
         redirectTo,
       },
-    })
-
-    if (error) {
-      throw error
-    }
-  }
-
-  const signInWithPassword = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
     })
 
     if (error) {
@@ -93,5 +81,5 @@ export const useAuth = () => {
     return session
   }
 
-  return { user, loading, signInWithGoogle, signInWithPassword, signOut, getSession }
+  return { user, loading, signInWithGoogle, signOut, getSession }
 }
